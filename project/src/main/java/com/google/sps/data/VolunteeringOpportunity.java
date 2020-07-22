@@ -1,6 +1,7 @@
 package com.google.sps.data;
 
 import java.util.Set;
+import java.util.HashSet;
 
 public final class VolunteeringOpportunity {
   private String name;
