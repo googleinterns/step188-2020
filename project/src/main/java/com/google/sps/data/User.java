@@ -1,4 +1,4 @@
-package com.google.sps;
+package com.google.sps.data;
 
 import java.util.HashSet;
 import java.util.Set;
