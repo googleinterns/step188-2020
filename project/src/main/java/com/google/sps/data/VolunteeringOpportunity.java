@@ -8,7 +8,8 @@ public final class VolunteeringOpportunity {
   private int numSpotsLeft;
   private Set<User> volunteers;
 
-  public VolunteeringOpportunity(String name, Set<String> requiredSkills, int numSpotsLeft, Set<User> volunteers) {
+  public VolunteeringOpportunity(
+       String name, Set<String> requiredSkills, int numSpotsLeft, Set<User> volunteers) {
     this.name = name;
     this.skillsRequired = skillsRequired;
     this.numSpotsLeft = numSpotsLeft;
@@ -18,19 +19,19 @@ public final class VolunteeringOpportunity {
     return this.name;
   }
 
-  public void setName(String name){
+  public void setName(String name) {
     this.name = name;
   }
 
-  public Set<String> getRequiredSkills(){
+  public Set<String> getRequiredSkills() {
     return this.skillsRequired;
   }
 
-  public void setRequiredSkills(Set<String> requiredSkills){
+  public void setRequiredSkills(Set<String> requiredSkills) {
     this.skillsRequired = requiredSkills;
   }
     
-  public void addRequiredSkill(String requiredSkill){
+  public void addRequiredSkill(String requiredSkill) {
     this.skillsRequired.add(requiredSkill);
   }
 
@@ -46,7 +47,7 @@ public final class VolunteeringOpportunity {
     return this.volunteers;
   }
 
-  public void addVolunteer(User volunteer){
+  public void addVolunteer(User volunteer) {
     this.volunteers.add(volunteer);
   }
 }
