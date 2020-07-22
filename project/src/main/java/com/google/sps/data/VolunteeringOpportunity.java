@@ -9,12 +9,13 @@ public final class VolunteeringOpportunity {
   private Set<User> volunteers;
 
   public VolunteeringOpportunity(
-       String name, Set<String> requiredSkills, int numSpotsLeft, Set<User> volunteers) {
+        String name, Set<String> requiredSkills, int numSpotsLeft, Set<User> volunteers) {
     this.name = name;
     this.skillsRequired = skillsRequired;
     this.numSpotsLeft = numSpotsLeft;
     this.volunteers = new HashSet<User>();
   }
+
   public String getName() {
     return this.name;
   }
@@ -30,7 +31,7 @@ public final class VolunteeringOpportunity {
   public void setRequiredSkills(Set<String> requiredSkills) {
     this.skillsRequired = requiredSkills;
   }
-    
+
   public void addRequiredSkill(String requiredSkill) {
     this.skillsRequired.add(requiredSkill);
   }
