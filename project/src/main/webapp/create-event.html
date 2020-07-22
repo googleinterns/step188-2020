@@ -18,51 +18,77 @@
       ></script>
   </head>
   <body>
-    <h3>Create an Event </h3>
-    <div class="col-sm-8">
-      <div class="row justify-content-center">
-        <div class="input-group">
-          <span class="input-group-addon" id="basic-addon1">Name</span>
-          <input type="text" class="form-control" placeholder="Event Name" aria-describedby="basic-addon1">
+    <br><br>
+    <h3 style="text-align:center" > Create an Event </h3>
+    <br>
+    <div class="col" style="width:80%; margin:auto">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Name</span>
         </div>
+        <input type="text" class="form-control" placeholder="Event Name" aria-describedby="basic-addon1">
       </div>
+      <br>
       <div class="row">
         <div class="col-lg-6">
           <div class="input-group">
-            <span class="input-group-addon" id="basic-addon1">Date</span>
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Date</span>
+            </div>
             <input type="text" class="form-control" placeholder="Event Date" aria-describedby="basic-addon1">
           </div>
         </div>
+        <br>
         <div class="col-lg-6">
           <div class="input-group">
-            <span class="input-group-addon" id="basic-addon1">Time</span>
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Time</span>
+            </div>
             <input type="text" class="form-control" placeholder="Time" aria-describedby="basic-addon1">
           </div>
         </div>
       </div>
-      <p> Tags </p>
-      <span class="label label-success">Cooking</span>
-      <span class="label label-success">Baking</span>
+      <br>
+      <div style="display: inline-block">
+        <text> Tags: </text>
+        <div class="container">
+          <span class="badge badge-primary text-medium"> Tag 1</span>
+          <span class="badge badge-primary text-medium"> Tag 2</span>
+          <span class="badge badge-secondary text-medium"> + Tag</span>
+        </div>
+      </div>
+      <br>
+      <br>
       <div class="input-group">
-        <span class="input-group-addon" id="basic-addon1">Description </span>
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Description</span>
+        </div>
         <input type="text" class="form-control" placeholder="Describe your event!" aria-describedby="basic-addon1">
       </div>
+      <br>
       <div class="input-group">
-        <span class="input-group-addon" id="basic-addon1">Where</span>
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Where</span>
+        </div>
         <input type="text" class="form-control" placeholder="Where your event will be held" aria-describedby="basic-addon1">
       </div>
+      <br>
       <div class="input-group">
-        <span class="input-group-addon" id="basic-addon1">Wanted </span>
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Wanted</span>
+        </div>
         <input type="text" class="form-control" placeholder="Volunteer Type" aria-describedby="basic-addon1">
         <input type="text" class="form-control" placeholder="Quantity Needed" aria-describedby="basic-addon1">
       </div>
+      <br>
       <div class="input-group">
-        <span class="input-group-addon" id="basic-addon1">Attendees</span>
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Attendees</span>
+        </div>
         <input type="text" class="form-control" placeholder="Max number of attendees" aria-describedby="basic-addon1">
       </div>
-      <div class="btn-group btn-group-lg" role="group" aria-label="...">
-        <button type="button" class="btn btn-default">Submit</button>
-      </div>
+      <br>
     </div>
+    <button type="submit" class="btn btn-primary mx-auto d-block">Submit</button>
   </body>
 </html>
