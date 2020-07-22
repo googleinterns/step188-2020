@@ -9,7 +9,7 @@ public final class VolunteeringOpportunity {
   private Set<User> volunteers;
 
   public VolunteeringOpportunity(
-        String name, Set<String> requiredSkills, int numSpotsLeft, Set<User> volunteers) {
+       String name, Set<String> requiredSkills, int numSpotsLeft, Set<User> volunteers) {
     this.name = name;
     this.skillsRequired = skillsRequired;
     this.numSpotsLeft = numSpotsLeft;
@@ -39,7 +39,7 @@ public final class VolunteeringOpportunity {
   public int getNumSpotsLeft() {
     return this.numSpotsLeft;
   }
-  
+
   public void setNumSpotsLeft(int numSpotsLeft) {
     this.numSpotsLeft = numSpotsLeft;
   }
