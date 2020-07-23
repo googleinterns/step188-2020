@@ -1,0 +1,12 @@
+h3 {
+  text-align:center; 
+}
+
+.col {
+  margin:"auto";
+  width:80%; 
+}
+
+.inline {
+  display: inline-block;
+}
