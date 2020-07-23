@@ -5,9 +5,9 @@
     <title>STEP 188 Project</title>
     <link rel="stylesheet" href="style.css" />
     <script src="script.js"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <!-- Bootstrap CDN links -->
-    <!--
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
@@ -19,30 +19,45 @@
       integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
       crossorigin="anonymous"
     ></script>
-    -->
   </head>
-  <body>
-     <form
-      id="event-signup"
-    >
-    <h3>Signup</h3>
-      <label for="comment">Comment</label>
-      <br /><br />
-      <textarea type="text" id="comment" name="comment-text"></textarea>
-      <br /><br />
+  <body class>
+    <form id="event-signup">
+      <div class="card" style="width: 18rem;">
+        <img src="..." class="card-img-top" alt="..." />
+        <div class="card-body">
+          <h5 class="card-title">Event title</h5>
+          <p class="card-text">Event description</p>
+          <h3>Date:</h3>
+          <h3>Time:</h3>
+          <h3>Volunteer Type:</h3>
+          <h3>Volunteer Spots Left:</h3>
+          <h3>Attendeees Spots Left:</h3>
+          <br /><br />
+        </div>
+      </div>
+
       <p>Select a role:</p>
-      <select name="cars" id="cars">
-  <option value="attendee">Attendee</option>
-  <h3>Volunteer</h3>
-  <option value="announcer">Announcer</option>
-  <option value="performer">Performer</option>
-  <option value="cleanup-crew">Cleanup Crew</option>
-</select>
+      <div class="dropdown">
+        <a
+          class="btn btn-secondary dropdown-toggle"
+          href="#"
+          role="button"
+          id="dropdownMenuLink"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          Role
+        </a>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Announcer</a>
+          <a class="dropdown-item" href="#">Performer</a>
+          <a class="dropdown-item" href="#">Cleanup Crew</a>
+        </div>
+      </div>
       <br /><br />
       <button type="submit">Submit</button>
     </form>
-
   </body>
 </html>
-
-   
