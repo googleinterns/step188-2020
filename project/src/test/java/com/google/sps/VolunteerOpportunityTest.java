@@ -1,17 +1,3 @@
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package com.google.sps;
 
 import com.google.common.collect.ImmutableList;
@@ -32,12 +18,12 @@ import org.junit.runners.JUnit4;
 /** */
 @RunWith(JUnit4.class)
 public final class VolunteerOpportunityTest {
+  private static VolunteeringOpportunity opportunity;
+  private static VolunteeringOpportunity opportunityWithSkills;
   private static final String NAME = "Performer";
   private static final int NUMBER_OF_SPOTS = 240;
   public static final Set<String> SKILLS = ImmutableSet.of("Playing an instrument", "Performing");
   public static final Set<String> NEW_SKILLS = ImmutableSet.of("Singing", "Performing");
-  private static VolunteeringOpportunity opportunity;
-  private static VolunteeringOpportunity opportunityWithSkills;
 
   @Before
   public void setUp() {
