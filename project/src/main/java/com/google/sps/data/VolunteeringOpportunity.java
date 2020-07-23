@@ -32,7 +32,7 @@ public final class VolunteeringOpportunity {
   }
 
   public void removeRequiredSkill(String requiredSkill) {
-      this.requiredSkills.remove(requiredSkill);
+    this.requiredSkills.remove(requiredSkill);
   }
 
   public void addRequiredSkill(String requiredSkill) {
