@@ -5,53 +5,76 @@ import java.util.Set;
 
 public final class VolunteeringOpportunity {
   private String name;
-  private Set<String> requiredSkills;
   private int numSpotsLeft;
-  private Set<User> volunteers = new HashSet<>();
+  private Set<String> requiredSkills;
+  private Set<String> volunteers;
 
-  public VolunteeringOpportunity(String name, Set<String> requiredSkills, int numSpotsLeft) {
-    this.name = name;
-    this.numSpotsLeft = numSpotsLeft;
-    this.requiredSkills = requiredSkills;
+  public static class Builder {
+    // Required parameters
+    private String name;
+    private int numSpotsLeft;
+
+    // Optional parameters
+    private Set<String> requiredSkills;
+    private Set<String> volunteers;
+
+    public Builder(String name, int numSpotsLeft) {
+      this.name = name;
+      this.numSpotsLeft = numSpotsLeft;
+    }
+
+    public Builder requiredSkills(Set<String> requiredSkills) {
+      this.requiredSkills = requiredSkills;
+      return this;
+    }
+
+    public Builder volunteers(Set<String> volunteers) {
+      this.volunteers = volunteers;
+      return this;
+    }
+
+    public VolunteeringOpportunity build() {
+      return new VolunteeringOpportunity(this);
+    }
+
+    public Builder mergeFrom(VolunteeringOpportunity other) {
+      this.name = other.getName();
+      this.numSpotsLeft = other.getNumSpotsLeft();
+
+      if (!other.getRequiredSkills().isEmpty()) {
+        this.requiredSkills = other.getRequiredSkills();
+      }
+      if (!other.getVolunteers().isEmpty()) {
+        this.volunteers = other.getVolunteers();
+      }
+      return this;
+    }
+  }
+
+  private VolunteeringOpportunity(Builder builder) {
+    name = builder.name;
+    numSpotsLeft = builder.numSpotsLeft;
+    requiredSkills = builder.requiredSkills;
+    volunteers = builder.requiredSkills;
   }
 
   public String getName() {
     return this.name;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
   public Set<String> getRequiredSkills() {
     return this.requiredSkills;
-  }
-
-  public void setRequiredSkills(Set<String> requiredSkills) {
-    this.requiredSkills = requiredSkills;
-  }
-
-  public void removeRequiredSkill(String requiredSkill) {
-    this.requiredSkills.remove(requiredSkill);
-  }
-
-  public void addRequiredSkill(String requiredSkill) {
-    this.requiredSkills.add(requiredSkill);
   }
 
   public int getNumSpotsLeft() {
     return this.numSpotsLeft;
   }
 
-  public void setNumSpotsLeft(int numSpotsLeft) {
-    this.numSpotsLeft = numSpotsLeft;
-  }
-
-  public Set<User> getVolunteers() {
+  public Set<String> getVolunteers() {
     return this.volunteers;
   }
 
-  public void addVolunteer(User volunteer) {
-    this.volunteers.add(volunteer);
+  public Builder toBuilder() {
+    return new Builder(this.name, this.numSpotsLeft).mergeFrom(this);
   }
 }
