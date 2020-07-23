@@ -9,8 +9,7 @@ public final class VolunteeringOpportunity {
   private int numSpotsLeft;
   private Set<User> volunteers = new HashSet<>();
 
-  public VolunteeringOpportunity(
-      String name, Set<String> requiredSkills, int numSpotsLeft) {
+  public VolunteeringOpportunity(String name, Set<String> requiredSkills, int numSpotsLeft) {
     this.name = name;
     this.numSpotsLeft = numSpotsLeft;
     this.requiredSkills = requiredSkills;
