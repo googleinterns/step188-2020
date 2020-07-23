@@ -1,13 +1,7 @@
 package com.google.sps;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.sps.data.VolunteeringOpportunity;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import org.junit.Assert;
 import org.junit.Before;
