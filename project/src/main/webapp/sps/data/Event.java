@@ -5,7 +5,7 @@ import java.util.Set;
 /** Class containing Event object 
 Setters for variables that user can change about event
 */
-public class Event {
+public final class Event {
   private final int eventId;
   private String name;
   private String description;
@@ -19,17 +19,56 @@ public class Event {
   Random rand = new Random(); 
 
   /** TO DO (MVP): Add Event to Event db*/
-  public Event(String name, String description, Set<String> labels, String location, Date date, 
-  Set<VolunteeringOpportunity> opportunities, Set<User> attendees, User host) {
+  public static class Builder {
+  //required params
     this.eventId = rand.nextInt(1000000); //this will later be a unique number based on the database id
-    this.name = name;
-    this.description = description;
-    this.labels = labels;
-    this.location = location;
-    this.date = date;
-    this.opportunities = opportunities;
-    this.attendees = attendees;
-    this.host = host;
+    private final int eventId;
+    private String name;
+    private String description;
+    private Set<String> labels;
+    private String location;
+    private Date date;
+    private User host;
+    
+    //optional params
+    private Set<VolunteeringOpportunity> opportunities = new HashSet<>();
+    private Set<User> attendees = new HashSet<>();
+
+    public Builder(String name, String description, Set<String> labels, String location, Date date, 
+    User host) {
+        this.eventId = rand.nextInt(1000000); //this will later be a unique number based on the database id
+        this.name = name;
+        this.description = description;
+        this.labels = labels;
+        this.location = location;
+        this.date = date;
+        this.host = host;
+    }
+
+    public Builder opportunities(VolunteeringOpportunity opportunity) {
+        opportunities.add(opportunity);
+        return this;
+    }
+    public Builder attendees(User attendee) {
+        attendees.add(attendee);
+        return this;
+    }
+
+    public Event build() {
+        return new Event(this);
+    }
+  }
+
+  private Event(Builder builder) {
+  eventId = builder.eventId;
+  name = builder.name;
+  description = builder.description;
+  labels = builder.labels;
+  location = builder.location;
+  date = builder.date;
+  opportunities = builder.opportunities;
+  attendees = builder.attendees;
+  host = builder.host;
   }
 
   /** TO DO (MVP) for all getters: get from Event db*/
@@ -42,16 +81,8 @@ public class Event {
     return name;
   }
 
-  public void setName(String newName) {
-    this.name = newName;
-  }
-
   public String getDescription() {
     return description;
-  }
-
-  public void setDescription(String newDescription) {
-    this.description = newDescription;
   }
 
   public Set<String> getLabels() {
@@ -70,16 +101,8 @@ public class Event {
     return location;
   }
 
-  public void setLocation(String newLocation) {
-    this.location = newLocation;
-  }
-
   public Date getDate() {
     return date;
-  }
-
-  public void setDate(Date newDate) {
-    this.date = newDate;
   }
 
   public Set<VolunteeringOpportunity> getOpportunities() {
