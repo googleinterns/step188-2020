@@ -5,16 +5,15 @@ import java.util.Set;
 
 public final class VolunteeringOpportunity {
   private String name;
-  private Set<String> skillsRequired;
+  private Set<String> requiredSkills;
   private int numSpotsLeft;
-  private Set<User> volunteers;
+  private Set<User> volunteers = new HashSet<>();
 
   public VolunteeringOpportunity(
-      String name, Set<String> requiredSkills, int numSpotsLeft, Set<User> volunteers) {
+      String name, Set<String> requiredSkills, int numSpotsLeft) {
     this.name = name;
-    this.skillsRequired = skillsRequired;
     this.numSpotsLeft = numSpotsLeft;
-    this.volunteers = new HashSet<User>();
+    this.requiredSkills = requiredSkills;
   }
 
   public String getName() {
@@ -26,15 +25,15 @@ public final class VolunteeringOpportunity {
   }
 
   public Set<String> getRequiredSkills() {
-    return this.skillsRequired;
+    return this.requiredSkills;
   }
 
   public void setRequiredSkills(Set<String> requiredSkills) {
-    this.skillsRequired = requiredSkills;
+    this.requiredSkills = requiredSkills;
   }
 
   public void addRequiredSkill(String requiredSkill) {
-    this.skillsRequired.add(requiredSkill);
+    this.requiredSkills.add(requiredSkill);
   }
 
   public int getNumSpotsLeft() {
