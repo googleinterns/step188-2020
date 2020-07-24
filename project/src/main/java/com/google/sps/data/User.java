@@ -30,27 +30,27 @@ public final class User {
       this.email = email;
     }
 
-    public Builder interests(Set<String> interests) {
+    public Builder setInterests(Set<String> interests) {
       this.interests = interests;
       return this;
     }
 
-    public Builder skills(Set<String> skills) {
+    public Builder setSkills(Set<String> skills) {
       this.skills = skills;
       return this;
     }
 
-    public Builder eventsHosting(Set<Event> eventsHosting) {
+    public Builder setEventsHosting(Set<Event> eventsHosting) {
       this.eventsHosting = eventsHosting;
       return this;
     }
 
-    public Builder eventsParticipating(Set<Event> eventsParticipating) {
+    public Builder setEventsParticipating(Set<Event> eventsParticipating) {
       this.eventsParticipating = eventsParticipating;
       return this;
     }
 
-    public Builder eventsVolunteering(Set<Event> eventsVolunteering) {
+    public Builder setEventsVolunteering(Set<Event> eventsVolunteering) {
       this.eventsVolunteering = eventsVolunteering;
       return this;
     }

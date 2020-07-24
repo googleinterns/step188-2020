@@ -53,7 +53,7 @@ public final class UserTest {
   @Test
   public void getInterestsAfterBuild() {
     // Ensures that user's interests are properly set
-    User user = new User.Builder(NAME, EMAIL).interests(INTERESTS).build();
+    User user = new User.Builder(NAME, EMAIL).setInterests(INTERESTS).build();
     Set<String> actual = user.getInterests();
     Set<String> expected = INTERESTS;
 
@@ -63,7 +63,7 @@ public final class UserTest {
   @Test
   public void getSkillsAfterBuild() {
     // Ensures that user's skills are properly set
-    User user = new User.Builder(NAME, EMAIL).skills(SKILLS).build();
+    User user = new User.Builder(NAME, EMAIL).setSkills(SKILLS).build();
     Set<String> actual = user.getSkills();
     Set<String> expected = SKILLS;
 
@@ -73,7 +73,7 @@ public final class UserTest {
   @Test
   public void getEventsHostingAfterBuild() {
     // Ensures that user's events as host are properly set
-    User user = new User.Builder(NAME, EMAIL).eventsHosting(EVENTS_HOSTING).build();
+    User user = new User.Builder(NAME, EMAIL).setEventsHosting(EVENTS_HOSTING).build();
     Set<Event> actual = user.getEventsHosting();
     Set<Event> expected = EVENTS_HOSTING;
 
@@ -83,7 +83,7 @@ public final class UserTest {
   @Test
   public void getEventsParticipatingAfterBuild() {
     // Ensures that user's events as participant are properly set
-    User user = new User.Builder(NAME, EMAIL).eventsParticipating(EVENTS_PARTICIPATING).build();
+    User user = new User.Builder(NAME, EMAIL).setEventsParticipating(EVENTS_PARTICIPATING).build();
     Set<Event> actual = user.getEventsParticipating();
     Set<Event> expected = EVENTS_PARTICIPATING;
 
@@ -93,7 +93,7 @@ public final class UserTest {
   @Test
   public void getEventsVolunteeringAfterBuild() {
     // Ensures that user's events as volunteer are properly set
-    User user = new User.Builder(NAME, EMAIL).eventsVolunteering(EVENTS_VOLUNTEERING).build();
+    User user = new User.Builder(NAME, EMAIL).setEventsVolunteering(EVENTS_VOLUNTEERING).build();
     Set<Event> actual = user.getEventsVolunteering();
     Set<Event> expected = EVENTS_VOLUNTEERING;
 
@@ -110,7 +110,7 @@ public final class UserTest {
     newInterests.add(INTEREST_TO_ADD);
 
     User.Builder newUserBuilder = user.toBuilder();
-    User userWithInterest = newUserBuilder.interests(newInterests).build();
+    User userWithInterest = newUserBuilder.setInterests(newInterests).build();
     newUserBuilder.mergeFrom(userWithInterest);
 
     user = newUserBuilder.build();
@@ -130,7 +130,7 @@ public final class UserTest {
     newSkills.add(SKILL_TO_ADD);
 
     User.Builder newUserBuilder = user.toBuilder();
-    User userWithSkill = newUserBuilder.skills(newSkills).build();
+    User userWithSkill = newUserBuilder.setSkills(newSkills).build();
     newUserBuilder.mergeFrom(userWithSkill);
 
     user = newUserBuilder.build();
