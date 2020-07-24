@@ -6,7 +6,7 @@ import java.util.Set;
 Setters for variables that user can change about event
 */
 public final class Event {
-  private final int eventId;
+  private final int eventId = 1000000;
   private String name;
   private String description;
   private Set<String> labels;
@@ -16,12 +16,8 @@ public final class Event {
   private Set<User> attendees;
   private User host;
 
-  Random rand = new Random(); 
-
-  /** TO DO (MVP): Add Event to Event db*/
   public static class Builder {
-  //required params
-    this.eventId = rand.nextInt(1000000); //this will later be a unique number based on the database id
+    // Required parameters
     private final int eventId;
     private String name;
     private String description;
@@ -30,13 +26,12 @@ public final class Event {
     private Date date;
     private User host;
     
-    //optional params
+    // Optional parameters
     private Set<VolunteeringOpportunity> opportunities = new HashSet<>();
     private Set<User> attendees = new HashSet<>();
 
     public Builder(String name, String description, Set<String> labels, String location, Date date, 
     User host) {
-        this.eventId = rand.nextInt(1000000); //this will later be a unique number based on the database id
         this.name = name;
         this.description = description;
         this.labels = labels;
@@ -45,75 +40,97 @@ public final class Event {
         this.host = host;
     }
 
-    public Builder opportunities(VolunteeringOpportunity opportunity) {
-        opportunities.add(opportunity);
+    public Builder setOpportunities(Set<VolunteeringOpportunity> opportunities) {
+        this.opportunities = opportunities;
         return this;
     }
-    public Builder attendees(User attendee) {
-        attendees.add(attendee);
+    public Builder setAttendees(Set<User> attendees) {
+        this.attendees = attendees;
         return this;
     }
 
     public Event build() {
         return new Event(this);
     }
+
+    public Builder mergeFrom(Event other) {
+      this.name = other.getName();
+      this.description = other.getDescription();
+      this.labels = other.getLabels();
+      this.location = other.getLocation();
+      this.date = other.getDate();
+      this.host = other.getHost();
+
+      if (!other.getOpportunities().isEmpty()) {
+        this.interests = other.getOpportunities();
+      }
+      if (!other.getAttendees().isEmpty()) {
+        this.skills = other.getAttendees();
+      }
+      return this;
+    }
   }
 
   private Event(Builder builder) {
-  eventId = builder.eventId;
-  name = builder.name;
-  description = builder.description;
-  labels = builder.labels;
-  location = builder.location;
-  date = builder.date;
-  opportunities = builder.opportunities;
-  attendees = builder.attendees;
-  host = builder.host;
+  this.eventId = builder.eventId;
+  this.name = builder.name;
+  this.description = builder.description;
+  this.labels = builder.labels;
+  this.location = builder.location;
+  this.date = builder.date;
+  this.opportunities = builder.opportunities;
+  this.attendees = builder.attendees;
+  this.host = builder.host;
   }
 
   /** TO DO (MVP) for all getters: get from Event db*/
   /** TO DO (MVP) for all setters: set in Event db*/
   public int getID() {
-    return eventId;
+    return this.eventId;
   }
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   public String getDescription() {
-    return description;
+    return this.description;
   }
 
   public Set<String> getLabels() {
-    return labels;
+    return this.labels;
   }
 
   public void setLabel(String newLabel) {
-    labels.add(newLabel);
+    this.labels.add(newLabel);
   }
 
   public void removeLabel(String deletedLabel) {
-    labels.remove(deletedLabel);
+    this.labels.remove(deletedLabel);
   }
 
   public String getLocation() {
-    return location;
+    return this.location;
   }
 
   public Date getDate() {
-    return date;
+    return this.date;
   }
 
   public Set<VolunteeringOpportunity> getOpportunities() {
-    return opportunities;
+    return this.opportunities;
   }
 
   public Set<User> getAttendees() {
-    return attendees;
+    return this.attendees;
   }
 
   public User getHost() {
-    return host;
+    return this.host;
+  }
+
+  public Builder toBuilder() {
+    return new Builder(this.name, this.description, this.labels, this.location, this.date, 
+    this.host).mergeFrom(this);
   }
 }
