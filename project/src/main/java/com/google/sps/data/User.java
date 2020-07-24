@@ -85,7 +85,7 @@ public final class User {
   private User(Builder builder) {
     this.name = builder.name;
     this.email = builder.email;
-    
+
     this.interests = builder.interests;
     this.skills = builder.skills;
     this.eventsHosting = builder.eventsHosting;

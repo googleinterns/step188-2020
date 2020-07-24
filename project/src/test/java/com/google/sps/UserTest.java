@@ -90,7 +90,6 @@ public final class UserTest {
     Assert.assertEquals(expected, actual);
   }
 
-
   @Test
   public void getEventsVolunteeringAfterBuild() {
     // Ensures that user's events as volunteer are properly set
