@@ -14,7 +14,9 @@ import org.junit.runners.JUnit4;
 public final class VolunteerOpportunityTest {
   private static final String NAME = "Performer";
   private static final int NUMBER_OF_SPOTS = 240;
-  private static final Set<String> SKILLS = ImmutableSet.of("Playing an instrument", "Performing");
+  private static final String PLAYING_AN_INSTRUMENT = "Playing an instrument";
+  private static final String PERFORMING = "Performing";
+  private static final Set<String> SKILLS = ImmutableSet.of(PLAYING_AN_INSTRUMENT, PERFORMING);
   public static final Set<String> NEW_SKILLS = ImmutableSet.of("Singing", "Performing");
   public static final Set<String> SKILLS_WITH_DANCING =
       ImmutableSet.of("Playing an instrument", "Performing", "Dancing");
@@ -22,10 +24,9 @@ public final class VolunteerOpportunityTest {
 
   @Test
   public void getAttributesAfterBuild() {
-    VolunteeringOpportunity opportunity =
-        new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
-            .setRequiredSkills(SKILLS)
-            .build();
+    VolunteeringOpportunity opportunity = new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
+                                              .setRequiredSkills(SKILLS)
+                                              .build();
 
     String actualName = opportunity.getName();
     String expectedName = NAME;
@@ -41,10 +42,9 @@ public final class VolunteerOpportunityTest {
 
   @Test
   public void getAttributesWithToBuild() {
-    VolunteeringOpportunity opportunity =
-        new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
-            .setRequiredSkills(SKILLS)
-            .build();
+    VolunteeringOpportunity opportunity = new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
+                                              .setRequiredSkills(SKILLS)
+                                              .build();
     VolunteeringOpportunity copyOfOpportunity = opportunity.toBuilder().build();
 
     String actualName = copyOfOpportunity.getName();
@@ -62,8 +62,8 @@ public final class VolunteerOpportunityTest {
   @Test
   public void addSkillsWithBuild() {
     Set<String> skills = new HashSet<String>();
-    skills.add("Playing an instrument");
-    skills.add("Performing");
+    skills.add(PLAYING_AN_INSTRUMENT);
+    skills.add(PERFORMING);
     VolunteeringOpportunity opportunityWithSkills =
         new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
             .setRequiredSkills(skills)
@@ -81,8 +81,9 @@ public final class VolunteerOpportunityTest {
   @Test
   public void removeSkillsWithBuild() {
     Set<String> skills = new HashSet<String>();
-    skills.add("Playing an instrument");
-    skills.add("Performing");
+    skills.add(PLAYING_AN_INSTRUMENT);
+    skills.add(PERFORMING);
+    skills.add(DANCING);
     VolunteeringOpportunity opportunityWithSkills =
         new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
             .setRequiredSkills(skills)
