@@ -23,9 +23,10 @@ public final class VolunteerOpportunityTest {
 
   @Test
   public void getAttributesAfterBuild() {
-    VolunteeringOpportunity opportunity = new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
-                                              .setRequiredSkills(SKILLS)
-                                              .build();
+    VolunteeringOpportunity opportunity = 
+        new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
+            .setRequiredSkills(SKILLS)
+            .build();
 
     String actualName = opportunity.getName();
     String expectedName = NAME;
@@ -41,9 +42,10 @@ public final class VolunteerOpportunityTest {
 
   @Test
   public void getAttributesWithToBuild() {
-    VolunteeringOpportunity opportunity = new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
-                                              .setRequiredSkills(SKILLS)
-                                              .build();
+    VolunteeringOpportunity opportunity = 
+        new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
+            .setRequiredSkills(SKILLS)
+            .build();
     VolunteeringOpportunity copyOfOpportunity = opportunity.toBuilder().build();
 
     String actualName = copyOfOpportunity.getName();
