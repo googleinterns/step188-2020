@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -19,12 +18,10 @@ import org.junit.runners.JUnit4;
 public final class UserTest {
   private static final String NAME = "Bob Smith";
   private static final String EMAIL = "bobsmith@example.com";
-  private static final Set<String> INTERESTS =
-      new HashSet<>(Arrays.asList("Conservation", "Food"));
-  private static final Set<String> NEW_INTERESTS =
+  private static final Set<String> INTERESTS = new HashSet<>(Arrays.asList("Conservation", "Food"));
+  private static final Set<String> NEW_INTERESTS = 
       new HashSet<>(Arrays.asList("Conservation", "Food", "Music"));
-  private static final Set<String> SKILLS =
-      new HashSet<>(Arrays.asList("Cooking"));
+  private static final Set<String> SKILLS = new HashSet<>(Arrays.asList("Cooking"));
   private static final String NEW_INTEREST = "Music";
 
   // The following fields will be instantiated with meaningful Events after the Events class is
@@ -36,13 +33,14 @@ public final class UserTest {
   @Test
   public void buildInstanceWithAllFields() {
     // Create a User with all fields set, and verify that all fields are correctly set
-    User user = new User.Builder(NAME, EMAIL)
-        .setInterests(INTERESTS)
-        .setSkills(SKILLS)
-        .setEventsHosting(EVENTS_HOSTING)
-        .setEventsParticipating(EVENTS_PARTICIPATING)
-        .setEventsVolunteering(EVENTS_VOLUNTEERING)
-        .build();
+    User user = 
+        new User.Builder(NAME, EMAIL)
+            .setInterests(INTERESTS)
+            .setSkills(SKILLS)
+            .setEventsHosting(EVENTS_HOSTING)
+            .setEventsParticipating(EVENTS_PARTICIPATING)
+            .setEventsVolunteering(EVENTS_VOLUNTEERING)
+            .build();
     
     Assert.assertEquals(NAME, user.getName());
     Assert.assertEquals(EMAIL, user.getEmail());
@@ -55,14 +53,16 @@ public final class UserTest {
 
   @Test
   public void transferInstanceToBuilderWithAllFields() {
-    // Create a User with all fields set, and check that its fields can be correctly transferred to its Builder.
-    User expectedUser = new User.Builder(NAME, EMAIL)
-        .setInterests(INTERESTS)
-        .setSkills(SKILLS)
-        .setEventsHosting(EVENTS_HOSTING)
-        .setEventsParticipating(EVENTS_PARTICIPATING)
-        .setEventsVolunteering(EVENTS_VOLUNTEERING)
-        .build();
+    // Create a User with all fields set, and check that its fields can be correctly transferred to
+    // its Builder.
+    User expectedUser =
+        new User.Builder(NAME, EMAIL)
+            .setInterests(INTERESTS)
+            .setSkills(SKILLS)
+            .setEventsHosting(EVENTS_HOSTING)
+            .setEventsParticipating(EVENTS_PARTICIPATING)
+            .setEventsVolunteering(EVENTS_VOLUNTEERING)
+            .build();
     
     User actualUser = expectedUser.toBuilder().build();
     Assert.assertTrue(EqualsBuilder.reflectionEquals(expectedUser, actualUser));
@@ -71,10 +71,7 @@ public final class UserTest {
   @Test
   public void addToExistingInterests() {
     // Add a new interest to a User's existing set of interests.
-    User user = new User.Builder(NAME, EMAIL)
-        .setInterests(INTERESTS)
-        .build();
-    
+    User user = new User.Builder(NAME, EMAIL).setInterests(INTERESTS).build();
     user = user.toBuilder().addInterest(NEW_INTEREST).build();
 
     Assert.assertEquals(NEW_INTERESTS, user.getInterests());
