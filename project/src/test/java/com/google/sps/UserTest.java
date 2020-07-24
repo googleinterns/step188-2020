@@ -25,7 +25,7 @@ public final class UserTest {
   private static final String INTEREST_TO_ADD = "Music";
   private static final String SKILL_TO_ADD = "Juggling";
 
-  // The following fields will be instantiated with meaningful Events after the Events class is 
+  // The following fields will be instantiated with meaningful Events after the Events class is
   // written to follow the Builder pattern.
   private static final Set<Event> EVENTS_HOSTING = Collections.emptySet();
   private static final Set<Event> EVENTS_PARTICIPATING = Collections.emptySet();
@@ -104,8 +104,8 @@ public final class UserTest {
 
   @Test
   public void addInterestWithBuilder() {
-    // Have a user with no interests initially, add an interest, and check that it was added 
-    // git stproperly
+    // Have a user with no interests initially, add an interest, and check that it was added
+    // properly
     User user = new User.Builder(NAME, EMAIL).build();
 
     Set<String> newInterests = user.getInterests();
