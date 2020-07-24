@@ -20,10 +20,6 @@ public final class VolunteerOpportunityTest {
   public static final Set<String> SKILLS_WITH_DANCING = ImmutableSet.of("Playing an instrument", "Performing", "Dancing");
   public static final String DANCING = "Dancing";
 
-  @Before
-  public void setUp() {
-  }
-
   @Test
   public void getAttributesAfterBuild() {
     VolunteeringOpportunity opportunity =

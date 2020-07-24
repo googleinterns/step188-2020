@@ -1,5 +1,6 @@
 package com.google.sps.data;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public final class VolunteeringOpportunity {
@@ -20,16 +21,18 @@ public final class VolunteeringOpportunity {
     public Builder(String name, int numSpotsLeft) {
       this.name = name;
       this.numSpotsLeft = numSpotsLeft;
+      this.requiredSkills = new HashSet<>();
+      this.volunteers = new HashSet<>();
     }
 
     public Builder setName(String name) {
-        this.name = name;
-        return this;
+      this.name = name;
+      return this;
     }
 
     public Builder setNumSpotsLeft(int numSpotsLeft) {
-        this.numSpotsLeft = numSpotsLeft;
-        return this;
+      this.numSpotsLeft = numSpotsLeft;
+      return this;
     }
 
     public Builder setRequiredSkills(Set<String> requiredSkills) {
@@ -38,13 +41,13 @@ public final class VolunteeringOpportunity {
     }
 
     public Builder addRequiredSkill(String requiredSkill) {
-        this.requiredSkills.add(requiredSkill);
-        return this;
+      this.requiredSkills.add(requiredSkill);
+      return this;
     }
 
     public Builder removeRequiredSkill(String requiredSkill) {
-        this.requiredSkills.remove(requiredSkill);
-        return this;
+      this.requiredSkills.remove(requiredSkill);
+      return this;
     }
 
     public Builder setVolunteers(Set<String> volunteers) {
@@ -53,15 +56,14 @@ public final class VolunteeringOpportunity {
     }
 
     public Builder addVolunteer(String volunteer) {
-        this.volunteers.add(volunteer);
-        return this;
+      this.volunteers.add(volunteer);
+      return this;
     }
 
     public Builder removeVolunteer(String volunteer) {
-        this.volunteers.remove(volunteer);
-        return this;
+      this.volunteers.remove(volunteer);
+      return this;
     }
-
 
     public VolunteeringOpportunity build() {
       return new VolunteeringOpportunity(this);
