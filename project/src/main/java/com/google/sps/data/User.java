@@ -140,7 +140,6 @@ public final class User {
       }
       return this;
     }
-
   }
 
   private User(Builder builder) {

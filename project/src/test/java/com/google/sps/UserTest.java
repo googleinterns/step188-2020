@@ -12,14 +12,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-
 /** */
 @RunWith(JUnit4.class)
 public final class UserTest {
   private static final String NAME = "Bob Smith";
   private static final String EMAIL = "bobsmith@example.com";
   private static final Set<String> INTERESTS = new HashSet<>(Arrays.asList("Conservation", "Food"));
-  private static final Set<String> NEW_INTERESTS = 
+  private static final Set<String> NEW_INTERESTS =
       new HashSet<>(Arrays.asList("Conservation", "Food", "Music"));
   private static final Set<String> SKILLS = new HashSet<>(Arrays.asList("Cooking"));
   private static final String NEW_INTEREST = "Music";
@@ -33,7 +32,7 @@ public final class UserTest {
   @Test
   public void buildInstanceWithAllFields() {
     // Create a User with all fields set, and verify that all fields are correctly set
-    User user = 
+    User user =
         new User.Builder(NAME, EMAIL)
             .setInterests(INTERESTS)
             .setSkills(SKILLS)
@@ -41,7 +40,7 @@ public final class UserTest {
             .setEventsParticipating(EVENTS_PARTICIPATING)
             .setEventsVolunteering(EVENTS_VOLUNTEERING)
             .build();
-    
+
     Assert.assertEquals(NAME, user.getName());
     Assert.assertEquals(EMAIL, user.getEmail());
     Assert.assertEquals(INTERESTS, user.getInterests());
@@ -63,7 +62,7 @@ public final class UserTest {
             .setEventsParticipating(EVENTS_PARTICIPATING)
             .setEventsVolunteering(EVENTS_VOLUNTEERING)
             .build();
-    
+
     User actualUser = expectedUser.toBuilder().build();
     Assert.assertTrue(EqualsBuilder.reflectionEquals(expectedUser, actualUser));
   }
