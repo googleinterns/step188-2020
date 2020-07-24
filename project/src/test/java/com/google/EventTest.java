@@ -35,7 +35,7 @@ public final class EventTest {
 	// Verify Builder class is created with correct required and optional fields
 	@Test
 	public void getEventAfterBuild() {
-		Event event = new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, HOST).setOpportunities(OPPORTUNITIES).setAttendees(ATTENDEES).build();
+	    Event event = new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, HOST).setOpportunities(OPPORTUNITIES).setAttendees(ATTENDEES).build();
 		String actual_name = event.getName();
 		String expected_name = EVENT_NAME;
 		String actual_description = event.getDescription();
