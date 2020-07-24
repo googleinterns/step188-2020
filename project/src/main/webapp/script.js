@@ -13,5 +13,5 @@
 // limitations under the License.
 
 window.onload = function onLoad() {
-  $("#header").load("header.html");
-}
+  $('#header').load('header.html');
+};
