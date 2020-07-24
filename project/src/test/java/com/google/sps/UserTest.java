@@ -18,12 +18,15 @@ import org.junit.runners.JUnit4;
 public final class UserTest {
   private static final String NAME = "Bob Smith";
   private static final String EMAIL = "bobsmith@example.com";
-  private static final Set<String> INTERESTS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Conservation", "Food")));
-  private static final Set<String> SKILLS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Cooking")));
+  private static final Set<String> INTERESTS =
+      Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Conservation", "Food")));
+  private static final Set<String> SKILLS =
+      Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Cooking")));
   private static final String INTEREST_TO_ADD = "Music";
   private static final String SKILL_TO_ADD = "Juggling";
 
-  // The following fields will be instantiated with meaningful Events after the Events class is written to follow the Builder pattern.
+  // The following fields will be instantiated with meaningful Events after the Events class is 
+  // written to follow the Builder pattern.
   private static final Set<Event> EVENTS_HOSTING = Collections.emptySet();
   private static final Set<Event> EVENTS_PARTICIPATING = Collections.emptySet();
   private static final Set<Event> EVENTS_VOLUNTEERING = Collections.emptySet();
@@ -101,7 +104,8 @@ public final class UserTest {
 
   @Test
   public void addInterestWithBuilder() {
-    // Have a user with no interests initially, add an interest, and check that it was added properly
+    // Have a user with no interests initially, add an interest, and check that it was added 
+    // git stproperly
     User user = new User.Builder(NAME, EMAIL).build();
 
     Set<String> newInterests = user.getInterests();
