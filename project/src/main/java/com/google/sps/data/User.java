@@ -1,10 +1,10 @@
-package com.google.sps;
+package com.google.sps.data;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public final class User {
-  private final long userId;
+  private final long userId = 10000000L;
   private String name;
   private String email;
   private Set<String> interests;
@@ -13,80 +13,115 @@ public final class User {
   private Set<Event> eventsParticipating;
   private Set<Event> eventsVolunteering;
 
-  /**
-   * Creates a new user.
-   *
-   * @param name The human-readable name for the user. Must be non-null.
-   * @param email The e-mail with which the user is reachable. Must be non-null.
-   */
-  public User(String name, String email) {
-    this.userId = 10000000L;
-    this.name = name;
-    this.email = email;
-    this.interests = new HashSet<>();
-    this.skills = new HashSet<>();
-    this.eventsHosting = new HashSet<>();
-    this.eventsParticipating = new HashSet<>();
-    this.eventsVolunteering = new HashSet<>();
+  public static class Builder {
+    // Required parameters
+    private String name;
+    private String email;
+
+    // Optional parameters
+    private Set<String> interests = new HashSet<>();
+    private Set<String> skills = new HashSet<>();
+    private Set<Event> eventsHosting = new HashSet<>();
+    private Set<Event> eventsParticipating = new HashSet<>();
+    private Set<Event> eventsVolunteering = new HashSet<>();
+
+    public Builder(String name, String email) {
+      this.name = name;
+      this.email = email;
+    }
+
+    public Builder interests(Set<String> interests) {
+      this.interests = interests;
+      return this;
+    }
+
+    public Builder skills(Set<String> skills) {
+      this.skills = skills;
+      return this;
+    }
+
+    public Builder eventsHosting(Set<Event> eventsHosting) {
+      this.eventsHosting = eventsHosting;
+      return this;
+    }
+
+    public Builder eventsParticipating(Set<Event> eventsParticipating) {
+      this.eventsParticipating = eventsParticipating;
+      return this;
+    }
+
+    public Builder eventsVolunteering(Set<Event> eventsVolunteering) {
+      this.eventsVolunteering = eventsVolunteering;
+      return this;
+    }
+
+    public User build() {
+      return new User(this);
+    }
+
+    public Builder mergeFrom(User other) {
+      this.name = other.getName();
+      this.email = other.getEmail();
+
+      if (!other.getInterests().isEmpty()) {
+        this.interests = other.getInterests();
+      }
+      if (!other.getSkills().isEmpty()) {
+        this.skills = other.getSkills();
+      }
+      if (!other.getEventsHosting().isEmpty()) {
+        this.eventsHosting = other.getEventsHosting();
+      }
+      if (!other.getEventsParticipating().isEmpty()) {
+        this.eventsParticipating = other.getEventsParticipating();
+      }
+      if (!other.getEventsVolunteering().isEmpty()) {
+        this.eventsVolunteering = other.getEventsVolunteering();
+      }
+      return this;
+    }
   }
 
-  public long getId() {
-    return this.userId;
+  private User(Builder builder) {
+    this.name = builder.name;
+    this.email = builder.email;
+    
+    this.interests = builder.interests;
+    this.skills = builder.skills;
+    this.eventsHosting = builder.eventsHosting;
+    this.eventsParticipating = builder.eventsParticipating;
+    this.eventsVolunteering = builder.eventsVolunteering;
   }
 
   public String getName() {
     return this.name;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
   public String getEmail() {
     return this.email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
   }
 
   public Set<String> getInterests() {
     return this.interests;
   }
 
-  public void addInterest(String interest) {
-    this.interests.add(interest);
-  }
-
   public Set<String> getSkills() {
     return this.skills;
-  }
-
-  public void addSkill(String skill) {
-    this.skills.add(skill);
   }
 
   public Set<Event> getEventsHosting() {
     return this.eventsHosting;
   }
 
-  public void addEventHosting(Event event) {
-    this.eventsHosting.add(event);
-  }
-
   public Set<Event> getEventsParticipating() {
     return this.eventsParticipating;
-  }
-
-  public void addEventParticipating(Event event) {
-    this.eventsParticipating.add(event);
   }
 
   public Set<Event> getEventsVolunteering() {
     return this.eventsVolunteering;
   }
 
-  public void addEventVolunteering(Event event) {
-    this.eventsVolunteering.add(event);
+  public Builder toBuilder() {
+    return new Builder(this.name, this.email).mergeFrom(this);
   }
 }
