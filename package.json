@@ -23,5 +23,9 @@
     "markdownlint": "^0.20.4",
     "stylelint": "^13.6.1",
     "stylelint-config-standard": "^20.0.0"
+  },
+  "dependencies": {
+    "clang-format": "^1.4.0",
+    "prettier": "^2.0.5"
   }
 }
