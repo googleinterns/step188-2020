@@ -30,8 +30,28 @@ public final class User {
       this.email = email;
     }
 
+    public Builder setName(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public Builder setEmail(String email) {
+      this.email = email;
+      return this;
+    }
+
     public Builder setInterests(Set<String> interests) {
       this.interests = interests;
+      return this;
+    }
+
+    public Builder addInterest(String interest) {
+      this.interests.add(interest);
+      return this;
+    }
+
+    public Builder removeInterest(String interest) {
+      this.interests.remove(interest);
       return this;
     }
 
@@ -40,8 +60,28 @@ public final class User {
       return this;
     }
 
+    public Builder addSkill(String skill) {
+      this.skills.add(skill);
+      return this;
+    }
+
+    public Builder removeSkill(String skill) {
+      this.skills.remove(skill);
+      return this;
+    }
+
     public Builder setEventsHosting(Set<Event> eventsHosting) {
       this.eventsHosting = eventsHosting;
+      return this;
+    }
+
+    public Builder addEventHosting(Event eventHosting) {
+      this.eventsHosting.add(eventHosting);
+      return this;
+    }
+
+    public Builder removeEventHosting(Event eventHosting) {
+      this.eventsHosting.remove(eventHosting);
       return this;
     }
 
@@ -50,8 +90,28 @@ public final class User {
       return this;
     }
 
+    public Builder addEventParticipating(Event eventParticipating) {
+      this.eventsParticipating.add(eventParticipating);
+      return this;
+    }
+
+    public Builder removeEventParticipating(Event eventParticipating) {
+      this.eventsParticipating.remove(eventParticipating);
+      return this;
+    }
+
     public Builder setEventsVolunteering(Set<Event> eventsVolunteering) {
       this.eventsVolunteering = eventsVolunteering;
+      return this;
+    }
+
+    public Builder addEventVolunteering(Event eventVolunteering) {
+      this.eventsVolunteering.add(eventVolunteering);
+      return this;
+    }
+
+    public Builder removeEventVolunteering(Event eventVolunteering) {
+      this.eventsVolunteering.remove(eventVolunteering);
       return this;
     }
 
@@ -80,6 +140,7 @@ public final class User {
       }
       return this;
     }
+
   }
 
   private User(Builder builder) {
@@ -91,6 +152,10 @@ public final class User {
     this.eventsHosting = builder.eventsHosting;
     this.eventsParticipating = builder.eventsParticipating;
     this.eventsVolunteering = builder.eventsVolunteering;
+  }
+
+  public long getUserId() {
+    return this.userId;
   }
 
   public String getName() {
