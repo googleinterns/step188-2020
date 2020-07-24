@@ -87,7 +87,7 @@ public final class VolunteeringOpportunity {
     name = builder.name;
     numSpotsLeft = builder.numSpotsLeft;
     requiredSkills = builder.requiredSkills;
-    volunteers = builder.requiredSkills;
+    volunteers = builder.volunteers;
   }
 
   public String getName() {
