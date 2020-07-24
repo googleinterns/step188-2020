@@ -20,7 +20,6 @@ public final class VolunteerOpportunityTest {
   private static final Set<String> SKILLS = ImmutableSet.of(PLAYING_AN_INSTRUMENT, PERFORMING);
   private static final Set<String> SKILLS_WITH_DANCING =
       ImmutableSet.of(PLAYING_AN_INSTRUMENT, PERFORMING, DANCING);
-  
 
   @Test
   public void getAttributesAfterBuild() {
