@@ -1,5 +1,7 @@
 package com.google.sps.data;
 
+import java.lang.StringBuilder;
+import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Random; 
@@ -18,6 +20,19 @@ public final class Event {
   private Set<VolunteeringOpportunity> opportunities;
   private Set<User> attendees;
   private User host;
+
+  @Override
+  public String toString() { 
+    //TO DO: add VolunteeringOpp and User toString() based on those classes when pushed
+    StringBuilder str = new StringBuilder(); 
+    str.append("Event Info: \n");
+    str.append("Name: " + name + "\n");
+    str.append("Description: " + description + "\n");
+    str.append("Location: " + location + "\n");
+    str.append("Date: " + date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "\n");
+    
+    return str.toString();
+  } 
 
   public static class Builder {
     // Required parameters
@@ -44,12 +59,63 @@ public final class Event {
         this.host = host;
     }
 
+    public Builder setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public Builder setDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public Builder setLabels(Set<String> labels) {
+        this.labels = labels;
+        return this;
+    }
+
+    public Builder setLocation(String location) {
+        this.location = location;
+        return this;
+    }
+
+    public Builder setDate(LocalDate date) {
+        this.date = date;
+        return this;
+    }
+
+    public Builder setHost(User host) {
+        this.host = host;
+        return this;
+    }
+
     public Builder setOpportunities(Set<VolunteeringOpportunity> opportunities) {
         this.opportunities = opportunities;
         return this;
     }
+
+    public Builder addOpportunity(VolunteeringOpportunity opportunity) {
+        this.opportunities.add(opportunity);
+        return this;
+    }
+
+    public Builder removeOpportunity(VolunteeringOpportunity opportunity) {
+        this.opportunities.remove(opportunity);
+        return this;
+    }
+
     public Builder setAttendees(Set<User> attendees) {
         this.attendees = attendees;
+        return this;
+    }
+
+    public Builder addAttendee(User attendee) {
+        this.attendees.add(attendee);
+        return this;
+    }
+
+    public Builder removeAttendee(User attendee) {
+        this.attendees.remove(attendee);
         return this;
     }
 

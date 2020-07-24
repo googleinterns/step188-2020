@@ -20,6 +20,7 @@ public final class EventTest {
     private static final String EMAIL = "bobsmith@google.com";
     private static final User HOST = new User.Builder(HOST_NAME, EMAIL).build();
     private static final String EVENT_NAME = "Team Meeting";
+    private static final String NEW_EVENT_NAME = "Daily Team Meeting";
     private static final String DESCRIPTION = "Daily Team Sync";
     private static final Set <String> LABELS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Tech", "Work")));
     private static final String LOCATION = "Remote";
@@ -30,8 +31,11 @@ public final class EventTest {
     private static final Set <VolunteeringOpportunity> OPPORTUNITIES = new HashSet<VolunteeringOpportunity> (Arrays.asList(OPPORTUNITY));
     private static final User USER1 = new User.Builder("USER1", "USER1@test.com").build();
     private static final User USER2 = new User.Builder("USER2", "USER2@test.com").build();
-    private static final Set <User> ATTENDEES = Collections.unmodifiableSet(new HashSet<User> (Arrays.asList(USER1, USER2)));
+    private static final User USER3 = new User.Builder("USER3", "USER3@test.com").build();
+    private static final Set <User> ATTENDEES = new HashSet<User> (Arrays.asList(USER1, USER2));
+    private static final Set <User> NEW_ATTENDEES = new HashSet<User> (Arrays.asList(USER1, USER2, USER3));
 
+    // User creating event
 	// Verify Builder class is created with correct required and optional fields
 	@Test
 	public void getEventAfterBuild() {
@@ -57,17 +61,34 @@ public final class EventTest {
         actual_location.equals(expected_location) && actual_date.equals(expected_date) && actual_host.equals(expected_host));
         Assert.assertTrue(actual_opportunities.equals(expected_opportunities) && actual_attendees.equals(expected_attendees));
 	}
-
-	// Verify Event mergeFrom setter sets fields
+    
+    // User editing event
+	// Verify Event mergeFrom setter sets required and optional field
     @Test
 	public void setEventFields() {
         Event event = new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, HOST).build();
         Event.Builder changedEventBuilder = event.toBuilder().setAttendees(ATTENDEES).build().toBuilder();
         changedEventBuilder.mergeFrom(event);
         event = changedEventBuilder.build();
+        event = event.toBuilder().setName(NEW_EVENT_NAME).build();
 
         Set<User> actual_attendees = event.getAttendees();
         Set<User> expected_attendees = ATTENDEES;
+        String actual_name = NEW_EVENT_NAME;
+        String expected_name = event.getName();
+
+        Assert.assertTrue(expected_attendees.equals(actual_attendees) && actual_name.equals(expected_name));
+    }
+
+    // User adding info to event
+	// Verify adding attendees
+    @Test
+	public void addAttendeeField() {
+        Event event = new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, HOST).setAttendees(ATTENDEES).build();
+        Event changedEvent = event.toBuilder().addAttendee(USER3).build();
+        Set<User> actual_attendees = changedEvent.getAttendees();
+        Set<User> expected_attendees = NEW_ATTENDEES;
+
         Assert.assertEquals(expected_attendees, actual_attendees);
     }
 }
