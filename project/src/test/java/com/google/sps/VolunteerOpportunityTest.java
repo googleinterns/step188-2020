@@ -5,7 +5,6 @@ import com.google.sps.data.VolunteeringOpportunity;
 import java.util.HashSet;
 import java.util.Set;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -23,7 +22,7 @@ public final class VolunteerOpportunityTest {
 
   @Test
   public void getAttributesAfterBuild() {
-    VolunteeringOpportunity opportunity = 
+    VolunteeringOpportunity opportunity =
         new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
             .setRequiredSkills(SKILLS)
             .build();
@@ -42,7 +41,7 @@ public final class VolunteerOpportunityTest {
 
   @Test
   public void getAttributesWithToBuild() {
-    VolunteeringOpportunity opportunity = 
+    VolunteeringOpportunity opportunity =
         new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
             .setRequiredSkills(SKILLS)
             .build();
