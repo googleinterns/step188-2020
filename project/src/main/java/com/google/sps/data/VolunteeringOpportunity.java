@@ -22,15 +22,46 @@ public final class VolunteeringOpportunity {
       this.numSpotsLeft = numSpotsLeft;
     }
 
-    public Builder requiredSkills(Set<String> requiredSkills) {
+    public Builder setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public Builder setNumSpotsLeft(int numSpotsLeft) {
+        this.numSpotsLeft = numSpotsLeft;
+        return this;
+    }
+
+    public Builder setRequiredSkills(Set<String> requiredSkills) {
       this.requiredSkills = requiredSkills;
       return this;
     }
 
-    public Builder volunteers(Set<String> volunteers) {
+    public Builder addRequiredSkill(String requiredSkill) {
+        this.requiredSkills.add(requiredSkill);
+        return this;
+    }
+
+    public Builder removeRequiredSkill(String requiredSkill) {
+        this.requiredSkills.remove(requiredSkill);
+        return this;
+    }
+
+    public Builder setVolunteers(Set<String> volunteers) {
       this.volunteers = volunteers;
       return this;
     }
+
+    public Builder addVolunteer(String volunteer) {
+        this.volunteers.add(volunteer);
+        return this;
+    }
+
+    public Builder removeVolunteer(String volunteer) {
+        this.volunteers.remove(volunteer);
+        return this;
+    }
+
 
     public VolunteeringOpportunity build() {
       return new VolunteeringOpportunity(this);
