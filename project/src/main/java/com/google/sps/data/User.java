@@ -188,4 +188,9 @@ public final class User {
   public Builder toBuilder() {
     return new Builder(this.name, this.email).mergeFrom(this);
   }
+
+  @Override
+  public String toString() {
+    return String.format("User:\t%s\nID:\t%d\nE-mail:\t%s", this.name, this.userId, this.email);
+  }
 }
