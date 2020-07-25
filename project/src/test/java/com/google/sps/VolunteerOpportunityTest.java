@@ -69,7 +69,6 @@ public final class VolunteerOpportunityTest {
         new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
             .setRequiredSkills(skills)
             .build();
-
     VolunteeringOpportunity changedOpportunity =
         opportunityWithSkills.toBuilder().addRequiredSkill(DANCING).build();
 
