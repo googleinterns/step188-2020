@@ -22,7 +22,7 @@ public final class VolunteerOpportunityTest {
       ImmutableSet.of(PLAYING_AN_INSTRUMENT, PERFORMING, DANCING);
 
   @Test
-  public void getAttributesAfterBuild() {
+  public void createInstanceUsingBuilder() {
     VolunteeringOpportunity opportunity =
         new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
             .setRequiredSkills(SKILLS)
@@ -41,7 +41,7 @@ public final class VolunteerOpportunityTest {
   }
 
   @Test
-  public void getAttributesWithToBuild() {
+  public void getBuilderFromInstance() {
     VolunteeringOpportunity opportunity =
         new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
             .setRequiredSkills(SKILLS)
