@@ -109,4 +109,9 @@ public final class VolunteeringOpportunity {
   public Builder toBuilder() {
     return new Builder(this.name, this.numSpotsLeft).mergeFrom(this);
   }
+
+  @Override
+  public String toString() {
+    return String.format("Name: %s\nNumber of spots left: %d\n", this.name, this.numSpotsLeft);
+  }
 }
