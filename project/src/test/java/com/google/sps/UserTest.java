@@ -17,7 +17,7 @@ import org.junit.runners.JUnit4;
 public final class UserTest {
   private static final String NAME = "Bob Smith";
   private static final String EMAIL = "bobsmith@example.com";
-  private static final Set<String> INTERESTS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Conservation", "Food")));
+  private static final Set<String> INTERESTS = new HashSet<>(Arrays.asList("Conservation", "Food"));
   private static final Set<String> NEW_INTERESTS =
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Conservation", "Food", "Music")));
   private static final Set<String> SKILLS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Cooking")));
@@ -60,8 +60,8 @@ public final class UserTest {
             .setEventsParticipating(EVENTS_PARTICIPATING)
             .setEventsVolunteering(EVENTS_VOLUNTEERING)
             .build();
-
     User actualUser = expectedUser.toBuilder().build();
+    
     Assert.assertTrue(EqualsBuilder.reflectionEquals(expectedUser, actualUser));
   }
 

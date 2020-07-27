@@ -119,7 +119,7 @@ public final class User {
       return new User(this);
     }
 
-    public Builder mergeFrom(User other) {
+    private Builder mergeFrom(User other) {
       this.name = other.getName();
       this.email = other.getEmail();
 
