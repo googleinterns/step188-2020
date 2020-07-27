@@ -20,7 +20,8 @@ public final class UserTest {
   private static final Set<String> INTERESTS = new HashSet<>(Arrays.asList("Conservation", "Food"));
   private static final Set<String> NEW_INTERESTS =
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Conservation", "Food", "Music")));
-  private static final Set<String> SKILLS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Cooking")));
+  private static final Set<String> SKILLS =
+      Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Cooking")));
   private static final String NEW_INTEREST = "Music";
 
   private static final Set<Event> EVENTS_HOSTING = Collections.emptySet();
@@ -61,7 +62,7 @@ public final class UserTest {
             .setEventsVolunteering(EVENTS_VOLUNTEERING)
             .build();
     User actualUser = expectedUser.toBuilder().build();
-    
+
     Assert.assertTrue(EqualsBuilder.reflectionEquals(expectedUser, actualUser));
   }
 
