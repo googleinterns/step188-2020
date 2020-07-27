@@ -57,7 +57,7 @@ public final class VolunteerOpportunityTest {
             .build();
     VolunteeringOpportunity changedOpportunity =
         opportunityWithSkills.toBuilder().addRequiredSkill(DANCING).build();
-    
+
     Assert.assertEquals(SKILLS_WITH_DANCING, changedOpportunity.getRequiredSkills());
   }
 
