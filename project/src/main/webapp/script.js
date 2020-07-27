@@ -13,5 +13,16 @@
 // limitations under the License.
 
 window.onload = function onLoad() {
-  $('#header').load('header.html');
+  $('#header').load('header.html', function() {
+    $('.active').removeClass('active');
+    const currentPageArr = window.location.href.split(/[/|.]/);
+    const currentPage = currentPageArr[currentPageArr.length - 2];
+    if (currentPage === 'profile') {
+      $('#profile-header').addClass('active');
+    } else if (currentPage === 'events-feed') {
+      $('#feed-header').addClass('active');
+    } else {
+      $('#home-header').addClass('active');
+    }
+  });
 };
