@@ -17,14 +17,12 @@ import org.junit.runners.JUnit4;
 public final class UserTest {
   private static final String NAME = "Bob Smith";
   private static final String EMAIL = "bobsmith@example.com";
-  private static final Set<String> INTERESTS = new HashSet<>(Arrays.asList("Conservation", "Food"));
+  private static final Set<String> INTERESTS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Conservation", "Food")));
   private static final Set<String> NEW_INTERESTS =
-      new HashSet<>(Arrays.asList("Conservation", "Food", "Music"));
-  private static final Set<String> SKILLS = new HashSet<>(Arrays.asList("Cooking"));
+      Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Conservation", "Food", "Music")));
+  private static final Set<String> SKILLS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Cooking")));
   private static final String NEW_INTEREST = "Music";
 
-  // The following fields will be instantiated with meaningful Events after the Events class is
-  // written to follow the Builder pattern.
   private static final Set<Event> EVENTS_HOSTING = Collections.emptySet();
   private static final Set<Event> EVENTS_PARTICIPATING = Collections.emptySet();
   private static final Set<Event> EVENTS_VOLUNTEERING = Collections.emptySet();
