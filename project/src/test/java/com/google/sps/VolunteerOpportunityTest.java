@@ -28,16 +28,9 @@ public final class VolunteerOpportunityTest {
             .setRequiredSkills(SKILLS)
             .build();
 
-    String actualName = opportunity.getName();
-    String expectedName = NAME;
-    int actualNumSpotsLeft = opportunity.getNumSpotsLeft();
-    int expectedNumSpotsLeft = NUMBER_OF_SPOTS;
-    Set<String> actualSkills = opportunity.getRequiredSkills();
-    Set<String> expectedSkills = SKILLS;
-
-    Assert.assertEquals(actualName, expectedName);
-    Assert.assertEquals(actualNumSpotsLeft, expectedNumSpotsLeft);
-    Assert.assertEquals(actualSkills, expectedSkills);
+    Assert.assertEquals(opportunity.getName(), NAME);
+    Assert.assertEquals(opportunity.getNumSpotsLeft(), NUMBER_OF_SPOTS);
+    Assert.assertEquals(opportunity.getRequiredSkills(), SKILLS);
   }
 
   @Test
@@ -48,16 +41,9 @@ public final class VolunteerOpportunityTest {
             .build();
     VolunteeringOpportunity copyOfOpportunity = opportunity.toBuilder().build();
 
-    String actualName = copyOfOpportunity.getName();
-    String expectedName = NAME;
-    int actualNumSpotsLeft = copyOfOpportunity.getNumSpotsLeft();
-    int expectedNumSpotsLeft = NUMBER_OF_SPOTS;
-    Set<String> actualSkills = copyOfOpportunity.getRequiredSkills();
-    Set<String> expectedSkills = SKILLS;
-
-    Assert.assertEquals(actualName, expectedName);
-    Assert.assertEquals(actualNumSpotsLeft, expectedNumSpotsLeft);
-    Assert.assertEquals(actualSkills, expectedSkills);
+    Assert.assertEquals(copyOfOpportunity.getName(), NAME);
+    Assert.assertEquals(copyOfOpportunity.getNumSpotsLeft(), NUMBER_OF_SPOTS);
+    Assert.assertEquals(copyOfOpportunity.getRequiredSkills(), SKILLS);
   }
 
   @Test
@@ -71,11 +57,8 @@ public final class VolunteerOpportunityTest {
             .build();
     VolunteeringOpportunity changedOpportunity =
         opportunityWithSkills.toBuilder().addRequiredSkill(DANCING).build();
-
-    Set<String> actual = changedOpportunity.getRequiredSkills();
-    Set<String> expected = SKILLS_WITH_DANCING;
-
-    Assert.assertEquals(expected, actual);
+    
+    Assert.assertEquals(SKILLS_WITH_DANCING, changedOpportunity.getRequiredSkills());
   }
 
   @Test
@@ -91,9 +74,6 @@ public final class VolunteerOpportunityTest {
     VolunteeringOpportunity changedOpportunity =
         opportunityWithSkills.toBuilder().removeRequiredSkill(DANCING).build();
 
-    Set<String> actual = changedOpportunity.getRequiredSkills();
-    Set<String> expected = SKILLS;
-
-    Assert.assertEquals(expected, actual);
+    Assert.assertEquals(SKILLS, changedOpportunity.getRequiredSkills());
   }
 }
