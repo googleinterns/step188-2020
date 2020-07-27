@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public final class VolunteeringOpportunity {
+  private final long userId = 10000000L;
   private String name;
   private int numSpotsLeft;
   private Set<String> requiredSkills;
@@ -88,6 +89,10 @@ public final class VolunteeringOpportunity {
     numSpotsLeft = builder.numSpotsLeft;
     requiredSkills = builder.requiredSkills;
     volunteers = builder.volunteers;
+  }
+
+  public long getUserId() {
+    return this.userId;
   }
 
   public String getName() {
