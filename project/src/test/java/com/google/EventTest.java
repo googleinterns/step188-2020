@@ -35,35 +35,24 @@ public final class EventTest {
     private static final Set <User> ATTENDEES = new HashSet<User> (Arrays.asList(USER1, USER2));
     private static final Set <User> NEW_ATTENDEES = new HashSet<User> (Arrays.asList(USER1, USER2, USER3));
 
-    // User creating event
-	// Verify Builder class is created with correct required and optional fields
+    /* User creating event
+	 * Verify Builder class is created with correct required and optional fields */
 	@Test
-	public void getEventAfterBuild() {
+	public void testEventBuild() {
         Event event = new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, HOST).setOpportunities(OPPORTUNITIES).setAttendees(ATTENDEES).build();
-        String actual_name = event.getName();
-        String expected_name = EVENT_NAME;
-        String actual_description = event.getDescription();
-        String expected_description = DESCRIPTION;
-        Set<String> actual_labels = event.getLabels();
-        Set<String> expected_labels = LABELS;
-        String actual_location = event.getLocation();
-        String expected_location = LOCATION;
-        LocalDate actual_date = event.getDate();
-        LocalDate expected_date = DATE;
-        User actual_host = event.getHost();
-        User expected_host = HOST;
-        Set<VolunteeringOpportunity> actual_opportunities = event.getOpportunities();
-        Set<VolunteeringOpportunity> expected_opportunities = OPPORTUNITIES;
-        Set<User> actual_attendees = event.getAttendees();
-        Set<User> expected_attendees = ATTENDEES;
 
-        Assert.assertTrue(actual_name.equals(expected_name) && actual_description.equals(expected_description) && actual_labels.equals(expected_labels) &&
-        actual_location.equals(expected_location) && actual_date.equals(expected_date) && actual_host.equals(expected_host));
-        Assert.assertTrue(actual_opportunities.equals(expected_opportunities) && actual_attendees.equals(expected_attendees));
+        Assert.assertEquals(event.getName(), EVENT_NAME);
+        Assert.assertEquals(event.getDescription(), DESCRIPTION);
+        Assert.assertEquals(event.getLabels(), LABELS);
+        Assert.assertEquals(event.getLocation(), LOCATION);
+        Assert.assertEquals(event.getDate(), DATE);
+        Assert.assertEquals(event.getHost(), HOST);
+        Assert.assertEquals(event.getOpportunities(), OPPORTUNITIES);
+        Assert.assertEquals(event.getAttendees(), ATTENDEES);
 	}
     
-    // User editing event
-	// Verify Event mergeFrom setter sets required and optional field
+    /* User editing event
+	 * Verify Event mergeFrom setter sets required and optional field */
     @Test
 	public void setEventFields() {
         Event event = new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, HOST).build();
@@ -72,23 +61,17 @@ public final class EventTest {
         event = changedEventBuilder.build();
         event = event.toBuilder().setName(NEW_EVENT_NAME).build();
 
-        Set<User> actual_attendees = event.getAttendees();
-        Set<User> expected_attendees = ATTENDEES;
-        String actual_name = NEW_EVENT_NAME;
-        String expected_name = event.getName();
-
-        Assert.assertTrue(expected_attendees.equals(actual_attendees) && actual_name.equals(expected_name));
+        Assert.assertEquals(event.getAttendees(), ATTENDEES);
+        Assert.assertEquals(event.getName(), NEW_EVENT_NAME);
     }
 
-    // User adding info to event
-	// Verify adding attendees
+    /* User adding info to event
+	 * Verify adding attendees */
     @Test
 	public void addAttendeeField() {
         Event event = new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, HOST).setAttendees(ATTENDEES).build();
         Event changedEvent = event.toBuilder().addAttendee(USER3).build();
-        Set<User> actual_attendees = changedEvent.getAttendees();
-        Set<User> expected_attendees = NEW_ATTENDEES;
 
-        Assert.assertEquals(expected_attendees, actual_attendees);
+        Assert.assertEquals(changedEvent.getAttendees(), NEW_ATTENDEES);
     }
 }
