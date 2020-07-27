@@ -1,5 +1,5 @@
-function fetchLoginUrl() {
-  fetch('/login-url')
+window.onload = function onLoad() {
+    fetch('/login-url')
       .then((response) => {
         return response.text();
       })

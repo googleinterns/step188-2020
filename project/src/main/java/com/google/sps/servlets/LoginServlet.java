@@ -12,7 +12,7 @@ public class LoginServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("text/html");
     String loginUrl = UserServiceFactory.getUserService().createLoginURL(
-        /* urlToRedirectToAfterLogin= */ "/");
+        /* urlToRedirectToAfterLogin= */ "/profile.html");
     response.getWriter().println(loginUrl);
   }
 }
