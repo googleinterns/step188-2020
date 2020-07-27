@@ -12,7 +12,7 @@ Class containing Event object
 Setters for variables that user can change about event
 */
 public final class Event {
-  private long eventId;
+  private final long eventId;
   private String name;
   private String description;
   private Set<String> labels;
