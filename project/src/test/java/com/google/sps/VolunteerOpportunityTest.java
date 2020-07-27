@@ -28,9 +28,9 @@ public final class VolunteerOpportunityTest {
             .setRequiredSkills(SKILLS)
             .build();
 
-    Assert.assertEquals(opportunity.getName(), NAME);
-    Assert.assertEquals(opportunity.getNumSpotsLeft(), NUMBER_OF_SPOTS);
-    Assert.assertEquals(opportunity.getRequiredSkills(), SKILLS);
+    Assert.assertEquals(NAME, opportunity.getName());
+    Assert.assertEquals(NUMBER_OF_SPOTS, opportunity.getNumSpotsLeft());
+    Assert.assertEquals(SKILLS, opportunity.getRequiredSkills());
   }
 
   @Test
@@ -41,9 +41,9 @@ public final class VolunteerOpportunityTest {
             .build();
     VolunteeringOpportunity copyOfOpportunity = opportunity.toBuilder().build();
 
-    Assert.assertEquals(copyOfOpportunity.getName(), NAME);
-    Assert.assertEquals(copyOfOpportunity.getNumSpotsLeft(), NUMBER_OF_SPOTS);
-    Assert.assertEquals(copyOfOpportunity.getRequiredSkills(), SKILLS);
+    Assert.assertEquals(NAME, copyOfOpportunity.getName());
+    Assert.assertEquals(NUMBER_OF_SPOTS, copyOfOpportunity.getNumSpotsLeft());
+    Assert.assertEquals(SKILLS, copyOfOpportunity.getRequiredSkills());
   }
 
   @Test
