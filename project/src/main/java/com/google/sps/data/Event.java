@@ -12,7 +12,7 @@ Class containing Event object
 Setters for variables that user can change about event
 */
 public final class Event {
-  private final int eventId = 1000000;
+  private long eventId;
   private String name;
   private String description;
   private Set<String> labels;
@@ -37,7 +37,7 @@ public final class Event {
 
   public static class Builder {
     // Required parameters
-    private final int eventId;
+    private final long eventId;
     private String name;
     private String description;
     private Set<String> labels;
@@ -51,7 +51,7 @@ public final class Event {
 
     public Builder(String name, String description, Set<String> labels, String location,
         LocalDate date, User host) {
-      this.eventId = 1000000;
+      this.eventId = 1000000L; //will be 
       this.name = name;
       this.description = description;
       this.labels = labels;
@@ -155,7 +155,7 @@ public final class Event {
 
   /** TO DO (MVP) for all getters: get from Event db*/
   /** TO DO (MVP) for all setters: set in Event db*/
-  public int getID() {
+  public long getID() {
     return this.eventId;
   }
 
