@@ -7,12 +7,9 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-/**
-Class containing Event object
-Setters for variables that user can change about event
-*/
+/** Class containing Event object setters for variables that user can change about event */
 public final class Event {
-  private long eventId;
+  private final long eventId;
   private String name;
   private String description;
   private Set<String> labels;
@@ -49,9 +46,14 @@ public final class Event {
     private Set<VolunteeringOpportunity> opportunities = new HashSet<>();
     private Set<User> attendees = new HashSet<>();
 
-    public Builder(String name, String description, Set<String> labels, String location,
-        LocalDate date, User host) {
-      this.eventId = 1000000L; //will be 
+    public Builder(
+        String name,
+        String description,
+        Set<String> labels,
+        String location,
+        LocalDate date,
+        User host) {
+      this.eventId = 1000000L; // replace with db ID
       this.name = name;
       this.description = description;
       this.labels = labels;
@@ -153,8 +155,8 @@ public final class Event {
     this.host = builder.host;
   }
 
-  /** TO DO (MVP) for all getters: get from Event db*/
-  /** TO DO (MVP) for all setters: set in Event db*/
+  /** TO DO (MVP) for all getters: get from Event db */
+  /** TO DO (MVP) for all setters: set in Event db */
   public long getID() {
     return this.eventId;
   }
@@ -201,7 +203,7 @@ public final class Event {
 
   public Builder toBuilder() {
     return new Builder(
-        this.name, this.description, this.labels, this.location, this.date, this.host)
+          this.name, this.description, this.labels, this.location, this.date, this.host)
         .mergeFrom(this);
   }
 }
