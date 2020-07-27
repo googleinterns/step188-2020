@@ -13,6 +13,7 @@
 // limitations under the License.
 
 window.onload = function onLoad() {
+  if (isLoggedIn) {
   $('#header').load('header.html', function() {
     $('.active').removeClass('active');
     const currentPageArr = window.location.href.split(/[/|.]/);
@@ -25,4 +26,33 @@ window.onload = function onLoad() {
       $('#home-header').addClass('active');
     }
   });
+  } else {
+    location.href = 'login.html';
+  }
 };
+
+/*
+ * Checks login status and shows comment form, and logout prompt if
+ * user is logged in, and shows login prompt if user is not logged in.
+ */
+function isLoggedIn() {
+  fetch('/login-status')
+      .then((response) => {
+        return response.json();
+      })
+      .then((loginStatus) => {
+        const isLoggedIn = loginStatus.isLoggedIn;
+        
+      });
+}
+
+function fetchLogoutUrl() {
+  fetch('/logout-url')
+      .then((response) => {
+        return response.text();
+      })
+      .then((logoutUrl) => {
+        const logoutPrompt = document.getElementById('logout-prompt');
+        logoutPrompt.href = logoutUrl;
+      });
+} 
