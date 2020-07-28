@@ -1,3 +1,50 @@
+h3 {
+  text-align: center;
+}
+
+body,
+html {
+  font-family: "Public Sans", sans-serif;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+}
 .card {
-  width: 18rem;
+  display: inline-block;
+  flex-grow: 1;
+  margin: 10px 0 0 10px;
+  width: calc(100% * (1 / 4) - 10px - 1px);
+}
+.btn {
+  bottom: 0;
+  vertical-align: bottom;
+}
+
+.btn-primary a {
+  color: white;
+  text-align: center;
+  width: 20px;
+}
+
+.dropdown {
+  float: right;
+  margin-right: 1%;
+}
+
+.dropdown-toggle {
+  border: solid 1px;
+}
+
+.btn-interest {
+  background-color: #e5e0ec !important;
+  border: none !important;
+  cursor: default !important;
+}
+
+.btn-skill {
+  background-color: #f7cecb !important;
+  border: none !important;
+  cursor: default !important;
 }
