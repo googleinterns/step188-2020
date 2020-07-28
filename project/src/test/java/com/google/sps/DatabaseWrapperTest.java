@@ -27,19 +27,17 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 // @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DatabaseWrapperTest {
-  // private static final User USER = new User.Builder("Bob Smith", "bobsmith@example.com").build();
+  private static final User USER = new User.Builder("Bob Smith", "bobsmith@example.com").build();
 
-  private static final String instanceId = System.getProperty("spanner.test.instance");
-  private static final String databaseId =
-      formatForTest(System.getProperty("spanner.sample.database"));
-  static Spanner spanner;
-  static DatabaseId dbId;
-  static DatabaseAdminClient dbClient;
+  private static final String instanceId = "step-188-instance";
+  private static final String databaseId = formatForTest("mysample");
+  private static Spanner spanner;
+  private static DatabaseId dbId;
+  private static DatabaseAdminClient dbClient;
 
   @BeforeClass
   public static void setUp() throws Exception {
     SpannerOptions options = SpannerOptions.newBuilder().build();
-    System.out.println(options.getProjectId());
     spanner = options.getService();
     dbClient = spanner.getDatabaseAdminClient();
     dbId = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
@@ -47,43 +45,40 @@ public class DatabaseWrapperTest {
     dbClient.dropDatabase(
         dbId.getInstanceId().getInstance(), DatabaseWrapper.createRestoredSampleDbId(dbId));
 
-    // COMMENTED OUT TO MATCH EXAMPLE BETTER
+    OperationFuture<Database, CreateDatabaseMetadata> op =
+        dbClient.createDatabase(
+            dbId.getInstanceId().getInstance(),
+            dbId.getDatabase(),
+            Arrays.asList(
+                "CREATE TABLE users ("
+                    + "  UserID               INT64 NOT NULL,"
+                    + "  Name                 STRING(MAX) NOT NULL,"
+                    + "  Email               	STRING(MAX) NOT NULL,"
+                    + "  Interests            ARRAY<STRING(MAX)>,"
+                    + "  Skills               ARRAY<STRING(MAX)>,"
+                    + "  EventsHosting        ARRAY<INT64>,"
+                    + "  EventsParticipating  ARRAY<INT64>,"
+                    + "  EventsVolunteering   ARRAY<INT64>"
+                    + ") PRIMARY KEY (UserID)",
+                "CREATE TABLE events ("
+                    + "  EventID        INT64 NOT NULL,"
+                    + "  Name           STRING(MAX) NOT NULL,"
+                    + "  Description    STRING(MAX),"
+                    + "  Date           DATE,"
+                    + "  Location       STRING(MAX),"
+                    + "  Attendees      ARRAY<INT64>,"
+                    + "  Host           INT64,"
+                    + "  Labels         ARRAY<STRING(MAX)>,"
+                    + "  Opportunities  ARRAY<INT64>"
+                    + ") PRIMARY KEY (EventID)",
+                "CREATE TABLE volunteeringOpportunity ("
+                    + "  VolunteeringOpportunityID  INT64 NOT NULL,"
+                    + "  Name                       STRING(MAX) NOT NULL,"
+                    + "  NumSpotsLeft               INT64 NOT NULL,"
+                    + "  RequiredSkills             ARRAY<STRING(MAX)>,"
+                    + "  Volunteers                 ARRAY<INT64>"
+                    + ") PRIMARY KEY (VolunteeringOpportunityID)"));
 
-    // OperationFuture<Database, CreateDatabaseMetadata> op =
-    //     dbClient.createDatabase(
-    //         dbId.getInstanceId().getInstance(),
-    //         dbId.getDatabase(),
-    //         Arrays.asList(
-    //             "CREATE TABLE Users ("
-    //                 + "  UserID               INT64 NOT NULL,"
-    //                 + "  Name                 STRING(MAX) NOT NULL,"
-    //                 + "  Email               	STRING(MAX) NOT NULL,"
-    //                 + "  Interests            ARRAY<STRING(MAX)>,"
-    //                 + "  Skills               ARRAY<STRING(MAX)>,"
-    //                 + "  EventsHosting        ARRAY<INT64>,"
-    //                 + "  EventsParticipating  ARRAY<INT64>,"
-    //                 + "  EventsVolunteering   ARRAY<INT64>"
-    //                 + ") PRIMARY KEY (UserID)",
-    //             "CREATE TABLE Events ("
-    //                 + "  EventID        INT64 NOT NULL,"
-    //                 + "  Name           STRING(MAX) NOT NULL,"
-    //                 + "  Description    STRING(MAX),"
-    //                 + "  Date           DATE,"
-    //                 + "  Location       STRING(MAX),"
-    //                 + "  Attendees      ARRAY<INT64>,"
-    //                 + "  Host           INT64,"
-    //                 + "  Labels         ARRAY<STRING(MAX)>,"
-    //                 + "  Opportunities  ARRAY<INT64>"
-    //                 + ") PRIMARY KEY (EventID)",
-    //             "CREATE TABLE VolunteeringOpportunity ("
-    //                 + "  VolunteeringOpportunityID  INT64 NOT NULL,"
-    //                 + "  Name                       STRING(MAX) NOT NULL,"
-    //                 + "  NumSpotsLeft               INT64 NOT NULL,"
-    //                 + "  RequiredSkills             ARRAY<STRING(MAX)>,"
-    //                 + "  Volunteers                 ARRAY<INT64>"
-    //                 + ") PRIMARY KEY (VolunteeringOpportunityID)"));
-
-    // spanner.close();
   }
 
   @AfterClass
