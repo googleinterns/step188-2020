@@ -7,11 +7,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.hamcrest.Matchers;
 
 /** */
 @RunWith(JUnit4.class)
@@ -72,7 +72,8 @@ public final class UserTest {
     user = user.toBuilder().addInterest(MUSIC).build();
 
     for (String interest : INTERESTS) {
-      Assert.assertThat(user.getInterests(), Matchers.hasItem(Matchers.equalToIgnoringCase(interest)));
+      Assert.assertThat(
+          user.getInterests(), Matchers.hasItem(Matchers.equalToIgnoringCase(interest)));
     }
     Assert.assertThat(user.getInterests(), Matchers.hasItem(Matchers.equalToIgnoringCase(MUSIC)));
   }
