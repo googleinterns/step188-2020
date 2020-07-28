@@ -38,7 +38,7 @@ public class DatabaseWrapper {
   /**
    * Given a user, insert a row with all available fields into the DB
    *
-   *  @param user the user to be updated; user's ID field should already exist in DB
+   * @param user the user to be updated; user's ID field should already exist in DB
    */
   public void updateUser(User user) {
     // Given a user, update its corresponding row's new fields in DB
