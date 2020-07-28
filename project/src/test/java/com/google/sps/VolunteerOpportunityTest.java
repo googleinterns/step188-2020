@@ -8,6 +8,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 
 /** */
 @RunWith(JUnit4.class)
@@ -41,9 +44,7 @@ public final class VolunteerOpportunityTest {
             .build();
     VolunteeringOpportunity copyOfOpportunity = opportunity.toBuilder().build();
 
-    Assert.assertEquals(NAME, copyOfOpportunity.getName());
-    Assert.assertEquals(NUMBER_OF_SPOTS, copyOfOpportunity.getNumSpotsLeft());
-    Assert.assertEquals(SKILLS, copyOfOpportunity.getRequiredSkills());
+    Assert.assertTrue(EqualsBuilder.reflectionEquals(opportunity, copyOfOpportunity));
   }
 
   @Test
@@ -58,7 +59,7 @@ public final class VolunteerOpportunityTest {
     VolunteeringOpportunity changedOpportunity =
         opportunityWithSkills.toBuilder().addRequiredSkill(DANCING).build();
 
-    Assert.assertEquals(SKILLS_WITH_DANCING, changedOpportunity.getRequiredSkills());
+    MatcherAssert.assertThat(changedOpportunity.getRequiredSkills(), CoreMatchers.hasItems(PLAYING_AN_INSTRUMENT, PERFORMING, DANCING));
   }
 
   @Test
