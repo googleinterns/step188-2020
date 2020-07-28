@@ -19,9 +19,8 @@ public class DatabaseWrapper {
     this.databaseID = databaseID;
   }
   
-  /** Given a user, insert a row with all available fields into the DB 
-   *
-   *  @param user  the user to be inserted; user's ID field should not exist in DB
+  /** Given a user, insert a row with all available fields into the DB
+   *  @param user the user to be inserted; user's ID field should not exist in DB
   */
   public void insertUser(User user) {
     SpannerOptions options = SpannerOptions.newBuilder().build();
@@ -34,9 +33,8 @@ public class DatabaseWrapper {
     spanner.close();
   }
 
-  /** Given a user, insert a row with all available fields into the DB 
-   *
-   *  @param user  the user to be updated; user's ID field should already exist in DB
+  /** Given a user, insert a row with all available fields into the DB
+   *  @param user the user to be updated; user's ID field should already exist in DB
   */
   public void updateUser(User user) {
     // Given a user, update its corresponding row's new fields in DB
@@ -52,9 +50,10 @@ public class DatabaseWrapper {
 
   private static List<Mutation> newMutationFromUser(User user, boolean update) {
     List<Mutation> mutations = new ArrayList<>();
-    Mutation.WriteBuilder builder = update ? Mutation.newUpdateBuilder(USER_TABLE) : 
-        Mutation.newInsertBuilder(USER_TABLE);
-    builder.set("UserID")
+    Mutation.WriteBuilder builder =
+        update ? Mutation.newUpdateBuilder(USER_TABLE) : Mutation.newInsertBuilder(USER_TABLE);
+    builder
+        .set("UserID")
         .to(user.getUserId())
         .set("Name")
         .to(user.getName())
