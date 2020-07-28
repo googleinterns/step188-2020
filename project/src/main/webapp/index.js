@@ -1,11 +1,11 @@
 window.onload = function onLoad() {
-  addLoginUrl();
+  addLoginUrlToButton();
 };
 
 /**
- * Add login url to login button
+ * Adds login url to login button.
  */
-function addLoginUrl() {
+function addLoginUrlToButton() {
   fetch('/login-url')
       .then((response) => {
         return response.text();
