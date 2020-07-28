@@ -5,7 +5,6 @@ import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
-import com.google.sps.data.Table;
 import com.google.sps.data.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +15,7 @@ public class DatabaseWrapper {
   
 
   /** Given a user, insert a row with all available fields into the DB 
+   *
    *  @param user  the user to be inserted; user's ID field should not exist in DB
   */
   public static void insertUser(User user) {
@@ -49,6 +49,7 @@ public class DatabaseWrapper {
   }
 
   /** Given a user, insert a row with all available fields into the DB 
+   *
    *  @param user  the user to be updated; user's ID field should already exist in DB
   */
   public static void updateUser(User user) {
