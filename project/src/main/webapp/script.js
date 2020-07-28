@@ -17,8 +17,8 @@ window.onload = function onLoad() {
 };
 
 /*
- * Checks login status and shows comment form, and logout prompt if
- * user is logged in, and shows login prompt if user is not logged in.
+ * Checks login status and navbar and profile if
+ * user is logged in, and redirects to index page if user is not logged in.
  */
 function checkLoginStatus() {
   fetch('/login-status')
@@ -28,23 +28,25 @@ function checkLoginStatus() {
       .then((loginStatus) => {
         const isLoggedIn = loginStatus.isLoggedIn;
         if (isLoggedIn) {
-          $('#header').load('header-logged-in.html', function() {
-            $('.active').removeClass('active');
-            const currentPageArr = window.location.href.split(/[/|.]/);
-            const currentPage = currentPageArr[currentPageArr.length - 2];
-            if (currentPage === 'profile') {
-              $('#profile-header').addClass('active');
-            } else if (currentPage === 'events-feed') {
-              $('#feed-header').addClass('active');
-            } else {
-              $('#home-header').addClass('active');
-            }
-            fetchLogoutUrl();
-          });
+          loadHeader();
         } else {
-            window.href = 'index.html';
+          window.href = 'index.html';
         }
       });
+}
+
+function loadHeader() {
+  $('#header').load('header.html', function() {
+    $('.active').removeClass('active');
+    const currentPageArr = window.location.href.split(/[/|.]/);
+    const currentPage = currentPageArr[currentPageArr.length - 2];
+    if (currentPage === 'profile') {
+      $('#profile-header').addClass('active');
+    } else if (currentPage === 'events-feed') {
+      $('#feed-header').addClass('active');
+    }
+    fetchLogoutUrl();
+  });
 }
 
 function fetchLogoutUrl() {
