@@ -15,20 +15,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <failOnMissingWebXml>false</failOnMissingWebXml>
   </properties>
-
-  <!-- Include the BOM to ensure compatibility across multiple google-cloud-* libraries -->
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>com.google.cloud</groupId>
-        <artifactId>libraries-bom</artifactId>
-        <version>8.0.0</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-  <!-- End of BOM -->
   <dependencies>
     <dependency>
       <groupId>com.google.cloud</groupId>
