@@ -25,9 +25,9 @@ import org.junit.runners.JUnit4;
 /** Unit tests for {@code DatabaseWrapper} */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+// @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DatabaseWrapperTest {
-  private static final User USER = new User.Builder("Bob Smith", "bobsmith@example.com").build();
+  // private static final User USER = new User.Builder("Bob Smith", "bobsmith@example.com").build();
 
   private static final String instanceId = System.getProperty("spanner.test.instance");
   private static final String databaseId =
@@ -39,12 +39,13 @@ public class DatabaseWrapperTest {
   @BeforeClass
   public static void setUp() throws Exception {
     SpannerOptions options = SpannerOptions.newBuilder().build();
+    System.out.println(options.getProjectId());
     spanner = options.getService();
     dbClient = spanner.getDatabaseAdminClient();
     dbId = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
     dbClient.dropDatabase(dbId.getInstanceId().getInstance(), dbId.getDatabase());
     dbClient.dropDatabase(
-        dbId.getInstanceId().getInstance(), createRestoredSampleDbId(dbId));
+        dbId.getInstanceId().getInstance(), DatabaseWrapper.createRestoredSampleDbId(dbId));
 
     // COMMENTED OUT TO MATCH EXAMPLE BETTER
 
@@ -89,7 +90,7 @@ public class DatabaseWrapperTest {
   public static void tearDown() throws Exception {
     dbClient.dropDatabase(dbId.getInstanceId().getInstance(), dbId.getDatabase());
     dbClient.dropDatabase(
-        dbId.getInstanceId().getInstance(), createRestoredSampleDbId(dbId));
+        dbId.getInstanceId().getInstance(), DatabaseWrapper.createRestoredSampleDbId(dbId));
   }
 
   @Test
@@ -99,15 +100,5 @@ public class DatabaseWrapperTest {
   
   private static String formatForTest(String name) {
     return name + "-" + UUID.randomUUID().toString().substring(0, 20);
-  }
-
-  private static String createRestoredSampleDbId(DatabaseId database) {
-    int index = database.getDatabase().indexOf('-');
-    String prefix = database.getDatabase().substring(0, index);
-    String restoredDbId = database.getDatabase().replace(prefix, "restored");
-    if (restoredDbId.length() > 30) {
-      restoredDbId = restoredDbId.substring(0, 30);
-    }
-    return restoredDbId;
   }
 }
