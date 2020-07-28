@@ -11,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.hamcrest.Matchers;
 
 /** */
 @RunWith(JUnit4.class)
@@ -18,11 +19,9 @@ public final class UserTest {
   private static final String NAME = "Bob Smith";
   private static final String EMAIL = "bobsmith@example.com";
   private static final Set<String> INTERESTS = new HashSet<>(Arrays.asList("Conservation", "Food"));
-  private static final Set<String> INTERESTS_WITH_MUSIC =
-      Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Conservation", "Food", "Music")));
   private static final Set<String> SKILLS =
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Cooking")));
-  private static final String NEW_INTEREST = "Music";
+  private static final String MUSIC = "Music";
 
   private static final Set<Event> EVENTS_HOSTING = Collections.emptySet();
   private static final Set<Event> EVENTS_PARTICIPATING = Collections.emptySet();
@@ -70,8 +69,11 @@ public final class UserTest {
   public void addToExistingInterests() {
     // Add a new interest to a User's existing set of interests.
     User user = new User.Builder(NAME, EMAIL).setInterests(INTERESTS).build();
-    user = user.toBuilder().addInterest(NEW_INTEREST).build();
+    user = user.toBuilder().addInterest(MUSIC).build();
 
-    Assert.assertEquals(INTERESTS_WITH_MUSIC, user.getInterests());
+    for (String interest : INTERESTS) {
+      Assert.assertThat(user.getInterests(), Matchers.hasItem(Matchers.equalToIgnoringCase(interest)));
+    }
+    Assert.assertThat(user.getInterests(), Matchers.hasItem(Matchers.equalToIgnoringCase(MUSIC)));
   }
 }
