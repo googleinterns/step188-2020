@@ -9,7 +9,7 @@ public final class VolunteeringOpportunity {
   private String name;
   private int numSpotsLeft;
   private Set<String> requiredSkills;
-  private Set<String> volunteers;
+  private Set<User> volunteers;
 
   public static class Builder {
     // Required parameters
@@ -18,7 +18,7 @@ public final class VolunteeringOpportunity {
 
     // Optional parameters
     private Set<String> requiredSkills;
-    private Set<String> volunteers;
+    private Set<User> volunteers;
 
     public Builder(String name, int numSpotsLeft) {
       this.name = name;
@@ -52,17 +52,17 @@ public final class VolunteeringOpportunity {
       return this;
     }
 
-    public Builder setVolunteers(Set<String> volunteers) {
+    public Builder setVolunteers(Set<User> volunteers) {
       this.volunteers = volunteers;
       return this;
     }
 
-    public Builder addVolunteer(String volunteer) {
+    public Builder addVolunteer(User volunteer) {
       this.volunteers.add(volunteer);
       return this;
     }
 
-    public Builder removeVolunteer(String volunteer) {
+    public Builder removeVolunteer(User volunteer) {
       this.volunteers.remove(volunteer);
       return this;
     }
@@ -108,7 +108,7 @@ public final class VolunteeringOpportunity {
     return this.numSpotsLeft;
   }
 
-  public Set<String> getVolunteers() {
+  public Set<User> getVolunteers() {
     return this.volunteers;
   }
 
