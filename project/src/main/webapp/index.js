@@ -1,10 +1,10 @@
 window.onload = function onLoad() {
-  fetchLoginUrl();
+  addLoginUrl();
 };
 
 /**
  * Add login url to login button
- */ 
+ */
 function addLoginUrl() {
   fetch('/login-url')
       .then((response) => {

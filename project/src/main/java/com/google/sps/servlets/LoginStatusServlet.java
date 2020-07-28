@@ -35,9 +35,11 @@ public class LoginStatusServlet extends HttpServlet {
     private LoginStatus(boolean isLoggedIn) {
       this.isLoggedIn = isLoggedIn;
     }
+
     public static LoginStatus getLoggedInInstance() {
       return STATUS_LOGGED_IN;
     }
+    
     public static LoginStatus getNotLoggedInInstance() {
       return STATUS_NOT_LOGGED_IN;
     }
