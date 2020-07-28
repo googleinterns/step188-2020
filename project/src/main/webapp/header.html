@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <script src="script.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <!-- Bootstrap CDN links -->
@@ -16,10 +17,11 @@
       integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
       crossorigin="anonymous"
     ></script>
+    <link rel="stylesheet" href="header.css" />
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">Local Event Organizer</a>
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <a class="navbar-brand" href="index.html">Local Event Organizer</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -31,20 +33,29 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="profile.html" id="profile-header"
-              >Profile</a
-            >
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="events-feed.html" id="feed-header"
-              >Discover Events</a
-            >
-          </li>
+          <form class="form-inline my-2 my-lg-0">
+            <input
+              class="form-control mr-sm-2"
+              type="search"
+              placeholder="Search events"
+              aria-label="Search"
+            />
+            <button class="btn btn-success my-2 my-sm-0" type="submit">
+              Search
+            </button>
+          </form>
         </ul>
+        <span class="navbar-text">
+          <a class="nav-link" href="events-feed.html">Discover Events</a>
+        </span>
+        <span class="navbar-text">
+          <a class="nav-link" href="create-event.html">Create an Event</a>
+        </span>
+        <span class="navbar-text">
+          <a class="nav-link" href="profile.html">Profile</a>
+        </span>
         <a
           id="logout-prompt"
           class="btn btn-outline-success my-2 my-sm-0"
