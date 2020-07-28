@@ -26,18 +26,9 @@ function checkLoginStatus() {
         return response.json();
       })
       .then((loginStatus) => {
-        fetch('/logout-url')
-            .then((response) => {
-              return response.text();
-            })
-            .then((logoutUrl) => {
-              const logoutPrompt = document.getElementById('logout-prompt');
-              logoutPrompt.href = logoutUrl;
-            });
         const isLoggedIn = loginStatus.isLoggedIn;
         if (isLoggedIn) {
-          fetchLogoutUrl();
-          $('#header').load('header.html', function() {
+          $('#header').load('header-logged-in.html', function() {
             $('.active').removeClass('active');
             const currentPageArr = window.location.href.split(/[/|.]/);
             const currentPage = currentPageArr[currentPageArr.length - 2];
@@ -48,12 +39,21 @@ function checkLoginStatus() {
             } else {
               $('#home-header').addClass('active');
             }
+            fetchLogoutUrl();
           });
-
         } else {
-          location.href = 'login.html';
+            window.href = 'index.html';
         }
       });
 }
 
-function fetchLogoutUrl() {}
+function fetchLogoutUrl() {
+  fetch('/logout-url')
+      .then((response) => {
+        return response.text();
+      })
+      .then((logoutUrl) => {
+        const logoutPrompt = document.getElementById('logout-prompt');
+        logoutPrompt.href = logoutUrl;
+      });
+}

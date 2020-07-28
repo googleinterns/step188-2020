@@ -12,7 +12,7 @@ public class LogoutServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("text/html");
     String logoutUrl = UserServiceFactory.getUserService().createLogoutURL(
-        /* urlToRedirectToAfterLogout= */ "/login.html");
+        /* urlToRedirectToAfterLogout= */ "/");
     response.getWriter().println(logoutUrl);
   }
 }
