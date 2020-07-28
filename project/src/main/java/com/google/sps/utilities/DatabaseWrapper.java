@@ -18,10 +18,12 @@ public class DatabaseWrapper {
     this.instanceID = instanceID;
     this.databaseID = databaseID;
   }
-  
-  /** Given a user, insert a row with all available fields into the DB
-   *  @param user the user to be inserted; user's ID field should not exist in DB
-  */
+
+  /**
+   * Given a user, insert a row with all available fields into the DB
+   *
+   * @param user the user to be inserted; user's ID field should not exist in DB
+   */
   public void insertUser(User user) {
     SpannerOptions options = SpannerOptions.newBuilder().build();
     Spanner spanner = options.getService();
@@ -33,9 +35,11 @@ public class DatabaseWrapper {
     spanner.close();
   }
 
-  /** Given a user, insert a row with all available fields into the DB
+  /**
+   * Given a user, insert a row with all available fields into the DB
+   *
    *  @param user the user to be updated; user's ID field should already exist in DB
-  */
+   */
   public void updateUser(User user) {
     // Given a user, update its corresponding row's new fields in DB
     SpannerOptions options = SpannerOptions.newBuilder().build();
