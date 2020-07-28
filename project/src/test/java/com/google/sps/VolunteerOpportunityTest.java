@@ -8,9 +8,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 
 /** */
 @RunWith(JUnit4.class)
