@@ -18,7 +18,7 @@ public final class UserTest {
   private static final String NAME = "Bob Smith";
   private static final String EMAIL = "bobsmith@example.com";
   private static final Set<String> INTERESTS = new HashSet<>(Arrays.asList("Conservation", "Food"));
-  private static final Set<String> NEW_INTERESTS =
+  private static final Set<String> INTERESTS_WITH_MUSIC =
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Conservation", "Food", "Music")));
   private static final Set<String> SKILLS =
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Cooking")));
@@ -72,6 +72,6 @@ public final class UserTest {
     User user = new User.Builder(NAME, EMAIL).setInterests(INTERESTS).build();
     user = user.toBuilder().addInterest(NEW_INTEREST).build();
 
-    Assert.assertEquals(NEW_INTERESTS, user.getInterests());
+    Assert.assertEquals(INTERESTS_WITH_MUSIC, user.getInterests());
   }
 }
