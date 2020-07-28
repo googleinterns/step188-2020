@@ -16,7 +16,7 @@ window.onload = function onLoad() {
   checkLoginStatus();
 };
 
-/*
+/**
  * Checks login status and navbar and profile if
  * user is logged in, and redirects to index page if user is not logged in.
  */
@@ -35,6 +35,9 @@ function checkLoginStatus() {
       });
 }
 
+/**
+ * Load header and display the page depending on the url.
+ */
 function loadHeader() {
   $('#header').load('header.html', function() {
     $('.active').removeClass('active');
@@ -49,7 +52,10 @@ function loadHeader() {
   });
 }
 
-function fetchLogoutUrl() {
+/**
+ * Add the logout url to logout button.
+ */
+function addLogoutUrlToButton() {
   fetch('/logout-url')
       .then((response) => {
         return response.text();
