@@ -17,7 +17,7 @@ window.onload = function onLoad() {
 };
 
 /**
- * Checks login status and displays navbar and profile if user is logged in,  
+ * Checks login status and displays navbar and profile if user is logged in,
  * and redirects to index page if user is not logged in.
  */
 function checkLoginStatus() {
