@@ -1,4 +1,4 @@
-\import com.google.appengine.api.users.UserServiceFactory;
+import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
