@@ -48,7 +48,7 @@ function loadHeader() {
     } else if (currentPage === 'events-feed') {
       $('#feed-header').addClass('active');
     }
-    fetchLogoutUrl();
+    addLogoutUrlToButton();
   });
 }
 
