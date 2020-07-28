@@ -30,12 +30,12 @@ public final class User {
       this.name = name;
       this.email = email;
     }
-
+    
     public Builder setUserID(long id) {
       this.userID = id;
       return this;
     }
-
+    
     public Builder setName(String name) {
       this.name = name;
       return this;
@@ -202,7 +202,6 @@ public final class User {
     }
     return eventIDs;
   }
-
   public Set<Event> getEventsVolunteering() {
     return this.eventsVolunteering;
   }
