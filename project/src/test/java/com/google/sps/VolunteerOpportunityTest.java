@@ -59,7 +59,9 @@ public final class VolunteerOpportunityTest {
     VolunteeringOpportunity changedOpportunity =
         opportunityWithSkills.toBuilder().addRequiredSkill(DANCING).build();
 
-    MatcherAssert.assertThat(changedOpportunity.getRequiredSkills(), CoreMatchers.hasItems(PLAYING_AN_INSTRUMENT, PERFORMING, DANCING));
+    MatcherAssert.assertThat(
+        changedOpportunity.getRequiredSkills(),
+        CoreMatchers.hasItems(PLAYING_AN_INSTRUMENT, PERFORMING, DANCING));
   }
 
   @Test
