@@ -1,3 +1,14 @@
+body,
+html {
+  font-family: "Public Sans", sans-serif;
+  height: 100%;
+  margin: 0;
+}
+
+h3 {
+  text-align: center;
+}
+
 .btn-interest {
   background-color: #e5e0ec !important;
   border: none !important;
@@ -8,4 +19,32 @@
   background-color: #f7cecb !important;
   border: none !important;
   cursor: default !important;
+}
+
+.btn-add {
+  background-color: #e8e8e8 !important;
+}
+
+.panel-body {
+  margin: auto;
+  width: 80%;
+}
+
+.btn-primary {
+  float: right;
+  margin-right: 1%;
+}
+
+.btn-primary a {
+  color: white;
+  text-align: center;
+  width: 20px;
+}
+
+.btn-link {
+  color: black;
+}
+
+.list-group-item {
+  border: none;
 }
