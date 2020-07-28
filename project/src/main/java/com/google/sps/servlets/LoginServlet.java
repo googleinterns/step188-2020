@@ -1,5 +1,4 @@
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
+\import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,8 +10,9 @@ public class LoginServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("text/html");
-    String loginUrl = UserServiceFactory.getUserService().createLoginURL(
-        /* urlToRedirectToAfterLogin= */ "/profile.html");
+    String loginUrl = 
+        UserServiceFactory.getUserService()
+            .createLoginURL(/* urlToRedirectToAfterLogin= */ "/profile.html");
     response.getWriter().println(loginUrl);
   }
 }
