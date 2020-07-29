@@ -20,19 +20,15 @@ window.onload = function onLoad() {
  * Checks login status and displays navbar and profile if user is logged in,
  * and redirects to index page if user is not logged in.
  */
-function checkLoginStatus() {
-  fetch('/login-status')
-      .then((response) => {
-        return response.json();
-      })
-      .then((loginStatus) => {
-        const isLoggedIn = loginStatus.isLoggedIn;
-        if (isLoggedIn) {
-          loadHeader();
-        } else {
-          window.href = 'index.html';
-        }
-      });
+async function checkLoginStatus() {
+  const response = await fetch('/login-status')
+  const loginStatus = await response.json();
+  const isLoggedIn = loginStatus.isLoggedIn;
+  if (isLoggedIn) {
+    loadHeader();
+  } else {
+    window.href = 'index.html';
+  }
 }
 
 /**
@@ -55,13 +51,10 @@ function loadHeader() {
 /**
  * Adds the logout url to logout button.
  */
-function addLogoutUrlToButton() {
-  fetch('/logout-url')
-      .then((response) => {
-        return response.text();
-      })
-      .then((logoutUrl) => {
-        const logoutPrompt = document.getElementById('logout-prompt');
-        logoutPrompt.href = logoutUrl;
-      });
+async function addLogoutUrlToButton() {
+  const response = await fetch('/logout-url')
+  const logoutUrl = await response.text();
+
+  const logoutPrompt = document.getElementById('logout-prompt');
+  logoutPrompt.href = logoutUrl;
 }
