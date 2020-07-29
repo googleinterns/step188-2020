@@ -15,6 +15,7 @@ public final class User {
 
   public static class Builder {
     // Required parameters
+    private long userId;
     private String name;
     private String email;
 
@@ -28,6 +29,11 @@ public final class User {
     public Builder(String name, String email) {
       this.name = name;
       this.email = email;
+    }
+
+    public Builder setUserId(long id) {
+      this.userId = id;
+      return this;
     }
 
     public Builder setName(String name) {
@@ -177,12 +183,36 @@ public final class User {
     return this.eventsHosting;
   }
 
+  public Set<Long> getEventsHostingIds() {
+    Set<Long> eventIds = new HashSet<>();
+    for (Event event : this.eventsHosting) {
+      eventIds.add(event.getId());
+    }
+    return eventIds;
+  }
+
   public Set<Event> getEventsParticipating() {
     return this.eventsParticipating;
   }
 
+  public Set<Long> getEventsParticipatingIds() {
+    Set<Long> eventIds = new HashSet<>();
+    for (Event event : this.eventsParticipating) {
+      eventIds.add(event.getId());
+    }
+    return eventIds;
+  }
+
   public Set<Event> getEventsVolunteering() {
     return this.eventsVolunteering;
+  }
+
+  public Set<Long> getEventsVolunteeringIds() {
+    Set<Long> eventIds = new HashSet<>();
+    for (Event event : this.eventsVolunteering) {
+      eventIds.add(event.getId());
+    }
+    return eventIds;
   }
 
   public Builder toBuilder() {
