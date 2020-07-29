@@ -7,6 +7,10 @@
     <script src="script.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans&display=swap"
+      rel="stylesheet"
+    />
     <!-- Bootstrap CDN links -->
     <link
       rel="stylesheet"
@@ -20,7 +24,42 @@
       crossorigin="anonymous"
     ></script>
   </head>
-  <body class>
+  <body>
+    <div id="header"></div>
+    <br />
+    <h3>Discover Events Around You</h3>
+    <div class="display-inline-block">
+      <div class="dropdown">
+        <button type="button" class="btn btn-primary create-btn">
+          <a href="create-event.html">+ Create an event</a>
+        </button>
+        <button
+          class="btn dropdown-toggle"
+          type="button"
+          id="dropdownMenuButton"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          Filter
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              value=""
+              id="defaultCheck1"
+            />
+            <label class="form-check-label" for="defaultCheck1">
+              Cooking
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+    <br />
     <div class="container">
       <div class="card">
         <div class="card-body">
@@ -31,20 +70,34 @@
             In this Meal Prep Seminar, we will be teaching you how to make a
             delicious cake!
           </p>
+          <div class="display-inline-block">
+            <button type="button" class="btn btn-interest" disabled>
+              Conservation
+            </button>
+            <button type="button" class="btn btn-interest" disabled>
+              Food
+            </button>
+            <button type="button" class="btn btn-skill" disabled>
+              Cooking
+            </button>
+          </div>
+          <br />
           <ul class="list-group list-group-flush">
-            <li class="list-group-item">Date: 06/20/2020</li>
-            <li class="list-group-item">Time: 6:00 PM</li>
+            <li class="list-group-item">Date: 06/20/2020, 6:00 PM</li>
             <li class="list-group-item">Location: Online</li>
             <li class="list-group-item">
-              <p class="card-text">Volunteer Type: Translator</p>
-              <p class="card-text">Volunteer Spots Left: 1</p>
+              <p class="card-text">Volunteers Needed: Translator</p>
             </li>
-            <li class="list-group-item">Attendeees Spots Left: 240</li>
+            <button class="btn">
+              <a href="event-details.html">See more details</a>
+            </button>
+            <button type="button" class="btn btn-primary">
+              <a href="event-details.html">Register</a>
+            </button>
           </ul>
-          <br /><br />
         </div>
       </div>
-      <br /><br />
+
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">
@@ -54,25 +107,60 @@
             Join us as the Los Angeles local high school women's basketball
             teams compete in non-league games.
           </p>
+          <div class="display-inline-block">
+            <button type="button" class="btn btn-interest" disabled>
+              Sports
+            </button>
+          </div>
+          <br />
           <ul class="list-group list-group-flush">
-            <li class="list-group-item">Date: 06/22/2020</li>
-            <li class="list-group-item">Time: 6:00 PM</li>
+            <li class="list-group-item">Date: 06/22/2020, 6:00 PM</li>
             <li class="list-group-item">Location: Los Angeles High School</li>
             <li class="list-group-item">
-              <p class="card-text">Volunteer Type: Scorekeeper</p>
-              <p class="card-text">Volunteer Spots Left: 1</p>
+              <p class="card-text">
+                Volunteers Needed: Scorekeeper, Timekeeper, Shot-clock operator
+              </p>
             </li>
-            <li class="list-group-item">
-              <p class="card-text">Volunteer Type: Timekeeper</p>
-              <p class="card-text">Volunteer Spots Left: 1</p>
-            </li>
-            <li class="list-group-item">
-              <p class="card-text">Volunteer Type: Shot-clock operator</p>
-              <p class="card-text">Volunteer Spots Left: 1</p>
-            </li>
-            <li class="list-group-item">Attendeees Spots Left: 240</li>
+            <button class="btn">
+              <a href="event-details.html">See more details</a>
+            </button>
+            <button type="button" class="btn btn-primary">
+              <a href="event-details.html">Register</a>
+            </button>
           </ul>
-          <br /><br />
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">
+            Basketball Tournament
+          </h5>
+          <p class="card-text">
+            Join us as the Los Angeles local high school women's basketball
+            teams compete in non-league games.
+          </p>
+          <div class="display-inline-block">
+            <button type="button" class="btn btn-interest" disabled>
+              Sports
+            </button>
+          </div>
+          <br />
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">Date: 06/22/2020, 6:00 PM</li>
+            <li class="list-group-item">Location: Los Angeles High School</li>
+            <li class="list-group-item">
+              <p class="card-text">
+                Volunteers Needed: Scorekeeper, Timekeeper, Shot-clock operator
+              </p>
+            </li>
+            <button class="btn">
+              <a href="event-details.html">See more details</a>
+            </button>
+            <button type="button" class="btn btn-primary">
+              <a href="event-details.html">Register</a>
+            </button>
+          </ul>
         </div>
       </div>
     </div>
