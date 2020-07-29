@@ -158,7 +158,7 @@ public final class Event {
 
   /** TO DO (MVP) for all getters: get from Event db */
   /** TO DO (MVP) for all setters: set in Event db */
-  public long getID() {
+  public long getId() {
     return this.eventId;
   }
 
