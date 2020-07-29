@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseWrapper {
-  private String instanceID;
-  private String databaseID;
+  private String instanceId;
+  private String databaseId;
   private static final String USER_TABLE = "Users";
 
-  public DatabaseWrapper(String instanceID, String databaseID) {
-    this.instanceID = instanceID;
-    this.databaseID = databaseID;
+  public DatabaseWrapper(String instanceId, String databaseId) {
+    this.instanceId = instanceId;
+    this.databaseId = databaseId;
   }
 
   /**
@@ -27,7 +27,7 @@ public class DatabaseWrapper {
   public void insertUser(User user) {
     SpannerOptions options = SpannerOptions.newBuilder().build();
     Spanner spanner = options.getService();
-    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceID, databaseID);
+    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
     DatabaseClient dbClient = spanner.getDatabaseClient(db);
 
     List<Mutation> mutations = getMutationsFromBuilder(newInsertBuilderFromUser(), user);
@@ -44,7 +44,7 @@ public class DatabaseWrapper {
     // Given a user, update its corresponding row's new fields in DB
     SpannerOptions options = SpannerOptions.newBuilder().build();
     Spanner spanner = options.getService();
-    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceID, databaseID);
+    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
     DatabaseClient dbClient = spanner.getDatabaseClient(db);
 
     List<Mutation> mutations = getMutationsFromBuilder(newUpdateBuilderFromUser(), user);
@@ -74,11 +74,11 @@ public class DatabaseWrapper {
         .set("Skills")
         .toStringArray(user.getSkills())
         .set("EventsHosting")
-        .toInt64Array(user.getEventsHostingIDs())
+        .toInt64Array(user.getEventsHostingIds())
         .set("EventsParticipating")
-        .toInt64Array(user.getEventsParticipatingIDs())
+        .toInt64Array(user.getEventsParticipatingIds())
         .set("EventsVolunteering")
-        .toInt64Array(user.getEventsVolunteeringIDs());
+        .toInt64Array(user.getEventsVolunteeringIds());
     mutations.add(builder.build());
     return mutations;
   }
