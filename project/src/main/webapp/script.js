@@ -21,7 +21,7 @@ window.onload = function onLoad() {
  * and redirects to index page if user is not logged in.
  */
 async function checkLoginStatus() {
-  const response = await fetch('/login-status')
+  const response = await fetch('/login-status');
   const loginStatus = await response.json();
   const isLoggedIn = loginStatus.isLoggedIn;
   if (isLoggedIn) {
@@ -52,7 +52,7 @@ function loadHeader() {
  * Adds the logout url to logout button.
  */
 async function addLogoutUrlToButton() {
-  const response = await fetch('/logout-url')
+  const response = await fetch('/logout-url');
   const logoutUrl = await response.text();
 
   const logoutPrompt = document.getElementById('logout-prompt');
