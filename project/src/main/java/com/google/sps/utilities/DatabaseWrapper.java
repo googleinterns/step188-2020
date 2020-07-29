@@ -30,7 +30,7 @@ public class DatabaseWrapper {
     DatabaseId db = DatabaseId.of(options.getProjectId(), instanceID, databaseID);
     DatabaseClient dbClient = spanner.getDatabaseClient(db);
 
-    List<Mutation> mutations = newMutationFromUser(user, false);
+    List<Mutation> mutations = getMutationsFromBuilder(newInsertBuilderFromUser(), user);
     dbClient.write(mutations);
     spanner.close();
   }
@@ -47,15 +47,21 @@ public class DatabaseWrapper {
     DatabaseId db = DatabaseId.of(options.getProjectId(), instanceID, databaseID);
     DatabaseClient dbClient = spanner.getDatabaseClient(db);
 
-    List<Mutation> mutations = newMutationFromUser(user, true);
+    List<Mutation> mutations = getMutationsFromBuilder(newUpdateBuilderFromUser(), user);
     dbClient.write(mutations);
     spanner.close();
   }
 
-  private static List<Mutation> newMutationFromUser(User user, boolean update) {
+  private static Mutation.WriteBuilder newInsertBuilderFromUser() {
+    return Mutation.newInsertBuilder(USER_TABLE);
+  }
+
+  private static Mutation.WriteBuilder newUpdateBuilderFromUser() {
+    return Mutation.newUpdateBuilder(USER_TABLE);
+  }
+
+  private static List<Mutation> getMutationsFromBuilder(Mutation.WriteBuilder builder, User user) {
     List<Mutation> mutations = new ArrayList<>();
-    Mutation.WriteBuilder builder =
-        update ? Mutation.newUpdateBuilder(USER_TABLE) : Mutation.newInsertBuilder(USER_TABLE);
     builder
         .set("UserID")
         .to(user.getUserId())
