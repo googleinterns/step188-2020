@@ -13,6 +13,7 @@ public class DatabaseWrapper {
   private String instanceId;
   private String databaseId;
   private static final String USER_TABLE = "Users";
+  private static final String VOLUNTEERING_OPPORTUNITY_TABLE = "VolunteeringOpportunity";
 
   public DatabaseWrapper(String instanceId, String databaseId) {
     this.instanceId = instanceId;
@@ -79,6 +80,30 @@ public class DatabaseWrapper {
         .toInt64Array(user.getEventsParticipatingIds())
         .set("EventsVolunteering")
         .toInt64Array(user.getEventsVolunteeringIds());
+    mutations.add(builder.build());
+    return mutations;
+  }
+
+   private static Mutation.WriteBuilder newInsertBuilderFromVolunteeringOpportunity() {
+    return Mutation.newInsertBuilder(VOLUNTEERING_OPPORTUNITY_TABLE);
+  }
+
+  private static Mutation.WriteBuilder newUpdateBuilderFromVolunteeringOpportunity() {
+    return Mutation.newUpdateBuilder(VOLUNTEERING_OPPORTUNITY_TABLE);
+  }
+
+  private static List<Mutation> getMutationsFromBuilder(Mutation.WriteBuilder builder, VolunteeringOpportunity opportunity) {
+    List<Mutation> mutations = new ArrayList<>();
+    builder
+        .set("VolunteeringOpportunityID")
+        .to(opportunity.getUserId(opportunity))
+        .set("Name")
+        .to(opportunity.getName())
+        .set("NumSpotsLeft")
+        .to(opportunity.getNumSpotsLeft())
+        .set("RequiredSkills")
+        .toStringArray(opportunity.getRequiredSkills())
+        .set("Skills")
     mutations.add(builder.build());
     return mutations;
   }
