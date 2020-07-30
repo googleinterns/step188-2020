@@ -1,5 +1,6 @@
 package com.google.sps.utilities;
 
+import com.google.sps.data.VolunteeringOpportunity;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Mutation;
@@ -128,15 +129,12 @@ public class DatabaseWrapper {
   private static List<Mutation> getMutationsFromBuilder(Mutation.WriteBuilder builder, VolunteeringOpportunity opportunity) {
     List<Mutation> mutations = new ArrayList<>();
     builder
-        .set("VolunteeringOpportunityID")
-        .to(opportunity.getUserId(opportunity))
         .set("Name")
         .to(opportunity.getName())
         .set("NumSpotsLeft")
         .to(opportunity.getNumSpotsLeft())
         .set("RequiredSkills")
-        .toStringArray(opportunity.getRequiredSkills())
-        .set("Skills")
+        .toStringArray(opportunity.getRequiredSkills());
     mutations.add(builder.build());
     return mutations;
   }

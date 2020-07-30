@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="create-event.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <!-- Bootstrap CDN links -->
     <link
       rel="stylesheet"
@@ -17,6 +18,7 @@
       integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
       crossorigin="anonymous"
       ></script>
+    <script src="create-volunteering-opportunity.js"></script>
   </head>
   <body>
     <div id="header"></div>
@@ -26,6 +28,12 @@
         <input name="volunteer-type" type="text" class="form-control" placeholder="Volunteer Type" aria-describedby="basic-addon1">
         <input name="volunteer-number" type="text" class="form-control" placeholder="Quantity Needed" aria-describedby="basic-addon1">
       <br>
+      <div class="row clearfix">
+		<div class="col-md-12 column" id="skills">
+			<input type="text" name='skill0'  placeholder='Enter a skill' class="form-control"/>
+		</div>
+	</div>
+	<button type="button" id="add_row" class="btn btn-default pull-left">Add Row</button>
     <button type="submit" class="btn btn-primary mx-auto d-block">Submit</button>
     </form>
   </body>
