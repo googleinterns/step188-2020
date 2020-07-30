@@ -1,12 +1,12 @@
 package com.google.sps.utilities;
 
-import com.google.sps.data.VolunteeringOpportunity;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.sps.data.User;
+import com.google.sps.data.VolunteeringOpportunity;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,8 +64,7 @@ public class DatabaseWrapper {
 
   private static List<Mutation> getMutationsFromBuilder(Mutation.WriteBuilder builder, User user) {
     List<Mutation> mutations = new ArrayList<>();
-    builder
-        .set("UserID")
+    builder.set("UserID")
         .to(user.getUserId())
         .set("Name")
         .to(user.getName())
@@ -88,7 +87,7 @@ public class DatabaseWrapper {
   /**
    * Given a volunteering opportunity, insert a row with all available fields into the DB
    *
-   * @param user the user to be inserted; user's ID field should not exist in DB
+   * @param opportunity the volunteering opportunity to be inserted
    */
   public void insertVolunteeringOpportunity(VolunteeringOpportunity opportunity) {
     SpannerOptions options = SpannerOptions.newBuilder().build();
@@ -96,7 +95,8 @@ public class DatabaseWrapper {
     DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
     DatabaseClient dbClient = spanner.getDatabaseClient(db);
 
-    List<Mutation> mutations = getMutationsFromBuilder(newInsertBuilderFromVolunteeringOpportunity(), opportunity);
+    List<Mutation> mutations =
+        getMutationsFromBuilder(newInsertBuilderFromVolunteeringOpportunity(), opportunity);
     dbClient.write(mutations);
     spanner.close();
   }
@@ -104,7 +104,7 @@ public class DatabaseWrapper {
   /**
    * Given a volunteering opportunity, insert a row with all available fields into the DB
    *
-   * @param user the user to be updated; user's ID field should already exist in DB
+   * @param opportunity the volunteering opportunity to be updated
    */
   public void updateVolunteeringOpportunity(VolunteeringOpportunity opportunity) {
     // Given a user, update its corresponding row's new fields in DB
@@ -113,12 +113,13 @@ public class DatabaseWrapper {
     DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
     DatabaseClient dbClient = spanner.getDatabaseClient(db);
 
-    List<Mutation> mutations = getMutationsFromBuilder(newUpdateBuilderFromVolunteeringOpportunity(), opportunity);
+    List<Mutation> mutations =
+        getMutationsFromBuilder(newUpdateBuilderFromVolunteeringOpportunity(), opportunity);
     dbClient.write(mutations);
     spanner.close();
   }
 
-   private static Mutation.WriteBuilder newInsertBuilderFromVolunteeringOpportunity() {
+  private static Mutation.WriteBuilder newInsertBuilderFromVolunteeringOpportunity() {
     return Mutation.newInsertBuilder(VOLUNTEERING_OPPORTUNITY_TABLE);
   }
 
@@ -126,9 +127,13 @@ public class DatabaseWrapper {
     return Mutation.newUpdateBuilder(VOLUNTEERING_OPPORTUNITY_TABLE);
   }
 
-  private static List<Mutation> getMutationsFromBuilder(Mutation.WriteBuilder builder, VolunteeringOpportunity opportunity) {
+  private static List<Mutation> getMutationsFromBuilder(
+      Mutation.WriteBuilder builder, VolunteeringOpportunity opportunity) {
     List<Mutation> mutations = new ArrayList<>();
-    builder
+    builder.set("VolunteeringOpportunityID")
+        .to(opportunity.getOpportunityId())
+        .set("EventID")
+        .to(opportunity.getEventId())
         .set("Name")
         .to(opportunity.getName())
         .set("NumSpotsLeft")
