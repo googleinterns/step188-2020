@@ -15,7 +15,7 @@ public class CommonUtils {
   public static String convertToJson(Object object) {
     return new Gson().toJson(object);
   }
-
+  
   public static String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
     return (value == null || value.isEmpty()) ? defaultValue : value;
