@@ -3,9 +3,10 @@
     <meta charset="UTF-8" />
     <title>STEP 188 Project</title>
     <link rel="stylesheet" href="profile.css" />
-    <script src="script.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="script.js"></script>
+    <script src="profile.js"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Public+Sans&display=swap"
       rel="stylesheet"
@@ -32,7 +33,7 @@
       </div>
     </div>
     <button type="button" class="btn btn-primary">
-      <a href="event-details.html">Edit</a>
+      <a href="profile-edit.html">Edit</a>
     </button>
     <br />
     <br />
@@ -40,29 +41,19 @@
       <ul class="list-group">
         <div class="justify">
           <li class="list-group-item no-border">
-            <strong>Name:</strong> Bob Smith
+            <strong>Name:</strong><span id="name"></span>
           </li>
           <li class="list-group-item no-border">
-            <strong>User ID:</strong> 100000000
-          </li>
-          <li class="list-group-item no-border">
-            <strong>E-mail: </strong>bobsmith@example.com
+            <strong>E-mail: </strong><span id="email"></span>
           </li>
           <li class="list-group-item no-border">
             <strong>Interests: </strong>
-            <button type="button" class="btn btn-interest" disabled>
-              Conservation
-            </button>
-            <button type="button" class="btn btn-interest" disabled>
-              Food
-            </button>
+            <div id="interests"></div>
             <button type="button" class="btn btn-add" disabled>+Add</button>
           </li>
           <li class="list-group-item no-border">
             <strong>Skills: </strong>
-            <button type="button" class="btn btn-skill" disabled>
-              Cooking
-            </button>
+            <div id="skills"></div>
             <button type="button" class="btn btn-add" disabled>+Add</button>
           </li>
         </div>
@@ -89,8 +80,7 @@
             aria-labelledby="headingOne"
             data-parent="#accordion"
           >
-            <div class="card-body">
-              Placeholder for events hosting
+            <div class="card-body" id="events-hosting">
             </div>
           </div>
         </div>
@@ -116,8 +106,7 @@
             aria-labelledby="headingTwo"
             data-parent="#accordion"
           >
-            <div class="card-body">
-              Placeholder for events participating
+            <div class="card-body" id="events-participating">
             </div>
           </div>
         </div>
@@ -143,8 +132,7 @@
             aria-labelledby="headingThree"
             data-parent="#accordion"
           >
-            <div class="card-body">
-              Placeholder for events volunteering
+            <div class="card-body" id="events-volunteering">
             </div>
           </div>
         </div>
