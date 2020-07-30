@@ -2,6 +2,7 @@ package com.google.sps.servlets;
 
 import com.google.sps.data.VolunteeringOpportunity;
 import com.google.sps.utilities.CommonUtils;
+import com.google.sps.utilities.Constants;
 import com.google.sps.utilities.DatabaseWrapper;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -40,7 +41,7 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
 
   private void insertVolunteeringOpportunityIntoDB(
       String volunteerName, Integer volunteerNumber, Set<String> requiredSkills) {
-    DatabaseWrapper dbWrapper = new DatabaseWrapper("step-188-instance", "event-organizer-db");
+    DatabaseWrapper dbWrapper = new DatabaseWrapper(Constants.DB_INSTANCEID, Constants.DB_DATABASEID);
     VolunteeringOpportunity opportunity =
         new VolunteeringOpportunity
             .Builder(HARDCODED_EVENT_ID, volunteerName, volunteerNumber)
