@@ -10,26 +10,6 @@ $(document).ready(function() {
   });
 });
 
-// $("#profile-form").submit(function(){
-//   const userName = getUserInformation('name');
-//   const userInterests = getUserInformation('interests');
-//   const userSkills = getUserInformation('skills');
-
-//   fetch("/profile-update", {
-//     method: "post",
-//     headers: {
-//       'Accept': 'application/json',
-//       'Content-Type': 'application/json'
-//     },
-
-//     body: JSON.stringify({
-//       name: userName,
-//       interests: userInterests,
-//       skills: userSkills
-//     })
-//   });
-// });
-
 function getUserInformation(fieldName) {
   const element = document.getElementById(fieldName);
   if(element.val() === ''){

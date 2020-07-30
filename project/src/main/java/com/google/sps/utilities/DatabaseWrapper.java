@@ -71,8 +71,7 @@ public class DatabaseWrapper {
   private static Set<Event> getEventsFromIds(List<String> ids) {
     Set<Event> events = new HashSet<>();
     for (String eventId : ids) {
-      // events.add(readEventFromId(eventId));
-      events.add(new Event.Builder("bob", "bob description", new HashSet<String>(), "bob location", LocalDate.of(2020, 1, 8), new User.Builder("bob name", "bob email").build()).build());
+      events.add(readEventFromId(eventId));
     }
     return events;
   }
