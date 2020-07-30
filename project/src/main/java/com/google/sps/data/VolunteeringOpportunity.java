@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public final class VolunteeringOpportunity {
-  private final String opportunityId;
+  private String opportunityId;
   private String eventId;
   private String name;
   private int numSpotsLeft;
@@ -77,6 +77,7 @@ public final class VolunteeringOpportunity {
 
     public Builder mergeFrom(VolunteeringOpportunity other) {
       this.opportunityId = other.getOpportunityId();
+      this.eventId = other.getEventId();
       this.name = other.getName();
       this.numSpotsLeft = other.getNumSpotsLeft();
 

@@ -1,4 +1,5 @@
 let lastSkillInputIndex = 0;
+
 $(document).ready(function() {
   $('#add_row').click(function() {
     lastSkillInputIndex++;

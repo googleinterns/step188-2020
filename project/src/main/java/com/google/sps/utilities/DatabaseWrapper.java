@@ -101,30 +101,8 @@ public class DatabaseWrapper {
     spanner.close();
   }
 
-  /**
-   * Given a volunteering opportunity, insert a row with all available fields into the DB
-   *
-   * @param opportunity the volunteering opportunity to be updated
-   */
-  public void updateVolunteeringOpportunity(VolunteeringOpportunity opportunity) {
-    // Given a user, update its corresponding row's new fields in DB
-    SpannerOptions options = SpannerOptions.newBuilder().build();
-    Spanner spanner = options.getService();
-    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
-    DatabaseClient dbClient = spanner.getDatabaseClient(db);
-
-    List<Mutation> mutations =
-        getMutationsFromBuilder(newUpdateBuilderFromVolunteeringOpportunity(), opportunity);
-    dbClient.write(mutations);
-    spanner.close();
-  }
-
   private static Mutation.WriteBuilder newInsertBuilderFromVolunteeringOpportunity() {
     return Mutation.newInsertBuilder(VOLUNTEERING_OPPORTUNITY_TABLE);
-  }
-
-  private static Mutation.WriteBuilder newUpdateBuilderFromVolunteeringOpportunity() {
-    return Mutation.newUpdateBuilder(VOLUNTEERING_OPPORTUNITY_TABLE);
   }
 
   private static List<Mutation> getMutationsFromBuilder(
