@@ -13,6 +13,28 @@
 // limitations under the License.
 
 window.onload = function onLoad() {
+  checkLoginStatus();
+};
+
+/**
+ * Checks login status and displays navbar and profile if user is logged in,
+ * and redirects to index page if user is not logged in.
+ */
+async function checkLoginStatus() {
+  const response = await fetch('/login-status');
+  const loginStatus = await response.json();
+  const isLoggedIn = loginStatus.isLoggedIn;
+  if (isLoggedIn) {
+    loadHeader();
+  } else {
+    window.href = 'index.html';
+  }
+}
+
+/**
+ * Loads header and displays the page corresponding to the current url.
+ */
+function loadHeader() {
   $('#header').load('header.html', function() {
     $('.active').removeClass('active');
     const currentPageArr = window.location.href.split(/[/|.]/);
@@ -21,8 +43,18 @@ window.onload = function onLoad() {
       $('#profile-header').addClass('active');
     } else if (currentPage === 'events-feed') {
       $('#feed-header').addClass('active');
-    } else {
-      $('#home-header').addClass('active');
     }
+    addLogoutUrlToButton();
   });
-};
+}
+
+/**
+ * Adds the logout url to logout button.
+ */
+async function addLogoutUrlToButton() {
+  const response = await fetch('/logout-url');
+  const logoutUrl = await response.text();
+
+  const logoutPrompt = document.getElementById('logout-prompt');
+  logoutPrompt.href = logoutUrl;
+}
