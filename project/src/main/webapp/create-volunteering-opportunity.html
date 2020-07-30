@@ -21,45 +21,47 @@
   </head>
   <body>
     <div id="header"></div>
-    <br /><br />
-    <form
-      method="post"
-      action="/volunteering-form-handler"
-      id="volunteering-opportunity-form"
-      class="hidden"
-    >
-      <h3>Add a volunteering opportunity for your event.</h3>
-      <input
-        name="volunteer-type"
-        type="text"
-        class="form-control"
-        placeholder="Volunteer Type"
-        aria-describedby="basic-addon1"
-      />
-      <input
-        name="volunteer-number"
-        type="text"
-        class="form-control"
-        placeholder="Quantity Needed"
-        aria-describedby="basic-addon1"
-      />
-      <br />
-      <div class="row clearfix">
-        <div class="col-md-12 column" id="skills">
-          <input
-            type="text"
-            name="skill0"
-            placeholder="Add a skill"
-            class="form-control"
-          />
+    <div class="col">
+      <br /><br />
+      <form
+        method="post"
+        action="/volunteering-form-handler"
+        id="volunteering-opportunity-form"
+        class="hidden"
+      >
+        <h3>Add a volunteering opportunity for your event.</h3>
+        <input
+          name="opportunity-name"
+          type="text"
+          class="form-control"
+          placeholder="Volunteer Opportunity Name"
+          aria-describedby="basic-addon1"
+        />
+        <input
+          name="opportunity-num-spots"
+          type="text"
+          class="form-control"
+          placeholder="Quantity Needed"
+          aria-describedby="basic-addon1"
+        />
+        <br />
+        <div class="row clearfix">
+          <div class="col-md-12 column" id="skills">
+            <input
+              type="text"
+              name="skill"
+              placeholder="Add a skill"
+              class="form-control"
+            />
+          </div>
         </div>
-      </div>
-      <button type="button" id="add_row" class="btn btn-default pull-left">
-        Add Row
-      </button>
-      <button type="submit" class="btn btn-primary mx-auto d-block">
-        Submit
-      </button>
-    </form>
+        <button type="button" id="add_row" class="btn btn-default pull-left">
+          Add Row
+        </button>
+        <button type="submit" class="btn btn-primary mx-auto d-block">
+          Submit
+        </button>
+      </form>
+    </div>
   </body>
 </html>

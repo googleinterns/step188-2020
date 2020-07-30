@@ -3,11 +3,10 @@ let lastSkillInputIndex = 0;
 $(document).ready(function() {
   $('#add_row').click(function() {
     lastSkillInputIndex++;
-    $('#skills').append(getInputDivForSkill(lastSkillInputIndex));
+    $('#skills').append(getInputDivForSkill());
   });
 });
 
-function getInputDivForSkill(skillInputIndex) {
-  return `<input type="text" name="skill${
-      skillInputIndex}"  placeholder="Enter a skill" class="form-control" ></tr>`;
+function getInputDivForSkill() {
+  return `<input type="text" name="skill" placeholder="Enter a skill" class="form-control" ></tr>`;
 }
