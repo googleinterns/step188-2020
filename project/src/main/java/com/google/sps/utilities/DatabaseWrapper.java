@@ -64,7 +64,8 @@ public class DatabaseWrapper {
 
   private static List<Mutation> getMutationsFromBuilder(Mutation.WriteBuilder builder, User user) {
     List<Mutation> mutations = new ArrayList<>();
-    builder.set("UserID")
+    builder
+        .set("UserID")
         .to(user.getUserId())
         .set("Name")
         .to(user.getName())
@@ -108,7 +109,8 @@ public class DatabaseWrapper {
   private static List<Mutation> getMutationsFromBuilder(
       Mutation.WriteBuilder builder, VolunteeringOpportunity opportunity) {
     List<Mutation> mutations = new ArrayList<>();
-    builder.set("VolunteeringOpportunityID")
+    builder
+        .set("VolunteeringOpportunityID")
         .to(opportunity.getOpportunityId())
         .set("EventID")
         .to(opportunity.getEventId())

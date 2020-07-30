@@ -22,13 +22,15 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
   private static final String OPPORTUNITY_NAME = "opportunity-name";
   private static final String OPPORTUNITY_NUM_SPOTS = "opportunity-num-spots";
   private static final String SKILL = "skill";
+  private static final String HARDCODED_EVENT_ID = "0883de79-17d7-49a3-a866-dbd5135062a8";
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String volunteerName =
         CommonUtils.getParameter(request, OPPORTUNITY_NAME, /* DefaultValue= */ "");
-    Integer volunteerNumber = Integer.parseInt(
-        CommonUtils.getParameter(request, OPPORTUNITY_NUM_SPOTS, /* DefaultValue= */ "0"));
+    Integer volunteerNumber =
+        Integer.parseInt(
+            CommonUtils.getParameter(request, OPPORTUNITY_NUM_SPOTS, /* DefaultValue= */ "0"));
     Set<String> skills = CommonUtils.getParameterValues(request, SKILL);
 
     insertVolunteeringOpportunityIntoDB(volunteerName, volunteerNumber, skills);
@@ -41,7 +43,7 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
     DatabaseWrapper dbWrapper = new DatabaseWrapper("step-188-instance", "event-organizer-db");
     VolunteeringOpportunity opportunity =
         new VolunteeringOpportunity
-            .Builder("0883de79-17d7-49a3-a866-dbd5135062a8", volunteerName, volunteerNumber)
+            .Builder(HARDCODED_EVENT_ID, volunteerName, volunteerNumber)
             .setRequiredSkills(requiredSkills)
             .build();
     // TO DO: change eventId to parameter value
