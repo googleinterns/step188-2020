@@ -1,0 +1,14 @@
+body,
+html {
+  font-family: "Public Sans", sans-serif;
+  height: 100%;
+  margin: 0;
+}
+
+h3 {
+  text-align: center;
+}
+
+#profile-form {
+  margin: auto;
+}
