@@ -19,29 +19,17 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/volunteering-form-handler")
 public class VolunteeringFormHandlerServlet extends HttpServlet {
-  private static final String VOLUNTEER_TYPE = "volunteer-type";
-  private static final String VOLUNTEER_NUMBER = "volunteer-number";
+  private static final String OPPORTUNITY_NAME = "opportunity-name";
+  private static final String OPPORTUNITY_NUM_SPOTS = "opportunity-num-spots";
   private static final String SKILL = "skill";
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String volunteerName =
-        CommonUtils.getParameter(request, VOLUNTEER_TYPE, /* DefaultValue= */ "");
-
+        CommonUtils.getParameter(request, OPPORTUNITY_NAME, /* DefaultValue= */ "");
     Integer volunteerNumber = Integer.parseInt(
-        CommonUtils.getParameter(request, VOLUNTEER_NUMBER, /* DefaultValue= */ "0"));
-
-    Set<String> skills = new HashSet<String>();
-
-    String currentSkill = "";
-    int skillNumber = 0;
-    do {
-      currentSkill = CommonUtils.getParameter(
-          request, String.format("skill%d", skillNumber), /* DefaultValue= */ "");
-      if (!currentSkill.isEmpty())
-        skills.add(currentSkill);
-      skillNumber++;
-    } while (!currentSkill.isEmpty());
+        CommonUtils.getParameter(request, OPPORTUNITY_NUM_SPOTS, /* DefaultValue= */ "0"));
+    Set<String> skills = CommonUtils.getParameterValues(request, SKILL);
 
     insertVolunteeringOpportunityIntoDB(volunteerName, volunteerNumber, skills);
 
@@ -56,7 +44,7 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
             .Builder("0883de79-17d7-49a3-a866-dbd5135062a8", volunteerName, volunteerNumber)
             .setRequiredSkills(requiredSkills)
             .build();
-    // TO DO: change eventId to non-hardcoded value
+    // TO DO: change eventId to parameter value
     dbWrapper.insertVolunteeringOpportunity(opportunity);
   }
 }
