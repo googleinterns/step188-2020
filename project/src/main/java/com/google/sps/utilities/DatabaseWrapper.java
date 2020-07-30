@@ -84,6 +84,39 @@ public class DatabaseWrapper {
     return mutations;
   }
 
+  /**
+   * Given a volunteering opportunity, insert a row with all available fields into the DB
+   *
+   * @param user the user to be inserted; user's ID field should not exist in DB
+   */
+  public void insertVolunteeringOpportunity(VolunteeringOpportunity opportunity) {
+    SpannerOptions options = SpannerOptions.newBuilder().build();
+    Spanner spanner = options.getService();
+    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
+    DatabaseClient dbClient = spanner.getDatabaseClient(db);
+
+    List<Mutation> mutations = getMutationsFromBuilder(newInsertBuilderFromVolunteeringOpportunity(), opportunity);
+    dbClient.write(mutations);
+    spanner.close();
+  }
+
+  /**
+   * Given a volunteering opportunity, insert a row with all available fields into the DB
+   *
+   * @param user the user to be updated; user's ID field should already exist in DB
+   */
+  public void updateVolunteeringOpportunity(VolunteeringOpportunity opportunity) {
+    // Given a user, update its corresponding row's new fields in DB
+    SpannerOptions options = SpannerOptions.newBuilder().build();
+    Spanner spanner = options.getService();
+    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
+    DatabaseClient dbClient = spanner.getDatabaseClient(db);
+
+    List<Mutation> mutations = getMutationsFromBuilder(newUpdateBuilderFromVolunteeringOpportunity(), opportunity);
+    dbClient.write(mutations);
+    spanner.close();
+  }
+
    private static Mutation.WriteBuilder newInsertBuilderFromVolunteeringOpportunity() {
     return Mutation.newInsertBuilder(VOLUNTEERING_OPPORTUNITY_TABLE);
   }
