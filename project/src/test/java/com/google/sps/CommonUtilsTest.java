@@ -15,7 +15,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 /** */
 @RunWith(JUnit4.class)
-public final class UtilsTest extends Mockito {
+public final class CommonUtilsTest extends Mockito {
   private static final String NAME = "Name";
   private static final String NAME_VALUE = "Bob";
   private static final String JOE = "Joe";
