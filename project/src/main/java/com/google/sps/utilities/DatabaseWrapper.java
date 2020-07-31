@@ -7,7 +7,6 @@ import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
-import com.google.cloud.spanner.Struct;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
 import java.time.LocalDate;
@@ -39,7 +38,8 @@ public class DatabaseWrapper {
     DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
     DatabaseClient dbClient = spanner.getDatabaseClient(db);
 
-    List<Mutation> mutations = getUserMutationsFromBuilder(Mutation.newInsertOrUpdateBuilder(USER_TABLE), user);
+    List<Mutation> mutations =
+        getUserMutationsFromBuilder(Mutation.newInsertOrUpdateBuilder(USER_TABLE), user);
     dbClient.write(mutations);
     spanner.close();
   }
@@ -53,7 +53,12 @@ public class DatabaseWrapper {
     ResultSet resultSet =
         dbClient
             .singleUse()
-            .executeQuery(Statement.of(String.format("SELECT Name, Interests, Skills, EventsHosting, EventsParticipating, EventsVolunteering FROM %s WHERE Email='%s'", USER_TABLE, email)));
+            .executeQuery(
+                Statement.of(
+                    String.format(
+                        "SELECT Name, Interests, Skills, EventsHosting, EventsParticipating,"
+                            + " EventsVolunteering FROM %s WHERE Email='%s'",
+                        USER_TABLE, email)));
 
     if (!resultSet.next()) {
       return Optional.empty();
@@ -77,11 +82,8 @@ public class DatabaseWrapper {
     return events;
   }
 
-  private static Event readEventFromId(String id) {
-    return new Event.Builder("bob event", "bob description", new HashSet<>(), "bob location", LocalDate.of(2020, 1, 8), new User.Builder("bob", "bob email").build()).build();
-  }
-
-  private static List<Mutation> getUserMutationsFromBuilder(Mutation.WriteBuilder builder, User user) {
+  private static List<Mutation> getUserMutationsFromBuilder(
+      Mutation.WriteBuilder builder, User user) {
     List<Mutation> mutations = new ArrayList<>();
     builder
         .set("Name")
