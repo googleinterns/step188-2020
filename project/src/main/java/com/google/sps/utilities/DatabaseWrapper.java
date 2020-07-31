@@ -7,14 +7,11 @@ import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
-import com.google.sps.data.Event;
 import com.google.sps.data.User;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public class DatabaseWrapper {
   private String instanceId;
@@ -44,7 +41,7 @@ public class DatabaseWrapper {
     spanner.close();
   }
 
-  /** 
+  /**
    * Given an email, return the corresponding user from the DB
    *
    * @param email an email to search the 'User' table by; email may or may not exist in DB
@@ -77,14 +74,6 @@ public class DatabaseWrapper {
             .setEventsParticipating(getEventsFromIds(resultSet.getStringList(4)))
             .setEventsVolunteering(getEventsFromIds(resultSet.getStringList(5)))
             .build());
-  }
-
-  private static Set<Event> getEventsFromIds(List<String> ids) {
-    Set<Event> events = new HashSet<>();
-    for (String eventId : ids) {
-      events.add(readEventFromId(eventId));
-    }
-    return events;
   }
 
   private static List<Mutation> getUserMutationsFromBuilder(

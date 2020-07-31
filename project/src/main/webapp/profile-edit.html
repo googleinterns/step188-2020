@@ -30,18 +30,33 @@
     <h3>Edit Profile</h3>
     <br />
     <br />
-    <form class="col-8" id="profile-form" action="/profile-update" method="POST">
+    <form
+      class="col-8"
+      id="profile-form"
+      action="/profile-update"
+      method="POST"
+    >
       <div class="form-group">
         <label for="name">Name</label>
-        <input type="text" class="form-control" id="name" name="name">
+        <input type="text" class="form-control" id="name" name="name" />
       </div>
       <div class="form-group">
         <label for="interests">Interests</label>
-        <select id="interests" data-role="tagsinput" name="interests" multiple></select>
+        <select
+          id="interests"
+          data-role="tagsinput"
+          name="interests"
+          multiple
+        ></select>
       </div>
       <div class="form-group">
         <label for="skills">Skills</label>
-        <select id="skills" data-role="tagsinput" name="skills" multiple></select>
+        <select
+          id="skills"
+          data-role="tagsinput"
+          name="skills"
+          multiple
+        ></select>
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
