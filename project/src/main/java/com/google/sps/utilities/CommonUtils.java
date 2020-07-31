@@ -28,11 +28,11 @@ public class CommonUtils {
   /**
    * Get the set of non-empty parameter values if parameter exists in the request, else return empty
    * set.
-   * 
+   *
    * @param request the servlet request
    * @param name the name of the parameter requested
-   * @return the nonempty values for the parameter in the request or empty set if the request does not
-   *     have the parameter
+   * @return the nonempty values for the parameter in the request or empty set if the request
+   *     not have the parameter
    */
   public static Set<String> getParameterValues(HttpServletRequest request, String name) {
     String[] values = request.getParameterValues(name);
