@@ -3,8 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>STEP 188 Project</title>
-    <link rel="stylesheet" href="event-details.css" />
-    <script src="event-details.js"></script>
+    <script src="script.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <!-- Bootstrap CDN links -->
@@ -20,20 +19,26 @@
       crossorigin="anonymous"
     ></script>
   </head>
-  <body onload="getEventDetails()">
+  <body class>
     <div id="header"></div>
     <div class="container">
       <div class="card">
-        <button type="button" class="close" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
         <div class="card-body">
-          <h5 class="card-title" id="name"></h5>
-          <p class="card-text" id="description"></p>
-          <br />
+          <h5 class="card-title">
+            Weekly Meal Prep: Angel Food Cake
+          </h5>
+          <p class="card-text">
+            In this Meal Prep Seminar, we will be teaching you how to make a
+            delicious cake!
+          </p>
+          <button class="btn">
+            <a href="signup.html">Sign up!</a>
+          </button>
+          <br>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item" id="date"></li>
-            <li class="list-group-item" id="location"></li>
+            <li class="list-group-item">Date: 06/20/2020</li>
+            <li class="list-group-item">Time: 6:00 PM</li>
+            <li class="list-group-item">Location: Online</li>
             <li class="list-group-item">
               <p class="card-text">Volunteer Type: Translator</p>
               <p class="card-text">Volunteer Spots Left: 1</p>
@@ -41,9 +46,6 @@
             <li class="list-group-item">Attendee Spots Left: 240</li>
           </ul>
         </div>
-        <button type="button" class="btn btn-primary">
-          <a href="signup.html">Register</a>
-        </button>
       </div>
     </div>
   </body>
