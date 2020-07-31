@@ -32,7 +32,7 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
     response.sendRedirect("/events-feed.html");
   }
 
-  private void insertVolunteeringOpportunityIntoDB(
+  private static void insertVolunteeringOpportunityIntoDB(
       String volunteerName, Integer volunteerNumber, Set<String> requiredSkills) {
     DatabaseWrapper dbWrapper =
         new DatabaseWrapper(DatabaseConstants.INSTANCE_ID, DatabaseConstants.DATABASE_ID);
