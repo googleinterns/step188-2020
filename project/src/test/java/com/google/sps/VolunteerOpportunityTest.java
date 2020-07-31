@@ -4,13 +4,13 @@ import com.google.common.collect.ImmutableSet;
 import com.google.sps.data.VolunteeringOpportunity;
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.MatcherAssert;
 
 /** */
 @RunWith(JUnit4.class)
@@ -26,10 +26,9 @@ public final class VolunteerOpportunityTest {
 
   @Test
   public void createInstanceUsingBuilder() {
-    VolunteeringOpportunity opportunity =
-        new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
-            .setRequiredSkills(SKILLS)
-            .build();
+    VolunteeringOpportunity opportunity = new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
+                                              .setRequiredSkills(SKILLS)
+                                              .build();
 
     Assert.assertEquals(NAME, opportunity.getName());
     Assert.assertEquals(NUMBER_OF_SPOTS, opportunity.getNumSpotsLeft());
@@ -38,10 +37,9 @@ public final class VolunteerOpportunityTest {
 
   @Test
   public void getBuilderFromInstance() {
-    VolunteeringOpportunity opportunity =
-        new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
-            .setRequiredSkills(SKILLS)
-            .build();
+    VolunteeringOpportunity opportunity = new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
+                                              .setRequiredSkills(SKILLS)
+                                              .build();
     VolunteeringOpportunity copyOfOpportunity = opportunity.toBuilder().build();
 
     Assert.assertTrue(EqualsBuilder.reflectionEquals(opportunity, copyOfOpportunity));
@@ -59,8 +57,7 @@ public final class VolunteerOpportunityTest {
     VolunteeringOpportunity changedOpportunity =
         opportunityWithSkills.toBuilder().addRequiredSkill(DANCING).build();
 
-    MatcherAssert.assertThat(
-        changedOpportunity.getRequiredSkills(),
+    MatcherAssert.assertThat(changedOpportunity.getRequiredSkills(),
         CoreMatchers.hasItems(PLAYING_AN_INSTRUMENT, PERFORMING, DANCING));
   }
 

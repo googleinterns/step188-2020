@@ -30,14 +30,13 @@ public final class UserTest {
   @Test
   public void buildInstanceWithAllFields() {
     // Create a User with all fields set, and verify that all fields are correctly set
-    User user =
-        new User.Builder(NAME, EMAIL)
-            .setInterests(INTERESTS)
-            .setSkills(SKILLS)
-            .setEventsHosting(EVENTS_HOSTING)
-            .setEventsParticipating(EVENTS_PARTICIPATING)
-            .setEventsVolunteering(EVENTS_VOLUNTEERING)
-            .build();
+    User user = new User.Builder(NAME, EMAIL)
+                    .setInterests(INTERESTS)
+                    .setSkills(SKILLS)
+                    .setEventsHosting(EVENTS_HOSTING)
+                    .setEventsParticipating(EVENTS_PARTICIPATING)
+                    .setEventsVolunteering(EVENTS_VOLUNTEERING)
+                    .build();
 
     Assert.assertEquals(NAME, user.getName());
     Assert.assertEquals(EMAIL, user.getEmail());
@@ -52,14 +51,13 @@ public final class UserTest {
   public void transferInstanceToBuilderWithAllFields() {
     // Create a User with all fields set, and check that its fields can be correctly transferred to
     // its Builder.
-    User expectedUser =
-        new User.Builder(NAME, EMAIL)
-            .setInterests(INTERESTS)
-            .setSkills(SKILLS)
-            .setEventsHosting(EVENTS_HOSTING)
-            .setEventsParticipating(EVENTS_PARTICIPATING)
-            .setEventsVolunteering(EVENTS_VOLUNTEERING)
-            .build();
+    User expectedUser = new User.Builder(NAME, EMAIL)
+                            .setInterests(INTERESTS)
+                            .setSkills(SKILLS)
+                            .setEventsHosting(EVENTS_HOSTING)
+                            .setEventsParticipating(EVENTS_PARTICIPATING)
+                            .setEventsVolunteering(EVENTS_VOLUNTEERING)
+                            .build();
     User actualUser = expectedUser.toBuilder().build();
 
     Assert.assertTrue(EqualsBuilder.reflectionEquals(expectedUser, actualUser));

@@ -15,7 +15,7 @@ public final class User {
 
   public static class Builder {
     // Required parameters
-    private long userID;
+    private long userId;
     private String name;
     private String email;
 
@@ -31,8 +31,8 @@ public final class User {
       this.email = email;
     }
 
-    public Builder setUserID(long id) {
-      this.userID = id;
+    public Builder setUserId(long id) {
+      this.userId = id;
       return this;
     }
 
@@ -183,36 +183,36 @@ public final class User {
     return this.eventsHosting;
   }
 
-  public Set<Long> getEventsHostingIDs() {
-    Set<Long> eventIDs = new HashSet<>();
+  public Set<String> getEventsHostingIds() {
+    Set<String> eventIds = new HashSet<>();
     for (Event event : this.eventsHosting) {
-      eventIDs.add(event.getID());
+      eventIds.add(event.getId());
     }
-    return eventIDs;
+    return eventIds;
   }
 
   public Set<Event> getEventsParticipating() {
     return this.eventsParticipating;
   }
 
-  public Set<Long> getEventsParticipatingIDs() {
-    Set<Long> eventIDs = new HashSet<>();
+  public Set<String> getEventsParticipatingIds() {
+    Set<String> eventIds = new HashSet<>();
     for (Event event : this.eventsParticipating) {
-      eventIDs.add(event.getID());
+      eventIds.add(event.getId());
     }
-    return eventIDs;
+    return eventIds;
   }
 
   public Set<Event> getEventsVolunteering() {
     return this.eventsVolunteering;
   }
 
-  public Set<Long> getEventsVolunteeringIDs() {
-    Set<Long> eventIDs = new HashSet<>();
+  public Set<String> getEventsVolunteeringIds() {
+    Set<String> eventIds = new HashSet<>();
     for (Event event : this.eventsVolunteering) {
-      eventIDs.add(event.getID());
+      eventIds.add(event.getId());
     }
-    return eventIDs;
+    return eventIds;
   }
 
   public Builder toBuilder() {
