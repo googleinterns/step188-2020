@@ -9,13 +9,3 @@ $(document).ready(function() {
     $('#skills').val(userSkills);
   });
 });
-
-function getUserInformation(fieldName) {
-  const element = document.getElementById(fieldName);
-  if(element.val() === ''){
-      const desiredValue = element.attr('placeholder');
-  } else {
-      const desiredValue = element.val();
-  }
-  return desiredValue;
-}
