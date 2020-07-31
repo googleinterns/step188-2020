@@ -1,7 +1,5 @@
 import com.google.sps.utilities.CommonUtils;
-import java.util.HashSet;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -9,13 +7,11 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 /** */
 @RunWith(JUnit4.class)
-public final class CommonUtilsTest extends Mockito {
+public final class CommonUtilsTest {
   private static final String NAME = "Name";
   private static final String NAME_VALUE = "Bob";
   private static final String JOE = "Joe";
@@ -36,7 +32,8 @@ public final class CommonUtilsTest extends Mockito {
   public void getParameterWithoutValueReturnDefaultValue() {
     MockHttpServletRequest request = new MockHttpServletRequest();
 
-    Assert.assertEquals(StringUtils.EMPTY, CommonUtils.getParameter(request, NAME, StringUtils.EMPTY));
+    Assert.assertEquals(
+        StringUtils.EMPTY, CommonUtils.getParameter(request, NAME, StringUtils.EMPTY));
   }
 
   @Test
@@ -44,7 +41,8 @@ public final class CommonUtilsTest extends Mockito {
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.setParameter(NAME, NONEMPTY_VALUES);
 
-    MatcherAssert.assertThat(CommonUtils.getParameterValues(request, NAME), Matchers.contains(JOE, JAMES));
+    MatcherAssert.assertThat(
+        CommonUtils.getParameterValues(request, NAME), Matchers.contains(JOE, JAMES));
   }
 
   @Test
