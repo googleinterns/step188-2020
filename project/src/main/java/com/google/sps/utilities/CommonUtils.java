@@ -16,7 +16,7 @@ public class CommonUtils {
    * @param request the servlet request
    * @param name the name of the parameter requested
    * @param defaultValue the default value to return if the parameter requested does not exist in
-   * the request
+   *    the request
    */
   public static String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
@@ -24,8 +24,8 @@ public class CommonUtils {
   }
 
   /**
-   * Get the set of non-empty parameter values if parameter exists in the request, else return
-   * empty set.
+   * Get the set of non-empty parameter values if parameter exists in the request, else return empty
+   * set.
    * 
    * @param request the servlet request 
    * @param name the name of the parameter requested
