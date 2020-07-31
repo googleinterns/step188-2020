@@ -24,6 +24,7 @@ public class UserProfileUpdateServlet extends HttpServlet {
   private DatabaseWrapper databaseWrapper =
       new DatabaseWrapper(DatabaseConstants.INSTANCE_ID, DatabaseConstants.DATABASE_ID);
 
+  /** Writes out information for the user corresponding to the logged-in email */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Optional<User> userOptional = databaseWrapper.readUserFromEmail(email);
@@ -51,6 +52,7 @@ public class UserProfileUpdateServlet extends HttpServlet {
     response.getWriter().println(userJson);
   }
 
+  /** Given user fields, inserts or updates the corresponding entry in storage */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get the input from the form.

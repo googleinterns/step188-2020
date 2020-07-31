@@ -44,8 +44,13 @@ public class DatabaseWrapper {
     spanner.close();
   }
 
+  /** 
+   * Given an email, return the corresponding user from the DB
+   *
+   * @param email an email to search the 'User' table by; email may or may not exist in DB
+   * @return return the user wrapped in an {@link Optional}
+   */
   public Optional<User> readUserFromEmail(String email) {
-    // Given an email, return the corresponding user from the DB
     SpannerOptions options = SpannerOptions.newBuilder().build();
     Spanner spanner = options.getService();
     DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);

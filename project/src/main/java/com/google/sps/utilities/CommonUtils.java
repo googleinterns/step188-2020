@@ -11,6 +11,7 @@ public class CommonUtils {
     return new Gson().toJson(object);
   }
 
+  /** Returns a JsonArray containing each element provided */
   public static JsonArray createJsonArray(Set<String> elements) {
     JsonArrayBuilder builder = Json.createArrayBuilder();
     for (String element : elements) {

@@ -172,6 +172,7 @@ public final class User {
     return this.eventsHosting;
   }
 
+  /** Returns a Set of eventHosting Id fields */
   public Set<String> getEventsHostingIds() {
     Set<String> eventIds = new HashSet<>();
     for (Event event : this.eventsHosting) {
@@ -184,6 +185,7 @@ public final class User {
     return this.eventsParticipating;
   }
 
+  /** Returns a Set of eventParticipating Id fields */
   public Set<String> getEventsParticipatingIds() {
     Set<String> eventIds = new HashSet<>();
     for (Event event : this.eventsParticipating) {
@@ -196,6 +198,7 @@ public final class User {
     return this.eventsVolunteering;
   }
 
+  /** Returns a Set of eventVolunteering Id fields */
   public Set<String> getEventsVolunteeringIds() {
     Set<String> eventIds = new HashSet<>();
     for (Event event : this.eventsVolunteering) {
