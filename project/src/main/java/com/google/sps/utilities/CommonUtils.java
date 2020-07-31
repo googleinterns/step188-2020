@@ -10,11 +10,26 @@ public class CommonUtils {
     return new Gson().toJson(object);
   }
 
+  /**
+   * Get the parameter values if exists in the request, else return the defaultValue.
+   *
+   * @param request the servlet request
+   * @param name the name of the parameter requested
+   * @param defaultValue the default value to return if the parameter requested does not exist in
+   * the request
+   */
   public static String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
     return (value == null || value.isEmpty()) ? defaultValue : value;
   }
 
+  /**
+   * Get the set of non-empty parameter values if parameter exists in the request, else return
+   * empty set.
+   * 
+   * @param request the servlet request 
+   * @param name the name of the parameter requested
+   */
   public static Set<String> getParameterValues(HttpServletRequest request, String name) {
     String[] values = request.getParameterValues(name);
     Set<String> nonEmptyValues = new HashSet<String>();
