@@ -2,7 +2,7 @@ package com.google.sps.servlets;
 
 import com.google.sps.data.VolunteeringOpportunity;
 import com.google.sps.utilities.CommonUtils;
-import com.google.sps.utilities.Constants;
+import com.google.sps.utilities.DatabaseConstants;
 import com.google.sps.utilities.DatabaseWrapper;
 import java.io.IOException;
 import java.util.Set;
@@ -35,7 +35,7 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
   private void insertVolunteeringOpportunityIntoDB(
       String volunteerName, Integer volunteerNumber, Set<String> requiredSkills) {
     DatabaseWrapper dbWrapper =
-        new DatabaseWrapper(Constants.DB_INSTANCEID, Constants.DB_DATABASEID);
+        new DatabaseWrapper(DatabaseConstants.INSTANCE_ID, DatabaseConstants.DATABASE_ID);
     VolunteeringOpportunity opportunity =
         new VolunteeringOpportunity.Builder(HARDCODED_EVENT_ID, volunteerName, volunteerNumber)
             .setRequiredSkills(requiredSkills)
