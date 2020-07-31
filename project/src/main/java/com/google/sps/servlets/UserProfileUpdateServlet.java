@@ -3,15 +3,15 @@ package com.google.sps.servlets;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.User;
-import com.google.sps.utilities.Constants;
+import com.google.sps.utilities.CommonUtils;
+import com.google.sps.utilities.DatabaseConstants;
 import com.google.sps.utilities.DatabaseWrapper;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Set;
 import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,29 +21,31 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/profile-update")
 public class UserProfileUpdateServlet extends HttpServlet {
   private static final String email = UserServiceFactory.getUserService().getCurrentUser().getEmail();
-  private DatabaseWrapper databaseWrapper = new DatabaseWrapper(Constants.DB_INSTANCEID, Constants.DB_DATABASEID);
+  private DatabaseWrapper databaseWrapper = new DatabaseWrapper(DatabaseConstants.DB_INSTANCEID, DatabaseConstants.DB_DATABASEID);
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    User user = databaseWrapper.readUserFromEmail(email);
+    Optional<User> userOptional = databaseWrapper.readUserFromEmail(email);
+    if (!userOptional.isPresent()) {
+      String userJson = Json.createObjectBuilder()
+          .add("name", "anonymous")
+          .add("email", email)
+          .add("interests", CommonUtils.createJsonArray(new HashSet<>()))
+          .add("skills", CommonUtils.createJsonArray(new HashSet<>()))
+          .build()
+          .toString();
+    }
+    User user = userOptional.get();
     String userJson = Json.createObjectBuilder()
         .add("name", user.getName())
         .add("email", email)
-        .add("interests", createJsonArray(user.getInterests()))
-        .add("skills", createJsonArray(user.getSkills()))
+        .add("interests", CommonUtils.createJsonArray(user.getInterests()))
+        .add("skills", CommonUtils.createJsonArray(user.getSkills()))
         .build()
         .toString();
     response.setContentType("application/json;");
     response.setCharacterEncoding("UTF-8");
     response.getWriter().println(userJson);
-  }
-
-  public JsonArray createJsonArray(Set<String> elements) {
-    JsonArrayBuilder builder = Json.createArrayBuilder();
-    for (String element : elements) {
-      builder.add(element);
-    }
-    return builder.build();
   }
 
   @Override

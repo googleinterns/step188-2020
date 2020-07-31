@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class DatabaseWrapper {
@@ -38,12 +39,12 @@ public class DatabaseWrapper {
     DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
     DatabaseClient dbClient = spanner.getDatabaseClient(db);
 
-    List<Mutation> mutations = getMutationsFromBuilder(Mutation.newInsertOrUpdateBuilder(USER_TABLE), user);
+    List<Mutation> mutations = getUserMutationsFromBuilder(Mutation.newInsertOrUpdateBuilder(USER_TABLE), user);
     dbClient.write(mutations);
     spanner.close();
   }
 
-  public User readUserFromEmail(String email) {
+  public Optional<User> readUserFromEmail(String email) {
     // Given an email, return the corresponding user from the DB
     SpannerOptions options = SpannerOptions.newBuilder().build();
     Spanner spanner = options.getService();
@@ -55,17 +56,17 @@ public class DatabaseWrapper {
             .executeQuery(Statement.of(String.format("SELECT Name, Interests, Skills, EventsHosting, EventsParticipating, EventsVolunteering FROM %s WHERE Email='%s'", USER_TABLE, email)));
 
     if (!resultSet.next()) {
-      return new User.Builder(/* name = */ "anonymous", /* email = */ email).build();
+      return Optional.empty();
     }
 
-    return
+    return Optional.of(
         new User.Builder(/* name = */ resultSet.getString(0), /* email = */ email)
             .setInterests(new HashSet<String>(resultSet.getStringList(1)))
             .setSkills(new HashSet<String>(resultSet.getStringList(2)))
             .setEventsHosting(getEventsFromIds(resultSet.getStringList(3)))
             .setEventsParticipating(getEventsFromIds(resultSet.getStringList(4)))
             .setEventsVolunteering(getEventsFromIds(resultSet.getStringList(5)))
-            .build();
+            .build());
   }
 
   private static Set<Event> getEventsFromIds(List<String> ids) {
@@ -76,7 +77,11 @@ public class DatabaseWrapper {
     return events;
   }
 
-  private static List<Mutation> getMutationsFromBuilder(Mutation.WriteBuilder builder, User user) {
+  private static Event readEventFromId(String id) {
+    return new Event.Builder("bob event", "bob description", new HashSet<>(), "bob location", LocalDate.of(2020, 1, 8), new User.Builder("bob", "bob email").build()).build();
+  }
+
+  private static List<Mutation> getUserMutationsFromBuilder(Mutation.WriteBuilder builder, User user) {
     List<Mutation> mutations = new ArrayList<>();
     builder
         .set("Name")
