@@ -29,18 +29,14 @@ public final class CommonUtilsTest extends Mockito {
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.setParameter(NAME, NAME_VALUE);
 
-    String actualParameterValue = CommonUtils.getParameter(request, NAME, StringUtils.EMPTY);
-
-    Assert.assertEquals(NAME_VALUE, actualParameterValue);
+    Assert.assertEquals(NAME_VALUE, CommonUtils.getParameter(request, NAME, StringUtils.EMPTY));
   }
 
   @Test
   public void getParameterWithoutValueReturnDefaultValue() {
     MockHttpServletRequest request = new MockHttpServletRequest();
 
-    String actualParameterValue = CommonUtils.getParameter(request, NAME, StringUtils.EMPTY);
-
-    Assert.assertEquals(StringUtils.EMPTY, actualParameterValue);
+    Assert.assertEquals(StringUtils.EMPTY, CommonUtils.getParameter(request, NAME, StringUtils.EMPTY));
   }
 
   @Test
@@ -48,9 +44,7 @@ public final class CommonUtilsTest extends Mockito {
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.setParameter(NAME, NONEMPTY_VALUES);
 
-    Set<String> actualParameterValues = CommonUtils.getParameterValues(request, NAME);
-
-    MatcherAssert.assertThat(actualParameterValues, Matchers.contains(JOE, JAMES));
+    MatcherAssert.assertThat(CommonUtils.getParameterValues(request, NAME), Matchers.contains(JOE, JAMES));
   }
 
   @Test
@@ -58,9 +52,7 @@ public final class CommonUtilsTest extends Mockito {
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.setParameter(NAME, SOME_EMPTY_VALUES);
 
-    Set<String> actualParameterValues = CommonUtils.getParameterValues(request, NAME);
-
-    MatcherAssert.assertThat(actualParameterValues, Matchers.contains(JOE));
+    MatcherAssert.assertThat(CommonUtils.getParameterValues(request, NAME), Matchers.contains(JOE));
   }
 
   @Test
@@ -68,8 +60,6 @@ public final class CommonUtilsTest extends Mockito {
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.setParameter(NAME, EMPTY_VALUES);
 
-    Set<String> actualParameterValues = CommonUtils.getParameterValues(request, NAME);
-
-    Assert.assertTrue(actualParameterValues.isEmpty());
+    Assert.assertTrue(CommonUtils.getParameterValues(request, NAME).isEmpty());
   }
 }
