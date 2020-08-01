@@ -1,0 +1,25 @@
+.card {
+  margin-top: 20%;
+}
+.card-title {
+  text-align: center;
+}
+
+.btn-primary {
+  margin: auto;
+  margin-bottom: 2%;
+}
+.close {
+  margin: 2% 2% 0 0;
+  text-align: right;
+}
+
+.card-body {
+  margin: auto;
+  width: 80%;
+}
+
+.btn-primary a {
+  color: white;
+  text-align: center;
+}

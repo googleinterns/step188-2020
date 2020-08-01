@@ -28,8 +28,16 @@ public class EventCreationServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String eventId = request.getParameter("eventId");
     DatabaseWrapper dbWrapper = new DatabaseWrapper("step-188-instance", "event-organizer-db");
-    Event event = dbWrapper.getEventById(eventId).get().toBuilder().setId(eventId).build();
+    Optional<Event> eventOptional = dbWrapper.getEventById(eventId);
+    Event event;
 
+    // If event DNE, should never happen because backend passes Ids
+    if (!eventOptional.isPresent()) {
+        event = new Event.Builder("ERROR: This event does not exist", "", new HashSet<String>(), "", null, null).build();
+    } else {
+        event = eventOptional.get().toBuilder().setId(eventId).build();
+    }
+    
     response.setContentType("text/html;");
     response.getWriter().println(new Gson().toJson(event));
   }
@@ -38,15 +46,8 @@ public class EventCreationServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String name = request.getParameter("name");
-
-    // TO DO: throw exception in frontend, get from not hardcoded
-    Date date = Date.fromYearMonthDay(2016, 9, 15);
-    // try {
-    //     date = new SimpleDateFormat("dd/MM/yyyy").parse(request.getParameter("date"));
-    // } catch (ParseException e) {
-    //     e.printStackTrace();
-    // }
-
+    String[] parsedDate = request.getParameter("date").split("/");
+    Date date = Date.fromYearMonthDay(Integer.parseInt(parsedDate[2]), Integer.parseInt(parsedDate[1]), Integer.parseInt(parsedDate[0]));
     String description = request.getParameter("description");
     String location = request.getParameter("location");
     Set<String> labels = Collections.unmodifiableSet(new HashSet<>(

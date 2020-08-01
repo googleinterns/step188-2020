@@ -101,7 +101,7 @@ public class DatabaseWrapper {
     
     /** If ID does not exist */
     if (!resultSet.next()) {
-      Optional.empty();
+      return Optional.empty();
     }
 
     // TO DO: replace with host from db, after PR #43 pushed
