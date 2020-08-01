@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/** Servlet that handles submission of the form for creating volunteering opportunities. */
 @WebServlet("/volunteering-form-handler")
 public class VolunteeringFormHandlerServlet extends HttpServlet {
   private static final String OPPORTUNITY_NAME = "opportunity-name";
