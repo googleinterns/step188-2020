@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 public class UserProfileUpdateServlet extends HttpServlet {
   private static final String email =
       UserServiceFactory.getUserService().getCurrentUser().getEmail();
-  private DatabaseWrapper databaseWrapper =
+  private static final DatabaseWrapper databaseWrapper =
       new DatabaseWrapper(DatabaseConstants.INSTANCE_ID, DatabaseConstants.DATABASE_ID);
 
   /** Writes out information for the user corresponding to the logged-in email */
