@@ -3,12 +3,17 @@ package com.google.sps.utilities;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Mutation;
+import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
+import com.google.cloud.spanner.Statement;
 import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DatabaseWrapper {
   private String instanceId;
@@ -122,5 +127,44 @@ public class DatabaseWrapper {
         .toStringArray(opportunity.getRequiredSkills());
     mutations.add(builder.build());
     return mutations;
+  }
+
+  /**
+   * Given an eventId, retrieve all volunteering opportunities for that eventId
+   *
+   * @param eventId eventId for the event to retrieve volunteering opportunities for
+   * @return volunteering opportunties with given eventId
+   */
+  public Set<VolunteeringOpportunity> getVolunteeringOpportunitesForEventId(String eventId) {
+    SpannerOptions options = SpannerOptions.newBuilder().build();
+    Spanner spanner = options.getService();
+    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
+    DatabaseClient dbClient = spanner.getDatabaseClient(db);
+
+    Set<VolunteeringOpportunity> results = new HashSet<VolunteeringOpportunity>();
+    try (ResultSet resultSet =
+        dbClient
+            .singleUse()
+            .executeQuery(
+                Statement.of(
+                    String.format(
+                        "SELECT VolunteeringOpportunityID, Name, NumSpotsLeft, RequiredSkills FROM"
+                            + " VolunteeringOpportunity WHERE EventID=\"%s\"",
+                        eventId)))) {
+      while (resultSet.next()) {
+        String opportunityId = resultSet.getString(0);
+        String name = resultSet.getString(1);
+        int numberOfSpots = (int) resultSet.getLong(2);
+        Set<String> requiredSkills =
+            resultSet.getStringList(3).stream().collect(Collectors.toSet());
+        results.add(
+            new VolunteeringOpportunity.Builder(eventId, name, numberOfSpots)
+                .setOpportunityId(opportunityId)
+                .setRequiredSkills(requiredSkills)
+                .build());
+      }
+    }
+    spanner.close();
+    return results;
   }
 }
