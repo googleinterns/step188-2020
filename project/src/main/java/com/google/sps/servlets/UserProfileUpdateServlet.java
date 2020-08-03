@@ -27,9 +27,11 @@ public class UserProfileUpdateServlet extends HttpServlet {
   /** Writes out information for the user corresponding to the logged-in email */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // TODO: Add tests for this once test setup is ready
     Optional<User> userOptional = databaseWrapper.readUserFromEmail(email);
+    String userJson;
     if (!userOptional.isPresent()) {
-      String userJson =
+      userJson =
           Json.createObjectBuilder()
               .add("name", "anonymous")
               .add("email", email)
@@ -37,16 +39,17 @@ public class UserProfileUpdateServlet extends HttpServlet {
               .add("skills", CommonUtils.createJsonArray(new HashSet<>()))
               .build()
               .toString();
+    } else {
+      User user = userOptional.get();
+      userJson =
+          Json.createObjectBuilder()
+              .add("name", user.getName())
+              .add("email", email)
+              .add("interests", CommonUtils.createJsonArray(user.getInterests()))
+              .add("skills", CommonUtils.createJsonArray(user.getSkills()))
+              .build()
+              .toString();
     }
-    User user = userOptional.get();
-    String userJson =
-        Json.createObjectBuilder()
-            .add("name", user.getName())
-            .add("email", email)
-            .add("interests", CommonUtils.createJsonArray(user.getInterests()))
-            .add("skills", CommonUtils.createJsonArray(user.getSkills()))
-            .build()
-            .toString();
     response.setContentType("application/json;");
     response.setCharacterEncoding("UTF-8");
     response.getWriter().println(userJson);

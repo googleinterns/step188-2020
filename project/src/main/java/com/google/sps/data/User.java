@@ -1,5 +1,6 @@
 package com.google.sps.data;
 
+import java.util.stream.Collectors;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -172,39 +173,24 @@ public final class User {
     return this.eventsHosting;
   }
 
-  /** Returns a Set of eventHosting Id fields */
   public Set<String> getEventsHostingIds() {
-    Set<String> eventIds = new HashSet<>();
-    for (Event event : this.eventsHosting) {
-      eventIds.add(event.getId());
-    }
-    return eventIds;
+    return eventsHosting.stream().map(Event::getId).collect(Collectors.toSet());
   }
 
   public Set<Event> getEventsParticipating() {
     return this.eventsParticipating;
   }
 
-  /** Returns a Set of eventParticipating Id fields */
   public Set<String> getEventsParticipatingIds() {
-    Set<String> eventIds = new HashSet<>();
-    for (Event event : this.eventsParticipating) {
-      eventIds.add(event.getId());
-    }
-    return eventIds;
+    return eventsParticipating.stream().map(Event::getId).collect(Collectors.toSet());
   }
 
   public Set<Event> getEventsVolunteering() {
     return this.eventsVolunteering;
   }
 
-  /** Returns a Set of eventVolunteering Id fields */
   public Set<String> getEventsVolunteeringIds() {
-    Set<String> eventIds = new HashSet<>();
-    for (Event event : this.eventsVolunteering) {
-      eventIds.add(event.getId());
-    }
-    return eventIds;
+    return eventsVolunteering.stream().map(Event::getId).collect(Collectors.toSet());
   }
 
   public Builder toBuilder() {
