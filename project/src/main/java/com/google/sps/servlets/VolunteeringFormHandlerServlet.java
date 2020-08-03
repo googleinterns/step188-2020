@@ -25,19 +25,15 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String opportunityId = request.getParameter(OPPORTUNITY_ID);
-    String name =
-        CommonUtils.getParameter(request, NAME, /* DefaultValue= */ "");
-    long numSpotsLeft =
-        Long.parseLong(
-            CommonUtils.getParameter(request, NUM_SPOTS_LEFT, /* DefaultValue= */ "0"));
+    String name = CommonUtils.getParameter(request, NAME, /* DefaultValue= */ "");
+    long numSpotsLeft = Long.parseLong(CommonUtils.getParameter(request, NUM_SPOTS_LEFT, /* DefaultValue= */ "0"));
     Set<String> requiredSkills = CommonUtils.getParameterValues(request, REQUIRED_SKILL);
 
     // If opportunityId is not passed as a parameter, perform an insert else perform an update
     if (opportunityId == null) {
       insertVolunteeringOpportunityInDB(name, numSpotsLeft, requiredSkills);
     } else {
-      updateVolunteeringOpportunityInDB(
-          opportunityId, name, numSpotsLeft, requiredSkills);
+      updateVolunteeringOpportunityInDB(opportunityId, name, numSpotsLeft, requiredSkills);
     }
 
     response.sendRedirect("/events-feed.html");
@@ -46,22 +42,16 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
   private static void insertVolunteeringOpportunityInDB(
       String name, long numSpotsLeft, Set<String> requiredSkills) {
     VolunteeringOpportunity opportunity =
-        new VolunteeringOpportunity.Builder(
-                HARDCODED_EVENT_ID, name, numSpotsLeft)
+        new VolunteeringOpportunity.Builder(HARDCODED_EVENT_ID, name, numSpotsLeft)
             .setRequiredSkills(requiredSkills)
             .build();
     // TO DO: change eventId to parameter value
     databaseWrapper.insertVolunteeringOpportunity(opportunity);
   }
 
-  private static void updateVolunteeringOpportunityInDB(
-      String opportunityId,
-      String name,
-      long numSpotsLeft,
-      Set<String> requiredSkills) {
+  private static void updateVolunteeringOpportunityInDB(String opportunityId, String name, long numSpotsLeft, Set<String> requiredSkills) {
     VolunteeringOpportunity opportunity =
-        new VolunteeringOpportunity.Builder(
-                HARDCODED_EVENT_ID, name, numSpotsLeft)
+        new VolunteeringOpportunity.Builder(HARDCODED_EVENT_ID, name, numSpotsLeft)
             .setOpportunityId(opportunityId)
             .setRequiredSkills(requiredSkills)
             .build();
