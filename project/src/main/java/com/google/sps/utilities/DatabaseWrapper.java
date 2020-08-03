@@ -155,12 +155,12 @@ public class DatabaseWrapper {
       if (resultSet.next()) {
         String eventId = resultSet.getString(0);
         String name = resultSet.getString(1);
-        long numberOfSpots = resultSet.getLong(2);
+        long numSpotsLeft = resultSet.getLong(2);
         Set<String> requiredSkills =
             resultSet.getStringList(3).stream().collect(Collectors.toSet());
         result =
             Optional.of(
-                new VolunteeringOpportunity.Builder(eventId, name, numberOfSpots)
+                new VolunteeringOpportunity.Builder(eventId, name, numSpotsLeft)
                     .setOpportunityId(opportunityId)
                     .setRequiredSkills(requiredSkills)
                     .build());
