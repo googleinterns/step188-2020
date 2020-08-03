@@ -23,7 +23,7 @@ public class VolunteeringOpportunityDataServlet extends HttpServlet {
     String opportunityId = request.getParameter(OPPORTUNITY_ID);
 
     Optional<VolunteeringOpportunity> opportunity =
-        databaseWrapper.getVolunteeringOpportunityForOppportunityId(opportunityId);
+        databaseWrapper.getVolunteeringOpportunityByOppportunityId(opportunityId);
 
     if (opportunity.isEmpty()) {
       response.setContentType("text/html;");

@@ -135,7 +135,7 @@ public class DatabaseWrapper {
    * @param opportunityId opportunityId of the opportunity to retrieve
    * @return volunteering opportunity wrapped in a {@link Optional}
    */
-  public Optional<VolunteeringOpportunity> getVolunteeringOpportunityForOppportunityId(
+  public Optional<VolunteeringOpportunity> getVolunteeringOpportunityByOppportunityId(
       String opportunityId) {
     SpannerOptions options = SpannerOptions.newBuilder().build();
     Spanner spanner = options.getService();
