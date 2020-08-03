@@ -145,12 +145,11 @@ public class DatabaseWrapper {
     Optional<VolunteeringOpportunity> result = Optional.empty();
     Statement statement =
         Statement.of(
-            String.format("SELECT EventID, Name, NumSpotsLeft, RequiredSkills FROM"
-                + " VolunteeringOpportunity WHERE VolunteeringOpportunityID=\"%s\"", opportunityId));
-    try (ResultSet resultSet =
-        dbClient
-            .singleUse()
-            .executeQuery(statement)) {
+            String.format(
+                "SELECT EventID, Name, NumSpotsLeft, RequiredSkills FROM"
+                    + " VolunteeringOpportunity WHERE VolunteeringOpportunityID=\"%s\"",
+                opportunityId));
+    try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
       if (resultSet.next()) {
         String eventId = resultSet.getString(0);
         String name = resultSet.getString(1);
