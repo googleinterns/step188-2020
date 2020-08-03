@@ -12,15 +12,11 @@ import java.util.List;
 public class DatabaseWrapper {
   private String instanceId;
   private String databaseId;
-  private Spanner spanner;
-  private DatabaseClient dbClient;
+  private final DatabaseService databaseService;
   private static final String USER_TABLE = "Users";
 
-  public DatabaseWrapper(String instanceId, String databaseId) {
-    SpannerOptions options = SpannerOptions.newBuilder().build();
-    spanner = options.getService();
-    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
-    dbClient = spanner.getDatabaseClient(db);
+  public DatabaseWrapper(DatabaseService databaseService) {
+    this.databaseService = databaseService;
   }
 
   /**
@@ -30,8 +26,8 @@ public class DatabaseWrapper {
    */
   public void insertUser(User user) {
     List<Mutation> mutations = getMutationsFromBuilder(newInsertBuilderFromUser(), user);
-    dbClient.write(mutations);
-    spanner.close();
+    databaseService.getDatabaseClient().write(mutations);
+    databaseService.getSpanner().close();
   }
 
   /**
@@ -42,8 +38,8 @@ public class DatabaseWrapper {
   public void updateUser(User user) {
     // Given a user, update its corresponding row's new fields in DB
     List<Mutation> mutations = getMutationsFromBuilder(newUpdateBuilderFromUser(), user);
-    dbClient.write(mutations);
-    spanner.close();
+    databaseService.getDatabaseClient().write(mutations);
+    databaseService.getSpanner().close();
   }
 
   private static Mutation.WriteBuilder newInsertBuilderFromUser() {
@@ -79,6 +75,6 @@ public class DatabaseWrapper {
 
   /** Close the Spanner database connection. */
   public void closeConnection() {
-    spanner.close();
+    databaseService.getSpanner().close();
   }
 }
