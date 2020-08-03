@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet to get all volunteering data for a given event */
-@WebServlet("/")
+@WebServlet("/event-volunteering-data")
 public class EventVolunteeringDataServlet extends HttpServlet {
   private static final String HARDCODED_EVENT_ID = "0883de79-17d7-49a3-a866-dbd5135062a8";
   private static final DatabaseWrapper databaseWrapper =
