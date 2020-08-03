@@ -77,9 +77,7 @@ public class DatabaseWrapper {
     return mutations;
   }
 
-  /**
-   * Close the Spanner database connection.
-   */
+  /** Close the Spanner database connection. */
   public void closeConnection() {
     spanner.close();
   }
