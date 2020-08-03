@@ -12,11 +12,15 @@ import java.util.List;
 public class DatabaseWrapper {
   private String instanceId;
   private String databaseId;
+  private Spanner spanner;
+  private DatabaseClient dbClient;
   private static final String USER_TABLE = "Users";
 
   public DatabaseWrapper(String instanceId, String databaseId) {
-    this.instanceId = instanceId;
-    this.databaseId = databaseId;
+    SpannerOptions options = SpannerOptions.newBuilder().build();
+    spanner = options.getService();
+    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
+    dbClient = spanner.getDatabaseClient(db);
   }
 
   /**
@@ -25,11 +29,6 @@ public class DatabaseWrapper {
    * @param user the user to be inserted; user's ID field should not exist in DB
    */
   public void insertUser(User user) {
-    SpannerOptions options = SpannerOptions.newBuilder().build();
-    Spanner spanner = options.getService();
-    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
-    DatabaseClient dbClient = spanner.getDatabaseClient(db);
-
     List<Mutation> mutations = getMutationsFromBuilder(newInsertBuilderFromUser(), user);
     dbClient.write(mutations);
     spanner.close();
@@ -42,11 +41,6 @@ public class DatabaseWrapper {
    */
   public void updateUser(User user) {
     // Given a user, update its corresponding row's new fields in DB
-    SpannerOptions options = SpannerOptions.newBuilder().build();
-    Spanner spanner = options.getService();
-    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
-    DatabaseClient dbClient = spanner.getDatabaseClient(db);
-
     List<Mutation> mutations = getMutationsFromBuilder(newUpdateBuilderFromUser(), user);
     dbClient.write(mutations);
     spanner.close();
@@ -81,5 +75,12 @@ public class DatabaseWrapper {
         .toInt64Array(user.getEventsVolunteeringIds());
     mutations.add(builder.build());
     return mutations;
+  }
+
+  /**
+   * Close the Spanner database connection.
+   */
+  public void closeConnection() {
+    spanner.close();
   }
 }
