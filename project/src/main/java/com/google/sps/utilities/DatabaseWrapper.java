@@ -154,7 +154,7 @@ public class DatabaseWrapper {
       while (resultSet.next()) {
         String opportunityId = resultSet.getString(0);
         String name = resultSet.getString(1);
-        int numberOfSpots = (int) resultSet.getLong(2);
+        long numberOfSpots = resultSet.getLong(2);
         Set<String> requiredSkills =
             resultSet.getStringList(3).stream().collect(Collectors.toSet());
         results.add(
