@@ -15,9 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/volunteering-form-handler")
 public class VolunteeringFormHandlerServlet extends HttpServlet {
   private static final String OPPORTUNITY_ID = "opportunity-id";
-  private static final String OPPORTUNITY_NAME = "opportunity-name";
-  private static final String OPPORTUNITY_NUM_SPOTS = "opportunity-num-spots";
-  private static final String SKILL = "skill";
+  private static final String NAME = "name";
+  private static final String NUM_SPOTS_LEFT = "num-spots-left";
+  private static final String REQUIRED_SKILL = "required-skill";
   private static final String HARDCODED_EVENT_ID = "0883de79-17d7-49a3-a866-dbd5135062a8";
   private static final DatabaseWrapper databaseWrapper =
       new DatabaseWrapper(DatabaseConstants.INSTANCE_ID, DatabaseConstants.DATABASE_ID);
@@ -25,28 +25,28 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String opportunityId = request.getParameter(OPPORTUNITY_ID);
-    String opportunityName =
-        CommonUtils.getParameter(request, OPPORTUNITY_NAME, /* DefaultValue= */ "");
-    int opportunityNumberOfSpots =
-        Integer.parseInt(
-            CommonUtils.getParameter(request, OPPORTUNITY_NUM_SPOTS, /* DefaultValue= */ "0"));
-    Set<String> skills = CommonUtils.getParameterValues(request, SKILL);
+    String name =
+        CommonUtils.getParameter(request, NAME, /* DefaultValue= */ "");
+    long numSpotsLeft =
+        Long.parseLong(
+            CommonUtils.getParameter(request, NUM_SPOTS_LEFT, /* DefaultValue= */ "0"));
+    Set<String> requiredSkills = CommonUtils.getParameterValues(request, REQUIRED_SKILL);
 
     // If opportunityId is not passed as a parameter, perform an insert else perform an update
     if (opportunityId == null)
-      insertVolunteeringOpportunityInDB(opportunityName, opportunityNumberOfSpots, skills);
+      insertVolunteeringOpportunityInDB(name, numSpotsLeft, requiredSkills);
     else
       updateVolunteeringOpportunityInDB(
-          opportunityId, opportunityName, opportunityNumberOfSpots, skills);
+          opportunityId, name, numSpotsLeft, requiredSkills);
 
     response.sendRedirect("/events-feed.html");
   }
 
   private static void insertVolunteeringOpportunityInDB(
-      String opportunityName, int opportunityNumberOfSpots, Set<String> requiredSkills) {
+      String name, long numSpotsLeft, Set<String> requiredSkills) {
     VolunteeringOpportunity opportunity =
         new VolunteeringOpportunity.Builder(
-                HARDCODED_EVENT_ID, opportunityName, opportunityNumberOfSpots)
+                HARDCODED_EVENT_ID, name, numSpotsLeft)
             .setRequiredSkills(requiredSkills)
             .build();
     // TO DO: change eventId to parameter value
@@ -55,12 +55,12 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
 
   private static void updateVolunteeringOpportunityInDB(
       String opportunityId,
-      String opportunityName,
-      int opportunityNumberOfSpots,
+      String name,
+      long numSpotsLeft,
       Set<String> requiredSkills) {
     VolunteeringOpportunity opportunity =
         new VolunteeringOpportunity.Builder(
-                HARDCODED_EVENT_ID, opportunityName, opportunityNumberOfSpots)
+                HARDCODED_EVENT_ID, name, numSpotsLeft)
             .setOpportunityId(opportunityId)
             .setRequiredSkills(requiredSkills)
             .build();

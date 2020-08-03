@@ -9,6 +9,6 @@ $(document).ready(function() {
  * @return {string}
  */
 function getInputFieldForSkill() {
-  return `<input type="text" name="skill" placeholder="Enter a skill" \
+  return `<input type="text" name="required-skill" placeholder="Enter a skill" \
   class="form-control" ></tr>`;
 }
