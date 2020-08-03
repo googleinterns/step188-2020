@@ -143,15 +143,14 @@ public class DatabaseWrapper {
     DatabaseClient dbClient = spanner.getDatabaseClient(db);
 
     Optional<VolunteeringOpportunity> result = Optional.empty();
+    Statement statement =
+        Statement.of(
+            String.format("SELECT EventID, Name, NumSpotsLeft, RequiredSkills FROM"
+                + " VolunteeringOpportunity WHERE VolunteeringOpportunityID=\"%s\"", opportunityId));
     try (ResultSet resultSet =
         dbClient
             .singleUse()
-            .executeQuery(
-                Statement.of(
-                    String.format(
-                        "SELECT EventID, Name, NumSpotsLeft, RequiredSkills FROM"
-                            + " VolunteeringOpportunity WHERE VolunteeringOpportunityID=\"%s\"",
-                        opportunityId)))) {
+            .executeQuery(statement)) {
       if (resultSet.next()) {
         String eventId = resultSet.getString(0);
         String name = resultSet.getString(1);
