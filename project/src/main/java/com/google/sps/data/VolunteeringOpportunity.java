@@ -31,6 +31,11 @@ public final class VolunteeringOpportunity {
       this.volunteers = new HashSet<>();
     }
 
+    public Builder setOpportunityId(String opportunityId) {
+      this.opportunityId = opportunityId;
+      return this;
+    }
+
     public Builder setName(String name) {
       this.name = name;
       return this;
