@@ -146,7 +146,7 @@ public class DatabaseWrapper {
         Statement.of(
             String.format(
                 "SELECT VolunteeringOpportunityID, Name, NumSpotsLeft, RequiredSkills FROM"
-                    + " VolunteeringOpportunity WHERE EventID=\"%s\"", 
+                    + " VolunteeringOpportunity WHERE EventID=\"%s\"",
                 eventId));
     try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
       while (resultSet.next()) {
