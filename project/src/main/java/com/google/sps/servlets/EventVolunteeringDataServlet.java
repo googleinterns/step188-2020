@@ -22,7 +22,7 @@ public class EventVolunteeringDataServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TO DO: change eventId to parameter value
     Set<VolunteeringOpportunity> opportunities =
-        databaseWrapper.getVolunteeringOpportunitesForEventId(HARDCODED_EVENT_ID);
+        databaseWrapper.getVolunteeringOpportunitiesByEventId(HARDCODED_EVENT_ID);
 
     response.setContentType("application/json;");
     response.getWriter().println(CommonUtils.convertToJson(opportunities));

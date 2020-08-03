@@ -135,22 +135,19 @@ public class DatabaseWrapper {
    * @param eventId eventId for the event to retrieve volunteering opportunities for
    * @return volunteering opportunties with given eventId
    */
-  public Set<VolunteeringOpportunity> getVolunteeringOpportunitesForEventId(String eventId) {
+  public Set<VolunteeringOpportunity> getVolunteeringOpportunitiesByEventId(String eventId) {
     SpannerOptions options = SpannerOptions.newBuilder().build();
     Spanner spanner = options.getService();
     DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
     DatabaseClient dbClient = spanner.getDatabaseClient(db);
 
     Set<VolunteeringOpportunity> results = new HashSet<VolunteeringOpportunity>();
-    try (ResultSet resultSet =
-        dbClient
-            .singleUse()
-            .executeQuery(
-                Statement.of(
-                    String.format(
-                        "SELECT VolunteeringOpportunityID, Name, NumSpotsLeft, RequiredSkills FROM"
-                            + " VolunteeringOpportunity WHERE EventID=\"%s\"",
-                        eventId)))) {
+    Statement statement =
+        Statement.of(
+            String.format(
+                "SELECT VolunteeringOpportunityID, Name, NumSpotsLeft, RequiredSkills FROM"
+                    + " VolunteeringOpportunity WHERE EventID=\"%s\"", eventId));
+    try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
       while (resultSet.next()) {
         String opportunityId = resultSet.getString(0);
         String name = resultSet.getString(1);
