@@ -1,8 +1,8 @@
 package com.google.sps.data;
 
-import java.util.stream.Collectors;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public final class User {
   private String name;
