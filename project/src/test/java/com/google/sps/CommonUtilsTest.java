@@ -8,16 +8,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-/** */
 @RunWith(JUnit4.class)
 public final class CommonUtilsTest {
   private static final String NAME = "Name";
   private static final String NAME_VALUE = "Bob";
   private static final String JOE = "Joe";
   private static final String JAMES = "James";
-  private static final String[] NONEMPTY_VALUES = {JOE, JAMES};
-  private static final String[] SOME_EMPTY_VALUES = {JOE, ""};
-  private static final String[] EMPTY_VALUES = {"", ""};
 
   @Test
   public void getParameterWithValueReturnValue() {
@@ -38,7 +34,8 @@ public final class CommonUtilsTest {
   @Test
   public void getParameterWithNonemptyValuesReturnValues() {
     MockHttpServletRequest request = new MockHttpServletRequest();
-    request.setParameter(NAME, NONEMPTY_VALUES);
+    String[] nameValues = {JOE, JAMES};
+    request.setParameter(NAME, nameValues);
 
     MatcherAssert.assertThat(
         CommonUtils.getParameterValues(request, NAME), Matchers.contains(JOE, JAMES));
@@ -47,7 +44,8 @@ public final class CommonUtilsTest {
   @Test
   public void getParameterWithFewEmptyValuesReturnNonemptyValues() {
     MockHttpServletRequest request = new MockHttpServletRequest();
-    request.setParameter(NAME, SOME_EMPTY_VALUES);
+    String[] nameValues = {JOE, ""};
+    request.setParameter(NAME, nameValues);
 
     MatcherAssert.assertThat(CommonUtils.getParameterValues(request, NAME), Matchers.contains(JOE));
   }
@@ -55,7 +53,8 @@ public final class CommonUtilsTest {
   @Test
   public void getParameterWithAllEmptyValuesReturnEmptySet() {
     MockHttpServletRequest request = new MockHttpServletRequest();
-    request.setParameter(NAME, EMPTY_VALUES);
+    String[] nameValues = {"", ""};
+    request.setParameter(NAME, nameValues);
 
     Assert.assertTrue(CommonUtils.getParameterValues(request, NAME).isEmpty());
   }
