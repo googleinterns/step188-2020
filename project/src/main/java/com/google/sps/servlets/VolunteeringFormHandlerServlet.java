@@ -33,11 +33,12 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
     Set<String> requiredSkills = CommonUtils.getParameterValues(request, REQUIRED_SKILL);
 
     // If opportunityId is not passed as a parameter, perform an insert else perform an update
-    if (opportunityId == null)
+    if (opportunityId == null) {
       insertVolunteeringOpportunityInDB(name, numSpotsLeft, requiredSkills);
-    else
+    } else {
       updateVolunteeringOpportunityInDB(
           opportunityId, name, numSpotsLeft, requiredSkills);
+    }
 
     response.sendRedirect("/events-feed.html");
   }
