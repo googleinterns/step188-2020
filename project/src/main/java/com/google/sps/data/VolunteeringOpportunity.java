@@ -8,7 +8,7 @@ public final class VolunteeringOpportunity {
   private String opportunityId;
   private String eventId;
   private String name;
-  private int numSpotsLeft;
+  private long numSpotsLeft;
   private Set<String> requiredSkills;
   private Set<User> volunteers;
 
@@ -17,13 +17,13 @@ public final class VolunteeringOpportunity {
     private String opportunityId = UUID.randomUUID().toString();
     private String eventId;
     private String name;
-    private int numSpotsLeft;
+    private long numSpotsLeft;
 
     // Optional parameters
     private Set<String> requiredSkills;
     private Set<User> volunteers;
 
-    public Builder(String eventId, String name, int numSpotsLeft) {
+    public Builder(String eventId, String name, long numSpotsLeft) {
       this.eventId = eventId;
       this.name = name;
       this.numSpotsLeft = numSpotsLeft;
@@ -41,7 +41,7 @@ public final class VolunteeringOpportunity {
       return this;
     }
 
-    public Builder setNumSpotsLeft(int numSpotsLeft) {
+    public Builder setNumSpotsLeft(long numSpotsLeft) {
       this.numSpotsLeft = numSpotsLeft;
       return this;
     }
@@ -121,7 +121,7 @@ public final class VolunteeringOpportunity {
     return this.requiredSkills;
   }
 
-  public int getNumSpotsLeft() {
+  public long getNumSpotsLeft() {
     return this.numSpotsLeft;
   }
 
