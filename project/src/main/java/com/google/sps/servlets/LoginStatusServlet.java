@@ -34,9 +34,9 @@ public class LoginStatusServlet extends HttpServlet {
     response.getWriter().println(CommonUtils.convertToJson(status));
   }
 
-  private class LoginStatus {
-    private boolean isLoggedIn;
-    private String userEmail;
+  private final class LoginStatus {
+    private final boolean isLoggedIn;
+    private final String userEmail;
 
     public LoginStatus(boolean isLoggedIn, String userEmail) {
       this.isLoggedIn = isLoggedIn;
