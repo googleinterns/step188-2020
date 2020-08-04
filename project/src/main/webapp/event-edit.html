@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="create-event.css" />
     <script src="script.js"></script>
-    <script src="create-event.js"></script>
+    <script src="event-edit.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <link
@@ -24,7 +24,7 @@
       crossorigin="anonymous"
     ></script>
   </head>
-  <body>
+  <body onload = "getEventDetails()">
     <div id="header"></div>
     <br /><br />
     <h3>Edit Your Event</h3>
@@ -97,7 +97,6 @@
           <input
             type="textarea"
             class="form-control"
-            placeholder="Describe your event!"
             id="description"
             name="description"
             rows="5"
@@ -154,7 +153,7 @@
         type="submit"
         class="btn btn-primary mx-auto d-block"
       >
-        Submit
+        Save
       </button>
     </form>
   </body>
