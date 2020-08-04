@@ -1,6 +1,7 @@
 .card {
   margin-top: 20%;
 }
+
 .card-title {
   text-align: center;
 }
@@ -9,6 +10,7 @@
   margin: auto;
   margin-bottom: 2%;
 }
+
 .close {
   margin: 2% 2% 0 0;
   text-align: right;
@@ -22,4 +24,8 @@
 .btn-primary a {
   color: white;
   text-align: center;
+}
+
+.hidden {
+  display: none;
 }

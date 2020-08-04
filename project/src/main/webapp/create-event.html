@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="create-event.css" />
+    <script src="script.js"></script>
     <script src="create-event.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
@@ -94,11 +95,12 @@
             <span class="input-group-text" id="basic-addon1">Description</span>
           </div>
           <input
-            type="text"
+            type="textarea"
             class="form-control"
             placeholder="Describe your event!"
             id="description"
             name="description"
+            rows="5"
             aria-describedby="basic-addon1"
           />
         </div>
@@ -151,10 +153,7 @@
       <button
         type="submit"
         class="btn btn-primary mx-auto d-block"
-
       >
-              <!-- formmethod="post"
-        onclick="createCustomEvent()" -->
         Submit
       </button>
     </form>
