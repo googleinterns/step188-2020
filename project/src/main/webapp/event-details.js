@@ -4,9 +4,11 @@ window.onload = function onLoad() {
 
 async function getVolunteeringOpportunities() {
     const response = await fetch('/event-volunteering-data');
-    const opportunities = response.json();
-    console.log(opportunities);
-    opportunities.forEach(function(opportunity) {
+    const opportunities = await response.json()
+     console.log(opportunities);
+    const opportunitiesArray = JSON.parse(opportunities);
+   
+    opportunitiesArray.forEach(function(opportunity) {
     console.log(opportunity);
         $('#volunteering-opportunities').append(getInputFieldForOpportunity(opportunity.name, opportunity.numSpotsLeft))
     });
