@@ -7,28 +7,31 @@ window.onload = function onLoad() {
  */
 async function getVolunteeringOpportunities() {
   const response = await fetch('/event-volunteering-data');
-  const opportunities = await response.json()
+  const opportunities = await response.json();
   for (const key in opportunities) {
-    console.log(opportunities[key].name);
-    console.log(opportunities[key].numSpotsLeft);
-    $('#volunteering-opportunities')
-        .append(getInputFieldForOpportunity(
-            opportunities[key].name, opportunities[key].numSpotsLeft,
-            opportunities[key].requiredSkills));
+    if (opportunities.hasOwnProperty(key)) {
+      $('#volunteering-opportunities')
+          .append(getInputFieldForOpportunity(
+              opportunities[key].name, opportunities[key].numSpotsLeft,
+              opportunities[key].requiredSkills));
+    }
   }
 }
 
 /**
  * Return a string for a list HTML element representing an opportunity.
- * @param name name of opportunity
- * @param numSpotsLeft number of spots left for opportunity
- * @param requiredSkills required skills for opportunity
+ * @param {string} name name of opportunity
+ * @param {string} numSpotsLeft number of spots left for opportunity
+ * @param {string[]} required skills for opportunity
  * @return {string}
  */
 function getInputFieldForOpportunity(name, numSpotsLeft, requiredSkills) {
-  requiredSkillsString = requiredSkills.length ? requiredSkills.toString() : "None";
+  requiredSkillsText =
+      requiredSkills.length ? requiredSkills.toString() : 'None';
   return `<li class="list-group-item">
           <p class="card-text">Volunteer Name: ${name}</p>
            <p class="card-text">Volunteer Spots Left: ${numSpotsLeft}</p>
-           <p class="card-text">Required Skills: ${requiredSkillsString}</p></li>`;
+           <p class="card-text">Required Skills: ${
+      requiredSkillsText}</p></li>`;
 }
+
