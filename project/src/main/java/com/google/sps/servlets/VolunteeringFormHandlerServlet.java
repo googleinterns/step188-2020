@@ -23,7 +23,9 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
       new DatabaseWrapper(DatabaseConstants.INSTANCE_ID, DatabaseConstants.DATABASE_ID);
 
   /**
-   * Inserts volunteering opportunity with parameter values for attributes into the database.
+   * Inserts volunteering opportunity with parameter values for attributes into the database
+   * if opportunity ID is not given as a request parameter and updates volunteering opportunity
+   * with the opportunity ID if given as a request parameter.
    *
    * @param request servlet request
    * @param response servlet response
