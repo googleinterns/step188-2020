@@ -2,6 +2,9 @@ window.onload = function onLoad() {
   getVolunteeringOpportunities();
 };
 
+/**
+ * Add the volunteering opportunities to the event card.
+ */
 async function getVolunteeringOpportunities() {
   const response = await fetch('/event-volunteering-data');
   const opportunities = await response.json()
@@ -16,7 +19,7 @@ async function getVolunteeringOpportunities() {
 }
 
 /**
- * Return a list field representing the opportunity
+ * Return a string for a list HTML element representing an opportunity.
  * @param name name of opportunity
  * @param numSpotsLeft number of spots left for opportunity
  * @param requiredSkills required skills for opportunity
