@@ -19,10 +19,10 @@ async function getVolunteeringOpportunities() {
 }
 
 /**
- * Return a string for a list HTML element representing an opportunity.
- * @param {string} name name of opportunity
- * @param {string} numSpotsLeft number of spots left for opportunity
- * @param {string[]} requiredSkills skills for opportunity
+ * Return a string for a list item HTML element for an opportunity.
+ * @param {string} name Name of opportunity.
+ * @param {string} numSpotsLeft Number of spots left for opportunity.
+ * @param {string[]} requiredSkills Skills required for opportunity.
  * @return {string}
  */
 function getListItemForOpportunity(name, numSpotsLeft, requiredSkills) {
