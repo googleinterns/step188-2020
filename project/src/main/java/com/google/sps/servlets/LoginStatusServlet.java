@@ -8,39 +8,30 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns the login status of the user. */
+/** Servlet that returns whether user is logged in and email of the user. */
 @WebServlet("/login-status")
 public class LoginStatusServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
-
-    // Get the current login status.
+    
     LoginStatus status;
     if (UserServiceFactory.getUserService().isUserLoggedIn()) {
-      status = LoginStatus.getLoggedInInstance();
+      status = new LoginStatus(true, UserServiceFactory.getUserService().getCurrentUser().getEmail());
     } else {
-      status = LoginStatus.getNotLoggedInInstance();
+      status = new LoginStatus(false, "");
     }
 
     response.getWriter().println(CommonUtils.convertToJson(status));
   }
 
-  private static class LoginStatus {
-    private static final LoginStatus STATUS_LOGGED_IN = new LoginStatus(true);
-    private static final LoginStatus STATUS_NOT_LOGGED_IN = new LoginStatus(false);
+  private class LoginStatus {
     private boolean isLoggedIn;
+    private String userEmail;
 
-    private LoginStatus(boolean isLoggedIn) {
+    public LoginStatus(boolean isLoggedIn, String userEmail) {
       this.isLoggedIn = isLoggedIn;
-    }
-
-    public static LoginStatus getLoggedInInstance() {
-      return STATUS_LOGGED_IN;
-    }
-
-    public static LoginStatus getNotLoggedInInstance() {
-      return STATUS_NOT_LOGGED_IN;
+      this.userEmail = userEmail;
     }
   }
 }
