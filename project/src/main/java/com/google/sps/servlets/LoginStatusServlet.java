@@ -23,7 +23,6 @@ public class LoginStatusServlet extends HttpServlet {
       status = LoginStatus.getNotLoggedInInstance();
     }
 
-    // Send the JSON as the response.
     response.getWriter().println(CommonUtils.convertToJson(status));
   }
 
