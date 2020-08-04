@@ -5,5 +5,6 @@ import com.google.cloud.spanner.Spanner;
 
 public interface DatabaseService {
   Spanner getSpanner();
+
   DatabaseClient getDatabaseClient();
 }
