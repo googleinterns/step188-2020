@@ -12,6 +12,7 @@ import com.google.sps.data.VolunteeringOpportunity;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -127,5 +128,44 @@ public class DatabaseWrapper {
         .toStringArray(opportunity.getRequiredSkills());
     mutations.add(builder.build());
     return mutations;
+  }
+
+  /**
+   * Given an opportunityId, retrieve the corresponding volunteering opportunity
+   *
+   * @param opportunityId opportunityId of the opportunity to retrieve
+   * @return volunteering opportunity wrapped in a {@link Optional}
+   */
+  public Optional<VolunteeringOpportunity> getVolunteeringOpportunityByOppportunityId(
+      String opportunityId) {
+    SpannerOptions options = SpannerOptions.newBuilder().build();
+    Spanner spanner = options.getService();
+    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
+    DatabaseClient dbClient = spanner.getDatabaseClient(db);
+
+    Optional<VolunteeringOpportunity> result = Optional.empty();
+    Statement statement =
+        Statement.of(
+            String.format(
+                "SELECT EventID, Name, NumSpotsLeft, RequiredSkills FROM"
+                    + " VolunteeringOpportunity WHERE VolunteeringOpportunityID=\"%s\"",
+                opportunityId));
+    try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
+      if (resultSet.next()) {
+        String eventId = resultSet.getString(0);
+        String name = resultSet.getString(1);
+        long numSpotsLeft = resultSet.getLong(2);
+        Set<String> requiredSkills =
+            resultSet.getStringList(3).stream().collect(Collectors.toSet());
+        result =
+            Optional.of(
+                new VolunteeringOpportunity.Builder(eventId, name, numSpotsLeft)
+                    .setOpportunityId(opportunityId)
+                    .setRequiredSkills(requiredSkills)
+                    .build());
+      }
+    }
+    spanner.close();
+    return result;
   }
 }
