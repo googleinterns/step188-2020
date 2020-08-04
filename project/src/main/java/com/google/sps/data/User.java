@@ -2,9 +2,9 @@ package com.google.sps.data;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public final class User {
-  private final long userId = 10000000L;
   private String name;
   private String email;
   private Set<String> interests;
@@ -15,7 +15,6 @@ public final class User {
 
   public static class Builder {
     // Required parameters
-    private long userId;
     private String name;
     private String email;
 
@@ -29,11 +28,6 @@ public final class User {
     public Builder(String name, String email) {
       this.name = name;
       this.email = email;
-    }
-
-    public Builder setUserId(long id) {
-      this.userId = id;
-      return this;
     }
 
     public Builder setName(String name) {
@@ -159,10 +153,6 @@ public final class User {
     this.eventsVolunteering = builder.eventsVolunteering;
   }
 
-  public long getUserId() {
-    return this.userId;
-  }
-
   public String getName() {
     return this.name;
   }
@@ -183,36 +173,24 @@ public final class User {
     return this.eventsHosting;
   }
 
-  public Set<Long> getEventsHostingIds() {
-    Set<Long> eventIds = new HashSet<>();
-    for (Event event : this.eventsHosting) {
-      eventIds.add(event.getId());
-    }
-    return eventIds;
+  public Set<String> getEventsHostingIds() {
+    return eventsHosting.stream().map(Event::getId).collect(Collectors.toSet());
   }
 
   public Set<Event> getEventsParticipating() {
     return this.eventsParticipating;
   }
 
-  public Set<Long> getEventsParticipatingIds() {
-    Set<Long> eventIds = new HashSet<>();
-    for (Event event : this.eventsParticipating) {
-      eventIds.add(event.getId());
-    }
-    return eventIds;
+  public Set<String> getEventsParticipatingIds() {
+    return eventsParticipating.stream().map(Event::getId).collect(Collectors.toSet());
   }
 
   public Set<Event> getEventsVolunteering() {
     return this.eventsVolunteering;
   }
 
-  public Set<Long> getEventsVolunteeringIds() {
-    Set<Long> eventIds = new HashSet<>();
-    for (Event event : this.eventsVolunteering) {
-      eventIds.add(event.getId());
-    }
-    return eventIds;
+  public Set<String> getEventsVolunteeringIds() {
+    return eventsVolunteering.stream().map(Event::getId).collect(Collectors.toSet());
   }
 
   public Builder toBuilder() {
@@ -221,6 +199,6 @@ public final class User {
 
   @Override
   public String toString() {
-    return String.format("User:\t%s\nID:\t%d\nE-mail:\t%s", this.name, this.userId, this.email);
+    return String.format("User:\t%s\nE-mail:\t%s", this.name, this.email);
   }
 }
