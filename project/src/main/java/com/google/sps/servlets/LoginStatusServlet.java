@@ -11,13 +11,22 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns whether user is logged in and email of the user. */
 @WebServlet("/login-status")
 public class LoginStatusServlet extends HttpServlet {
+  /**
+   * Writes whether user is logged in and email of user if the user is logged in and empty string
+   * as email of user otherwise to the response.
+   *
+   * @param request servlet request
+   * @param response servlet response
+   * @throws IOException if Input/Output error occurs
+   */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
-    
+
     LoginStatus status;
     if (UserServiceFactory.getUserService().isUserLoggedIn()) {
-      status = new LoginStatus(true, UserServiceFactory.getUserService().getCurrentUser().getEmail());
+      status =
+          new LoginStatus(true, UserServiceFactory.getUserService().getCurrentUser().getEmail());
     } else {
       status = new LoginStatus(false, "");
     }
