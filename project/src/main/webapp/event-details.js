@@ -16,14 +16,14 @@ async function getVolunteeringOpportunities() {
 }
 
 /**
- * Return a list field representing the
+ * Return a list field representing the opportunity
  * @param name name of opportunity
  * @param numSpotsLeft number of spots left for opportunity
  * @param requiredSkills required skills for opportunity
  * @return {string}
  */
 function getInputFieldForOpportunity(name, numSpotsLeft, requiredSkills) {
-  requiredSkillsString = requiredSkills.empty() ? "None" : requiredSkills.toString();
+  requiredSkillsString = requiredSkills.length ? requiredSkills.toString() : "None";
   return `<li class="list-group-item">
           <p class="card-text">Volunteer Name: ${name}</p>
            <p class="card-text">Volunteer Spots Left: ${numSpotsLeft}</p>
