@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors; 
+import java.util.stream.Stream; 
 
 /** Class containing Event object setters for variables that user can change about event */
 public final class Event {
@@ -202,11 +204,7 @@ public final class Event {
   }
 
   public Set<Long> getOpportunitiesIds() {
-    Set<Long> opportunityIds = new HashSet<>();
-    for (VolunteeringOpportunity opportunity : this.opportunities) {
-      opportunityIds.add(opportunity.getOpportunityId());
-    }
-    return opportunityIds;
+    return opportunities.stream().map(VolunteeringOpportunity::getOpportunityId).collect(Collectors.toSet());
   }
 
   public Set<User> getAttendees() {
@@ -214,11 +212,7 @@ public final class Event {
   }
 
   public Set<Long> getAttendeeIds() {
-    Set<Long> attendeeIds = new HashSet<>();
-    for (User attendee : this.attendees) {
-      attendeeIds.add(attendee.getUserId());
-    }
-    return attendeeIds;
+    return attendees.stream().map(User::getUserId).collect(Collectors.toSet());
   }
 
   public User getHost() {
