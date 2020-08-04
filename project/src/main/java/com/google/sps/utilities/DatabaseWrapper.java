@@ -22,6 +22,11 @@ public class DatabaseWrapper {
   private String databaseId;
   private static final String USER_TABLE = "Users";
   private static final String EVENT_TABLE = "Events";
+  //TO DO: replace with db injection on PR #57
+  private static final SpannerOptions options = SpannerOptions.newBuilder().build();
+  private static final Spanner spanner = options.getService();
+  private final DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
+  private final DatabaseClient dbClient = spanner.getDatabaseClient(db);
 
   public DatabaseWrapper(String instanceId, String databaseId) {
     this.instanceId = instanceId;
@@ -75,11 +80,6 @@ public class DatabaseWrapper {
    * @param event the event to be inserted or updated; event's ID field should not exist in DB
    */
   public void insertorUpdateEvent(Event event) {
-    SpannerOptions options = SpannerOptions.newBuilder().build();
-    Spanner spanner = options.getService();
-    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
-    DatabaseClient dbClient = spanner.getDatabaseClient(db);
-
     List<Mutation> mutations =
         getEventMutationsFromBuilder(Mutation.newInsertOrUpdateBuilder(EVENT_TABLE), event);
     dbClient.write(mutations);
@@ -91,10 +91,6 @@ public class DatabaseWrapper {
    * @param eventId ID of event to be returned
   */
   public Optional<Event> getEventById(String eventId) {
-    SpannerOptions options = SpannerOptions.newBuilder().build();
-    Spanner spanner = options.getService();
-    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
-    DatabaseClient dbClient = spanner.getDatabaseClient(db);
     ResultSet resultSet = dbClient.singleUse().executeQuery(Statement.of(String.format(
         "SELECT Name, Description, Labels, Location, Date, Host, Opportunities, Attendees FROM %s WHERE EventID='%s'",
         EVENT_TABLE, eventId)));
@@ -109,7 +105,6 @@ public class DatabaseWrapper {
     String EMAIL = "bobsmith@example.com";
     User host = new User.Builder(NAME, EMAIL).build();
     Date date = Date.fromYearMonthDay(2016, 9, 15);
-    //System.out.println(resultSet.getDate(4));
     return Optional.of(new Event
                            .Builder(/* name = */ resultSet.getString(0),
                                /* description = */ resultSet.getString(1),

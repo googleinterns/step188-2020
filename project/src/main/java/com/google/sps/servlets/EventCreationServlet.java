@@ -23,11 +23,12 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/create-event")
 public class EventCreationServlet extends HttpServlet {
+  private static final DatabaseWrapper dbWrapper = new DatabaseWrapper("step-188-instance", "event-organizer-db");
+
   /** Returns event details from database */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String eventId = request.getParameter("eventId");
-    DatabaseWrapper dbWrapper = new DatabaseWrapper("step-188-instance", "event-organizer-db");
     Optional<Event> eventOptional = dbWrapper.getEventById(eventId);
     Event event;
 
