@@ -18,6 +18,14 @@ public class VolunteeringOpportunityDataServlet extends HttpServlet {
   private static final DatabaseWrapper databaseWrapper =
       new DatabaseWrapper(DatabaseConstants.INSTANCE_ID, DatabaseConstants.DATABASE_ID);
 
+  /**
+   * Queries database for opportunity with opportunity ID given in the request parameter
+   * and writes opportunity to the response.
+   *
+   * @param request servlet request
+   * @param response servlet response.
+   * @throws IOException if Input/Output error occurs
+   */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String opportunityId = request.getParameter(OPPORTUNITY_ID);

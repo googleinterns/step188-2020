@@ -19,6 +19,13 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
   private static final String SKILL = "skill";
   private static final String HARDCODED_EVENT_ID = "0883de79-17d7-49a3-a866-dbd5135062a8";
 
+  /**
+   * Inserts volunteering opportunity with parameter values for attributes into the database.
+   *
+   * @param request servlet request
+   * @param response servlet response.
+   * @throws IOException if Input/Output error occurs
+   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String volunteerName =
