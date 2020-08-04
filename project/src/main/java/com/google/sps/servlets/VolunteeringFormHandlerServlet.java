@@ -22,6 +22,13 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
   private static final DatabaseWrapper databaseWrapper =
       new DatabaseWrapper(DatabaseConstants.INSTANCE_ID, DatabaseConstants.DATABASE_ID);
 
+  /**
+   * Inserts volunteering opportunity with parameter values for attributes into the database.
+   *
+   * @param request servlet request
+   * @param response servlet response
+   * @throws IOException if Input/Output error occurs
+   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String opportunityId = request.getParameter(OPPORTUNITY_ID);
