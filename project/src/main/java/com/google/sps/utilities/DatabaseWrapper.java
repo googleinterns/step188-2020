@@ -128,41 +128,4 @@ public class DatabaseWrapper {
     mutations.add(builder.build());
     return mutations;
   }
-
-  /**
-   * Given an eventId, retrieve all volunteering opportunities for that eventId
-   *
-   * @param eventId eventId for the event to retrieve volunteering opportunities for
-   * @return volunteering opportunties with given eventId
-   */
-  public Set<VolunteeringOpportunity> getVolunteeringOpportunitiesByEventId(String eventId) {
-    SpannerOptions options = SpannerOptions.newBuilder().build();
-    Spanner spanner = options.getService();
-    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
-    DatabaseClient dbClient = spanner.getDatabaseClient(db);
-
-    Set<VolunteeringOpportunity> results = new HashSet<VolunteeringOpportunity>();
-    Statement statement =
-        Statement.of(
-            String.format(
-                "SELECT VolunteeringOpportunityID, Name, NumSpotsLeft, RequiredSkills FROM"
-                    + " VolunteeringOpportunity WHERE EventID=\"%s\"",
-                eventId));
-    try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
-      while (resultSet.next()) {
-        String opportunityId = resultSet.getString(0);
-        String name = resultSet.getString(1);
-        long numSpotsLeft = resultSet.getLong(2);
-        Set<String> requiredSkills =
-            resultSet.getStringList(3).stream().collect(Collectors.toSet());
-        results.add(
-            new VolunteeringOpportunity.Builder(eventId, name, numSpotsLeft)
-                .setOpportunityId(opportunityId)
-                .setRequiredSkills(requiredSkills)
-                .build());
-      }
-    }
-    spanner.close();
-    return results;
-  }
 }
