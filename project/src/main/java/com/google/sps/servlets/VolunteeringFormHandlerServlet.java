@@ -23,7 +23,7 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
    * Inserts volunteering opportunity with parameter values for attributes into the database.
    *
    * @param request servlet request
-   * @param response servlet response.
+   * @param response servlet response
    * @throws IOException if Input/Output error occurs
    */
   @Override
