@@ -3,9 +3,9 @@ package com.google.sps.data;
 import com.google.cloud.Date;
 import java.lang.StringBuilder;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
@@ -201,8 +201,8 @@ public final class Event {
     return this.opportunities;
   }
 
-  public Set<Long> getOpportunitiesIds() {
-    Set<Long> opportunityIds = new HashSet<>();
+  public Set<String> getOpportunitiesIds() {
+    Set<String> opportunityIds = new HashSet<>();
     for (VolunteeringOpportunity opportunity : this.opportunities) {
       opportunityIds.add(opportunity.getOpportunityId());
     }
