@@ -6,6 +6,7 @@ import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.sps.data.User;
+import com.google.sps.data.VolunteeringOpportunity;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,7 @@ public class DatabaseWrapper {
   private String instanceId;
   private String databaseId;
   private static final String USER_TABLE = "Users";
+  private static final String VOLUNTEERING_OPPORTUNITY_TABLE = "VolunteeringOpportunity";
 
   public DatabaseWrapper(String instanceId, String databaseId) {
     this.instanceId = instanceId;
@@ -79,6 +81,45 @@ public class DatabaseWrapper {
         .toInt64Array(user.getEventsParticipatingIds())
         .set("EventsVolunteering")
         .toInt64Array(user.getEventsVolunteeringIds());
+    mutations.add(builder.build());
+    return mutations;
+  }
+
+  /**
+   * Given a volunteering opportunity, insert a row with all available fields into the DB
+   *
+   * @param opportunity the volunteering opportunity to be inserted
+   */
+  public void insertVolunteeringOpportunity(VolunteeringOpportunity opportunity) {
+    SpannerOptions options = SpannerOptions.newBuilder().build();
+    Spanner spanner = options.getService();
+    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
+    DatabaseClient dbClient = spanner.getDatabaseClient(db);
+
+    List<Mutation> mutations =
+        getMutationsFromBuilder(newInsertBuilderFromVolunteeringOpportunity(), opportunity);
+    dbClient.write(mutations);
+    spanner.close();
+  }
+
+  private static Mutation.WriteBuilder newInsertBuilderFromVolunteeringOpportunity() {
+    return Mutation.newInsertBuilder(VOLUNTEERING_OPPORTUNITY_TABLE);
+  }
+
+  private static List<Mutation> getMutationsFromBuilder(
+      Mutation.WriteBuilder builder, VolunteeringOpportunity opportunity) {
+    List<Mutation> mutations = new ArrayList<>();
+    builder
+        .set("VolunteeringOpportunityID")
+        .to(opportunity.getOpportunityId())
+        .set("EventID")
+        .to(opportunity.getEventId())
+        .set("Name")
+        .to(opportunity.getName())
+        .set("NumSpotsLeft")
+        .to(opportunity.getNumSpotsLeft())
+        .set("RequiredSkills")
+        .toStringArray(opportunity.getRequiredSkills());
     mutations.add(builder.build());
     return mutations;
   }
