@@ -21,7 +21,6 @@ public class DatabaseWrapper {
   public void insertUser(User user) {
     List<Mutation> mutations = getMutationsFromBuilder(newInsertBuilderFromUser(), user);
     databaseService.getDatabaseClient().write(mutations);
-    databaseService.getSpanner().close();
   }
 
   /**
@@ -33,7 +32,6 @@ public class DatabaseWrapper {
     // Given a user, update its corresponding row's new fields in DB
     List<Mutation> mutations = getMutationsFromBuilder(newUpdateBuilderFromUser(), user);
     databaseService.getDatabaseClient().write(mutations);
-    databaseService.getSpanner().close();
   }
 
   private static Mutation.WriteBuilder newInsertBuilderFromUser() {
