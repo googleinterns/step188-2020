@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseWrapper {
-  private String instanceId;
-  private String databaseId;
   private final DatabaseService databaseService;
   private static final String USER_TABLE = "Users";
 

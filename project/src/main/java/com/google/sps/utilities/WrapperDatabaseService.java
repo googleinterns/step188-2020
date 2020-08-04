@@ -8,8 +8,8 @@ import com.google.cloud.spanner.SpannerOptions;
 public class WrapperDatabaseService implements DatabaseService {
   public static final String INSTANCE_ID = "step-188-instance";
   public static final String DATABASE_ID = "event-organizer-db";
-  private Spanner spanner;
-  private DatabaseClient databaseClient;
+  private final Spanner spanner;
+  private final DatabaseClient databaseClient;
 
   public WrapperDatabaseService() {
     SpannerOptions options = SpannerOptions.newBuilder().build();
