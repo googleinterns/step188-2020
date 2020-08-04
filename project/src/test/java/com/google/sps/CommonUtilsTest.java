@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.json.Json;
 import javax.json.JsonArray;
-import com.google.sps.utilities.CommonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

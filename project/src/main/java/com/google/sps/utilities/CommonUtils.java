@@ -21,6 +21,7 @@ public class CommonUtils {
       builder.add(element);
     }
     return builder.build();
+  }
 
   /**
    * Get the parameter values if exists in the request, else return the defaultValue.
