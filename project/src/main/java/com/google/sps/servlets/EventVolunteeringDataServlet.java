@@ -18,6 +18,14 @@ public class EventVolunteeringDataServlet extends HttpServlet {
   private static final DatabaseWrapper databaseWrapper =
       new DatabaseWrapper(DatabaseConstants.INSTANCE_ID, DatabaseConstants.DATABASE_ID);
 
+  /**
+   * Queries database for all opportunities with event ID given in the request parameter
+   * and writes opportunities to the response.
+   *
+   * @param request servlet request
+   * @param response servlet response
+   * @throws IOException if Input/Output error occurs
+   */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TO DO: change eventId to parameter value
