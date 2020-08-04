@@ -173,7 +173,7 @@ public class DatabaseWrapper {
    * Given an eventId, retrieve all volunteering opportunities for that eventId
    *
    * @param eventId eventId for the event to retrieve volunteering opportunities for
-   * @return volunteering opportunties with given eventId
+   * @return volunteering opportunities with given eventId
    */
   public Set<VolunteeringOpportunity> getVolunteeringOpportunitiesByEventId(String eventId) {
     SpannerOptions options = SpannerOptions.newBuilder().build();

@@ -19,8 +19,8 @@ public class EventVolunteeringDataServlet extends HttpServlet {
       new DatabaseWrapper(DatabaseConstants.INSTANCE_ID, DatabaseConstants.DATABASE_ID);
 
   /**
-   * Queries database for all opportunities with event ID given in the request parameter
-   * and writes opportunities to the response.
+   * Queries database for all opportunities with event ID given in the request parameter and writes
+   * opportunities to the response.
    *
    * @param request servlet request
    * @param response servlet response
