@@ -2,6 +2,9 @@ $(document).ready(function() {
   showCurrentUserInfo();
 });
 
+/**
+ * Populates inputs with current user information.
+ */
 async function showCurrentUserInfo() {
   const response = await fetch('/profile-update');
   const userData = await response.json();
