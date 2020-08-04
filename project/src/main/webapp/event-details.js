@@ -7,12 +7,12 @@ function getEventDetails() {
   fetch(
       '/create-event?' +
       new URLSearchParams({'eventId': urlParams.get('eventId')}))
-      .then(res => (res.json())).then(data => {
+      .then((res) => (res.json())).then((data) => {
         document.getElementById('name').innerHTML = data['name'];
         document.getElementById('description').innerHTML = data['description'];
-        document.getElementById('date').innerHTML = 
-          `Date: ${data['date'].month}/${data['date'].dayOfMonth}/${data['date'].year}`;
-        document.getElementById('location').innerHTML = 
+        document.getElementById('date').innerHTML = `Date: 
+          ${data['date'].month}/${data['date'].dayOfMonth}/${data['date'].year}`;
+        document.getElementById('location').innerHTML =
           `Location: ${data['location']}`;
       });
 }
