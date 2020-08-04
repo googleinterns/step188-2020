@@ -1,12 +1,11 @@
 package com.google.sps.utilities;
 
 import com.google.gson.Gson;
+import java.util.HashSet;
 import java.util.Set;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
-import java.util.HashSet;
-import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 public class CommonUtils {
