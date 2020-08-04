@@ -12,8 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/login-status")
 public class LoginStatusServlet extends HttpServlet {
   /**
-   * Writes whether user is logged in and email of user if the user is logged in and empty string as
-   * email of user otherwise to the response.
+   * Writes whether user is logged in and email of user if the user is logged in to response.
    *
    * @param request servlet request
    * @param response servlet response
