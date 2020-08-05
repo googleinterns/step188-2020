@@ -30,7 +30,8 @@ async function getVolunteeringOpportunities() {
     if (opportunities.hasOwnProperty(key)) {
       $('#volunteering-opportunities')
           .append(getListItemForOpportunity(
-              opportunities[key].opportunityId, opportunities[key].name,
+              opportunities[key].opportunityId,
+              opportunities[key].name,
               opportunities[key].numSpotsLeft,
               opportunities[key].requiredSkills));
     }
