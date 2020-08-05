@@ -2,11 +2,11 @@ package com.google.sps.utilities;
 
 import com.google.gson.Gson;
 import java.util.HashSet;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Set;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
+import javax.servlet.http.HttpServletRequest;
 
 public class CommonUtils {
   public static String convertToJson(Object object) {
