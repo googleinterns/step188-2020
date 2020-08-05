@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.gson.annotations.SerializedName;
 
 /** Servlet that returns whether user is logged in and email of the user. */
 @WebServlet("/login-status")
@@ -25,21 +26,24 @@ public class LoginStatusServlet extends HttpServlet {
     LoginStatus status;
     if (UserServiceFactory.getUserService().isUserLoggedIn()) {
       status =
-          new LoginStatus(/* isLoggedin= */ true,
-              UserServiceFactory.getUserService().getCurrentUser().getEmail());
+          new LoginStatus(LoginStatus.LoginState.LOGGED_IN, UserServiceFactory.getUserService().getCurrentUser().getEmail());
     } else {
-      status = new LoginStatus(/* isLoggedin= */ false, /* userEmail= */ "");
+      status = new LoginStatus(LoginStatus.LoginState.LOGGED_OUT, "");
     }
 
     response.getWriter().println(CommonUtils.convertToJson(status));
   }
 
-  private final class LoginStatus {
-    private final boolean isLoggedIn;
+  public static final class LoginStatus {
+    private final LoginState loginState;
+    public static enum LoginState {
+        LOGGED_IN,
+        LOGGED_OUT,
+    }
     private final String userEmail;
 
-    public LoginStatus(boolean isLoggedIn, String userEmail) {
-      this.isLoggedIn = isLoggedIn;
+    public LoginStatus(LoginState loginState, String userEmail) {
+      this.loginState = loginState;
       this.userEmail = userEmail;
     }
   }
