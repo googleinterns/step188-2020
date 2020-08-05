@@ -30,17 +30,15 @@ public class EventCreationServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String eventId = request.getParameter("eventId");
     Optional<Event> eventOptional = dbWrapper.getEventById(eventId);
-    Event event;
 
-    // If event DNE, should never happen because backend passes Ids
+    // If event DNE, sends 404 ERR to frontend
     if (!eventOptional.isPresent()) {
-        event = new Event.Builder("ERROR: This event does not exist", "", new HashSet<String>(), "", null, null).build();
+        response.sendError(HttpServletResponse.SC_NOT_FOUND);
     } else {
-        event = eventOptional.get().toBuilder().setId(eventId).build();
-    }
-    
-    response.setContentType("text/html;");
-    response.getWriter().println(new Gson().toJson(event));
+        Event event = eventOptional.get().toBuilder().setId(eventId).build();
+        response.setContentType("text/html;");
+        response.getWriter().println(new Gson().toJson(event));
+    }  
   }
 
   /** Posts new created event to database and redirects to page with created event details*/
