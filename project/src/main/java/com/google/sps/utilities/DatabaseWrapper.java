@@ -11,12 +11,14 @@ import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
-import java.text.SimpleDateFormat;
 import com.google.sps.data.VolunteeringOpportunity;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DatabaseWrapper {
   private String instanceId;
@@ -24,6 +26,7 @@ public class DatabaseWrapper {
   private static final String USER_TABLE = "Users";
   private static final String EVENT_TABLE = "Events";
   private static final String VOLUNTEERING_OPPORTUNITY_TABLE = "VolunteeringOpportunity";
+  //TO DO: replace with db injection on PR #57
 
   public DatabaseWrapper(String instanceId, String databaseId) {
     this.instanceId = instanceId;
@@ -31,44 +34,56 @@ public class DatabaseWrapper {
   }
 
   /**
-   * Given a user, insert a row with all available fields into the DB
+   * Given a user, insert or update a row with all available fields into the DB
    *
-   * @param user the user to be inserted; user's ID field should not exist in DB
+   * @param user the user to be updated; user's email may or may not exist in DB
    */
-  public void insertUser(User user) {
-    SpannerOptions options = SpannerOptions.newBuilder().build();
-    Spanner spanner = options.getService();
-    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
-    DatabaseClient dbClient = spanner.getDatabaseClient(db);
-
-    List<Mutation> mutations = getUserMutationsFromBuilder(newInsertBuilderFromUser(), user);
-    dbClient.write(mutations);
-    spanner.close();
-  }
-
-  /**
-   * Given a user, insert a row with all available fields into the DB
-   *
-   * @param user the user to be updated; user's ID field should already exist in DB
-   */
-  public void updateUser(User user) {
+  public void insertOrUpdateUser(User user) {
     // Given a user, update its corresponding row's new fields in DB
     SpannerOptions options = SpannerOptions.newBuilder().build();
     Spanner spanner = options.getService();
     DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
     DatabaseClient dbClient = spanner.getDatabaseClient(db);
 
-    List<Mutation> mutations = getUserMutationsFromBuilder(newUpdateBuilderFromUser(), user);
+    List<Mutation> mutations =
+        getUserMutationsFromBuilder(Mutation.newInsertOrUpdateBuilder(USER_TABLE), user);
     dbClient.write(mutations);
     spanner.close();
   }
 
-  private static Mutation.WriteBuilder newInsertBuilderFromUser() {
-    return Mutation.newInsertBuilder(USER_TABLE);
-  }
+  /**
+   * Given an email, return the corresponding user from the DB
+   *
+   * @param email an email to search the 'User' table by; email may or may not exist in DB
+   * @return return the user wrapped in an {@link Optional}
+   */
+  public Optional<User> readUserFromEmail(String email) {
+    SpannerOptions options = SpannerOptions.newBuilder().build();
+    Spanner spanner = options.getService();
+    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
+    DatabaseClient dbClient = spanner.getDatabaseClient(db);
+    ResultSet resultSet =
+        dbClient
+            .singleUse()
+            .executeQuery(
+                Statement.of(
+                    String.format(
+                        "SELECT Name, Interests, Skills, EventsHosting, EventsParticipating,"
+                            + " EventsVolunteering FROM %s WHERE Email='%s'",
+                        USER_TABLE, email)));
 
-  private static Mutation.WriteBuilder newUpdateBuilderFromUser() {
-    return Mutation.newUpdateBuilder(USER_TABLE);
+    if (!resultSet.next()) {
+      return Optional.empty();
+    }
+
+    return Optional.of(
+        new User.Builder(/* name = */ resultSet.getString(0), /* email = */ email)
+            .setInterests(new HashSet<String>(resultSet.getStringList(1)))
+            .setSkills(new HashSet<String>(resultSet.getStringList(2)))
+            .setEventsHosting(getEventsFromIds(resultSet.getStringList(3)))
+            .setEventsParticipating(getEventsFromIds(resultSet.getStringList(4)))
+            .setEventsVolunteering(getEventsFromIds(resultSet.getStringList(5)))
+            .build());
   }
 
   /**
@@ -81,11 +96,25 @@ public class DatabaseWrapper {
     Spanner spanner = options.getService();
     DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
     DatabaseClient dbClient = spanner.getDatabaseClient(db);
-
     List<Mutation> mutations =
         getEventMutationsFromBuilder(Mutation.newInsertOrUpdateBuilder(EVENT_TABLE), event);
     dbClient.write(mutations);
     spanner.close();
+  }
+
+  /** Returns List of Event Ids from DB
+   * 
+   * @param eventId List of IDs of event to be returned
+  */
+  public Set<Event> getEventsFromIds(List<String> eventIds) {
+      Set<Event> ids = new HashSet<Event>();
+      for (String eventId: eventIds) {
+        Optional<Event> event = getEventById(eventId);
+        if (event.isPresent()) {
+            ids.add(event.get());
+        } 
+      }
+      return ids;
   }
 
   /** Returns Event by ID from DB
@@ -111,7 +140,6 @@ public class DatabaseWrapper {
     String EMAIL = "bobsmith@example.com";
     User host = new User.Builder(NAME, EMAIL).build();
     Date date = Date.fromYearMonthDay(2016, 9, 15);
-    //System.out.println(resultSet.getDate(4));
     return Optional.of(new Event
                            .Builder(/* name = */ resultSet.getString(0),
                                /* description = */ resultSet.getString(1),
@@ -125,8 +153,7 @@ public class DatabaseWrapper {
   private static List<Mutation> getUserMutationsFromBuilder(
       Mutation.WriteBuilder builder, User user) {
     List<Mutation> mutations = new ArrayList<>();
-    builder.set("UserId")
-        .to(user.getUserId())
+    builder
         .set("Name")
         .to(user.getName())
         .set("Email")
@@ -162,15 +189,15 @@ public class DatabaseWrapper {
         .set("Date")
         .to(event.getDate())
         .set("Host")
-        .to(event.getHost().getUserId())
+        .to(event.getHost().getEmail())
         .set("Opportunities")
         .toStringArray(event.getOpportunitiesIds())
         .set("Attendees")
-        .toInt64Array(event.getAttendeeIds());
-    mutations.add(builder.build());
-    return mutations;
-  }
-      
+        .toStringArray(event.getAttendeeIds());
+      mutations.add(builder.build());
+      return mutations;
+      }
+
   /**
    * Given a volunteering opportunity, insert a row with all available fields into the DB
    *
@@ -188,8 +215,29 @@ public class DatabaseWrapper {
     spanner.close();
   }
 
+  /**
+   * Given a volunteering opportunity, update a row with the same opportunityId in the DB
+   *
+   * @param opportunity the volunteering opportunity to be updated
+   */
+  public void updateVolunteeringOpportunity(VolunteeringOpportunity opportunity) {
+    SpannerOptions options = SpannerOptions.newBuilder().build();
+    Spanner spanner = options.getService();
+    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
+    DatabaseClient dbClient = spanner.getDatabaseClient(db);
+
+    List<Mutation> mutations =
+        getMutationsFromBuilder(newUpdateBuilderFromVolunteeringOpportunity(), opportunity);
+    dbClient.write(mutations);
+    spanner.close();
+  }
+
   private static Mutation.WriteBuilder newInsertBuilderFromVolunteeringOpportunity() {
     return Mutation.newInsertBuilder(VOLUNTEERING_OPPORTUNITY_TABLE);
+  }
+
+  private static Mutation.WriteBuilder newUpdateBuilderFromVolunteeringOpportunity() {
+    return Mutation.newUpdateBuilder(VOLUNTEERING_OPPORTUNITY_TABLE);
   }
 
   private static List<Mutation> getMutationsFromBuilder(
@@ -208,5 +256,81 @@ public class DatabaseWrapper {
         .toStringArray(opportunity.getRequiredSkills());
     mutations.add(builder.build());
     return mutations;
+  }
+
+  /**
+   * Given an opportunityId, retrieve the corresponding volunteering opportunity
+   *
+   * @param opportunityId opportunityId of the opportunity to retrieve
+   * @return volunteering opportunity wrapped in a {@link Optional}
+   */
+  public Optional<VolunteeringOpportunity> getVolunteeringOpportunityByOppportunityId(
+      String opportunityId) {
+    SpannerOptions options = SpannerOptions.newBuilder().build();
+    Spanner spanner = options.getService();
+    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
+    DatabaseClient dbClient = spanner.getDatabaseClient(db);
+
+    Optional<VolunteeringOpportunity> result = Optional.empty();
+    Statement statement =
+        Statement.of(
+            String.format(
+                "SELECT EventID, Name, NumSpotsLeft, RequiredSkills FROM"
+                    + " VolunteeringOpportunity WHERE VolunteeringOpportunityID=\"%s\"",
+                opportunityId));
+    try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
+      if (resultSet.next()) {
+        String eventId = resultSet.getString(0);
+        String name = resultSet.getString(1);
+        long numSpotsLeft = resultSet.getLong(2);
+        Set<String> requiredSkills =
+            resultSet.getStringList(3).stream().collect(Collectors.toSet());
+        result =
+            Optional.of(
+                new VolunteeringOpportunity.Builder(eventId, name, numSpotsLeft)
+                    .setOpportunityId(opportunityId)
+                    .setRequiredSkills(requiredSkills)
+                    .build());
+      }
+    }
+    spanner.close();
+    return result;
+  }
+
+  /**
+   * Given an eventId, retrieve all volunteering opportunities for that eventId
+   *
+   * @param eventId eventId for the event to retrieve volunteering opportunities for
+   * @return volunteering opportunities with given eventId
+   */
+  public Set<VolunteeringOpportunity> getVolunteeringOpportunitiesByEventId(String eventId) {
+    SpannerOptions options = SpannerOptions.newBuilder().build();
+    Spanner spanner = options.getService();
+    DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
+    DatabaseClient dbClient = spanner.getDatabaseClient(db);
+
+    Set<VolunteeringOpportunity> results = new HashSet<VolunteeringOpportunity>();
+    Statement statement =
+        Statement.of(
+            String.format(
+                "SELECT VolunteeringOpportunityID, Name, NumSpotsLeft, RequiredSkills FROM"
+                    + " VolunteeringOpportunity WHERE EventID=\"%s\"",
+                eventId));
+    try (ResultSet resultSet = dbClient.singleUse().executeQuery(statement)) {
+      while (resultSet.next()) {
+        String opportunityId = resultSet.getString(0);
+        String name = resultSet.getString(1);
+        long numSpotsLeft = resultSet.getLong(2);
+        Set<String> requiredSkills =
+            resultSet.getStringList(3).stream().collect(Collectors.toSet());
+        results.add(
+            new VolunteeringOpportunity.Builder(eventId, name, numSpotsLeft)
+                .setOpportunityId(opportunityId)
+                .setRequiredSkills(requiredSkills)
+                .build());
+      }
+    }
+    spanner.close();
+    return results;
   }
 }

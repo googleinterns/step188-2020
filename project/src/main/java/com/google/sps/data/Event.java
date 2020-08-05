@@ -8,6 +8,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors; 
+import java.util.stream.Stream; 
 
 /** Class containing Event object setters for variables that user can change about event */
 public final class Event {
@@ -56,7 +58,12 @@ public final class Event {
     private Set<VolunteeringOpportunity> opportunities = new HashSet<>();
     private Set<User> attendees = new HashSet<>();
 
-    public Builder(String name, String description, Set<String> labels, String location, Date date,
+    public Builder(
+        String name, 
+        String description, 
+        Set<String> labels, 
+        String location, 
+        Date date,
         User host) {
       this.name = name;
       this.description = description;
@@ -202,23 +209,19 @@ public final class Event {
   }
 
   public Set<String> getOpportunitiesIds() {
-    Set<String> opportunityIds = new HashSet<>();
-    for (VolunteeringOpportunity opportunity : this.opportunities) {
-      opportunityIds.add(opportunity.getOpportunityId());
-    }
-    return opportunityIds;
+    return opportunities.stream()
+        .map(VolunteeringOpportunity::getOpportunityId)
+        .collect(Collectors.toSet());
   }
 
   public Set<User> getAttendees() {
     return this.attendees;
   }
 
-  public Set<Long> getAttendeeIds() {
-    Set<Long> attendeeIds = new HashSet<>();
-    for (User attendee : this.attendees) {
-      attendeeIds.add(attendee.getUserId());
-    }
-    return attendeeIds;
+  public Set<String> getAttendeeIds() {
+    return attendees.stream()
+        .map(User::getEmail)
+        .collect(Collectors.toSet());
   }
 
   public User getHost() {
