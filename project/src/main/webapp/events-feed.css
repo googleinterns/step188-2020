@@ -11,6 +11,7 @@ html {
   display: flex;
   flex-wrap: wrap;
 }
+
 .card {
   display: inline-block;
   flex-grow: 1;
@@ -36,16 +37,4 @@ html {
 
 .dropdown-toggle {
   border: solid 1px;
-}
-
-.btn-interest {
-  background-color: #e5e0ec !important;
-  border: none !important;
-  cursor: default !important;
-}
-
-.btn-skill {
-  background-color: #f7cecb !important;
-  border: none !important;
-  cursor: default !important;
 }
