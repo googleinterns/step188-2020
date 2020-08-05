@@ -38,10 +38,10 @@ public class VolunteeringOpportunityDataServlet extends HttpServlet {
       response.getWriter().println(CommonUtils.convertToJson(opportunity.get()));
     } else {
       response.setContentType("text/html;");
-          response
-              .getWriter()
-              .println(
-                  String.format("Error: No opportunity found for opportunityId %s", opportunityId));
+      response
+          .getWriter()
+          .println(
+              String.format("Error: No opportunity found for opportunityId %s", opportunityId));
     }
   }
 }
