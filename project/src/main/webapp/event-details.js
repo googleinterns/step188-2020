@@ -1,6 +1,6 @@
-eventHost = 'test@example.com'; // hard-coded event host value
-isLoggedIn = false;
-currentUser = null;
+const eventHost = 'test@example.com'; // hard-coded event host value
+let isLoggedIn = false;
+let currentUser = null;
 
 window.onload = function onLoad() {
   checkLoginStatus();
@@ -26,11 +26,13 @@ async function getVolunteeringOpportunities() {
   const response = await fetch('/event-volunteering-data');
   const opportunities = await response.json();
   for (const key in opportunities) {
-    $('#volunteering-opportunities')
-        .append(getListItemForOpportunity(
-            opportunities[key].opportunityId, opportunities[key].name,
-            opportunities[key].numSpotsLeft,
-            opportunities[key].requiredSkills));
+    if (opportunities.hasOwnProperty(key)) {
+      $('#volunteering-opportunities')
+          .append(getListItemForOpportunity(
+              opportunities[key].opportunityId, opportunities[key].name,
+              opportunities[key].numSpotsLeft,
+              opportunities[key].requiredSkills));
+    }
   }
 }
 
@@ -46,14 +48,15 @@ function getListItemForOpportunity(
     opportunityId, name, numSpotsLeft, requiredSkills) {
   requiredSkillsText =
       requiredSkills.length ? requiredSkills.toString() : 'None';
-  const editLink = (isLoggedIn && !currentUser.localeCompare(eventHost)) ?
-      getLinkForOpportunity(opportunityId) :
-      '';
+  let editLink = '';
+  if (isLoggedIn && !currentUser.localeCompare(eventHost)) {
+    editLink = getLinkForOpportunity(opportunityId);
+  }
   return `<li class="list-group-item">
           <p class="card-text">Volunteer Name: ${name}</p>
            <p class="card-text">Volunteer Spots Left: ${numSpotsLeft}</p>
            <p class="card-text">Required Skills: ${requiredSkillsText}</p>${
-      editLink}</li>`;
+  editLink}</li>`;
 }
 
 /**
@@ -64,7 +67,7 @@ function getListItemForOpportunity(
  */
 function getLinkForOpportunity(opportunityId) {
   return `<a href="/update-volunteering-opportunity.html?opportunityId=${
-      opportunityId}"
+    opportunityId}"
           id="logout-prompt"
           class="btn btn-outline-success my-2 my-sm-0"
           type="button"
