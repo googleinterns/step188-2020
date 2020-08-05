@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** */
 @RunWith(JUnit4.class)
 public final class VolunteerOpportunityTest {
   private static final String NAME = "Performer";
@@ -23,11 +22,12 @@ public final class VolunteerOpportunityTest {
   private static final Set<String> SKILLS = ImmutableSet.of(PLAYING_AN_INSTRUMENT, PERFORMING);
   private static final Set<String> SKILLS_WITH_DANCING =
       ImmutableSet.of(PLAYING_AN_INSTRUMENT, PERFORMING, DANCING);
+  private static final String EVENT_ID = "0883de79-17d7-49a3-a866-dbd5135062a8";
 
   @Test
   public void createInstanceUsingBuilder() {
     VolunteeringOpportunity opportunity =
-        new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
+        new VolunteeringOpportunity.Builder(EVENT_ID, NAME, NUMBER_OF_SPOTS)
             .setRequiredSkills(SKILLS)
             .build();
 
@@ -39,7 +39,7 @@ public final class VolunteerOpportunityTest {
   @Test
   public void getBuilderFromInstance() {
     VolunteeringOpportunity opportunity =
-        new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
+        new VolunteeringOpportunity.Builder(EVENT_ID, NAME, NUMBER_OF_SPOTS)
             .setRequiredSkills(SKILLS)
             .build();
     VolunteeringOpportunity copyOfOpportunity = opportunity.toBuilder().build();
@@ -53,7 +53,7 @@ public final class VolunteerOpportunityTest {
     skills.add(PLAYING_AN_INSTRUMENT);
     skills.add(PERFORMING);
     VolunteeringOpportunity opportunityWithSkills =
-        new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
+        new VolunteeringOpportunity.Builder(EVENT_ID, NAME, NUMBER_OF_SPOTS)
             .setRequiredSkills(skills)
             .build();
     VolunteeringOpportunity changedOpportunity =
@@ -71,7 +71,7 @@ public final class VolunteerOpportunityTest {
     skills.add(PERFORMING);
     skills.add(DANCING);
     VolunteeringOpportunity opportunityWithSkills =
-        new VolunteeringOpportunity.Builder(NAME, NUMBER_OF_SPOTS)
+        new VolunteeringOpportunity.Builder(EVENT_ID, NAME, NUMBER_OF_SPOTS)
             .setRequiredSkills(skills)
             .build();
     VolunteeringOpportunity changedOpportunity =

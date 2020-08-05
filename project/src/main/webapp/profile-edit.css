@@ -9,10 +9,6 @@ h3 {
   text-align: center;
 }
 
-.col {
+#profile-form {
   margin: auto;
-}
-
-.inline {
-  display: inline-block;
 }
