@@ -203,7 +203,7 @@ public final class Event {
     return this.opportunities;
   }
 
-  public Set<Long> getOpportunitiesIds() {
+  public Set<String> getOpportunitiesIds() {
     return opportunities.stream().map(VolunteeringOpportunity::getOpportunityId).collect(Collectors.toSet());
   }
 
@@ -211,8 +211,8 @@ public final class Event {
     return this.attendees;
   }
 
-  public Set<Long> getAttendeeIds() {
-    return attendees.stream().map(User::getUserId).collect(Collectors.toSet());
+  public Set<String> getAttendeeIds() {
+    return attendees.stream().map(User::getEmail).collect(Collectors.toSet());
   }
 
   public User getHost() {

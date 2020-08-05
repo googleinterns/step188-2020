@@ -102,6 +102,22 @@ public class DatabaseWrapper {
     spanner.close();
   }
 
+  /** Returns List of Event Ids from DB
+   * 
+   * @param eventId List of IDs of event to be returned
+  */
+  public Set<Event> getEventsFromIds(List<String> eventIds) {
+      Set<Event> ids = new HashSet<Event>();
+      for (String eventId: eventIds) {
+        Optional<Event> event = getEventById(eventId);
+        if (event.isPresent()) {
+            ids.add( event.get() );
+        }
+        
+      }
+      return ids;
+  }
+
   /** Returns Event by ID from DB
    * 
    * @param eventId ID of event to be returned
@@ -170,12 +186,14 @@ public class DatabaseWrapper {
         .set("Date")
         .to(event.getDate())
         .set("Host")
-        .to(event.getHost().getUserId())
+        .to(event.getHost().getEmail())
         .set("Opportunities")
-        .toInt64Array(event.getOpportunitiesIds())
+        .toStringArray(event.getOpportunitiesIds())
         .set("Attendees")
-        .toInt64Array(event.getAttendeeIds());
-
+        .toStringArray(event.getAttendeeIds());
+      mutations.add(builder.build());
+      return mutations;
+      }
   /**
    * Given a volunteering opportunity, insert a row with all available fields into the DB
    *

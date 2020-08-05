@@ -33,7 +33,7 @@ public class VolunteeringOpportunityDataServlet extends HttpServlet {
     Optional<VolunteeringOpportunity> opportunity =
         databaseWrapper.getVolunteeringOpportunityByOppportunityId(opportunityId);
 
-    if (opportunity.isEmpty()) {
+    if (!opportunity.isPresent()) {
       response.setContentType("text/html;");
       response
           .getWriter()
