@@ -20,7 +20,7 @@ async function checkLoginStatus() {
 }
 
 /**
- * Add the volunteering opportunities to the event card.
+ * Adds the volunteering opportunities to the event card.
  */
 async function getVolunteeringOpportunities() {
   const response = await fetch('/event-volunteering-data');
