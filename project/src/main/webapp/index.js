@@ -18,12 +18,6 @@ async function addLoginUrlToElement(id) {
   element.href = loginUrl;
 }
 
-async function isLoggedIn() {
-  const response = await fetch('/login-status');
-  const loginStatus = await response.json();
-  return loginStatus.isLoggedIn;
-}
-
 async function getLoginUrl() {
   const response = await fetch('/login-url');
   const loginUrl = await response.text();

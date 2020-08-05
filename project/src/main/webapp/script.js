@@ -56,9 +56,3 @@ async function addLogoutUrlToButton() {
   const logoutPrompt = document.getElementById('logout-prompt');
   logoutPrompt.href = logoutUrl;
 }
-
-async function isLoggedIn() {
-  const response = await fetch('/login-status');
-  const loginStatus = await response.json();
-  return loginStatus.isLoggedIn;
-}
