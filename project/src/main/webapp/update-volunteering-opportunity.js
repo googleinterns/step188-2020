@@ -1,9 +1,16 @@
 $(document).ready(function() {
+  addOnClickListener();
+  getVolunteeringOpportunityFormData();
+});
+
+/**
+ * Add on click listener for add row button.
+ */
+function addOnClickListener() {
   $('#add_row').click(function() {
     $('#skills').append(getInputFieldForSkill());
   });
-  getVolunteeringOpportunityFormData();
-});
+}
 
 /**
  * Return input string for skill input field.
@@ -20,7 +27,8 @@ function getInputFieldForSkill() {
 async function getVolunteeringOpportunityFormData() {
   const params = (new URL(document.location)).searchParams;
   const opportunityId = params.get('opportunity-id');
-  const response = await fetch(`/volunteering-opportunity-data?opportunity-id=${opportunityId}`);
+  const response = await fetch(
+      `/volunteering-opportunity-data?opportunity-id=${opportunityId}`);
   const opportunityData = await response.json();
 
   const nameInput = document.getElementById('name');
@@ -30,8 +38,11 @@ async function getVolunteeringOpportunityFormData() {
   numSpotsLeftInput.value = opportunityData.numSpotsLeft;
 
   const requiredSkillInput = document.getElementById('required-skill');
-  requiredSkillInput.value = opportunityData.requiredSkills.length ? opportunityData.requiredSkills[0] : "";
-  
+  requiredSkillInput.value = opportunityData.requiredSkills.length ?
+      opportunityData.requiredSkills[0] :
+      '';
+
   const opportunityForm = document.getElementById('opportunity-form');
-  opportunityForm.action = `/volunteering-form-handler?opportunity-id=${opportunityId}`;
+  opportunityForm.action =
+      `/volunteering-form-handler?opportunity-id=${opportunityId}`;
 }
