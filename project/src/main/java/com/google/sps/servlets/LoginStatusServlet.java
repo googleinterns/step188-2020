@@ -25,9 +25,10 @@ public class LoginStatusServlet extends HttpServlet {
     LoginStatus status;
     if (UserServiceFactory.getUserService().isUserLoggedIn()) {
       status =
-          new LoginStatus(true, UserServiceFactory.getUserService().getCurrentUser().getEmail());
+          new LoginStatus(/* isLoggedin= */ true,
+              UserServiceFactory.getUserService().getCurrentUser().getEmail());
     } else {
-      status = new LoginStatus(false, "");
+      status = new LoginStatus(/* isLoggedin= */ false, /* userEmail= */ "");
     }
 
     response.getWriter().println(CommonUtils.convertToJson(status));
