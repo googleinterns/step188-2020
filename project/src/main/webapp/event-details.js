@@ -9,7 +9,7 @@ window.onload = function onLoad() {
 
 
 /**
- * Update the current login status.
+ * Updates the current login status.
  */
 async function checkLoginStatus() {
   const response = await fetch('/login-status');
@@ -37,7 +37,10 @@ async function getVolunteeringOpportunities() {
 }
 
 /**
- * Return a string for a list HTML element representing an opportunity.
+ * Returns a string for a list HTML element representing an opportunity.
+ * If the user is logged in and is the event host display edit
+ * buttons for the volunteering opportunities.
+ *
  * @param {string} opportunityId
  * @param {string} name name of opportunity
  * @param {string} numSpotsLeft number of spots left for opportunity
@@ -49,6 +52,9 @@ function getListItemForOpportunity(
   requiredSkillsText =
       requiredSkills.length ? requiredSkills.toString() : 'None';
   let editLink = '';
+
+  // If the user is logged in and the current user is the event host,
+  // then show the edit link for the volunteering opportunity.
   if (isLoggedIn && !currentUser.localeCompare(eventHost)) {
     editLink = getLinkForOpportunity(opportunityId);
   }
@@ -62,7 +68,7 @@ function getListItemForOpportunity(
 /**
  * Returns button with edit link for the opportunity with ID opportunityId.
  * @param {string} opportunityId Opportunity ID of the opportunity edit link to
- *     retrieve.
+ *     return.
  * @return {string}
  */
 function getLinkForOpportunity(opportunityId) {
