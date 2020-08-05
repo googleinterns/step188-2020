@@ -8,3 +8,5 @@ target/
 
 # Ignore editor config
 .idea
+
+.npmrc
