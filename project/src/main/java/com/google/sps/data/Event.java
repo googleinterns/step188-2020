@@ -58,7 +58,12 @@ public final class Event {
     private Set<VolunteeringOpportunity> opportunities = new HashSet<>();
     private Set<User> attendees = new HashSet<>();
 
-    public Builder(String name, String description, Set<String> labels, String location, Date date,
+    public Builder(
+        String name, 
+        String description, 
+        Set<String> labels, 
+        String location, 
+        Date date,
         User host) {
       this.name = name;
       this.description = description;
@@ -204,7 +209,9 @@ public final class Event {
   }
 
   public Set<String> getOpportunitiesIds() {
-    return opportunities.stream().map(VolunteeringOpportunity::getOpportunityId).collect(Collectors.toSet());
+    return opportunities.stream()
+        .map(VolunteeringOpportunity::getOpportunityId)
+        .collect(Collectors.toSet());
   }
 
   public Set<User> getAttendees() {
@@ -212,7 +219,9 @@ public final class Event {
   }
 
   public Set<String> getAttendeeIds() {
-    return attendees.stream().map(User::getEmail).collect(Collectors.toSet());
+    return attendees.stream()
+        .map(User::getEmail)
+        .collect(Collectors.toSet());
   }
 
   public User getHost() {
