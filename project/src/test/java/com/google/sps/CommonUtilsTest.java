@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-import com.google.sps.utilities.CommonUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-=======
 package com.google.sps;
 
 import com.google.sps.data.User;
@@ -14,12 +8,13 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.json.Json;
 import javax.json.JsonArray;
->>>>>>> b7c8777... Add Common utility functions
+import org.apache.commons.lang3.StringUtils;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-<<<<<<< HEAD
 import org.springframework.mock.web.MockHttpServletRequest;
 
 @RunWith(JUnit4.class)
@@ -71,7 +66,7 @@ public final class CommonUtilsTest {
     request.setParameter(NAME, nameValues);
 
     Assert.assertTrue(CommonUtils.getParameterValues(request, NAME).isEmpty());
-=======
+  }
 
 /** */
 @RunWith(JUnit4.class)
@@ -142,6 +137,5 @@ public final class CommonUtilsTest {
 
   private static String wrapInQuotes(String s) {
     return "\"" + s + "\"";
->>>>>>> b7c8777... Add Common utility functions
   }
 }
