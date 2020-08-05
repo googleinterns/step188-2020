@@ -72,9 +72,6 @@ public final class CommonUtilsTest {
             volunteer.getEventsParticipating(),
             wrapInQuotes("eventsVolunteering"),
             volunteer.getEventsVolunteering());
-        System.out.println(expectedJson);
-        System.out.println("-------------");
-        System.out.println(CommonUtils.convertToJson(opportunity));
     Assert.assertEquals(expectedJson, CommonUtils.convertToJson(opportunity));
   }
 
