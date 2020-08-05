@@ -7,6 +7,13 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/logout-url")
 public class LogoutServlet extends HttpServlet {
+  /**
+   * Sends logout url in response.
+   *
+   * @param request servlet request
+   * @param response servlet response
+   * @throws IOException if Input/Output error occurs
+   */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("text/html");
