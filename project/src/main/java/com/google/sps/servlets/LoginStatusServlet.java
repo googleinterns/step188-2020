@@ -26,9 +26,11 @@ public class LoginStatusServlet extends HttpServlet {
     LoginStatus status;
     if (UserServiceFactory.getUserService().isUserLoggedIn()) {
       status =
-          new LoginStatus(LoginStatus.LoginState.LOGGED_IN, UserServiceFactory.getUserService().getCurrentUser().getEmail());
+          new LoginStatus(
+              LoginStatus.LoginState.LOGGED_IN,
+              UserServiceFactory.getUserService().getCurrentUser().getEmail());
     } else {
-      status = new LoginStatus(LoginStatus.LoginState.LOGGED_OUT, "");
+      status = new LoginStatus(LoginStatus.LoginState.LOGGED_OUT, /* userEmail= */ "");
     }
 
     response.getWriter().println(CommonUtils.convertToJson(status));
@@ -37,8 +39,8 @@ public class LoginStatusServlet extends HttpServlet {
   public static final class LoginStatus {
     private final LoginState loginState;
     public static enum LoginState {
-        LOGGED_IN,
-        LOGGED_OUT,
+      LOGGED_IN,
+      LOGGED_OUT,
     }
     private final String userEmail;
 
