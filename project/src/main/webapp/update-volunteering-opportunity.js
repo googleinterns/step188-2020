@@ -22,7 +22,7 @@ function getInputFieldForSkill() {
 }
 
 /**
- * Get the data for the volunteering opportunity ID in the URL
+ * Get the data for the volunteering opportunity ID in the URL.
  */
 async function getVolunteeringOpportunityFormData() {
   const params = (new URL(document.location)).searchParams;
@@ -39,8 +39,7 @@ async function getVolunteeringOpportunityFormData() {
 
   const requiredSkillInput = document.getElementById('required-skill');
   requiredSkillInput.value = opportunityData.requiredSkills.length ?
-      opportunityData.requiredSkills[0] :
-      '';
+      opportunityData.requiredSkills[0] : '';
 
   const opportunityForm = document.getElementById('opportunity-form');
   opportunityForm.action =
