@@ -7,7 +7,7 @@ $(document).ready(function() {
  * Add on click listener for add row button.
  */
 function addOnClickListener() {
-  $('#add_row').click(function() {
+  $('#add-row').click(function() {
     $('#skills').append(getInputFieldForSkill());
   });
 }
