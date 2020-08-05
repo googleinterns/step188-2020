@@ -7,7 +7,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.gson.annotations.SerializedName;
 
 /** Servlet that returns whether user is logged in and email of the user. */
 @WebServlet("/login-status")
@@ -38,10 +37,12 @@ public class LoginStatusServlet extends HttpServlet {
 
   public static final class LoginStatus {
     private final LoginState loginState;
+
     public static enum LoginState {
       LOGGED_IN,
       LOGGED_OUT,
     }
+
     private final String userEmail;
 
     public LoginStatus(LoginState loginState, String userEmail) {

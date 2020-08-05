@@ -24,7 +24,7 @@ async function checkLoginStatus() {
   const response = await fetch('/login-status');
   const loginStatus = await response.json();
   const loginState = loginStatus.loginState;
-  if (loginState === "LOGGED_IN") {
+  if (loginState === 'LOGGED_IN') {
     loadHeader();
   } else {
     window.href = 'index.html';
