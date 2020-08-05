@@ -9,7 +9,8 @@ window.onload = function onLoad() {
 
 
 /**
- * Updates the current login status.
+ * Check the current login status to update
+ * isLoggedIn and currentUser.
  */
 async function checkLoginStatus() {
   const response = await fetch('/login-status');
