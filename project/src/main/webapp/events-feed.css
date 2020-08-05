@@ -11,6 +11,7 @@ html {
   display: flex;
   flex-wrap: wrap;
 }
+
 .card {
   display: inline-block;
   flex-grow: 1;
