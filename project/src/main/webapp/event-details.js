@@ -1,5 +1,5 @@
 const eventHost = 'test@example.com'; // hard-coded event host value
-let isLoggedIn = false;
+let loginState = null;
 let currentUser = null;
 
 window.onload = function onLoad() {
@@ -15,9 +15,8 @@ window.onload = function onLoad() {
 async function checkLoginStatus() {
   const response = await fetch('/login-status');
   const loginStatus = await response.json();
-  isLoggedIn = loginStatus.isLoggedIn;
+  loginState = loginStatus.loginState;
   currentUser = loginStatus.userEmail;
-  return loginStatus;
 }
 
 /**
@@ -57,7 +56,7 @@ function getListItemForOpportunity(
 
   // If the user is logged in and the current user is the event host,
   // then show the edit link for the volunteering opportunity.
-  if (isLoggedIn && !currentUser.localeCompare(eventHost)) {
+  if (loginState === 'LOGGED_IN' && !currentUser.localeCompare(eventHost)) {
     editLink = getLinkForOpportunity(opportunityId);
   }
   return `<li class="list-group-item">
@@ -74,7 +73,7 @@ function getListItemForOpportunity(
  * @return {string}
  */
 function getLinkForOpportunity(opportunityId) {
-  return `<a href="/update-volunteering-opportunity.html?opportunityId=${
+  return `<a href="/update-volunteering-opportunity.html?opportunity-id=${
     opportunityId}"
           id="logout-prompt"
           class="btn btn-outline-success my-2 my-sm-0"
