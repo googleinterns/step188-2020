@@ -35,19 +35,22 @@ public final class CommonUtilsTest {
   public void volunteeringOpportunityToJson() {
     // Given a VolunteeringOpportunity, verify that all of its fields are properly converted to JSON
     String name = "Meal Prep Workshop";
-    int numSpotsLeft = 40;
+    long numSpotsLeft = 40;
     String requiredSkill = "Cooking";
+    String opportunityId = "0883de79-17d7-49a3-a866-dbd5135062a8";
     User volunteer = new User.Builder("Bob Smith", "bobsmith@example.com").build();
     VolunteeringOpportunity opportunity =
-        new VolunteeringOpportunity.Builder(name, numSpotsLeft)
+        new VolunteeringOpportunity.Builder(opportunityId, name, numSpotsLeft)
             .setRequiredSkills(new HashSet<>(Arrays.asList(requiredSkill)))
             .setVolunteers(new HashSet<>(Arrays.asList(volunteer)))
             .build();
     String expectedJson =
         String.format(
-            "{%s:%s,%s:%s,%s:%d,%s:%s,%s:[{%s:%s,%s:%s,%s:%s,%s:%s,%s:%s,%s:%s,%s:%s}]}",
+            "{%s:%s,%s:%s,%s:%s,%s:%d,%s:%s,%s:[{%s:%s,%s:%s,%s:%s,%s:%s,%s:%s,%s:%s,%s:%s}]}",
             wrapInQuotes("opportunityId"),
             wrapInQuotes(opportunity.getOpportunityId()),
+            wrapInQuotes("eventId"),
+            wrapInQuotes(opportunityId),
             wrapInQuotes("name"),
             wrapInQuotes(name),
             wrapInQuotes("numSpotsLeft"),

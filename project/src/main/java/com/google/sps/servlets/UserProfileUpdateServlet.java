@@ -50,8 +50,7 @@ public class UserProfileUpdateServlet extends HttpServlet {
               .build()
               .toString();
     }
-    response.setContentType("application/json;");
-    response.setCharacterEncoding("UTF-8");
+    response.setContentType("application/json;charset=UTF-8");
     response.getWriter().println(userJson);
   }
 
