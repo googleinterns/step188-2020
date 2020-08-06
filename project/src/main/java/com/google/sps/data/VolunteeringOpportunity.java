@@ -148,7 +148,8 @@ public final class VolunteeringOpportunity {
     }
     VolunteeringOpportunity opportunity = (VolunteeringOpportunity) other;
     return this.opportunityId.equals(opportunity.opportunityId)
-        && this.eventId.equals(opportunity.eventId) && this.name.equals(opportunity.name)
+        && this.eventId.equals(opportunity.eventId)
+        && this.name.equals(opportunity.name)
         && this.numSpotsLeft == opportunity.numSpotsLeft;
   }
 

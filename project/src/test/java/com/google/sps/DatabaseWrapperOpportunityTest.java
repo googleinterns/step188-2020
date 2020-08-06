@@ -1,26 +1,18 @@
 package com.google.sps;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
 import com.google.sps.utilities.DatabaseConstants;
 import com.google.sps.utilities.DatabaseWrapper;
 import com.google.sps.utilities.TestDatabaseWrapper;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.junit.runners.MethodSorters;
-import org.junit.Test;
 
 /** Unit tests for DatabaseWrapper functionality related to VolunteeringOpportunity class. */
 @RunWith(JUnit4.class)
@@ -45,7 +37,9 @@ public class DatabaseWrapperOpportunityTest {
     databaseWrapper.insertVolunteeringOpportunity(opportunity);
 
     VolunteeringOpportunity actualOpportunity =
-        databaseWrapper.getVolunteeringOpportunityByOppportunityId(opportunity.getOpportunityId()).get();
+        databaseWrapper
+            .getVolunteeringOpportunityByOppportunityId(opportunity.getOpportunityId())
+            .get();
 
     Assert.assertEquals(actualOpportunity, opportunity);
   }
