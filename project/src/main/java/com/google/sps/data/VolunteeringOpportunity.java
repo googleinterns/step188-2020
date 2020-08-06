@@ -137,4 +137,27 @@ public final class VolunteeringOpportunity {
   public String toString() {
     return String.format("Name: %s\nNumber of spots left: %d\n", this.name, this.numSpotsLeft);
   }
+
+  @Override
+  public boolean equals(Object other) {
+    if (this == other) {
+      return true;
+    }
+    if (!(other instanceof VolunteeringOpportunity)) {
+      return false;
+    }
+    VolunteeringOpportunity opportunity = (VolunteeringOpportunity) other;
+    return this.opportunityId.equals(opportunity.opportunityId)
+        && this.eventId.equals(opportunity.eventId) && this.name.equals(opportunity.name)
+        && this.numSpotsLeft == opportunity.numSpotsLeft;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = opportunityId.hashCode();
+    result = 31 * result + eventId.hashCode();
+    result = 31 * result + name.hashCode();
+    result = 31 * result + Long.hashCode(numSpotsLeft);
+    return result;
+  }
 }
