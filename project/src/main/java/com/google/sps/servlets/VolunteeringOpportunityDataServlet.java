@@ -16,8 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/volunteering-opportunity-data")
 public class VolunteeringOpportunityDataServlet extends HttpServlet {
   private static final String OPPORTUNITY_ID = "opportunity-id";
-  private static final DatabaseWrapper databaseWrapper =
-      new DatabaseWrapper(new WrapperDatabaseService());
 
   /**
    * Queries database for opportunity with opportunity ID given in the request parameter and writes
@@ -31,6 +29,7 @@ public class VolunteeringOpportunityDataServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String opportunityId = request.getParameter(OPPORTUNITY_ID);
 
+    DatabaseWrapper databaseWrapper = new DatabaseWrapper(new WrapperDatabaseService());
     Optional<VolunteeringOpportunity> opportunity =
         databaseWrapper.getVolunteeringOpportunityByOppportunityId(opportunityId);
     databaseWrapper.closeConnection();

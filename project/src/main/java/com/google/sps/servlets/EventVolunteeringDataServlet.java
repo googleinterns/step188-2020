@@ -16,8 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/event-volunteering-data")
 public class EventVolunteeringDataServlet extends HttpServlet {
   private static final String HARDCODED_EVENT_ID = "0883de79-17d7-49a3-a866-dbd5135062a8";
-  private static final DatabaseWrapper databaseWrapper =
-      new DatabaseWrapper(new WrapperDatabaseService());
 
   /**
    * Queries database for all opportunities with event ID given in the request parameter and writes
@@ -29,6 +27,7 @@ public class EventVolunteeringDataServlet extends HttpServlet {
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    DatabaseWrapper databaseWrapper = new DatabaseWrapper(new WrapperDatabaseService());
     // TO DO: change eventId to parameter value
     Set<VolunteeringOpportunity> opportunities =
         databaseWrapper.getVolunteeringOpportunitiesByEventId(HARDCODED_EVENT_ID);

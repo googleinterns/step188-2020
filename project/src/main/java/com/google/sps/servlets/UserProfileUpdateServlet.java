@@ -22,14 +22,15 @@ import javax.servlet.http.HttpServletResponse;
 public class UserProfileUpdateServlet extends HttpServlet {
   private static final String email =
       UserServiceFactory.getUserService().getCurrentUser().getEmail();
-  private static final DatabaseWrapper databaseWrapper =
-      new DatabaseWrapper(new WrapperDatabaseService());
 
   /** Writes out information for the user corresponding to the logged-in email */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO: Add tests for this once test setup is ready
+    DatabaseWrapper databaseWrapper = new DatabaseWrapper(new WrapperDatabaseService());
     Optional<User> userOptional = databaseWrapper.readUserFromEmail(email);
+    databaseWrapper.closeConnection();
+
     String userJson;
     if (!userOptional.isPresent()) {
       userJson =
@@ -51,7 +52,6 @@ public class UserProfileUpdateServlet extends HttpServlet {
               .build()
               .toString();
     }
-    databaseWrapper.closeConnection();
     response.setContentType("application/json;charset=UTF-8");
     response.getWriter().println(userJson);
   }
@@ -66,6 +66,8 @@ public class UserProfileUpdateServlet extends HttpServlet {
 
     User updatedUser =
         new User.Builder(name, email).setInterests(interests).setSkills(skills).build();
+
+    DatabaseWrapper databaseWrapper = new DatabaseWrapper(new WrapperDatabaseService());
     databaseWrapper.insertOrUpdateUser(updatedUser);
     databaseWrapper.closeConnection();
     response.sendRedirect("/profile.html");

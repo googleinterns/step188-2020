@@ -20,8 +20,6 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
   private static final String NUM_SPOTS_LEFT = "num-spots-left";
   private static final String REQUIRED_SKILL = "required-skill";
   private static final String HARDCODED_EVENT_ID = "0883de79-17d7-49a3-a866-dbd5135062a8";
-  private static final DatabaseWrapper databaseWrapper =
-      new DatabaseWrapper(new WrapperDatabaseService());
 
   /**
    * Inserts volunteering opportunity with parameter values for attributes into the database if
@@ -39,14 +37,13 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
     long numSpotsLeft =
         Long.parseLong(CommonUtils.getParameter(request, NUM_SPOTS_LEFT, /* DefaultValue= */ "0"));
     Set<String> requiredSkills = CommonUtils.getParameterValues(request, REQUIRED_SKILL);
-
+    
     // If opportunityId is not passed as a parameter, perform an insert else perform an update
     if (opportunityId == null) {
       insertVolunteeringOpportunityInDB(name, numSpotsLeft, requiredSkills);
     } else {
       updateVolunteeringOpportunityInDB(opportunityId, name, numSpotsLeft, requiredSkills);
     }
-    databaseWrapper.closeConnection();
     response.sendRedirect("/events-feed.html");
   }
 
@@ -57,7 +54,9 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
             .setRequiredSkills(requiredSkills)
             .build();
     // TO DO: change eventId to parameter value
+    DatabaseWrapper databaseWrapper = new DatabaseWrapper(new WrapperDatabaseService());
     databaseWrapper.insertVolunteeringOpportunity(opportunity);
+    databaseWrapper.closeConnection();
   }
 
   private static void updateVolunteeringOpportunityInDB(
@@ -67,7 +66,9 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
             .setOpportunityId(opportunityId)
             .setRequiredSkills(requiredSkills)
             .build();
+
     // TO DO: change eventId to parameter value
+    DatabaseWrapper databaseWrapper = new DatabaseWrapper(new WrapperDatabaseService());
     databaseWrapper.updateVolunteeringOpportunity(opportunity);
     databaseWrapper.closeConnection();
   }

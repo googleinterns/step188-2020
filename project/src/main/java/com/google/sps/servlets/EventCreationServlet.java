@@ -24,12 +24,12 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/create-event")
 public class EventCreationServlet extends HttpServlet {
-  private static final DatabaseWrapper dbWrapper = new DatabaseWrapper(new WrapperDatabaseService());
-
   /** Returns event details from database */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String eventId = request.getParameter("eventId");
+
+    DatabaseWrapper dbWrapper = new DatabaseWrapper(new WrapperDatabaseService());
     Optional<Event> eventOptional = dbWrapper.getEventById(eventId);
     dbWrapper.closeConnection();
 
@@ -59,6 +59,8 @@ public class EventCreationServlet extends HttpServlet {
     String EMAIL = "bobsmith@example.com";
     User host = new User.Builder(NAME, EMAIL).build();
     Event event = new Event.Builder(name, description, labels, location, date, host).build();
+
+    DatabaseWrapper dbWrapper = new DatabaseWrapper(new WrapperDatabaseService());
     dbWrapper.insertorUpdateEvent(event);
     dbWrapper.closeConnection();
 
