@@ -46,7 +46,7 @@ public class EventCreationServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String name = request.getParameter("name");
     String[] parsedDate = request.getParameter("date").split("/");
-    Date date = Date.fromYearMonthDay(Integer.parseInt(parsedDate[2]), Integer.parseInt(parsedDate[1]), Integer.parseInt(parsedDate[0]));
+    Date date = Date.fromYearMonthDay(Integer.parseInt(parsedDate[2]), Integer.parseInt(parsedDate[0]), Integer.parseInt(parsedDate[1]));
     String description = request.getParameter("description");
     String location = request.getParameter("location");
     Set<String> labels = Collections.unmodifiableSet(new HashSet<>(
