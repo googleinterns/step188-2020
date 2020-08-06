@@ -24,6 +24,8 @@
       integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
       crossorigin="anonymous"
     ></script>
+    <script src="script.js"></script>
+    <script src="event-details.js"></script>
   </head>
   <body onload="getEventDetails()">
     <div id="header"></div>
@@ -39,10 +41,8 @@
           <ul class="list-group list-group-flush">
             <li class="list-group-item input" id="date"></li>
             <li class="list-group-item input" id="location"></li>
-            <li class="list-group-item">
-              <p class="card-text">Volunteer Type: Translator</p>
-              <p class="card-text">Volunteer Spots Left: 1</p>
-            </li>
+            <ul id="volunteering-opportunities" 
+            class="list-group list-group-flush" >
             <li class="list-group-item">Attendee Spots Left: 240</li>
           </ul>
         </div>
