@@ -1,18 +1,12 @@
 package com.google.sps.utilities;
 
 import com.google.cloud.Date;
-import com.google.cloud.spanner.DatabaseClient;
-import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.ResultSet;
-import com.google.cloud.spanner.Spanner;
-import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
-import com.google.cloud.spanner.Struct;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -78,7 +72,7 @@ public class SpannerTasks {
   public static void insertorUpdateEvent(Event event) {
     List<Mutation> mutations =
         getEventMutationsFromBuilder(Mutation.newInsertOrUpdateBuilder(EVENT_TABLE), event);
-   SpannerClient.getDatabaseClient().write(mutations);
+    SpannerClient.getDatabaseClient().write(mutations);
   }
 
   /** Returns List of Event Ids from DB
@@ -237,20 +231,20 @@ public class SpannerTasks {
                     + " VolunteeringOpportunity WHERE VolunteeringOpportunityID=\"%s\"",
                 opportunityId));
     try (ResultSet resultSet =
-      SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
-        if (resultSet.next()) {
-            String eventId = resultSet.getString(0);
-            String name = resultSet.getString(1);
-            long numSpotsLeft = resultSet.getLong(2);
-            Set<String> requiredSkills =
-                resultSet.getStringList(3).stream().collect(Collectors.toSet());
-            result =
-                Optional.of(
-                    new VolunteeringOpportunity.Builder(eventId, name, numSpotsLeft)
-                        .setOpportunityId(opportunityId)
-                        .setRequiredSkills(requiredSkills)
-                        .build());
-        }
+        SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
+      if (resultSet.next()) {
+          String eventId = resultSet.getString(0);
+          String name = resultSet.getString(1);
+          long numSpotsLeft = resultSet.getLong(2);
+          Set<String> requiredSkills =
+              resultSet.getStringList(3).stream().collect(Collectors.toSet());
+          result =
+              Optional.of(
+                  new VolunteeringOpportunity.Builder(eventId, name, numSpotsLeft)
+                      .setOpportunityId(opportunityId)
+                      .setRequiredSkills(requiredSkills)
+                      .build());
+      }
     }
     return result;
   }
@@ -271,18 +265,18 @@ public class SpannerTasks {
                 eventId));
     try (ResultSet resultSet =
         SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
-            while (resultSet.next()) {
-                String opportunityId = resultSet.getString(0);
-                String name = resultSet.getString(1);
-                long numSpotsLeft = resultSet.getLong(2);
-                Set<String> requiredSkills =
-                    resultSet.getStringList(3).stream().collect(Collectors.toSet());
-                results.add(
-                    new VolunteeringOpportunity.Builder(eventId, name, numSpotsLeft)
-                        .setOpportunityId(opportunityId)
-                        .setRequiredSkills(requiredSkills)
-                        .build());
-            }
+        while (resultSet.next()) {
+            String opportunityId = resultSet.getString(0);
+            String name = resultSet.getString(1);
+            long numSpotsLeft = resultSet.getLong(2);
+            Set<String> requiredSkills =
+                resultSet.getStringList(3).stream().collect(Collectors.toSet());
+            results.add(
+                new VolunteeringOpportunity.Builder(eventId, name, numSpotsLeft)
+                    .setOpportunityId(opportunityId)
+                    .setRequiredSkills(requiredSkills)
+                    .build());
+        }
     }
     return results;
   }

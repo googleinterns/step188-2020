@@ -22,7 +22,6 @@ import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 import java.io.IOException;
-import java.util.UUID;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -33,11 +32,9 @@ public class SpannerClient implements ServletContextListener {
   private static String PROJECT_ID;
   private static String INSTANCE_ID;
   private static String DATABASE_ID;
-
   private static Spanner spanner = null;
   private static DatabaseAdminClient databaseAdminClient = null;
   private static DatabaseClient databaseClient = null;
-
   private static ServletContext sc;
 
   private static void connect() throws IOException {
