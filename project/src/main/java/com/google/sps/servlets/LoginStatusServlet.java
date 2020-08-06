@@ -8,39 +8,46 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns the login status of the user. */
+/** Servlet that returns whether user is logged in and email of the user. */
 @WebServlet("/login-status")
 public class LoginStatusServlet extends HttpServlet {
+  /**
+   * Writes whether user is logged in and email of user if the user is logged in to response.
+   *
+   * @param request servlet request
+   * @param response servlet response
+   * @throws IOException if Input/Output error occurs
+   */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
 
-    // Get the current login status.
     LoginStatus status;
     if (UserServiceFactory.getUserService().isUserLoggedIn()) {
-      status = LoginStatus.getLoggedInInstance();
+      status =
+          new LoginStatus(
+              LoginStatus.LoginState.LOGGED_IN,
+              UserServiceFactory.getUserService().getCurrentUser().getEmail());
     } else {
-      status = LoginStatus.getNotLoggedInInstance();
+      status = new LoginStatus(LoginStatus.LoginState.LOGGED_OUT, /* userEmail= */ "");
     }
 
     response.getWriter().println(CommonUtils.convertToJson(status));
   }
 
-  private static class LoginStatus {
-    private static final LoginStatus STATUS_LOGGED_IN = new LoginStatus(true);
-    private static final LoginStatus STATUS_NOT_LOGGED_IN = new LoginStatus(false);
-    private boolean isLoggedIn;
+  public static final class LoginStatus {
+    private final LoginState loginState;
 
-    private LoginStatus(boolean isLoggedIn) {
-      this.isLoggedIn = isLoggedIn;
+    public static enum LoginState {
+      LOGGED_IN,
+      LOGGED_OUT,
     }
 
-    public static LoginStatus getLoggedInInstance() {
-      return STATUS_LOGGED_IN;
-    }
+    private final String userEmail;
 
-    public static LoginStatus getNotLoggedInInstance() {
-      return STATUS_NOT_LOGGED_IN;
+    public LoginStatus(LoginState loginState, String userEmail) {
+      this.loginState = loginState;
+      this.userEmail = userEmail;
     }
   }
 }

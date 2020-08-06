@@ -3,7 +3,7 @@ package com.google.sps.servlets;
 import com.google.sps.data.VolunteeringOpportunity;
 import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.DatabaseConstants;
-import com.google.sps.utilities.DatabaseWrapper;
+import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
 import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
@@ -15,8 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/volunteering-opportunity-data")
 public class VolunteeringOpportunityDataServlet extends HttpServlet {
   private static final String OPPORTUNITY_ID = "opportunity-id";
-  private static final DatabaseWrapper databaseWrapper =
-      new DatabaseWrapper(DatabaseConstants.INSTANCE_ID, DatabaseConstants.DATABASE_ID);
 
   /**
    * Queries database for opportunity with opportunity ID given in the request parameter and writes
@@ -31,17 +29,17 @@ public class VolunteeringOpportunityDataServlet extends HttpServlet {
     String opportunityId = request.getParameter(OPPORTUNITY_ID);
 
     Optional<VolunteeringOpportunity> opportunity =
-        databaseWrapper.getVolunteeringOpportunityByOppportunityId(opportunityId);
+        SpannerTasks.getVolunteeringOpportunityByOppportunityId(opportunityId);
 
-    if (opportunity.isEmpty()) {
+    if (opportunity.isPresent()) {
+      response.setContentType("application/json;");
+      response.getWriter().println(CommonUtils.convertToJson(opportunity.get()));
+    } else {
       response.setContentType("text/html;");
       response
           .getWriter()
           .println(
               String.format("Error: No opportunity found for opportunityId %s", opportunityId));
-    } else {
-      response.setContentType("application/json;");
-      response.getWriter().println(CommonUtils.convertToJson(opportunity.get()));
     }
   }
 }
