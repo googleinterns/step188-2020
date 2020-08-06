@@ -91,6 +91,23 @@ public class DatabaseWrapper {
   }
 
   /**
+   * Given a set of emails, return the corresponding users from the DB
+   *
+   * @param emails emails to search the 'User' table by
+   * @return return the users that exist in no particular order
+   */
+  public Set<User> readMultipleUsersFromEmails(Set<String> emails) {
+    Set<User> users = new HashSet<>();
+    for (String email : emails) {
+      Optional<User> userOptional = readUserFromEmail(email);
+      if (userOptional.isPresent()) {
+        user.add(userOptional.get());
+      }
+    }
+    return users;
+  }
+
+  /**
    * Given an event, insert or update a row with all available fields into the DB
    *
    * @param event the event to be inserted or updated; event's ID field should not exist in DB
@@ -113,7 +130,6 @@ public class DatabaseWrapper {
         if (event.isPresent()) {
             ids.add( event.get() );
         }
-        
       }
       return ids;
   }
@@ -124,7 +140,7 @@ public class DatabaseWrapper {
   */
   public Optional<Event> getEventById(String eventId) {
     ResultSet resultSet = dbClient.singleUse().executeQuery(Statement.of(String.format(
-        "SELECT * FROM %s WHERE EventID='%s'",
+        "SELECT EventID, Name, Description, Labels, Location, Date, Host, Opportunities, Attendees FROM %s WHERE EventID='%s'",
         EVENT_TABLE, eventId)));    
     /** If ID does not exist */
     if (!resultSet.next()) {
@@ -139,7 +155,7 @@ public class DatabaseWrapper {
   public Set<Event> getAllEvents() {
     Set<Event> events = new HashSet<>();
     ResultSet resultSet = dbClient.singleUse().executeQuery(Statement.of(String.format(
-        "SELECT * FROM %s", EVENT_TABLE)));
+        "SELECT EventID, Name, Description, Labels, Location, Date, Host, Opportunities, Attendees FROM %s", EVENT_TABLE)));
     while (resultSet.next()) {
       Event event = createEventFromDatabaseResult(resultSet);
       events.add(event);
@@ -148,20 +164,18 @@ public class DatabaseWrapper {
   }
   
   private static Event createEventFromDatabaseResult(ResultSet resultSet) {
-    // TO DO: replace with host from db, after PR #43 pushed
-    String NAME = "Bob Smith";
-    String EMAIL = "bobsmith@example.com";
-    User host = new User.Builder(NAME, EMAIL).build();
-    Date date = Date.fromYearMonthDay(2016, 9, 15);
+    String eventId = resultSet.getString(0);
     return new Event
               .Builder(/* name = */ resultSet.getString(1),
                   /* description = */ resultSet.getString(2),
                   /* labels = */ new HashSet<String>(resultSet.getStringList(3)),
-                  /* location = */ resultSet.getString(4), /* date = */date,
-                  /* host = */ host)
-              .setId(eventId);
+                  /* location = */ resultSet.getString(4), 
+                  /* date = */ resultSet.getDate(5),
+                  /* host = */ readUserFromEmail(resultSet.getString(6)).get())
+              .setId(eventId)
+              .setOpportunities(getVolunteeringOpportunityByEventId(eventId))
+              .setAttendees(readMultipleUsersFromEmails(new HashSet<String>(resultSet.getStringList(7))))
               .build();
-    // TO DO: set volunteer opportunities, attendees by Querying those by ID, wait for PR 43, 44
   }
 
   private static List<Mutation> getUserMutationsFromBuilder(
