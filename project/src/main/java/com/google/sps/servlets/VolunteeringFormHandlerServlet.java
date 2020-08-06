@@ -35,7 +35,7 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
     long numSpotsLeft =
         Long.parseLong(CommonUtils.getParameter(request, NUM_SPOTS_LEFT, /* DefaultValue= */ "0"));
     Set<String> requiredSkills = CommonUtils.getParameterValues(request, REQUIRED_SKILL);
-    
+
     // If opportunityId is not passed as a parameter, perform an insert else perform an update
     if (opportunityId == null) {
       insertVolunteeringOpportunityInDB(name, numSpotsLeft, requiredSkills);

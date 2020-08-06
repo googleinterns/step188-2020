@@ -28,16 +28,12 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-// With @WebListener annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebListener
 public class SpannerClient implements ServletContextListener {
   private static String PROJECT_ID;
   private static String INSTANCE_ID;
   private static String DATABASE_ID;
 
-  // The initial connection can be an expensive operation -- We cache this Connection
-  // to speed things up.  For this sample, keeping them here is a good idea, for
-  // your application, you may wish to keep this somewhere else.
   private static Spanner spanner = null;
   private static DatabaseAdminClient databaseAdminClient = null;
   private static DatabaseClient databaseClient = null;
@@ -85,20 +81,9 @@ public class SpannerClient implements ServletContextListener {
 
   @Override
   public void contextInitialized(ServletContextEvent event) {
-    if (event != null) {
-      sc = event.getServletContext();
-      if (INSTANCE_ID == null) {
-        INSTANCE_ID = sc.getInitParameter("SPANNER_INSTANCE");
-      }
-    }
-    // try system properties
-    if (INSTANCE_ID == null) {
-      INSTANCE_ID = System.getenv("SPANNER_INSTANCE");
-    }
-
-    if (DATABASE_ID == null) {
-      DATABASE_ID = DatabaseConstants.DATABASE_ID;
-    }
+    String envInstanceId = System.getenv("SPANNER_INSTANCE");
+    INSTANCE_ID = (envInstanceId == null) ? DatabaseConstants.INSTANCE_ID : envInstanceId;
+    DATABASE_ID = DatabaseConstants.DATABASE_ID;
 
     try {
       connect();
@@ -119,7 +104,7 @@ public class SpannerClient implements ServletContextListener {
 
   @Override
   public void contextDestroyed(ServletContextEvent servletContextEvent) {
-    // App Engine does not currently invoke this method.
+    // App Engine does not currently invoke this method but override is mandatory.
     databaseAdminClient = null;
   }
 

@@ -27,7 +27,6 @@ public class EventCreationServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String eventId = request.getParameter("eventId");
-
     Optional<Event> eventOptional = SpannerTasks.getEventById(eventId);
 
     // If event DNE, sends 404 ERR to frontend
@@ -56,7 +55,6 @@ public class EventCreationServlet extends HttpServlet {
     String EMAIL = "bobsmith@example.com";
     User host = new User.Builder(NAME, EMAIL).build();
     Event event = new Event.Builder(name, description, labels, location, date, host).build();
-
     SpannerTasks.insertorUpdateEvent(event);
 
     String redirectUrl = "/event-details.html?eventId=" + event.getId();

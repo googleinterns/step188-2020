@@ -27,7 +27,6 @@ public class UserProfileUpdateServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO: Add tests for this once test setup is ready
     Optional<User> userOptional = SpannerTasks.readUserFromEmail(email);
-
     String userJson;
     if (!userOptional.isPresent()) {
       userJson =
@@ -64,7 +63,6 @@ public class UserProfileUpdateServlet extends HttpServlet {
         new User.Builder(name, email).setInterests(interests).setSkills(skills).build();
 
     SpannerTasks.insertOrUpdateUser(updatedUser);
-
     response.sendRedirect("/profile.html");
   }
 }
