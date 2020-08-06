@@ -11,6 +11,7 @@ import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
+import com.google.sps.utilities.DatabaseConstants;
 import com.google.sps.data.VolunteeringOpportunity;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,8 +22,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DatabaseWrapper {
-  private String instanceId;
-  private String databaseId;
+  private String instanceId = DatabaseConstants.INSTANCE_ID;
+  private String databaseId = DatabaseConstants.DATABASE_ID;
   private static final String USER_TABLE = "Users";
   private static final String VOLUNTEERING_OPPORTUNITY_TABLE = "VolunteeringOpportunity";
   private static final String EVENT_TABLE = "Events";
@@ -101,7 +102,7 @@ public class DatabaseWrapper {
     for (String email : emails) {
       Optional<User> userOptional = readUserFromEmail(email);
       if (userOptional.isPresent()) {
-        user.add(userOptional.get());
+        users.add(userOptional.get());
       }
     }
     return users;
@@ -163,7 +164,7 @@ public class DatabaseWrapper {
     return events;
   }
   
-  private static Event createEventFromDatabaseResult(ResultSet resultSet) {
+  private Event createEventFromDatabaseResult(ResultSet resultSet) {
     String eventId = resultSet.getString(0);
     return new Event
               .Builder(/* name = */ resultSet.getString(1),
@@ -173,7 +174,7 @@ public class DatabaseWrapper {
                   /* date = */ resultSet.getDate(5),
                   /* host = */ readUserFromEmail(resultSet.getString(6)).get())
               .setId(eventId)
-              .setOpportunities(getVolunteeringOpportunityByEventId(eventId))
+              .setOpportunities(getVolunteeringOpportunitiesByEventId(eventId))
               .setAttendees(readMultipleUsersFromEmails(new HashSet<String>(resultSet.getStringList(7))))
               .build();
   }

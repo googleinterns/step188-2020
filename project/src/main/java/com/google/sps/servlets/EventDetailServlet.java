@@ -30,7 +30,7 @@ public class EventDetailServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Set<Event> events = dbWrapper.getAllEvents();
-    response.setContentType("text/html;");
+    response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(events));
   }
 }
