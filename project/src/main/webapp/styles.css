@@ -1,17 +1,21 @@
 .btn-interest {
   background-color: #e5e0ec !important;
   border: none !important;
+  color: black !important;
   cursor: default !important;
 }
 
 .btn-skill {
   background-color: #f7cecb !important;
   border: none !important;
+  color: black !important;
   cursor: default !important;
 }
 
-.btn-add {
-  background-color: #e8e8e8 !important;
+.adder {
+  background-color: #eee !important;
+  border: none !important;
+  color: black !important;
 }
 
 .bootstrap-tagsinput span {
