@@ -15,6 +15,7 @@ public final class User {
 
   public static class Builder {
     // Required parameters
+    private long userId;
     private String name;
     private String email;
 
@@ -28,6 +29,11 @@ public final class User {
     public Builder(String name, String email) {
       this.name = name;
       this.email = email;
+    }
+
+    public Builder setUserId(long id) {
+      this.userId = id;
+      return this;
     }
 
     public Builder setName(String name) {
@@ -191,6 +197,7 @@ public final class User {
 
   public Set<String> getEventsVolunteeringIds() {
     return eventsVolunteering.stream().map(Event::getId).collect(Collectors.toSet());
+
   }
 
   public Builder toBuilder() {
