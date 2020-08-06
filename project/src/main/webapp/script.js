@@ -23,8 +23,8 @@ window.onload = function onLoad() {
 async function checkLoginStatus() {
   const response = await fetch('/login-status');
   const loginStatus = await response.json();
-  const isLoggedIn = loginStatus.isLoggedIn;
-  if (isLoggedIn) {
+  const loginState = loginStatus.loginState;
+  if (loginState === 'LOGGED_IN') {
     loadHeader();
   } else {
     window.href = 'index.html';
