@@ -38,15 +38,3 @@ html {
 .dropdown-toggle {
   border: solid 1px;
 }
-
-.btn-interest {
-  background-color: #e5e0ec !important;
-  border: none !important;
-  cursor: default !important;
-}
-
-.btn-skill {
-  background-color: #f7cecb !important;
-  border: none !important;
-  cursor: default !important;
-}
