@@ -58,7 +58,7 @@ public class EventCreationServlet extends HttpServlet {
     User host = new User.Builder(NAME, EMAIL).build();
     Event event = new Event.Builder(name, description, labels, location, date, host).build();
     DatabaseWrapper dbWrapper = new DatabaseWrapper("step-188-instance", "event-organizer-db");
-    dbWrapper.insertorUpdateEvent(event);
+    dbWrapper.insertOrUpdateEvent(event);
 
     String redirectUrl = "/event-details.html?eventId=" + event.getId();
     response.sendRedirect(redirectUrl);

@@ -91,7 +91,7 @@ public class DatabaseWrapper {
    *
    * @param event the event to be inserted or updated; event's ID field should not exist in DB
    */
-  public void insertorUpdateEvent(Event event) {
+  public void insertOrUpdateEvent(Event event) {
     SpannerOptions options = SpannerOptions.newBuilder().build();
     Spanner spanner = options.getService();
     DatabaseId db = DatabaseId.of(options.getProjectId(), instanceId, databaseId);
