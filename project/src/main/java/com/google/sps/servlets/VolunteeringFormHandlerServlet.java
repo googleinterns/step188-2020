@@ -4,7 +4,7 @@ import com.google.sps.data.VolunteeringOpportunity;
 import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.DatabaseConstants;
 import com.google.sps.utilities.DatabaseWrapper;
-import com.google.sps.utilities.WrapperDatabaseService;
+import com.google.sps.utilities.DatabaseServiceImpl;
 import java.io.IOException;
 import java.util.Set;
 import javax.servlet.annotation.WebServlet;
@@ -54,7 +54,7 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
             .setRequiredSkills(requiredSkills)
             .build();
     // TO DO: change eventId to parameter value
-    DatabaseWrapper databaseWrapper = new DatabaseWrapper(new WrapperDatabaseService());
+    DatabaseWrapper databaseWrapper = new DatabaseWrapper(new DatabaseServiceImpl());
     databaseWrapper.insertVolunteeringOpportunity(opportunity);
     databaseWrapper.closeConnection();
   }
@@ -68,7 +68,7 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
             .build();
 
     // TO DO: change eventId to parameter value
-    DatabaseWrapper databaseWrapper = new DatabaseWrapper(new WrapperDatabaseService());
+    DatabaseWrapper databaseWrapper = new DatabaseWrapper(new DatabaseServiceImpl());
     databaseWrapper.updateVolunteeringOpportunity(opportunity);
     databaseWrapper.closeConnection();
   }

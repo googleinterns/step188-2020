@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
 import com.google.sps.utilities.DatabaseWrapper;
-import com.google.sps.utilities.WrapperDatabaseService;
+import com.google.sps.utilities.DatabaseServiceImpl;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,7 +29,7 @@ public class EventCreationServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String eventId = request.getParameter("eventId");
 
-    DatabaseWrapper dbWrapper = new DatabaseWrapper(new WrapperDatabaseService());
+    DatabaseWrapper dbWrapper = new DatabaseWrapper(new DatabaseServiceImpl());
     Optional<Event> eventOptional = dbWrapper.getEventById(eventId);
     dbWrapper.closeConnection();
 
@@ -60,7 +60,7 @@ public class EventCreationServlet extends HttpServlet {
     User host = new User.Builder(NAME, EMAIL).build();
     Event event = new Event.Builder(name, description, labels, location, date, host).build();
 
-    DatabaseWrapper dbWrapper = new DatabaseWrapper(new WrapperDatabaseService());
+    DatabaseWrapper dbWrapper = new DatabaseWrapper(new DatabaseServiceImpl());
     dbWrapper.insertorUpdateEvent(event);
     dbWrapper.closeConnection();
 

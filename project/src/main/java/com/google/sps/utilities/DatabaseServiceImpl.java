@@ -6,11 +6,11 @@ import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 
 /** Class that initializes spanner and database client. */
-public class WrapperDatabaseService implements DatabaseService {
+public class DatabaseServiceImpl implements DatabaseService {
   private final Spanner spanner;
   private final DatabaseClient databaseClient;
 
-  public WrapperDatabaseService() {
+  public DatabaseServiceImpl() {
     SpannerOptions options = SpannerOptions.newBuilder().build();
     spanner = options.getService();
     DatabaseId database =

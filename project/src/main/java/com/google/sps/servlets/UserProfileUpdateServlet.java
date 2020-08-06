@@ -5,7 +5,7 @@ import com.google.sps.data.User;
 import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.DatabaseConstants;
 import com.google.sps.utilities.DatabaseWrapper;
-import com.google.sps.utilities.WrapperDatabaseService;
+import com.google.sps.utilities.DatabaseServiceImpl;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -27,7 +27,7 @@ public class UserProfileUpdateServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO: Add tests for this once test setup is ready
-    DatabaseWrapper databaseWrapper = new DatabaseWrapper(new WrapperDatabaseService());
+    DatabaseWrapper databaseWrapper = new DatabaseWrapper(new DatabaseServiceImpl());
     Optional<User> userOptional = databaseWrapper.readUserFromEmail(email);
     databaseWrapper.closeConnection();
 
@@ -67,7 +67,7 @@ public class UserProfileUpdateServlet extends HttpServlet {
     User updatedUser =
         new User.Builder(name, email).setInterests(interests).setSkills(skills).build();
 
-    DatabaseWrapper databaseWrapper = new DatabaseWrapper(new WrapperDatabaseService());
+    DatabaseWrapper databaseWrapper = new DatabaseWrapper(new DatabaseServiceImpl());
     databaseWrapper.insertOrUpdateUser(updatedUser);
     databaseWrapper.closeConnection();
     response.sendRedirect("/profile.html");
