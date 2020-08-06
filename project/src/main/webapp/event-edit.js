@@ -11,11 +11,10 @@ function getEventDetails() {
       .then((res) => (res.json())).then((data) => {
         document.getElementById('name').value = data['name'];
         document.getElementById('description').value = data['description'];
-        document.getElementById('date').value = 
+        document.getElementById('date').value =
         `${data['date'].month}/${data['date'].dayOfMonth}/${data['date'].year}`;
         document.getElementById('location').value = data['location'];
-        
-        const link = '/event-details.html?eventId=' + eventId
-        document.getElementById('editLink').setAttribute("href", link);
+        const link = '/event-details.html?eventId=' + eventId;
+        document.getElementById('editLink').setAttribute('href', link);
       });
 }

@@ -98,8 +98,7 @@ function getEventDetails() {
         ${data['date'].month}/${data['date'].dayOfMonth}/${data['date'].year}`;
         document.getElementById('location').innerHTML =
           `Location: ${data['location']}`;
-        
-        const link = '/event-edit.html?eventId=' + eventId
-        document.getElementById('editLink').setAttribute("href", link);
+        const link = '/event-edit.html?eventId=' + eventId;
+        document.getElementById('editLink').setAttribute('href', link);
       });
 }
