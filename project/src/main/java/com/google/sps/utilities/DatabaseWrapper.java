@@ -124,7 +124,7 @@ public class DatabaseWrapper {
   */
   public Optional<Event> getEventById(String eventId) {
     ResultSet resultSet = dbClient.singleUse().executeQuery(Statement.of(String.format(
-        "SELECT Name, Description, Labels, Location, Date, Host, Opportunities, Attendees FROM %s WHERE EventID='%s'",
+        "SELECT EventID, Name, Description, Labels, Location, Date, Host, Opportunities, Attendees FROM %s WHERE EventID='%s'",
         EVENT_TABLE, eventId)));
     
     /** If ID does not exist */
@@ -138,12 +138,13 @@ public class DatabaseWrapper {
     User host = new User.Builder(NAME, EMAIL).build();
     Date date = Date.fromYearMonthDay(2016, 9, 15);
     return Optional.of(new Event
-                           .Builder(/* name = */ resultSet.getString(0),
-                               /* description = */ resultSet.getString(1),
-                               /* labels = */ new HashSet<String>(resultSet.getStringList(2)),
-                               /* location = */ resultSet.getString(3), /* date = */date,
+                           .Builder(/* name = */ resultSet.getString(1),
+                               /* description = */ resultSet.getString(2),
+                               /* labels = */ new HashSet<String>(resultSet.getStringList(3)),
+                               /* location = */ resultSet.getString(4), /* date = */date,
                                /* host = */ host)
-                           .build());
+                            .setId(eventId);
+                            .build());
     // TO DO: set volunteer opportunities, attendees by Querying those by ID, wait for PR 43, 44
   }
 

@@ -5,6 +5,7 @@ import com.google.cloud.Date;
 import com.google.gson.Gson;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
+import com.google.sps.utilities.DatabaseConstants;
 import com.google.sps.utilities.DatabaseWrapper;
 import java.io.IOException;
 import java.text.ParseException;
@@ -23,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/create-event")
 public class EventCreationServlet extends HttpServlet {
-  private static final DatabaseWrapper dbWrapper = new DatabaseWrapper("step-188-instance", "event-organizer-db");
+  private static final DatabaseWrapper dbWrapper = new DatabaseWrapper(DatabaseConstants.INSTANCE_ID, DatabaseConstants.DATABASE_ID);
 
   /** Returns event details from database */
   @Override
@@ -35,7 +36,7 @@ public class EventCreationServlet extends HttpServlet {
     if (!eventOptional.isPresent()) {
         response.sendError(HttpServletResponse.SC_NOT_FOUND);
     } else {
-        Event event = eventOptional.get().toBuilder().setId(eventId).build();
+        Event event = eventOptional.get();
         response.setContentType("text/html;");
         response.getWriter().println(new Gson().toJson(event));
     }  
