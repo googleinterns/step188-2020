@@ -5,8 +5,7 @@ import com.google.cloud.Date;
 import com.google.gson.Gson;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
-import com.google.sps.utilities.DatabaseWrapper;
-import com.google.sps.utilities.DatabaseServiceImpl;
+import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,9 +28,7 @@ public class EventCreationServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String eventId = request.getParameter("eventId");
 
-    DatabaseWrapper dbWrapper = new DatabaseWrapper(new DatabaseServiceImpl());
-    Optional<Event> eventOptional = dbWrapper.getEventById(eventId);
-    dbWrapper.closeConnection();
+    Optional<Event> eventOptional = SpannerTasks.getEventById(eventId);
 
     // If event DNE, sends 404 ERR to frontend
     if (!eventOptional.isPresent()) {
@@ -60,9 +57,7 @@ public class EventCreationServlet extends HttpServlet {
     User host = new User.Builder(NAME, EMAIL).build();
     Event event = new Event.Builder(name, description, labels, location, date, host).build();
 
-    DatabaseWrapper dbWrapper = new DatabaseWrapper(new DatabaseServiceImpl());
-    dbWrapper.insertorUpdateEvent(event);
-    dbWrapper.closeConnection();
+    SpannerTasks.insertorUpdateEvent(event);
 
     String redirectUrl = "/event-details.html?eventId=" + event.getId();
     response.sendRedirect(redirectUrl);

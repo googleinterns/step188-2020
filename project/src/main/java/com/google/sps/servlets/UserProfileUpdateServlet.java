@@ -4,8 +4,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.User;
 import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.DatabaseConstants;
-import com.google.sps.utilities.DatabaseWrapper;
-import com.google.sps.utilities.DatabaseServiceImpl;
+import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -27,9 +26,7 @@ public class UserProfileUpdateServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO: Add tests for this once test setup is ready
-    DatabaseWrapper databaseWrapper = new DatabaseWrapper(new DatabaseServiceImpl());
-    Optional<User> userOptional = databaseWrapper.readUserFromEmail(email);
-    databaseWrapper.closeConnection();
+    Optional<User> userOptional = SpannerTasks.readUserFromEmail(email);
 
     String userJson;
     if (!userOptional.isPresent()) {
@@ -63,13 +60,11 @@ public class UserProfileUpdateServlet extends HttpServlet {
     String name = request.getParameter("name");
     Set<String> interests = new HashSet<>(Arrays.asList(request.getParameter("interests")));
     Set<String> skills = new HashSet<>(Arrays.asList(request.getParameter("skills")));
-
     User updatedUser =
         new User.Builder(name, email).setInterests(interests).setSkills(skills).build();
 
-    DatabaseWrapper databaseWrapper = new DatabaseWrapper(new DatabaseServiceImpl());
-    databaseWrapper.insertOrUpdateUser(updatedUser);
-    databaseWrapper.closeConnection();
+    SpannerTasks.insertOrUpdateUser(updatedUser);
+
     response.sendRedirect("/profile.html");
   }
 }

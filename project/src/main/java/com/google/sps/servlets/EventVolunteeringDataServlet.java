@@ -3,8 +3,7 @@ package com.google.sps.servlets;
 import com.google.sps.data.VolunteeringOpportunity;
 import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.DatabaseConstants;
-import com.google.sps.utilities.DatabaseWrapper;
-import com.google.sps.utilities.DatabaseServiceImpl;
+import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
 import java.util.Set;
 import javax.servlet.annotation.WebServlet;
@@ -27,11 +26,9 @@ public class EventVolunteeringDataServlet extends HttpServlet {
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    DatabaseWrapper databaseWrapper = new DatabaseWrapper(new DatabaseServiceImpl());
     // TO DO: change eventId to parameter value
     Set<VolunteeringOpportunity> opportunities =
-        databaseWrapper.getVolunteeringOpportunitiesByEventId(HARDCODED_EVENT_ID);
-    databaseWrapper.closeConnection();
+        SpannerTasks.getVolunteeringOpportunitiesByEventId(HARDCODED_EVENT_ID);
 
     response.setContentType("application/json;");
     response.getWriter().println(CommonUtils.convertToJson(opportunities));
