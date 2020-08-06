@@ -5,6 +5,7 @@ import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Spanner;
 import com.google.cloud.spanner.SpannerOptions;
 
+/** Class that initializes spanner and database client. */
 public class WrapperDatabaseService implements DatabaseService {
   private final Spanner spanner;
   private final DatabaseClient databaseClient;

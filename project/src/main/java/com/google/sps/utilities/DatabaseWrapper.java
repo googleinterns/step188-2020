@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/** Class containing methods for interaction with database. */
 public class DatabaseWrapper {
   private final DatabaseService databaseService;
   private static final String USER_TABLE = "Users";
