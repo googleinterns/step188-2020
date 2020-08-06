@@ -124,27 +124,43 @@ public class DatabaseWrapper {
   */
   public Optional<Event> getEventById(String eventId) {
     ResultSet resultSet = dbClient.singleUse().executeQuery(Statement.of(String.format(
-        "SELECT EventID, Name, Description, Labels, Location, Date, Host, Opportunities, Attendees FROM %s WHERE EventID='%s'",
-        EVENT_TABLE, eventId)));
-    
+        "SELECT * FROM %s WHERE EventID='%s'",
+        EVENT_TABLE, eventId)));    
     /** If ID does not exist */
     if (!resultSet.next()) {
       return Optional.empty();
     }
+    return Optional.of(createEventFromDatabaseResult(resultSet));
+  }
 
+  /**
+   * Returns all events stored in DB
+   */
+  public Set<Event> getAllEvents() {
+    Set<Event> events = new HashSet<>();
+    ResultSet resultSet = dbClient.singleUse().executeQuery(Statement.of(String.format(
+        "SELECT * FROM %s", EVENT_TABLE)));
+    while (resultSet.next()) {
+      Event event = createEventFromDatabaseResult(resultSet);
+      events.add(event);
+    }
+    return events;
+  }
+  
+  private static Event createEventFromDatabaseResult(ResultSet resultSet) {
     // TO DO: replace with host from db, after PR #43 pushed
     String NAME = "Bob Smith";
     String EMAIL = "bobsmith@example.com";
     User host = new User.Builder(NAME, EMAIL).build();
     Date date = Date.fromYearMonthDay(2016, 9, 15);
-    return Optional.of(new Event
-                           .Builder(/* name = */ resultSet.getString(1),
-                               /* description = */ resultSet.getString(2),
-                               /* labels = */ new HashSet<String>(resultSet.getStringList(3)),
-                               /* location = */ resultSet.getString(4), /* date = */date,
-                               /* host = */ host)
-                            .setId(eventId);
-                            .build());
+    return new Event
+              .Builder(/* name = */ resultSet.getString(1),
+                  /* description = */ resultSet.getString(2),
+                  /* labels = */ new HashSet<String>(resultSet.getStringList(3)),
+                  /* location = */ resultSet.getString(4), /* date = */date,
+                  /* host = */ host)
+              .setId(eventId);
+              .build();
     // TO DO: set volunteer opportunities, attendees by Querying those by ID, wait for PR 43, 44
   }
 
