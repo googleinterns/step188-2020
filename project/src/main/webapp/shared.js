@@ -63,9 +63,21 @@ function addTagsToInput(clickedAdder, tagId) {
         $(tagId).prev().prev().remove();
       }
     });
+    $(tagId).on('itemRemoved', function(event) {
+      addTagBackToPool(event.item, tagId);
+    });
     $(tagId).tagsinput('refresh');
     $(tagId).tagsinput('add', $(clickedAdder).next().html());
   });
+}
+
+/** Puts item back into pool if it was a preset */
+async function addTagBackToPool(item, tagId) {
+  const prefilledItems = await getPrefilledInformation(tagId);
+  if (prefilledItems.includes(item)) {
+    console.log($('#interests-div > .prefilled-pool > .btn-group:contains("' + item + '")'));
+    $('#interests-div > .prefilled-pool > .btn-group:contains("' + item + '")').show();
+  }
 }
 
 /** Remove tag from pool of options once it is chosen */
