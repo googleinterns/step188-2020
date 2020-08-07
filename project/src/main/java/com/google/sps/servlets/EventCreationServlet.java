@@ -23,7 +23,8 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/create-event")
 public class EventCreationServlet extends HttpServlet {
-  private static final DatabaseWrapper dbWrapper = new DatabaseWrapper("step-188-instance", "event-organizer-db");
+  private static final DatabaseWrapper dbWrapper =
+      new DatabaseWrapper("step-188-instance", "event-organizer-db");
 
   /** Returns event details from database */
   @Override
@@ -46,16 +47,17 @@ public class EventCreationServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String name = request.getParameter("name");
     String[] parsedDate = request.getParameter("date").split("/");
-    Date date = 
+    Date date =
          Date.fromYearMonthDay(
             Integer.parseInt(parsedDate[2]),
-            Integer.parseInt(parsedDate[0]), 
+            Integer.parseInt(parsedDate[0]),
             Integer.parseInt(parsedDate[1]));
     String description = request.getParameter("description");
     String location = request.getParameter("location");
-    Set<String> labels = Collections.unmodifiableSet(
-                            new HashSet<>(
-                                Arrays.asList("None"))); // hardcoded for now, we need to create label pool first
+    Set<String> labels = 
+        Collections.unmodifiableSet(
+            new HashSet<>(
+                Arrays.asList("None"))); // hardcoded for now, we need to create label pool first
 
     /** TO DO: Replace with current logged in user after PR #43 pushed */
     String NAME = "Bob Smith";
