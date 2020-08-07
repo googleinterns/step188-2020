@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors; 
+import java.util.stream.Collectors;
 import java.util.stream.Stream; 
 
 /** Class containing Event object setters for variables that user can change about event */
@@ -64,10 +64,10 @@ public final class Event {
     private Set<User> attendees = new HashSet<>();
 
     public Builder(
-        String name, 
-        String description, 
-        Set<String> labels, 
-        String location, 
+        String name,
+        String description,
+        Set<String> labels,
+        String location,
         Date date,
         String time,
         User host) {
@@ -237,9 +237,7 @@ public final class Event {
   }
 
   public Set<String> getAttendeeIds() {
-    return attendees.stream()
-        .map(User::getEmail)
-        .collect(Collectors.toSet());
+    return attendees.stream().map(User::getEmail).collect(Collectors.toSet());
   }
 
   public User getHost() {
