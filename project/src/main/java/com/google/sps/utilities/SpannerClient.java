@@ -30,8 +30,8 @@ import javax.servlet.annotation.WebListener;
 @WebListener
 public class SpannerClient implements ServletContextListener {
   private static final String PROJECT_ID = DatabaseConstants.PROJECT_ID;
+  private static String DATABASE_ID = DatabaseConstants.DATABASE_ID;
   private static String INSTANCE_ID;
-  private static String DATABASE_ID;
   private static Spanner spanner = null;
   private static DatabaseAdminClient databaseAdminClient = null;
   private static DatabaseClient databaseClient = null;
@@ -79,7 +79,6 @@ public class SpannerClient implements ServletContextListener {
   public void contextInitialized(ServletContextEvent event) {
     String envInstanceId = System.getenv("SPANNER_INSTANCE");
     INSTANCE_ID = (envInstanceId == null) ? DatabaseConstants.INSTANCE_ID : envInstanceId;
-    DATABASE_ID = DatabaseConstants.DATABASE_ID;
 
     try {
       connect();
