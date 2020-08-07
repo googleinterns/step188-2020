@@ -37,7 +37,7 @@ public class SpannerClient implements ServletContextListener {
   private static DatabaseClient databaseClient = null;
   private static ServletContext sc;
 
-  private static void connect() throws IOException {
+  public static void connect() throws IOException {
     if (INSTANCE_ID == null) {
       if (sc != null) {
         sc.log("environment variable SPANNER_INSTANCE need to be defined.");
@@ -56,13 +56,13 @@ public class SpannerClient implements ServletContextListener {
         connect();
       } catch (IOException e) {
         if (sc != null) {
-          sc.log("getDatabaseAdminClient ", e);
+          System.out.println("getDatabaseAdminClient ");
         }
       }
     }
     if (databaseAdminClient == null) {
       if (sc != null) {
-        sc.log("Spanner : Unable to connect");
+        System.out.println("Spanner : Unable to connect");
       }
     }
     return databaseAdminClient;
