@@ -25,9 +25,9 @@ public class PrefilledInformationServlet extends HttpServlet {
     String category = request.getParameter("category");
     List<String> information;
     if (category.equals("interests")) {
-      information = PrefilledInformationConstants.interests;
+      information = PrefilledInformationConstants.INTERESTS;
     } else {
-      information = PrefilledInformationConstants.skills;
+      information = PrefilledInformationConstants.SKILLS;
     }
     response.setContentType("application/json;");
     response.getWriter().println(CommonUtils.convertToJson(information));
