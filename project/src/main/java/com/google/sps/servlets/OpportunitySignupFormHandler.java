@@ -1,6 +1,8 @@
 package com.google.sps.servlets;
 
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.VolunteeringOpportunity;
+import com.google.sps.data.OpportunitySignup;
 import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
@@ -13,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that handles submission of the form for creating volunteering opportunities. */
 @WebServlet("/opportunity-signup-form-handler")
 public class OpportunitySignupFormHandler extends HttpServlet {
+  private static final String OPPORTUNITY_ID = "opportunity-id";
+
   /**
    * Inserts volunteering opportunity with parameter values for attributes into the database if
    * opportunity ID is not given as a request parameter and updates volunteering opportunity with
@@ -29,7 +33,7 @@ public class OpportunitySignupFormHandler extends HttpServlet {
 
     OpportunitySignup signup =
         new OpportunitySignup.Builder(opportunityId, email).build();
-    insertOpportunitySignup(signup);
+    SpannerTasks.insertOpportunitySignup(signup);
 
     response.sendRedirect("/events-feed.html");
   }
