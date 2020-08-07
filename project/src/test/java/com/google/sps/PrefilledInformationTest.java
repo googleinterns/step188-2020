@@ -22,6 +22,7 @@ public final class PrefilledInformationTest {
   private static final String REQUEST_CATEGORY = "category";
   private static final String INTERESTS = "interests";
   private static final String SKILLS = "skills";
+  private static final String INVALID_PARAMETER = "invalid";
 
   private static final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);       
   private static final HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
@@ -57,5 +58,13 @@ public final class PrefilledInformationTest {
     Assert.assertEquals(
         CommonUtils.convertToJson(PrefilledInformationConstants.SKILLS).trim(),
         stringWriter.toString().trim());
+  }
+
+  @Test
+  public void requestInvalid() throws IOException {
+    // Verify that an error code is returned if invalid request parameter is passed
+    Mockito.when(request.getParameter(REQUEST_CATEGORY)).thenReturn(INVALID_PARAMETER);
+    new PrefilledInformationServlet().doGet(request, response);
+    Mockito.verify(response).sendError(HttpServletResponse.SC_NOT_FOUND);
   }
 }
