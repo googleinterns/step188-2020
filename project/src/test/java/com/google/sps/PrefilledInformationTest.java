@@ -23,12 +23,12 @@ public final class PrefilledInformationTest {
 
   @Test
   public void requestInterests() throws IOException {
+    // Verify that returned interests is the provided interest constant
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     Mockito.when(response.getWriter()).thenReturn(writer);
-    // Verify that returned interests is the provided interest constant
     Mockito.when(request.getParameter(REQUEST_CATEGORY)).thenReturn(INTERESTS);
     new PrefilledInformationServlet().doGet(request, response);
     writer.flush();
@@ -39,12 +39,12 @@ public final class PrefilledInformationTest {
 
   @Test
   public void requestSkills() throws IOException {
+    // Verify that returned skills is the provided skills constant
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     Mockito.when(response.getWriter()).thenReturn(writer);
-    // Verify that returned skills is the provided skills constant
     Mockito.when(request.getParameter(REQUEST_CATEGORY)).thenReturn(SKILLS);
     new PrefilledInformationServlet().doGet(request, response);
     writer.flush();
