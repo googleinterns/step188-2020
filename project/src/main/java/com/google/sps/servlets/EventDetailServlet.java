@@ -5,8 +5,7 @@ import com.google.cloud.Date;
 import com.google.gson.Gson;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
-import com.google.sps.utilities.DatabaseConstants;
-import com.google.sps.utilities.DatabaseWrapper;
+import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,12 +23,10 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/event-details")
 public class EventDetailServlet extends HttpServlet {
-  private static final DatabaseWrapper dbWrapper = new DatabaseWrapper(DatabaseConstants.INSTANCE_ID, DatabaseConstants.DATABASE_ID);
-
   /** Returns all event details from database */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Set<Event> events = dbWrapper.getAllEvents();
+    Set<Event> events = SpannerTasks.getAllEvents();
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(events));
   }

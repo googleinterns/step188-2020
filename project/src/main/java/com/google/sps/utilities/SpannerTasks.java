@@ -24,7 +24,7 @@ public class SpannerTasks {
   /**
    * Given a user, insert or update a row with all available fields into the DB
    *
-   * @param user the user to be updated; user's email may or may not exist in D
+   * @param user the user to be updated; user's email may or may not exist in DB
    */
   public static void insertOrUpdateUser(User user) {
     // Given a user, update its corresponding row's new fields in DB
@@ -71,7 +71,7 @@ public class SpannerTasks {
    * @param emails emails to search the 'User' table by
    * @return return the users that exist in no particular order
    */
-  public Set<User> readMultipleUsersFromEmails(Set<String> emails) {
+  public static Set<User> readMultipleUsersFromEmails(Set<String> emails) {
     Set<User> users = new HashSet<>();
     for (String email : emails) {
       Optional<User> userOptional = readUserFromEmail(email);
@@ -126,9 +126,9 @@ public class SpannerTasks {
   /**
    * Returns all events stored in DB
    */
-  public Set<Event> getAllEvents() {
+  public static Set<Event> getAllEvents() {
     Set<Event> events = new HashSet<>();
-    ResultSet resultSet = dbClient.singleUse().executeQuery(Statement.of(String.format(
+    ResultSet resultSet = SpannerClient.getDatabaseClient().singleUse().executeQuery(Statement.of(String.format(
         "SELECT EventID, Name, Description, Labels, Location, Date, Host, Opportunities, Attendees FROM %s", EVENT_TABLE)));
     while (resultSet.next()) {
       Event event = createEventFromDatabaseResult(resultSet);
@@ -137,7 +137,7 @@ public class SpannerTasks {
     return events;
   }
   
-  private Event createEventFromDatabaseResult(ResultSet resultSet) {
+  private static Event createEventFromDatabaseResult(ResultSet resultSet) {
     String eventId = resultSet.getString(0);
     return new Event
               .Builder(/* name = */ resultSet.getString(1),
