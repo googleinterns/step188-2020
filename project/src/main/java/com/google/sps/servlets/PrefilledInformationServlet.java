@@ -19,7 +19,8 @@ public class PrefilledInformationServlet extends HttpServlet {
   /**
    * Accesses pre-built list of information
    *
-   * @param request servlet request - includes a 'category' parameter specifying the information to be returned
+   * @param request servlet request - includes a 'category' parameter specifying the information to
+   *    be returned
    * @param response servlet response
    * @throws IOException if Input/Output error occurs
    */
