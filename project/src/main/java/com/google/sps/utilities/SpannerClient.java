@@ -29,23 +29,21 @@ import javax.servlet.annotation.WebListener;
 
 @WebListener
 public class SpannerClient implements ServletContextListener {
-  private static String PROJECT_ID;
   private static String INSTANCE_ID;
-  private static String DATABASE_ID;
   private static Spanner spanner = null;
   private static DatabaseAdminClient databaseAdminClient = null;
   private static DatabaseClient databaseClient = null;
   private static ServletContext sc;
 
-  private static void connect() throws IOException {
+  public static void connect() throws IOException {
     if (INSTANCE_ID == null) {
       if (sc != null) {
         sc.log("environment variable SPANNER_INSTANCE need to be defined.");
       }
       return;
     }
-    SpannerOptions options = SpannerOptions.newBuilder().build();
-    PROJECT_ID = options.getProjectId();
+    SpannerOptions options =
+        SpannerOptions.newBuilder().setProjectId(DatabaseConstants.PROJECT_ID).build();
     spanner = options.getService();
     databaseAdminClient = spanner.getDatabaseAdminClient();
   }
@@ -56,13 +54,13 @@ public class SpannerClient implements ServletContextListener {
         connect();
       } catch (IOException e) {
         if (sc != null) {
-          sc.log("getDatabaseAdminClient ", e);
+          System.out.println("getDatabaseAdminClient ");
         }
       }
     }
     if (databaseAdminClient == null) {
       if (sc != null) {
-        sc.log("Spanner : Unable to connect");
+        System.out.println("Spanner : Unable to connect");
       }
     }
     return databaseAdminClient;
@@ -71,7 +69,9 @@ public class SpannerClient implements ServletContextListener {
   static DatabaseClient getDatabaseClient() {
     if (databaseClient == null) {
       databaseClient =
-          spanner.getDatabaseClient(DatabaseId.of(PROJECT_ID, INSTANCE_ID, DATABASE_ID));
+          spanner.getDatabaseClient(
+              DatabaseId.of(
+                  DatabaseConstants.PROJECT_ID, INSTANCE_ID, DatabaseConstants.DATABASE_ID));
     }
     return databaseClient;
   }
@@ -80,7 +80,6 @@ public class SpannerClient implements ServletContextListener {
   public void contextInitialized(ServletContextEvent event) {
     String envInstanceId = System.getenv("SPANNER_INSTANCE");
     INSTANCE_ID = (envInstanceId == null) ? DatabaseConstants.INSTANCE_ID : envInstanceId;
-    DATABASE_ID = DatabaseConstants.DATABASE_ID;
 
     try {
       connect();
@@ -95,7 +94,7 @@ public class SpannerClient implements ServletContextListener {
       }
     }
     if (sc != null) {
-      sc.log("ctx Initialized: " + INSTANCE_ID + " " + DATABASE_ID);
+      sc.log("ctx Initialized: " + INSTANCE_ID + " " + DatabaseConstants.DATABASE_ID);
     }
   }
 
@@ -110,6 +109,6 @@ public class SpannerClient implements ServletContextListener {
   }
 
   static String getDatabaseId() {
-    return DATABASE_ID;
+    return DatabaseConstants.DATABASE_ID;
   }
 }

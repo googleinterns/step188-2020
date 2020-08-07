@@ -76,7 +76,7 @@ public class SpannerTasks {
   }
 
   /** Returns List of Event Ids from DB
-   * 
+   *
    * @param eventId List of IDs of event to be returned
   */
   public static Set<Event> getEventsFromIds(List<String> eventIds) {
@@ -84,7 +84,7 @@ public class SpannerTasks {
       for (String eventId: eventIds) {
         Optional<Event> event = getEventById(eventId);
         if (event.isPresent()) {
-            ids.add( event.get() );
+          ids.add(event.get());
         }
         
       }
@@ -96,9 +96,15 @@ public class SpannerTasks {
    * @param eventId ID of event to be returned
   */
   public static Optional<Event> getEventById(String eventId) {
-    ResultSet resultSet = SpannerClient.getDatabaseClient().singleUse().executeQuery(Statement.of(String.format(
-        "SELECT Name, Description, Labels, Location, Date, Host, Opportunities, Attendees FROM %s WHERE EventID='%s'",
-        EVENT_TABLE, eventId)));
+    ResultSet resultSet =
+        SpannerClient.getDatabaseClient()
+            .singleUse()
+            .executeQuery(
+                Statement.of(
+                    String.format(
+                        "SELECT Name, Description, Labels, Location, Date, Time, Host,"
+                            + " Opportunities, Attendees FROM %s WHERE EventID='%s'",
+                        EVENT_TABLE, eventId)));
     
     /** If ID does not exist */
     if (!resultSet.next()) {
@@ -109,14 +115,18 @@ public class SpannerTasks {
     String NAME = "Bob Smith";
     String EMAIL = "bobsmith@example.com";
     User host = new User.Builder(NAME, EMAIL).build();
+    /* remove Hardcoded date */
     Date date = Date.fromYearMonthDay(2016, 9, 15);
-    return Optional.of(new Event
-                           .Builder(/* name = */ resultSet.getString(0),
-                               /* description = */ resultSet.getString(1),
-                               /* labels = */ new HashSet<String>(resultSet.getStringList(2)),
-                               /* location = */ resultSet.getString(3), /* date = */date,
-                               /* host = */ host)
-                           .build());
+    return Optional.of(
+        new Event.Builder(
+                /* name = */ resultSet.getString(0),
+               /* description = */ resultSet.getString(1),
+                /* labels = */ new HashSet<String>(resultSet.getStringList(2)),
+                /* location = */ resultSet.getString(3),
+                /* date = */ Date.parseDate(resultSet.getString(4)),
+                /* time= */ resultSet.getString(5),
+                /* host = */ host)
+            .build());
     // TO DO: set volunteer opportunities, attendees by Querying those by ID, wait for PR 43, 44
   }
 
@@ -142,7 +152,7 @@ public class SpannerTasks {
     return mutations;
   }
 
-  /** TO DO: Attendee and Opportunity String Array based on UUID in other PRs*/
+  /** TO DO: Attendee and Opportunity String Array based on UUID in other PRs */
   private static List<Mutation> getEventMutationsFromBuilder(
       Mutation.WriteBuilder builder, Event event) {
     List<Mutation> mutations = new ArrayList<>();
@@ -158,6 +168,8 @@ public class SpannerTasks {
         .to(event.getLocation())
         .set("Date")
         .to(event.getDate())
+        .set("Time")
+        .to(event.getTime())
         .set("Host")
         .to(event.getHost().getEmail())
         .set("Opportunities")
