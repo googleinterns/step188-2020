@@ -36,8 +36,7 @@ public final class EventTest {
     private static final Set <User> ATTENDEES = new HashSet<User> (Arrays.asList(USER1, USER2));
     private static final Set <User> NEW_ATTENDEES = new HashSet<User> (Arrays.asList(USER1, USER2, USER3));
 
-    /* User creating event
-	 * Verify Builder class is created with correct required and optional fields */
+	/** Create an event and verify Builder class is created with correct required and optional fields */
 	@Test
 	public void testEventBuild() {
         Event event = new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST)
@@ -54,22 +53,21 @@ public final class EventTest {
         Assert.assertEquals(event.getAttendees(), ATTENDEES);
 	}
     
-    /* User editing event
-	 * Verify Event mergeFrom setter sets required and optional field */
+	/** Edit an event and verify Event mergeFrom setter sets required and optional field */
     @Test
 	public void setEventFields() {
         Event event = new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
-        Event.Builder changedEventBuilder = event.toBuilder().setAttendees(ATTENDEES).build().toBuilder();
-        changedEventBuilder.mergeFrom(event);
-        event = changedEventBuilder.build();
+        event = event.toBuilder().setAttendees(ATTENDEES).build();
+        // Event.Builder changedEventBuilder = event.toBuilder().setAttendees(ATTENDEES).build().toBuilder();
+        // changedEventBuilder.mergeFrom(event);
+        // event = changedEventBuilder.build();
         event = event.toBuilder().setName(NEW_EVENT_NAME).build();
 
         Assert.assertEquals(event.getAttendees(), ATTENDEES);
         Assert.assertEquals(event.getName(), NEW_EVENT_NAME);
     }
 
-    /* User adding info to event
-	 * Verify adding attendees */
+	/** Add attendees and verify event adding attendees */
     @Test
 	public void addAttendeeField() {
         Event event = new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).setAttendees(ATTENDEES).build();
