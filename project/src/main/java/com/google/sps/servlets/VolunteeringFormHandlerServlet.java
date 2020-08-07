@@ -2,8 +2,7 @@ package com.google.sps.servlets;
 
 import com.google.sps.data.VolunteeringOpportunity;
 import com.google.sps.utilities.CommonUtils;
-import com.google.sps.utilities.DatabaseConstants;
-import com.google.sps.utilities.DatabaseWrapper;
+import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
 import java.util.Set;
 import javax.servlet.annotation.WebServlet;
@@ -19,8 +18,6 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
   private static final String NUM_SPOTS_LEFT = "num-spots-left";
   private static final String REQUIRED_SKILL = "required-skill";
   private static final String HARDCODED_EVENT_ID = "0883de79-17d7-49a3-a866-dbd5135062a8";
-  private static final DatabaseWrapper databaseWrapper =
-      new DatabaseWrapper(DatabaseConstants.INSTANCE_ID, DatabaseConstants.DATABASE_ID);
 
   /**
    * Inserts volunteering opportunity with parameter values for attributes into the database if
@@ -45,7 +42,6 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
     } else {
       updateVolunteeringOpportunityInDB(opportunityId, name, numSpotsLeft, requiredSkills);
     }
-
     response.sendRedirect("/events-feed.html");
   }
 
@@ -56,7 +52,7 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
             .setRequiredSkills(requiredSkills)
             .build();
     // TO DO: change eventId to parameter value
-    databaseWrapper.insertVolunteeringOpportunity(opportunity);
+    SpannerTasks.insertVolunteeringOpportunity(opportunity);
   }
 
   private static void updateVolunteeringOpportunityInDB(
@@ -67,6 +63,6 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
             .setRequiredSkills(requiredSkills)
             .build();
     // TO DO: change eventId to parameter value
-    databaseWrapper.updateVolunteeringOpportunity(opportunity);
+    SpannerTasks.updateVolunteeringOpportunity(opportunity);
   }
 }

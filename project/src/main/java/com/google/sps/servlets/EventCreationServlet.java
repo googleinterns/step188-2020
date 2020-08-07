@@ -5,8 +5,7 @@ import com.google.cloud.Date;
 import com.google.gson.Gson;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
-import com.google.sps.utilities.DatabaseConstants;
-import com.google.sps.utilities.DatabaseWrapper;
+import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,13 +23,11 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/create-event")
 public class EventCreationServlet extends HttpServlet {
-  private static final DatabaseWrapper dbWrapper = new DatabaseWrapper(DatabaseConstants.INSTANCE_ID, DatabaseConstants.DATABASE_ID);
-
   /** Returns event details from database */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String eventId = request.getParameter("eventId");
-    Optional<Event> eventOptional = dbWrapper.getEventById(eventId);
+    Optional<Event> eventOptional = SpannerTasks.getEventById(eventId);
 
     // If event DNE, sends 404 ERR to frontend
     if (!eventOptional.isPresent()) {
@@ -58,8 +55,7 @@ public class EventCreationServlet extends HttpServlet {
     String EMAIL = "bobsmith@example.com";
     User host = new User.Builder(NAME, EMAIL).build();
     Event event = new Event.Builder(name, description, labels, location, date, host).build();
-    DatabaseWrapper dbWrapper = new DatabaseWrapper("step-188-instance", "event-organizer-db");
-    dbWrapper.insertorUpdateEvent(event);
+    SpannerTasks.insertorUpdateEvent(event);
 
     String redirectUrl = "/event-details.html?eventId=" + event.getId();
     response.sendRedirect(redirectUrl);

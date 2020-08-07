@@ -4,7 +4,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.User;
 import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.DatabaseConstants;
-import com.google.sps.utilities.DatabaseWrapper;
+import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -21,14 +21,12 @@ import javax.servlet.http.HttpServletResponse;
 public class UserProfileUpdateServlet extends HttpServlet {
   private static final String email =
       UserServiceFactory.getUserService().getCurrentUser().getEmail();
-  private static final DatabaseWrapper databaseWrapper =
-      new DatabaseWrapper(DatabaseConstants.INSTANCE_ID, DatabaseConstants.DATABASE_ID);
 
   /** Writes out information for the user corresponding to the logged-in email */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO: Add tests for this once test setup is ready
-    Optional<User> userOptional = databaseWrapper.readUserFromEmail(email);
+    Optional<User> userOptional = SpannerTasks.readUserFromEmail(email);
     String userJson;
     if (!userOptional.isPresent()) {
       userJson =
@@ -61,10 +59,10 @@ public class UserProfileUpdateServlet extends HttpServlet {
     String name = request.getParameter("name");
     Set<String> interests = new HashSet<>(Arrays.asList(request.getParameter("interests")));
     Set<String> skills = new HashSet<>(Arrays.asList(request.getParameter("skills")));
-
     User updatedUser =
         new User.Builder(name, email).setInterests(interests).setSkills(skills).build();
-    databaseWrapper.insertOrUpdateUser(updatedUser);
+
+    SpannerTasks.insertOrUpdateUser(updatedUser);
     response.sendRedirect("/profile.html");
   }
 }
