@@ -41,30 +41,34 @@ public final class PrefilledInformationTest {
   }
 
   @Test
-  public void requestInterests() throws IOException {
-    // Verify that returned interests is the provided interest constant
+  public void requestInterestsListConstant() throws IOException {
     Mockito.when(request.getParameter(REQUEST_CATEGORY)).thenReturn(INTERESTS);
+
     new PrefilledInformationServlet().doGet(request, response);
+
     Assert.assertEquals(
         CommonUtils.convertToJson(PrefilledInformationConstants.INTERESTS).trim(),
         stringWriter.toString().trim());
   }
 
   @Test
-  public void requestSkills() throws IOException {
-    // Verify that returned skills is the provided skills constant
+  public void requestSkillsListConstant() throws IOException {
     Mockito.when(request.getParameter(REQUEST_CATEGORY)).thenReturn(SKILLS);
+
     new PrefilledInformationServlet().doGet(request, response);
+
     Assert.assertEquals(
         CommonUtils.convertToJson(PrefilledInformationConstants.SKILLS).trim(),
         stringWriter.toString().trim());
   }
 
+  // Verify that an error code is returned if invalid request parameter is passed
   @Test
-  public void requestInvalid() throws IOException {
-    // Verify that an error code is returned if invalid request parameter is passed
+  public void requestInvalidListConstantWithError() throws IOException {
     Mockito.when(request.getParameter(REQUEST_CATEGORY)).thenReturn(INVALID_PARAMETER);
+
     new PrefilledInformationServlet().doGet(request, response);
+
     Mockito.verify(response).sendError(HttpServletResponse.SC_NOT_FOUND);
   }
 }
