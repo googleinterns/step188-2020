@@ -45,7 +45,7 @@ public class SpannerClient implements ServletContextListener {
       return;
     }
     SpannerOptions options = SpannerOptions.newBuilder().build();
-    PROJECT_ID = options.getProjectId();
+    PROJECT_ID = DatabaseConstants.PROJECT_ID;
     spanner = options.getService();
     databaseAdminClient = spanner.getDatabaseAdminClient();
   }
