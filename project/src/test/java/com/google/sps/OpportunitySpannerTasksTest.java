@@ -2,21 +2,17 @@ package com.google.sps;
 
 import com.google.sps.data.VolunteeringOpportunity;
 import com.google.sps.utilities.SpannerClient;
-import com.google.sps.utilities.SpannerTestTasks;
 import com.google.sps.utilities.SpannerTasks;
 import com.google.sps.utilities.SpannerTestTasks;
 import java.util.Set;
-import com.google.sps.servlets.LoginStatusServlet;
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.MatcherAssert;
+import javax.servlet.ServletContextEvent;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.junit.Test;
 import org.springframework.mock.web.MockServletContext;
-import javax.servlet.ServletContextEvent;
 
 /** Unit tests for DatabaseWrapper functionality related to VolunteeringOpportunity class. */
 @RunWith(JUnit4.class)
@@ -40,8 +36,7 @@ public class OpportunitySpannerTasksTest {
     SpannerTasks.insertVolunteeringOpportunity(opportunity);
 
     VolunteeringOpportunity actualOpportunity =
-        SpannerTasks
-            .getVolunteeringOpportunityByOppportunityId(opportunity.getOpportunityId())
+        SpannerTasks.getVolunteeringOpportunityByOppportunityId(opportunity.getOpportunityId())
             .get();
 
     Assert.assertEquals(actualOpportunity.getEventId(), EVENT_ID);
