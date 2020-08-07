@@ -37,9 +37,10 @@ public final class CommonUtilsTest {
     String name = "Meal Prep Workshop";
     long numSpotsLeft = 40;
     String requiredSkill = "Cooking";
+    String opportunityId = "0883de79-17d7-49a3-a866-dbd5135062a8";
     User volunteer = new User.Builder("Bob Smith", "bobsmith@example.com").build();
     VolunteeringOpportunity opportunity =
-        new VolunteeringOpportunity.Builder("", name, numSpotsLeft)
+        new VolunteeringOpportunity.Builder(opportunityId, name, numSpotsLeft)
             .setRequiredSkills(new HashSet<>(Arrays.asList(requiredSkill)))
             .setVolunteers(new HashSet<>(Arrays.asList(volunteer)))
             .build();
@@ -49,7 +50,7 @@ public final class CommonUtilsTest {
             wrapInQuotes("opportunityId"),
             wrapInQuotes(opportunity.getOpportunityId()),
             wrapInQuotes("eventId"),
-            wrapInQuotes(opportunity.getEventId()),
+            wrapInQuotes(opportunityId),
             wrapInQuotes("name"),
             wrapInQuotes(name),
             wrapInQuotes("numSpotsLeft"),
