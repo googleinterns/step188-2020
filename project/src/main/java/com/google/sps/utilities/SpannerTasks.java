@@ -6,6 +6,7 @@ import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Statement;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
+import com.google.sps.data.OpportunitySignup;
 import com.google.sps.data.VolunteeringOpportunity;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ public class SpannerTasks {
   private static final String USER_TABLE = "Users";
   private static final String VOLUNTEERING_OPPORTUNITY_TABLE = "VolunteeringOpportunity";
   private static final String EVENT_TABLE = "Events";
+  private static final String OPPORTUNITY_SIGNUP_TABLE = "OpportunitySignup";
 
   /**
    * Given a user, insert or update a row with all available fields into the DB
@@ -291,5 +293,52 @@ public class SpannerTasks {
         }
     }
     return results;
+  }
+
+  private static List<Mutation> getMutationsFromBuilder(
+      Mutation.WriteBuilder builder, OpportunitySignup signup) {
+    List<Mutation> mutations = new ArrayList<>();
+    builder
+        .set("VolunteeringOpportunityID")
+        .to(signup.getOpportunityId())
+        .set("Email")
+        .to(signup.getEmail());
+    mutations.add(builder.build());
+    return mutations;
+  }
+
+  public static void insertOpportunitySignup(OpportunitySignup signup) {
+    List<Mutation> mutations =
+        getMutationsFromBuilder(newInsertBuilderFromOpportunitySignup(), signup);
+    SpannerClient.getDatabaseClient().write(mutations);
+  }
+
+  /**
+   * Given an eventId, retrieve all volunteering opportunities for that eventId
+   *
+   * @param eventId eventId for the event to retrieve volunteering opportunities for
+   * @return volunteering opportunities with given eventId
+   */
+  public static Set<OpportunitySignup> getSignupsByOpportunityId(String opportunityId) {
+    Set<OpportunitySignup> results = new HashSet<OpportunitySignup>();
+    Statement statement =
+        Statement.of(
+            String.format(
+                "SELECT Email"
+                    + " FROM OpportunitySignup WHERE VolunteeringOpportunityID=\"%s\"",
+                opportunityId));
+    try (ResultSet resultSet =
+        SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
+        while (resultSet.next()) {
+            String email = resultSet.getString(0);
+            results.add(
+                new OpportunitySignup.Builder(opportunityId, email).build());
+        }
+    }
+    return results;
+  }
+
+  private static Mutation.WriteBuilder newInsertBuilderFromOpportunitySignup() {
+    return Mutation.newInsertBuilder(OPPORTUNITY_SIGNUP_TABLE);
   }
 }
