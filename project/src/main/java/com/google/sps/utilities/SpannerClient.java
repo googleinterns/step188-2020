@@ -70,7 +70,8 @@ public class SpannerClient implements ServletContextListener {
     if (databaseClient == null) {
       databaseClient =
           spanner.getDatabaseClient(
-              DatabaseId.of(DatabaseConstants.PROJECT_ID, INSTANCE_ID, DatabaseConstants.DATABASE_ID));
+              DatabaseId.of(
+                  DatabaseConstants.PROJECT_ID, INSTANCE_ID, DatabaseConstants.DATABASE_ID));
     }
     return databaseClient;
   }
