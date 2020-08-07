@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <!-- Bootstrap CDN links -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+      integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+      crossorigin="anonymous"
+    ></script>
+    <script src="update-volunteering-opportunity.js"></script>
+  </head>
+  <body>
+    <div id="header"></div>
+    <div class="col">
+      <br /><br />
+      <form
+        id="opportunity-form"
+        method="post"
+        action="/volunteering-form-handler"
+        name="opportunity-form"
+        class="hidden"
+      >
+        <h3>Edit the volunteering opportunity.</h3>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          class="form-control"
+          placeholder="Volunteer Opportunity Name"
+          aria-describedby="basic-addon1"
+        />
+        <input
+          id="num-spots-left"
+          name="num-spots-left"
+          type="text"
+          class="form-control"
+          placeholder="Quantity Needed"
+          aria-describedby="basic-addon1"
+        />
+        <br />
+        <div class="row clearfix">
+          <div class="col-md-12 column" id="skills">
+            <input
+              id="required-skill"
+              type="text"
+              name="required-skill"
+              placeholder="Enter a skill"
+              class="form-control"
+            />
+          </div>
+        </div>
+        <button type="button" id="add-row" class="btn btn-default pull-left">
+          Add Row
+        </button>
+        <button type="submit" class="btn btn-primary mx-auto d-block">
+          Submit
+        </button>
+      </form>
+    </div>
+  </body>
+</html>
