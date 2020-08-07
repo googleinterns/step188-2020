@@ -9,9 +9,9 @@ import javax.servlet.ServletContextEvent;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.junit.Test;
 import org.springframework.mock.web.MockServletContext;
 
 /** Unit tests for DatabaseWrapper functionality related to VolunteeringOpportunity class. */
