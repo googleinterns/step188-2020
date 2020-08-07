@@ -44,7 +44,9 @@ public class OpportunitySpannerTasksTest {
             .getVolunteeringOpportunityByOppportunityId(opportunity.getOpportunityId())
             .get();
 
-    Assert.assertEquals(actualOpportunity, opportunity);
+    Assert.assertEquals(actualOpportunity.getEventId(), EVENT_ID);
+    Assert.assertEquals(actualOpportunity.getName(), NAME);
+    Assert.assertEquals(actualOpportunity.getNumSpotsLeft(), NUMBER_OF_SPOTS);
   }
 
   @Test
