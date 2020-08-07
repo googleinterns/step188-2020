@@ -24,7 +24,7 @@ public final class PrefilledInformationTest {
   private static final String SKILLS = "skills";
   private static final String INVALID_PARAMETER = "invalid";
 
-  private static final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);       
+  private static final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
   private static final HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
   private static final StringWriter stringWriter = new StringWriter();
   private static final PrintWriter writer = new PrintWriter(stringWriter);
