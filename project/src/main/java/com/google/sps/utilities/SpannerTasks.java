@@ -97,7 +97,7 @@ public class SpannerTasks {
   */
   public static Optional<Event> getEventById(String eventId) {
     ResultSet resultSet = SpannerClient.getDatabaseClient().singleUse().executeQuery(Statement.of(String.format(
-        "SELECT Name, Description, Labels, Location, Date, Host, Opportunities, Attendees FROM %s WHERE EventID='%s'",
+        "SELECT Name, Description, Labels, Location, Date, Time, Host, Opportunities, Attendees FROM %s WHERE EventID='%s'",
         EVENT_TABLE, eventId)));
     
     /** If ID does not exist */
@@ -109,12 +109,15 @@ public class SpannerTasks {
     String NAME = "Bob Smith";
     String EMAIL = "bobsmith@example.com";
     User host = new User.Builder(NAME, EMAIL).build();
+    /* remove Hardcoded date */
     Date date = Date.fromYearMonthDay(2016, 9, 15);
     return Optional.of(new Event
                            .Builder(/* name = */ resultSet.getString(0),
                                /* description = */ resultSet.getString(1),
                                /* labels = */ new HashSet<String>(resultSet.getStringList(2)),
-                               /* location = */ resultSet.getString(3), /* date = */date,
+                               /* location = */ resultSet.getString(3), 
+                               /* date = */Date.parseDate(resultSet.getString(4)),
+                               /* time= */ resultSet.getString(5),
                                /* host = */ host)
                            .build());
     // TO DO: set volunteer opportunities, attendees by Querying those by ID, wait for PR 43, 44
@@ -158,6 +161,8 @@ public class SpannerTasks {
         .to(event.getLocation())
         .set("Date")
         .to(event.getDate())
+        .set("Time")
+        .to(event.getTime())
         .set("Host")
         .to(event.getHost().getEmail())
         .set("Opportunities")

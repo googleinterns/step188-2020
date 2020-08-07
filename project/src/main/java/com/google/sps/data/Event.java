@@ -5,6 +5,7 @@ import java.lang.StringBuilder;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -16,9 +17,10 @@ public final class Event {
   private final String eventId;
   private String name;
   private String description;
-  private Set<String> labels;
   private String location;
   private Date date;
+  private String time;
+  private Set<String> labels;
   private Set<VolunteeringOpportunity> opportunities;
   private Set<User> attendees;
   private User host;
@@ -33,6 +35,8 @@ public final class Event {
     str.append("Description: " + description + "\n");
     str.append("Location: " + location + "\n");
     str.append("Date: " + date.toString() + "\n");
+    str.append("Time: " + time + "\n");
+    str.append("Labels: " + labels.toString() + "\n");
     str.append("Volunteer Opportunities: ");
     for (VolunteeringOpportunity opportunity : this.opportunities) {
       str.append(opportunity.toString() + "\n");
@@ -51,6 +55,7 @@ public final class Event {
     private Set<String> labels;
     private String location;
     private Date date;
+    private String time;
     private User host;
 
     // Optional parameters
@@ -64,12 +69,14 @@ public final class Event {
         Set<String> labels, 
         String location, 
         Date date,
+        String time,
         User host) {
       this.name = name;
       this.description = description;
       this.labels = labels;
       this.location = location;
       this.date = date;
+      this.time = time;
       this.host = host;
     }
 
@@ -100,6 +107,11 @@ public final class Event {
 
     public Builder setDate(Date date) {
       this.date = date;
+      return this;
+    }
+
+    public Builder setTime(String time) {
+      this.time = time;
       return this;
     }
 
@@ -148,6 +160,7 @@ public final class Event {
       this.labels = other.getLabels();
       this.location = other.getLocation();
       this.date = other.getDate();
+      this.time = other.getTime();
       this.host = other.getHost();
 
       if (!other.getOpportunities().isEmpty()) {
@@ -167,6 +180,7 @@ public final class Event {
     this.labels = builder.labels;
     this.location = builder.location;
     this.date = builder.date;
+    this.time = builder.time;
     this.opportunities = builder.opportunities;
     this.attendees = builder.attendees;
     this.host = builder.host;
@@ -204,6 +218,10 @@ public final class Event {
     return this.date;
   }
 
+  public String getTime() {
+    return this.time;
+  }
+
   public Set<VolunteeringOpportunity> getOpportunities() {
     return this.opportunities;
   }
@@ -230,7 +248,7 @@ public final class Event {
 
   public Builder toBuilder() {
     return new Builder(
-        this.name, this.description, this.labels, this.location, this.date, this.host)
+        this.name, this.description, this.labels, this.location, this.date, this.time, this.host)
         .mergeFrom(this);
   }
 }

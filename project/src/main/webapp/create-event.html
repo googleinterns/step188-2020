@@ -47,12 +47,6 @@
             aria-describedby="basic-addon1"
           />
         </div>
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Event Name"
-          aria-describedby="basic-addon1"
-        />
       </div>
       <br />
       <div class="row">
@@ -60,6 +54,32 @@
           <div class="input-group">
             <div class="input-group-prepend">
               <span class="input-group-text" id="basic-addon1">Date</span>
+            </div>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="dd/MM/yyyy"
+                id="date"
+                name="date"
+                aria-describedby="basic-addon1"
+              />
+            </div>
+          </div>
+          <br />
+          <br />
+          <div class="col-lg-6">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Time</span>
+              </div>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Time"
+                id="time"
+                name="time"
+                aria-describedby="basic-addon1"
+              />
             </div>
           </div>
         </div>
@@ -86,7 +106,7 @@
       </div>
       <br />
       <br />
-      <div class="col-lg-6">
+      <div class="col">
       <div class="input-group">
         <div class="input-group-prepend">
           <span class="input-group-text" id="basic-addon1">Description</span>
@@ -100,54 +120,49 @@
             aria-describedby="basic-addon1"
           />
         </div>
-      </div>
-      <br />
-      <div class="inline">
-        <span> Tags: </span>
-        <label for="interests">Interests</label>
-        <select
-          id="interests"
-          data-role="tagsinput"
-          name="interests"
-          multiple
-        ></select>
-        <label for="skills">Skills</label>
-        <select
-          id="skills"
-          data-role="tagsinput"
-          name="skills"
-          multiple
-        ></select>
-      </div>
-      <br />
-      <br />
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="basic-addon1">Description</span>
+        <br />
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Where</span>
+          </div>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Where your event will be held"
+            id="location"
+            name="location"
+            aria-describedby="basic-addon1"
+          />
         </div>
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Describe your event!"
-          aria-describedby="basic-addon1"
-        />
-      </div>
-      <br />
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="basic-addon1">Where</span>
+        <br />
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Wanted</span>
+          </div>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Volunteer Type"
+            aria-describedby="basic-addon1"
+          />
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Quantity Needed"
+            aria-describedby="basic-addon1"
+          />
         </div>
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Where your event will be held"
-          aria-describedby="basic-addon1"
-        />
-      </div>
-      <br />
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="basic-addon1">Wanted</span>
+        <br />
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Attendees</span>
+          </div>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Max number of attendees"
+            aria-describedby="basic-addon1"
+          />
         </div>
         </div>
         <br />
@@ -159,35 +174,5 @@
         Submit
       </button>
     </form>
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Volunteer Type"
-          aria-describedby="basic-addon1"
-        />
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Quantity Needed"
-          aria-describedby="basic-addon1"
-        />
-      </div>
-      <br />
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="basic-addon1">Attendees</span>
-        </div>
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Max number of attendees"
-          aria-describedby="basic-addon1"
-        />
-      </div>
-      <br />
-    </div>
-    <button type="submit" class="btn btn-primary mx-auto d-block">
-      Submit
-    </button>
   </body>
 </html>
