@@ -61,6 +61,6 @@ public class OpportunitySpannerTasksTest {
 
   @AfterClass
   public static void tearDown() throws Exception {
-    //SpannerTestTasks.cleanup();
+    SpannerTestTasks.cleanup();
   }
 }
