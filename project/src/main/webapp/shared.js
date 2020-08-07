@@ -10,14 +10,6 @@ async function getPrefilledInformation(informationCategory) {
   return response.json();
 }
 
-function getPrefilledInterests() {
-  return getPrefilledInformation('interests');
-}
-
-function getPrefilledSkills() {
-  return getPrefilledInformation('skills');
-}
-
 function buildTag(tagClass) {
   const group = document.createElement('div');
   group.classList.add('btn-group');
@@ -39,27 +31,43 @@ function buildTag(tagClass) {
   return group;
 }
 
-function buildInterestTag() {
-  return buildTag('interest');
-}
-function buildSkillTag() {
-  return buildTag('skill');
+/** Adds relevant tags to input box when corresponding option is clicked */
+function populatePrefilled(elementId) {
+  $('#prefilled-' + elementId).hide();
+  getPrefilledInformation(elementId).then((prefilledInfo) => {
+    for (const info of prefilledInfo) {
+      // Build the option
+      const newTag = buildTag(elementId);
+      newTag.querySelector('.btn-' + elementId).textContent = info;
+      newTag.querySelector('.adder').addEventListener('click', function() {
+        moveTagsFromPoolToInput(this, '#' + elementId);
+      });
+      $('#prefilled-' + elementId).append(newTag);
+    }
+  })
+  
 }
 
-function buildOption(val) {
-  const option = document.createElement('option');
-  option.defaultSelected = true;
-  option.value = val;
-  option.innerHTML = val;
-  return option;
+async function moveTagsFromPoolToInput(clickedAdder, tagId) {
+  addTagsToInput(clickedAdder, tagId);
+  removeTagsFromPool(clickedAdder);
 }
 
-function buildSkillSpan(val) {
-  const span = document.createElement('span');
-  const innerSpan = document.createElement('span');
-  innerSpan.setAttribute('data-role', 'remove');
-  span.classList.add('tag', 'label', 'label-info');
-  span.innerHTML = val;
-  span.appendChild(innerSpan);
-  return span;
+/** Add tag to user input box once it is chosen */
+function addTagsToInput(clickedAdder, tagId) {
+  $.getScript('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js', function() {
+    $(tagId).on('itemAdded', function() {
+      if ($(tagId).prevAll().length > 1) {
+        $('#interests').prev().remove();
+        $('#skills').prev().prev().remove();
+      }
+    });
+    $(tagId).tagsinput('refresh');
+    $(tagId).tagsinput('add', $(clickedAdder).next().html());
+  });
+}
+
+/** Remove tag from pool of options once it is chosen */
+function removeTagsFromPool(clickedAdder) {
+  $(clickedAdder).parent().hide();
 }
