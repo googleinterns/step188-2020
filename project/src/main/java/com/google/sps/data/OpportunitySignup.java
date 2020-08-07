@@ -24,11 +24,11 @@ public final class OpportunitySignup {
       return this;
     }
 
-    public VolunteeringOpportunity build() {
-      return new VolunteeringOpportunity(this);
+    public OpportunitySignup build() {
+      return new OpportunitySignup(this);
     }
 
-    public Builder mergeFrom(VolunteeringOpportunity other) {
+    public Builder mergeFrom(OpportunitySignup other) {
       this.opportunityId = other.getOpportunityId();
       this.email = other.getEmail();
       return this;
@@ -45,7 +45,7 @@ public final class OpportunitySignup {
   }
 
   public String getEmail() {
-    return this.name;
+    return this.email;
   }
 
   public Builder toBuilder() {
@@ -54,6 +54,6 @@ public final class OpportunitySignup {
 
   @Override
   public String toString() {
-    return String.format("Name: %s\nEmail: %d\n", this.name, this.email);
+    return String.format("opportunityId: %s\nemail: %d\n", this.opportunityId, this.email);
   }
 }
