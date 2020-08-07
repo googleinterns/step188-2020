@@ -1,6 +1,7 @@
 package com.google.sps.servlets;
 
 import com.google.sps.utilities.CommonUtils;
+import com.google.sps.utilities.PrefilledInformationConstants;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +22,13 @@ public class PrefilledInformationServlet extends HttpServlet {
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    List<String> information = new ArrayList<>();
-    information.add("test1");
-    information.add("test2");
-    
+    String category = request.getParameter('category');
+    List<String> information;
+    if (category.equals('interests')) {
+      information = PrefilledInformationConstants.interests;
+    } else {
+      information = PrefilledInformationConstants.skills;
+    }
     response.setContentType("application/json;");
     response.getWriter().println(CommonUtils.convertToJson(information));
   }
