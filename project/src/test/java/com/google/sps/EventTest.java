@@ -33,8 +33,7 @@ public final class EventTest {
     private static final User USER1 = new User.Builder("USER1", "USER1@test.com").build();
     private static final User USER2 = new User.Builder("USER2", "USER2@test.com").build();
     private static final User USER3 = new User.Builder("USER3", "USER3@test.com").build();
-    private static final Set <User> ATTENDEES = new HashSet<User> (Arrays.asList(USER1, USER2));
-    private static final Set <User> NEW_ATTENDEES = new HashSet<User> (Arrays.asList(USER1, USER2, USER3));
+    private static final Set <User> ATTENDEES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(USER1)));
 
 	/** Create an event and verify Builder class is created with correct required and optional fields */
 	@Test
@@ -56,23 +55,21 @@ public final class EventTest {
 	/** Edit an event and verify Event mergeFrom setter sets required and optional field */
     @Test
 	public void setEventFields() {
-        Event event = new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
-        event = event.toBuilder().setAttendees(ATTENDEES).build();
-        // Event.Builder changedEventBuilder = event.toBuilder().setAttendees(ATTENDEES).build().toBuilder();
-        // changedEventBuilder.mergeFrom(event);
-        // event = changedEventBuilder.build();
-        event = event.toBuilder().setName(NEW_EVENT_NAME).build();
+        Event event = new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).setAttendees(ATTENDEES).build();
+        Set <User> user2Attendees = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(USER2)));
+        event = event.toBuilder().setName(NEW_EVENT_NAME).setAttendees(user2Attendees).build();
 
-        Assert.assertEquals(event.getAttendees(), ATTENDEES);
+        Assert.assertEquals(event.getAttendees(), user2Attendees);
         Assert.assertEquals(event.getName(), NEW_EVENT_NAME);
     }
 
 	/** Add attendees and verify event adding attendees */
     @Test
 	public void addAttendeeField() {
-        Event event = new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).setAttendees(ATTENDEES).build();
-        Event changedEvent = event.toBuilder().addAttendee(USER3).build();
+        Event event = new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).setAttendees(
+            new HashSet<User> (Arrays.asList(USER1, USER2))).build();
+        event = event.toBuilder().addAttendee(USER3).build();
 
-        Assert.assertEquals(changedEvent.getAttendees(), NEW_ATTENDEES);
+        Assert.assertEquals(event.getAttendees(), new HashSet<User> (Arrays.asList(USER1, USER2, USER3)));
     }
 }
