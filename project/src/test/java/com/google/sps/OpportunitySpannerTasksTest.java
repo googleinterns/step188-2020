@@ -29,6 +29,11 @@ public class OpportunitySpannerTasksTest {
     SpannerTestTasks.setup();
   }
 
+  @AfterClass
+  public static void tearDown() throws Exception {
+    SpannerTestTasks.cleanup();
+  }
+
   @Test
   public void opportunityInsertAndRetrieval() {
     VolunteeringOpportunity opportunity =
@@ -57,10 +62,5 @@ public class OpportunitySpannerTasksTest {
     Assert.assertEquals(actualOpportunity.getEventId(), EVENT_ID);
     Assert.assertEquals(actualOpportunity.getName(), NAME);
     Assert.assertEquals(actualOpportunity.getNumSpotsLeft(), NUMBER_OF_SPOTS);
-  }
-
-  @AfterClass
-  public static void tearDown() throws Exception {
-    SpannerTestTasks.cleanup();
   }
 }

@@ -29,8 +29,6 @@ import javax.servlet.annotation.WebListener;
 
 @WebListener
 public class SpannerClient implements ServletContextListener {
-  private static final String PROJECT_ID = DatabaseConstants.PROJECT_ID;
-  private static String DATABASE_ID = DatabaseConstants.DATABASE_ID;
   private static String INSTANCE_ID;
   private static Spanner spanner = null;
   private static DatabaseAdminClient databaseAdminClient = null;
@@ -71,7 +69,8 @@ public class SpannerClient implements ServletContextListener {
   static DatabaseClient getDatabaseClient() {
     if (databaseClient == null) {
       databaseClient =
-          spanner.getDatabaseClient(DatabaseId.of(PROJECT_ID, INSTANCE_ID, DATABASE_ID));
+          spanner.getDatabaseClient(
+              DatabaseId.of(DatabaseConstants.PROJECT_ID, INSTANCE_ID, DatabaseConstants.DATABASE_ID));
     }
     return databaseClient;
   }
@@ -94,7 +93,7 @@ public class SpannerClient implements ServletContextListener {
       }
     }
     if (sc != null) {
-      sc.log("ctx Initialized: " + INSTANCE_ID + " " + DATABASE_ID);
+      sc.log("ctx Initialized: " + INSTANCE_ID + " " + DatabaseConstants.DATABASE_ID);
     }
   }
 
@@ -109,6 +108,6 @@ public class SpannerClient implements ServletContextListener {
   }
 
   static String getDatabaseId() {
-    return DATABASE_ID;
+    return DatabaseConstants.DATABASE_ID;
   }
 }
