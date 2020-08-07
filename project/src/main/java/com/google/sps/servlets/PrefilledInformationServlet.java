@@ -26,7 +26,7 @@ public class PrefilledInformationServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String category = request.getParameter("category");
-    List<String> information;
+    List<String> information = new ArrayList<>();
     if (category.equals(INTERESTS)) {
       information = PrefilledInformationConstants.INTERESTS;
     } else if (category.equals(SKILLS)) {
