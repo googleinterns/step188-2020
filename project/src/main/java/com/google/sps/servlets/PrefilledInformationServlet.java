@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet to get prefilled lists of information */
 @WebServlet("/prefilled-information")
 public class PrefilledInformationServlet extends HttpServlet {
+  private static final String INTERESTS = "interests";
+  private static final String SKILLS = "skills";
+
   /**
    * Accesses pre-built list of information
    *
@@ -24,10 +27,12 @@ public class PrefilledInformationServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String category = request.getParameter("category");
     List<String> information;
-    if (category.equals("interests")) {
+    if (category.equals(INTERESTS)) {
       information = PrefilledInformationConstants.INTERESTS;
-    } else {
+    } else if (category.equals(SKILLS)) {
       information = PrefilledInformationConstants.SKILLS;
+    } else {
+      response.sendError(HttpServletResponse.SC_NOT_FOUND);
     }
     response.setContentType("application/json;");
     response.getWriter().println(CommonUtils.convertToJson(information));

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public final class PrefilledInformationConstants {
+  // Constants in this class are partially influenced by boredombusted.com
   public static final List<String> INTERESTS = new ArrayList<>(
       Arrays.asList(
         "american football", "archery", "art", "badminton", "baseball", "baking", 
