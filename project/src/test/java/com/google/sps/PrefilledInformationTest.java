@@ -8,7 +8,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -21,17 +23,27 @@ public final class PrefilledInformationTest {
   private static final String INTERESTS = "interests";
   private static final String SKILLS = "skills";
 
+  private static final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);       
+  private static final HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+  private static final StringWriter stringWriter = new StringWriter();
+  private static final PrintWriter writer = new PrintWriter(stringWriter);
+
+  @BeforeClass
+  public static void setUp() throws Exception {
+    Mockito.when(response.getWriter()).thenReturn(writer);
+  }
+
+  @After
+  public void flushWriter() {
+    Mockito.reset(request);
+    stringWriter.getBuffer().setLength(0);
+  }
+
   @Test
   public void requestInterests() throws IOException {
     // Verify that returned interests is the provided interest constant
-    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-    HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
-    StringWriter stringWriter = new StringWriter();
-    PrintWriter writer = new PrintWriter(stringWriter);
-    Mockito.when(response.getWriter()).thenReturn(writer);
     Mockito.when(request.getParameter(REQUEST_CATEGORY)).thenReturn(INTERESTS);
     new PrefilledInformationServlet().doGet(request, response);
-    writer.flush();
     Assert.assertEquals(
         CommonUtils.convertToJson(PrefilledInformationConstants.INTERESTS).trim(),
         stringWriter.toString().trim());
@@ -40,14 +52,8 @@ public final class PrefilledInformationTest {
   @Test
   public void requestSkills() throws IOException {
     // Verify that returned skills is the provided skills constant
-    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-    HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
-    StringWriter stringWriter = new StringWriter();
-    PrintWriter writer = new PrintWriter(stringWriter);
-    Mockito.when(response.getWriter()).thenReturn(writer);
     Mockito.when(request.getParameter(REQUEST_CATEGORY)).thenReturn(SKILLS);
     new PrefilledInformationServlet().doGet(request, response);
-    writer.flush();
     Assert.assertEquals(
         CommonUtils.convertToJson(PrefilledInformationConstants.SKILLS).trim(),
         stringWriter.toString().trim());
