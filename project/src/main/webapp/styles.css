@@ -21,3 +21,7 @@
 .bootstrap-tagsinput span {
   background-color: #007bff !important;
 }
+
+.btn-group {
+  margin: 5px 8px;
+}

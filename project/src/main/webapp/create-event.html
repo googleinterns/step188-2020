@@ -77,61 +77,46 @@
         </div>
       </div>
       <br />
-      <div class="d-inline">
-        <table class="d-inline">
-          <tr>
-            <td>
-              <label for="interests">Interests</label>
-            </td>
-            <td>
-              <select
-                id="interests"
-                name="interests"
-                data-role="tagsinput"
-                multiple
-              ></select>
-              <button 
-                type="button"
-                class="btn btn-light"
-                onclick="togglePrefilledInterests();"
-              >+ Pick</button>
-            </td>
-          </tr>
-          <tr>
-            <td></td>
-            <td>
-              <div id="prefilled-interests">
-              </div>
-            </td>
-          </tr>
-        </table>
-        <table class="d-inline">
-          <tr>
-            <td>
-              <label for="skills">Skills</label>
-            </td>
-            <td>
-              <select
-                id="skills"
-                name="skills"
-                data-role="tagsinput"
-                multiple
-              ></select>
-              <button 
-                type="button"
-                class="btn btn-light"
-                onclick="togglePrefilledSkills();"
-              >+ Pick</button>
-            </td>
-          </tr>
-          <tr>
-            <td></td>
-            <td>
-              <div id="prefilled-skills">
-              </div>
-            </td>
-          </tr>
-        </table>
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="interests">Interests</label>
+            </div>
+            <select
+              id="interests"
+              name="interests"
+              data-role="tagsinput"
+              multiple
+            ></select>
+            <button 
+              type="button"
+              class="btn btn-light prefilled-pick"
+              onclick="togglePrefilledInterests();"
+            >+ Pick</button>
+            <div id="prefilled-interests" class="overflow-auto prefilled-pool"></div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="skills">Skills</label>
+            </div>
+            <select
+              id="skills"
+              name="skills"
+              data-role="tagsinput"
+              multiple
+            ></select>
+            <button 
+              type="button"
+              class="btn btn-light prefilled-pick"
+              onclick="togglePrefilledSkills();"
+            >+ Pick</button>
+            <div id="prefilled-skills" class="overflow-auto prefilled-pool"></div>
+          </div>
+        </div>
+      </div>
       </div>
       <br />
       <br />

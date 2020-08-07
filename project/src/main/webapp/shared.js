@@ -57,9 +57,10 @@ async function moveTagsFromPoolToInput(clickedAdder, tagId) {
 function addTagsToInput(clickedAdder, tagId) {
   $.getScript('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js', function() {
     $(tagId).on('itemAdded', function() {
-      if ($(tagId).prevAll().length > 1) {
-        $('#interests').prev().remove();
-        $('#skills').prev().prev().remove();
+      if ($(tagId).prevAll().length > 2) {
+        const otherId = tagId === '#interests' ? '#skills' : '#interests';
+        $(otherId).prev().remove();
+        $(tagId).prev().prev().remove();
       }
     });
     $(tagId).tagsinput('refresh');
