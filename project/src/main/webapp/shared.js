@@ -75,8 +75,7 @@ function addTagsToInput(clickedAdder, tagId) {
 async function addTagBackToPool(item, tagId) {
   const prefilledItems = await getPrefilledInformation(tagId);
   if (prefilledItems.includes(item)) {
-    console.log($('#interests-div > .prefilled-pool > .btn-group:contains("' + item + '")'));
-    $('#interests-div > .prefilled-pool > .btn-group:contains("' + item + '")').show();
+    $(tagId + '-div > .prefilled-pool > .btn-group:contains("' + item + '")').show();
   }
 }
 
