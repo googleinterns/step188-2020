@@ -13,19 +13,21 @@
 // limitations under the License.
 
 window.onload = function onLoad() {
-  actOnLoginStatus();
+  checkLoginStatus();
 };
 
 /**
  * Checks login status and displays navbar and profile if user is logged in,
  * and redirects to index page if user is not logged in.
  */
-async function actOnLoginStatus() {
-  const loggedIn = await isLoggedIn();
-  if (loggedIn) {
+async function checkLoginStatus() {
+  const response = await fetch('/login-status');
+  const loginStatus = await response.json();
+  const loginState = loginStatus.loginState;
+  if (loginState === 'LOGGED_IN') {
     loadHeader();
   } else {
-    window.location.href = 'index.html';
+    window.href = 'index.html';
   }
 }
 
