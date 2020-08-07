@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 /** Class containing methods for interaction with database. */
 public class SpannerTasks {
   private static final String USER_TABLE = "Users";
+  private static final String VOLUNTEERING_OPPORTUNITY_TABLE = "VolunteeringOpportunity";
   private static final String EVENT_TABLE = "Events";
 
   /**

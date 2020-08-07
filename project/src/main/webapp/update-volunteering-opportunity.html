@@ -17,21 +17,22 @@
       integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
       crossorigin="anonymous"
     ></script>
-    <script src="shared.js"></script>
-    <script src="create-volunteering-opportunity.js"></script>
+    <script src="update-volunteering-opportunity.js"></script>
   </head>
   <body>
     <div id="header"></div>
     <div class="col">
       <br /><br />
       <form
+        id="opportunity-form"
         method="post"
         action="/volunteering-form-handler"
-        id="volunteering-opportunity-form"
+        name="opportunity-form"
         class="hidden"
       >
-        <h3>Add a volunteering opportunity for your event.</h3>
+        <h3>Edit the volunteering opportunity.</h3>
         <input
+          id="name"
           name="name"
           type="text"
           class="form-control"
@@ -39,6 +40,7 @@
           aria-describedby="basic-addon1"
         />
         <input
+          id="num-spots-left"
           name="num-spots-left"
           type="text"
           class="form-control"
@@ -49,6 +51,7 @@
         <div class="row clearfix">
           <div class="col-md-12 column" id="skills">
             <input
+              id="required-skill"
               type="text"
               name="required-skill"
               placeholder="Enter a skill"
@@ -56,7 +59,7 @@
             />
           </div>
         </div>
-        <button type="button" id="add_row" class="btn btn-default pull-left">
+        <button type="button" id="add-row" class="btn btn-default pull-left">
           Add Row
         </button>
         <button type="submit" class="btn btn-primary mx-auto d-block">
