@@ -10,3 +10,4 @@ target/
 .idea
 
 .npmrc
+project/emulator-start.sh

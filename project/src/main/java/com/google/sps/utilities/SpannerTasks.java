@@ -94,7 +94,7 @@ public class SpannerTasks {
   }
 
   /** Returns List of Event Ids from DB
-   * 
+   *
    * @param eventId List of IDs of event to be returned
   */
   public static Set<Event> getEventsFromIds(List<String> eventIds) {
@@ -102,7 +102,7 @@ public class SpannerTasks {
       for (String eventId: eventIds) {
         Optional<Event> event = getEventById(eventId);
         if (event.isPresent()) {
-            ids.add( event.get() );
+          ids.add(event.get());
         }
       }
       return ids;
@@ -113,9 +113,16 @@ public class SpannerTasks {
    * @param eventId ID of event to be returned
   */
   public static Optional<Event> getEventById(String eventId) {
-    ResultSet resultSet = SpannerClient.getDatabaseClient().singleUse().executeQuery(Statement.of(String.format(
-        "SELECT EventId, Name, Description, Labels, Location, Date, Host, Opportunities, Attendees FROM %s WHERE EventID='%s'",
-        EVENT_TABLE, eventId)));
+    ResultSet resultSet =
+        SpannerClient.getDatabaseClient()
+            .singleUse()
+            .executeQuery(
+                Statement.of(
+                    String.format(
+                        "SELECT EventId, Name, Description, Labels, Location, Date, Time, Host,"
+                            + " Opportunities, Attendees FROM %s WHERE EventID='%s'",
+                        EVENT_TABLE, eventId)));
+
     /** If ID does not exist */
     if (!resultSet.next()) {
       return Optional.empty();
@@ -174,7 +181,7 @@ public class SpannerTasks {
     return mutations;
   }
 
-  /** TO DO: Attendee and Opportunity String Array based on UUID in other PRs*/
+  /** TO DO: Attendee and Opportunity String Array based on UUID in other PRs */
   private static List<Mutation> getEventMutationsFromBuilder(
       Mutation.WriteBuilder builder, Event event) {
     List<Mutation> mutations = new ArrayList<>();
@@ -190,6 +197,8 @@ public class SpannerTasks {
         .to(event.getLocation())
         .set("Date")
         .to(event.getDate())
+        .set("Time")
+        .to(event.getTime())
         .set("Host")
         .to(event.getHost().getEmail())
         .set("Opportunities")

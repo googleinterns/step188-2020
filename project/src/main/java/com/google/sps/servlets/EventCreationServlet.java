@@ -44,17 +44,22 @@ public class EventCreationServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String name = request.getParameter("name");
     String[] parsedDate = request.getParameter("date").split("/");
-    Date date = Date.fromYearMonthDay(Integer.parseInt(parsedDate[2]), Integer.parseInt(parsedDate[1]), Integer.parseInt(parsedDate[0]));
+    Date date = 
+        Date.fromYearMonthDay(
+            Integer.parseInt(parsedDate[2]),
+            Integer.parseInt(parsedDate[1]),
+            Integer.parseInt(parsedDate[0]));
+    String time = request.getParameter("time");
     String description = request.getParameter("description");
     String location = request.getParameter("location");
     Set<String> labels = Collections.unmodifiableSet(new HashSet<>(
         Arrays.asList("None"))); // hardcoded for now, we need to create label pool first
 
-    /** TO DO: Replace with current logged in user after PR #43 pushed*/
+    /** TO DO: Replace with current logged in user after PR #43 pushed */
     String NAME = "Bob Smith";
     String EMAIL = "bobsmith@example.com";
     User host = new User.Builder(NAME, EMAIL).build();
-    Event event = new Event.Builder(name, description, labels, location, date, host).build();
+    Event event = new Event.Builder(name, description, labels, location, date, time, host).build();
     SpannerTasks.insertorUpdateEvent(event);
 
     String redirectUrl = "/event-details.html?eventId=" + event.getId();
