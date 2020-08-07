@@ -49,8 +49,6 @@ public class SpannerTestTasks {
                 + "  RequiredSkills             ARRAY<STRING(MAX)>,"
                 + "  Volunteers                 ARRAY<STRING(MAX)>"
                 + ") PRIMARY KEY (VolunteeringOpportunityID)");
-    System.out.println(SpannerClient.getDatabaseClient());
-    System.out.println(SpannerClient.getDatabaseAdminClient());
     Database db =
         SpannerClient.getDatabaseAdminClient()
             .createDatabase(
