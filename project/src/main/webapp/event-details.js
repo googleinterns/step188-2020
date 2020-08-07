@@ -90,20 +90,13 @@ async function getEventDetails() {
   const eventId = urlParams.get('eventId');
   const response = await fetch('/create-event?' + new URLSearchParams({'eventId': eventId}))
   const data = await response.json();
-//   fetch(
-//       '/create-event?' +
-//       new URLSearchParams({'eventId': eventId}))
-//       .then((res) => (res.json())).then((data) => {
   document.getElementById('name').innerHTML = data['name'];
   document.getElementById('description').innerHTML = data['description'];
   document.getElementById('date').innerHTML = `Date: 
   ${data['date'].month}/${data['date'].dayOfMonth}/${data['date'].year}`;
   document.getElementById('location').innerHTML =
     `Location: ${data['location']}`;
+  document.getElementById('time').innerHTML = `Time: ${data['time']}`;
   const link = '/event-edit.html?eventId=' + eventId;
   document.getElementById('editLink').setAttribute('href', link);
-    //   });
 }
-
-//   const response = await fetch('/login-status');
-//   const loginStatus = await response.json();
