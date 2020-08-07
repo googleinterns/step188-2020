@@ -49,9 +49,9 @@ public class EventCreationServlet extends HttpServlet {
     String[] parsedDate = request.getParameter("date").split("/");
     Date date =
          Date.fromYearMonthDay(
-            Integer.parseInt(parsedDate[2]),
-            Integer.parseInt(parsedDate[0]),
-            Integer.parseInt(parsedDate[1]));
+            /*Year=*/Integer.parseInt(parsedDate[2]),
+            /*Month=*/Integer.parseInt(parsedDate[0]),
+            /*Day=*/Integer.parseInt(parsedDate[1]));
     String description = request.getParameter("description");
     String location = request.getParameter("location");
     Set<String> labels = 
