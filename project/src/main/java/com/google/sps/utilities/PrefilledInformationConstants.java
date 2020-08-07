@@ -89,7 +89,7 @@ public final class PrefilledInformationConstants {
               "history",
               "jigsaw puzzles",
               "laser tag",
-              "magic", 
+              "magic",
               "mahjong",
               "meditation",
               "gymnastics",
@@ -102,7 +102,7 @@ public final class PrefilledInformationConstants {
               "bbq",
               "brewing",
               "cake decorating",
-              "kombucha", 
+              "kombucha",
               "winemaking",
               "canning"));
 
