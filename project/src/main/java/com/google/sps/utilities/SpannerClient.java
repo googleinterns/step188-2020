@@ -29,7 +29,7 @@ import javax.servlet.annotation.WebListener;
 
 @WebListener
 public class SpannerClient implements ServletContextListener {
-  private static String PROJECT_ID;
+  private static final String PROJECT_ID = DatabaseConstants.PROJECT_ID;
   private static String INSTANCE_ID;
   private static String DATABASE_ID;
   private static Spanner spanner = null;
@@ -45,7 +45,6 @@ public class SpannerClient implements ServletContextListener {
       return;
     }
     SpannerOptions options = SpannerOptions.newBuilder().build();
-    PROJECT_ID = DatabaseConstants.PROJECT_ID;
     spanner = options.getService();
     databaseAdminClient = spanner.getDatabaseAdminClient();
   }
