@@ -26,7 +26,6 @@
   },
   "dependencies": {
     "clang-format": "^1.4.0",
-    "moment": "^2.27.0",
     "prettier": "^2.0.5",
     "bootstrap-tagsinput": "^0.7.1"
   }
