@@ -55,8 +55,11 @@ public class OpportunitySpannerTasksTest {
 
     Set<VolunteeringOpportunity> opportunities =
         SpannerTasks.getVolunteeringOpportunitiesByEventId(EVENT_ID);
+    VolunteeringOpportunity actualOpportunity = opportunities.stream().findFirst().get();
 
-    MatcherAssert.assertThat(opportunities, CoreMatchers.hasItems(opportunity));
+    Assert.assertEquals(actualOpportunity.getEventId(), EVENT_ID);
+    Assert.assertEquals(actualOpportunity.getName(), NAME);
+    Assert.assertEquals(actualOpportunity.getNumSpotsLeft(), NUMBER_OF_SPOTS);
   }
 
   @AfterClass
