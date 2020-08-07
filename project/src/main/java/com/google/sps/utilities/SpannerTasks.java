@@ -122,7 +122,7 @@ public class SpannerTasks {
                /* description = */ resultSet.getString(1),
                 /* labels = */ new HashSet<String>(resultSet.getStringList(2)),
                 /* location = */ resultSet.getString(3),
-                /* date = */ Date.parseDate(resultSet.getString(4)),
+                /* date = */ date,
                 /* time= */ resultSet.getString(5),
                 /* host = */ host)
             .build());
