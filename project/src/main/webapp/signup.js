@@ -6,7 +6,7 @@ window.onload = function onLoad() {
 };
 
 /**
- * Adds the volunteering opportunities to the event card.
+ * Adds the volunteering opportunities to the dropdown selection.
  */
 async function populateOpportunitiesDropdown() {
   const response = await fetch('/event-volunteering-data');
@@ -22,8 +22,8 @@ async function populateOpportunitiesDropdown() {
 }
 
 /**
- * Returns button with edit link for the opportunity with ID opportunityId.
- * @param {string} opportunityId Opportunity ID of the opportunity edit link to
+ * Returns option with given name as text and opportunityId as value.
+ * @param {string} opportunityId Opportunity ID of the opportunity option to
  *     return.
  * @return {string}
  */
