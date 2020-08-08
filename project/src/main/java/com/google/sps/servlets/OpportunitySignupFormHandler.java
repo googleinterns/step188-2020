@@ -12,15 +12,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that handles submission of the form for creating volunteering opportunities. */
+/** Servlet that handles submission of the form for signing up for opportunities. */
 @WebServlet("/opportunity-signup-form-handler")
 public class OpportunitySignupFormHandler extends HttpServlet {
   private static final String OPPORTUNITY_ID = "opportunity-id";
 
   /**
-   * Inserts volunteering opportunity with parameter values for attributes into the database if
-   * opportunity ID is not given as a request parameter and updates volunteering opportunity with
-   * the opportunity ID if given as a request parameter.
+   * Inserts opportunity signup with parameter value for name and current user email.
    *
    * @param request servlet request
    * @param response servlet response

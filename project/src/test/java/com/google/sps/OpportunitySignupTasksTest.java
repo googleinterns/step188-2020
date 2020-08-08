@@ -46,18 +46,4 @@ public class OpportunitySignupTasksTest {
     Assert.assertEquals(actualSignup.getEmail(), EMAIL);
     Assert.assertEquals(actualSignup.getOpportunityId(), OPPORTUNITY_ID);
   }
-/*
-  @Test
-  public void retrieveEventsVolunteeringByEmail() {
-     OpportunitySignup signup =
-        new OpportunitySignup.Builder(OPPPORTUNITY_ID, EMAIL).build();
-    SpannerTasks.insertVolunteeringOpportunity(signup);
-
-    Set<Pair<Event, Opportunity>> opportunities =
-        SpannerTasks.getSignupsByEmail(EMAIL);
-
-    Assert.assertEquals(actualSignup.getOpportunityId(), OPPORTUNITY_ID);
-    Assert.assertEquals(actualSignup.getEmail(), EMAIL);
-  }
-*/
 }

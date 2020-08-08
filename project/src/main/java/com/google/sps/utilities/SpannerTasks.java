@@ -307,6 +307,11 @@ public class SpannerTasks {
     return mutations;
   }
 
+  /**
+   * Given a signup, insert a row with all available fields into the DB
+   *
+   * @param signup the signup to be inserted
+   */
   public static void insertOpportunitySignup(OpportunitySignup signup) {
     List<Mutation> mutations =
         getMutationsFromBuilder(newInsertBuilderFromOpportunitySignup(), signup);
@@ -314,10 +319,10 @@ public class SpannerTasks {
   }
 
   /**
-   * Given an eventId, retrieve all volunteering opportunities for that eventId
+   * Given an opportunityId, retrieve all signups for that opportunityId
    *
-   * @param eventId eventId for the event to retrieve volunteering opportunities for
-   * @return volunteering opportunities with given eventId
+   * @param opportunityId opportunityId for the opportunity to retrieve signups for
+   * @return signups with given opportunityId
    */
   public static Set<OpportunitySignup> getSignupsByOpportunityId(String opportunityId) {
     Set<OpportunitySignup> results = new HashSet<OpportunitySignup>();
