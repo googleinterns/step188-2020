@@ -20,6 +20,7 @@
       integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
       crossorigin="anonymous"
     ></script>
+    <script src="signup.js"></script>
   </head>
   <body class>
     <div id="header"></div>
@@ -46,12 +47,15 @@
           <br /><br />
         </div>
       </div>
-      <form id="event-signup">
+       <form
+        method="post"
+        action="/opportunity-signup-form-handler"
+        id="opportunity-signup-form"
+        class="hidden"
+        >
         <div class="form-group">
           <label for="role-form">Select a role:</label>
-          <select class="form-control">
-            <option>Attendee</option>
-            <option>Translator</option>
+          <select class="form-control" name="opportunity-id" id="opportunities-options">
           </select>
         </div>
         <button class="submit" type="submit">Submit</button>
