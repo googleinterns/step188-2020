@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.springframework.mock.web.MockServletContext;
 
-/** Unit tests for DatabaseWrapper functionality related to VolunteeringOpportunity class. */
+/** Unit tests for SpannerTasks functionality related to OpportunitySignup class. */
 @RunWith(JUnit4.class)
 public class OpportunitySignupTasksTest {
   private static final String OPPORTUNITY_ID = "0883de79-17d7-49a3-a866-dbd5135062a8";
