@@ -6,10 +6,14 @@ import com.google.sps.data.VolunteeringOpportunity;
 import com.google.sps.utilities.SpannerClient;
 import com.google.sps.utilities.SpannerTasks;
 import com.google.sps.utilities.SpannerTestTasks;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream; 
 import javax.servlet.ServletContextEvent;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -55,7 +59,6 @@ public class EventSpannerTasksTest {
     Event event =
         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
     SpannerTasks.insertorUpdateEvent(event);
-
     Event dbEvent = SpannerTasks.getEventById(event.getId()).get();
 
     Assert.assertEquals(dbEvent.getName(), EVENT_NAME);
@@ -67,7 +70,7 @@ public class EventSpannerTasksTest {
     Assert.assertEquals(dbEvent.getHost(), HOST);
   }
 
-  /** Verify getting Set<Event> from eventIds*/
+  /** Verify getting Set<Event> from corresponding eventIds*/
   @Test
   public void getEventsByIdTest() {
     SpannerTasks.insertOrUpdateUser(HOST);
@@ -79,32 +82,12 @@ public class EventSpannerTasksTest {
     SpannerTasks.insertorUpdateEvent(otherEvent);
 
     Set<Event> dbEvents = SpannerTasks.getEventsFromIds(Arrays.asList(event.getId(), otherEvent.getId() ));
-    Set<Event> compared = new HashSet<>(Arrays.asList(event, otherEvent));
-    //events given back have diff ids
-    //Assert.assertEquals(dbEvents.get(event),  event);
+    List<Event> dbEventsList = new ArrayList<Event>();
+    dbEventsList.addAll(dbEvents);
 
-    Assert.assertEquals(dbEvents, compared);
-
-
+    Assert.assertEquals(dbEventsList.get(0), event);
+    Assert.assertEquals(dbEventsList.get(1), otherEvent);
   }
 
-//     /** Verify getting Set<Event> from eventIds*/
-//   @Test
-//   public void getEventsByIdTest() {
-//     SpannerTasks.insertOrUpdateUser(HOST);
-//     Event event =
-//         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
-//     SpannerTasks.insertorUpdateEvent(event);
-//     Event otherEvent =
-//         new Event.Builder(NEW_EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
-//     SpannerTasks.insertorUpdateEvent(otherEvent);
-//     Set<Event> dbEvents = SpannerTasks.getEventsFromIds(Arrays.asList(event.getId(), otherEvent.getId()));
-//     Event item = dbEvents.iterator().next();
-//     Assert.assertEquals(item, event);
-//     Event nextItem = dbEvents.iterator().next();
-//     Assert.assertEquals(nextItem, otherEvent);
-//     //events given back have diff ids
-//     //Assert.assertEquals(dbEvents,  new HashSet<Event> (Arrays.asList(event, otherEvent)));
 
-//   }
 }
