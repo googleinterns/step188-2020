@@ -42,7 +42,7 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
     } else {
       updateVolunteeringOpportunityInDB(opportunityId, name, numSpotsLeft, requiredSkills);
     }
-    response.sendRedirect("/events-feed.html");
+    response.sendRedirect("/event-details.html");
   }
 
   private static void insertVolunteeringOpportunityInDB(
