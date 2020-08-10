@@ -1,8 +1,8 @@
 package com.google.sps.data;
 
 public enum Table {
-    USERS,
-    EVENTS,
-    VOLUNTEERINGOPPORTUNITIES,
-    OPPORTUNITYSIGNUP
+  USERS,
+  EVENTS,
+  VOLUNTEERINGOPPORTUNITIES,
+  OPPORTUNITYSIGNUP
 }

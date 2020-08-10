@@ -5,7 +5,6 @@ import com.google.sps.data.VolunteeringOpportunity;
 import com.google.sps.utilities.SpannerClient;
 import com.google.sps.utilities.SpannerTasks;
 import com.google.sps.utilities.SpannerTestTasks;
-import java.util.Set;
 import javax.servlet.ServletContextEvent;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -41,17 +40,19 @@ public class OpportunitySignupTasksTest {
     VolunteeringOpportunity opportunity =
         new VolunteeringOpportunity.Builder(EVENT_ID, NAME, NUMBER_OF_SPOTS).build();
     SpannerTasks.insertVolunteeringOpportunity(opportunity);
-    OpportunitySignup signup = new OpportunitySignup.Builder(opportunity.getOpportunityId(), EMAIL).build();
-    
+
+    OpportunitySignup signup =
+        new OpportunitySignup.Builder(opportunity.getOpportunityId(), EMAIL).build();
     SpannerTasks.insertOpportunitySignup(signup);
     OpportunitySignup actualSignup =
         SpannerTasks.getSignupsByOpportunityId(opportunity.getOpportunityId()).stream().findFirst().get();
     VolunteeringOpportunity actualOpportunity =
-        SpannerTasks.getVolunteeringOpportunityByOppportunityId(
-            opportunity.getOpportunityId()).stream().findFirst().get();
+        SpannerTasks.getVolunteeringOpportunityByOppportunityId(opportunity.getOpportunityId())
+            .stream()
+            .findFirst().get();
     
     Assert.assertEquals(actualSignup.getEmail(), EMAIL);
     Assert.assertEquals(actualSignup.getOpportunityId(), opportunity.getOpportunityId());
-    Assert.assertEquals(actualOpportunity.getNumSpotsLeft(), NUMBER_OF_SPOTS-1);
+    Assert.assertEquals(actualOpportunity.getNumSpotsLeft(), NUMBER_OF_SPOTS - 1);
   }
 }
