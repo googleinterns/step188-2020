@@ -33,9 +33,6 @@ import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import com.google.sps.servlets.EventCreationServlet;
-import org.json.simple.JSONObject;
-
-import org.json.simple.parser.JSONParser;
 
 /** Unit tests for DatabaseWrapper functionality related to Event class. */
 @RunWith(JUnit4.class)
@@ -63,7 +60,7 @@ public class EventSpannerTasksTest {
 
   @AfterClass
   public static void tearDown() throws Exception {
-    SpannerTestTasks.cleanup();
+    //SpannerTestTasks.cleanup();
   }
 
 
