@@ -35,12 +35,12 @@ public class SpannerTasks {
   }
 
   /**
-   * Given an email, return the corresponding user from the DB
+   * Given an email, return the corresponding user from the DB WITHOUT attached events
    *
    * @param email an email to search the 'User' table by; email may or may not exist in DB
    * @return return the user wrapped in an {@link Optional}
    */
-  public static Optional<User> readUserFromEmail(String email) {
+  public static Optional<User> shallowReadUserFromEmail(String email) {
     ResultSet resultSet =
         SpannerClient.getDatabaseClient()
             .singleUse()
@@ -59,9 +59,6 @@ public class SpannerTasks {
         new User.Builder(/* name = */ resultSet.getString(0), /* email = */ email)
             .setInterests(new HashSet<String>(resultSet.getStringList(1)))
             .setSkills(new HashSet<String>(resultSet.getStringList(2)))
-            .setEventsHosting(getEventsFromIds(resultSet.getStringList(3)))
-            .setEventsParticipating(getEventsFromIds(resultSet.getStringList(4)))
-            .setEventsVolunteering(getEventsFromIds(resultSet.getStringList(5)))
             .build());
   }
 
@@ -71,10 +68,10 @@ public class SpannerTasks {
    * @param emails emails to search the 'User' table by
    * @return return the users that exist in no particular order
    */
-  public static Set<User> readMultipleUsersFromEmails(Set<String> emails) {
+  public static Set<User> shallowReadMultipleUsersFromEmails(Set<String> emails) {
     Set<User> users = new HashSet<>();
     for (String email : emails) {
-      Optional<User> userOptional = readUserFromEmail(email);
+      Optional<User> userOptional = shallowReadUserFromEmail(email);
       if (userOptional.isPresent()) {
         users.add(userOptional.get());
       }
@@ -127,36 +124,38 @@ public class SpannerTasks {
     if (!resultSet.next()) {
       return Optional.empty();
     }
-    return Optional.of(createEventFromDatabaseResult(resultSet));
+    return Optional.of(shallowCreateEventFromDatabaseResult(resultSet));
   }
 
   /**
    * Returns all events stored in DB
+   * @return Events with a shallow version of its host (no events attached to Users)
    */
   public static Set<Event> getAllEvents() {
     Set<Event> events = new HashSet<>();
     ResultSet resultSet = SpannerClient.getDatabaseClient().singleUse().executeQuery(Statement.of(String.format(
-        "SELECT EventID, Name, Description, Labels, Location, Date, Host, Opportunities, Attendees FROM %s", EVENT_TABLE)));
+        "SELECT EventID, Name, Description, Labels, Location, Date, Host, Opportunities, Attendees, Time FROM %s", EVENT_TABLE)));
     while (resultSet.next()) {
-      Event event = createEventFromDatabaseResult(resultSet);
+      Event event = shallowCreateEventFromDatabaseResult(resultSet);
       events.add(event);
     }
     return events;
   }
-  
-  private static Event createEventFromDatabaseResult(ResultSet resultSet) {
+
+  private static Event shallowCreateEventFromDatabaseResult(ResultSet resultSet) {
     String eventId = resultSet.getString(0);
     return new Event
-              .Builder(/* name = */ resultSet.getString(1),
-                  /* description = */ resultSet.getString(2),
-                  /* labels = */ new HashSet<String>(resultSet.getStringList(3)),
-                  /* location = */ resultSet.getString(4), 
-                  /* date = */ resultSet.getDate(5),
-                  /* host = */ readUserFromEmail(resultSet.getString(6)).get())
-              .setId(eventId)
-              .setOpportunities(getVolunteeringOpportunitiesByEventId(eventId))
-              .setAttendees(readMultipleUsersFromEmails(new HashSet<String>(resultSet.getStringList(7))))
-              .build();
+        .Builder(/* name = */ resultSet.getString(1),
+            /* description = */ resultSet.getString(2),
+            /* labels = */ new HashSet<String>(resultSet.getStringList(3)),
+            /* location = */ resultSet.getString(4), 
+            /* date = */ resultSet.getDate(5),
+            /* time = */ resultSet.getString(9),
+            /* host = */ shallowReadUserFromEmail(resultSet.getString(6)).get())
+        .setId(eventId)
+        .setOpportunities(getVolunteeringOpportunitiesByEventId(eventId))
+        .setAttendees(shallowReadMultipleUsersFromEmails(new HashSet<String>(resultSet.getStringList(7))))
+        .build();
   }
 
   private static List<Mutation> getUserMutationsFromBuilder(

@@ -26,6 +26,9 @@ public class EventDetailServlet extends HttpServlet {
   /** Returns all event details from database */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Set<Event> events = new HashSet<>();
+
+
     Set<Event> events = SpannerTasks.getAllEvents();
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(events));
