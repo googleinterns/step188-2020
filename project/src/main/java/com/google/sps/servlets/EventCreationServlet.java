@@ -66,5 +66,6 @@ public class EventCreationServlet extends HttpServlet {
 
     String redirectUrl = "/event-details.html?eventId=" + event.getId();
     response.sendRedirect(redirectUrl);
+    response.getWriter().println(new Gson().toJson(SpannerTasks.getEventById(event.getId()).get().toBuilder().build()));
   }
 }

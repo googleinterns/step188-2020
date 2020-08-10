@@ -22,6 +22,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.springframework.mock.web.MockServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import com.google.gson.Gson;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import com.google.sps.servlets.EventCreationServlet;
+import org.json.simple.JSONObject;
+
+import org.json.simple.parser.JSONParser;
 
 /** Unit tests for DatabaseWrapper functionality related to Event class. */
 @RunWith(JUnit4.class)
@@ -36,6 +50,7 @@ public class EventSpannerTasksTest {
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Tech", "Work")));
   private static final String LOCATION = "Remote";
   private static final Date DATE = Date.fromYearMonthDay(2016, 9, 15);
+   private static final String DATE_STRING = "09/15/2016";
   private static final String TIME = "3:00PM-5:00PM";
 
   @BeforeClass
@@ -53,6 +68,7 @@ public class EventSpannerTasksTest {
 
 
   /** Verify insertion of event in db and retrieval by id*/
+  /** Also tests behavior of EventCreationServlet doGet() where request.getParameter("eventId") == event.getId() here*/
   @Test
   public void eventInsertAndRetrieval() {
     SpannerTasks.insertOrUpdateUser(HOST);
@@ -80,14 +96,30 @@ public class EventSpannerTasksTest {
     Event otherEvent =
         new Event.Builder(NEW_EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
     SpannerTasks.insertorUpdateEvent(otherEvent);
+    Set<Event> insertedEvents = new HashSet<>(Arrays.asList(event, otherEvent));
 
-    Set<Event> dbEvents = SpannerTasks.getEventsFromIds(Arrays.asList(event.getId(), otherEvent.getId() ));
-    List<Event> dbEventsList = new ArrayList<Event>();
-    dbEventsList.addAll(dbEvents);
+    Set<Event> dbEvents = SpannerTasks.getEventsFromIds(Arrays.asList(event.getId(), otherEvent.getId()));
 
-    Assert.assertEquals(dbEventsList.get(0), event);
-    Assert.assertEquals(dbEventsList.get(1), otherEvent);
+    Assert.assertEquals(dbEvents, insertedEvents);
   }
 
+  /** Verify putting event in database through doPost with correct params and getting back correct redirectURL*/
+  @Test
+  public void testEventCreationDoPost() throws Exception {
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    MockHttpServletResponse response = new MockHttpServletResponse();
+    request.addParameter("name", EVENT_NAME);
+    request.addParameter("date", DATE_STRING);
+    request.addParameter("time", TIME);
+    request.addParameter("description", DESCRIPTION);
+    request.addParameter("location", LOCATION);
 
+    new EventCreationServlet().doPost(request, response);
+
+    // Get back Event posted in db
+    Event returnEvent = new Gson().fromJson(response.getContentAsString(), Event.class);
+
+    // Check redirected URL is the ID of the item put in as request
+    Assert.assertEquals(response.getRedirectedUrl(), "/event-details.html?eventId=" + returnEvent.getId());
+  }
 }

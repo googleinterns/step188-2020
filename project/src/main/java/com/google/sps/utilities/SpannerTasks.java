@@ -102,7 +102,7 @@ public class SpannerTasks {
                 Statement.of(
                     String.format(
                         "SELECT Name, Description, Labels, Location, Date, Time, Host,"
-                            + " Opportunities, Attendees FROM %s WHERE EventID='%s'",
+                            + " Opportunities, Attendees FROM %s WHERE EventID=\"%s\"",
                         EVENT_TABLE, eventId)));
     
     /** If ID does not exist */
