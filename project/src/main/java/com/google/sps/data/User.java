@@ -229,11 +229,4 @@ public final class User {
     }
       return false;
   }
-
-// @Override
-// public int hashCode()
-// {
-//     return email.hashCode();
-// }
-
 }
