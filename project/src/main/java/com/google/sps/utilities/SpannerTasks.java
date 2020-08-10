@@ -109,12 +109,10 @@ public class SpannerTasks {
     if (!resultSet.next()) {
       return Optional.empty();
     }
-
     // TO DO: replace with host from db, after PR #43 pushed
     String NAME = "Bob Smith";
     String EMAIL = "bobsmith@example.com";
     User host = new User.Builder(NAME, EMAIL).build();
-
     return Optional.of(
         new Event.Builder(
                 /* name = */ resultSet.getString(0),
@@ -123,8 +121,8 @@ public class SpannerTasks {
                 /* location = */ resultSet.getString(3),
                 /* date = */ resultSet.getDate(4),
                 /* time= */ resultSet.getString(5),
-                /* host = */ host)
-            .build());
+                /* host = */ readUserFromEmail(resultSet.getString(6)).get())
+            .setId(eventId).build());
     // TO DO: set volunteer opportunities, attendees by Querying those by ID, wait for PR 43, 44
   }
 
