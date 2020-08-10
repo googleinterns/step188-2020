@@ -30,12 +30,12 @@ public class EventCreationServlet extends HttpServlet {
     Optional<Event> eventOptional = SpannerTasks.getEventById(eventId);
 
     // If event DNE, sends 404 ERR to frontend
-    if (eventOptional.isPresent()) {
+    if (!eventOptional.isPresent()) {
+      response.sendError(HttpServletResponse.SC_NOT_FOUND);
+    } else {
       Event event = eventOptional.get();
       response.setContentType("text/html;");
       response.getWriter().println(new Gson().toJson(event));
-    } else {
-      response.sendError(HttpServletResponse.SC_NOT_FOUND);
     }  
   }
 
