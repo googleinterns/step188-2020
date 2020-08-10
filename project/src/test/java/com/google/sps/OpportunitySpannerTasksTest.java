@@ -26,7 +26,6 @@ public class OpportunitySpannerTasksTest {
     // Mock a request to trigger the SpannerClient setup to run
     MockServletContext mockServletContext = new MockServletContext();
     new SpannerClient().contextInitialized(new ServletContextEvent(mockServletContext));
-    // SpannerTestTasks.cleanup();
     SpannerTestTasks.setup();
   }
 
