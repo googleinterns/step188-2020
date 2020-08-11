@@ -29,7 +29,7 @@ public class OpportunitySignupFormHandlerServlet extends HttpServlet {
     User user = UserServiceFactory.getUserService().getCurrentUser();
 
     if (opportunityId == null) {
-      response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Opportunity ID not specified.");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Opportunity ID not specified.");
     } else if (user == null) {
       response.sendRedirect("/index.html");
     } else {

@@ -24,8 +24,7 @@ import org.springframework.mock.web.MockServletContext;
 /** Test that tests the opportunity signup form functionality. */
 @RunWith(JUnit4.class)
 public final class OpportunitySignupFormHandlerTest {
-  private static final String OPPORTUNITY_ID = "opportunity-id";
-  private static final String EMAIL = "email";
+  private static final String PARAMETER_OPPORTUNITY_ID = "opportunity-id";
   private static final LocalServiceTestHelper authenticationHelper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig());
   private OpportunitySignupFormHandlerServlet opportunitySignupServlet;
@@ -62,7 +61,7 @@ public final class OpportunitySignupFormHandlerTest {
         .setEnvIsLoggedIn(true)
         .setEnvEmail("test@gmail.com")
         .setEnvAuthDomain("gmail.com");
-    Mockito.when(request.getParameter(OPPORTUNITY_ID)).thenReturn(opportunity.getOpportunityId());
+    Mockito.when(request.getParameter(PARAMETER_OPPORTUNITY_ID)).thenReturn(opportunity.getOpportunityId());
 
     opportunitySignupServlet.doPost(request, response);
 
@@ -75,18 +74,18 @@ public final class OpportunitySignupFormHandlerTest {
         .setEnvIsLoggedIn(true)
         .setEnvEmail("test@gmail.com")
         .setEnvAuthDomain("gmail.com");
-    Mockito.when(request.getParameter(OPPORTUNITY_ID)).thenReturn(null);
+    Mockito.when(request.getParameter(PARAMETER_OPPORTUNITY_ID)).thenReturn(null);
 
     opportunitySignupServlet.doPost(request, response);
 
     Mockito.verify(response)
-        .sendError(HttpServletResponse.SC_UNAUTHORIZED, "Opportunity ID not specified.");
+        .sendError(HttpServletResponse.SC_BAD_REQUEST, "Opportunity ID not specified.");
   }
 
   @Test
   public void testAddOpportunitySignup_NotLoggedIn() throws IOException {
     authenticationHelper.setEnvIsLoggedIn(false);
-    Mockito.when(request.getParameter(OPPORTUNITY_ID)).thenReturn(opportunity.getOpportunityId());
+    Mockito.when(request.getParameter(PARAMETER_OPPORTUNITY_ID)).thenReturn(opportunity.getOpportunityId());
 
     opportunitySignupServlet.doPost(request, response);
 
