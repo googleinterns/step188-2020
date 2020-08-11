@@ -197,7 +197,6 @@ public final class User {
 
   public Set<String> getEventsVolunteeringIds() {
     return eventsVolunteering.stream().map(Event::getId).collect(Collectors.toSet());
-
   }
 
   public Builder toBuilder() {

@@ -41,14 +41,13 @@ public class OpportunitySignupTasksTest {
         new VolunteeringOpportunity.Builder(EVENT_ID, NAME, NUMBER_OF_SPOTS).build();
     SpannerTasks.insertVolunteeringOpportunity(opportunity);
 
-    OpportunitySignup signup =
-        new OpportunitySignup.Builder(opportunity.getOpportunityId(), EMAIL).build();
+    String opportunityId = opportunity.getOpportunityId();
+    OpportunitySignup signup = new OpportunitySignup.Builder(opportunityId, EMAIL).build();
     SpannerTasks.insertOpportunitySignup(signup);
     OpportunitySignup actualSignup =
-        SpannerTasks.getSignupsByOpportunityId(opportunity.getOpportunityId()).stream().findFirst().get();
+        SpannerTasks.getSignupsByOpportunityId(opportunityId).stream().findFirst().get();
     VolunteeringOpportunity actualOpportunity =
-        SpannerTasks.getVolunteeringOpportunityByOppportunityId(opportunity.getOpportunityId())
-            .stream()
+        SpannerTasks.getVolunteeringOpportunityByOppportunityId(opportunityId).stream()
             .findFirst()
             .get();
 
