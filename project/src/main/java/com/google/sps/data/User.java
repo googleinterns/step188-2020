@@ -197,6 +197,7 @@ public final class User {
 
   public Set<String> getEventsVolunteeringIds() {
     return eventsVolunteering.stream().map(Event::getId).collect(Collectors.toSet());
+
   }
 
   public Builder toBuilder() {
@@ -206,27 +207,5 @@ public final class User {
   @Override
   public String toString() {
     return String.format("User:\t%s\nE-mail:\t%s", this.name, this.email);
-  }
-
-  /* Overridden because db always returns new obj
-   * @returns True if all User fields are equal
-   */
-  @Override
-  public boolean equals(Object obj)
-  {
-    if (obj == null) {
-      return false;
-    }
-    if (obj.getClass() != this.getClass()) {
-      return false;
-    }
-
-    final User other = (User) obj;
-    if ( this.getName().equals(other.getName()) && this.getEmail().equals(other.getEmail()) && this.getInterests().equals(other.getInterests()) &&
-      this.getSkills().equals(other.getSkills()) && this.getEventsHosting().equals(other.getEventsHosting()) && 
-      this.getEventsParticipating().equals(other.getEventsParticipating()) && this.getEventsVolunteering().equals(other.getEventsVolunteering())) {
-      return true;
-    }
-      return false;
   }
 }

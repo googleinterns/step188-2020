@@ -155,7 +155,6 @@ public final class Event {
     }
 
     public Builder mergeFrom(Event other) {
-      this.eventId = other.getId();
       this.name = other.getName();
       this.description = other.getDescription();
       this.labels = other.getLabels();
@@ -249,34 +248,5 @@ public final class Event {
     return new Builder(
         this.name, this.description, this.labels, this.location, this.date, this.time, this.host)
         .mergeFrom(this);
-  }
-
-  /* Overridden because db always returns new obj
-   * @returns True if all User fields are equal
-   */
-  @Override
-  public boolean equals(Object obj)
-  {
-    if (obj == null) {
-      return false;
-    }
-    if (obj.getClass() != this.getClass()) {
-      return false;
-    }
-
-    final Event other = (Event) obj;
-    if (this.getName().equals(other.getName()) && this.getId().equals(other.getId()) &&  this.getDescription().equals(other.getDescription()) &&
-      this.getLocation().equals(other.getLocation()) && this.getDate().equals(other.getDate())  && this.getTime().equals(other.getTime())
-      && this.getLabels().equals(other.getLabels()) && this.getOpportunities().equals(other.getOpportunities()) && this.getAttendees().equals(other.getAttendees())
-      && this.getHost().equals(other.getHost())) {
-        return true;
-    }
-      return false;
-  }
-
-  @Override
-  public int hashCode()
-  { 
-    return this.getId().hashCode();
   }
 }

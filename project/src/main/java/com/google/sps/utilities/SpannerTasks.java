@@ -86,6 +86,7 @@ public class SpannerTasks {
         if (event.isPresent()) {
           ids.add(event.get());
         }
+        
       }
       return ids;
   }
@@ -102,27 +103,30 @@ public class SpannerTasks {
                 Statement.of(
                     String.format(
                         "SELECT Name, Description, Labels, Location, Date, Time, Host,"
-                            + " Opportunities, Attendees FROM %s WHERE EventID=\"%s\"",
+                            + " Opportunities, Attendees FROM %s WHERE EventID='%s'",
                         EVENT_TABLE, eventId)));
     
     /** If ID does not exist */
     if (!resultSet.next()) {
       return Optional.empty();
     }
+
     // TO DO: replace with host from db, after PR #43 pushed
     String NAME = "Bob Smith";
     String EMAIL = "bobsmith@example.com";
     User host = new User.Builder(NAME, EMAIL).build();
+    /* remove Hardcoded date */
+    Date date = Date.fromYearMonthDay(2016, 9, 15);
     return Optional.of(
         new Event.Builder(
                 /* name = */ resultSet.getString(0),
                /* description = */ resultSet.getString(1),
                 /* labels = */ new HashSet<String>(resultSet.getStringList(2)),
                 /* location = */ resultSet.getString(3),
-                /* date = */ resultSet.getDate(4),
+                /* date = */ Date.parseDate(resultSet.getString(4)),
                 /* time= */ resultSet.getString(5),
-                /* host = */ readUserFromEmail(resultSet.getString(6)).get())
-            .setId(eventId).build());
+                /* host = */ host)
+            .build());
     // TO DO: set volunteer opportunities, attendees by Querying those by ID, wait for PR 43, 44
   }
 
@@ -175,7 +179,6 @@ public class SpannerTasks {
       mutations.add(builder.build());
       return mutations;
       }
-
   /**
    * Given a volunteering opportunity, insert a row with all available fields into the DB
    *
