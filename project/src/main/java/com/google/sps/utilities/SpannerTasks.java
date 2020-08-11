@@ -89,19 +89,34 @@ public class SpannerTasks {
   }
 
   /**
-   * Returns List of Event Ids from DB
+   * Returns from DB all available events that match with provided list of IDs
    *
-   * @param eventId List of IDs of event to be returned
+   * @param eventIds List of IDs of event to be returned
    */
   public static Set<Event> getEventsFromIds(List<String> eventIds) {
     Set<Event> events = new HashSet<Event>();
-    for (String eventId : eventIds) {
-      Optional<Event> event = getEventById(eventId);
-      if (event.isPresent()) {
-        events.add(event.get());
-      }
+    String eventIdsFormatted = formatMultipleValuesForQuery(eventIds);
+    ResultSet resultSet =
+        SpannerClient.getDatabaseClient()
+            .singleUse()
+            .executeQuery(
+                Statement.of(
+                    String.format(
+                        "SELECT EventID, Name, Description, Labels, Location, Date, Time,"
+                            + " Host, Opportunities, Attendees FROM %s WHERE EventID in (%s)",
+                        EVENT_TABLE, eventIdsFormatted)));
+    while (resultSet.next()) {
+      events.add(shallowCreateEventFromDatabaseResult(resultSet));
     }
     return events;
+  }
+
+  private static String formatMultipleValuesForQuery(List<String> values) {
+    String formatted = "";
+    for (String value : values) {
+      formatted += String.format("'%s',", value);
+    }
+    return formatted.substring(0, formatted.length() - 1);
   }
 
   /**
@@ -161,7 +176,7 @@ public class SpannerTasks {
             /* time = */ resultSet.getString(6),
             /* host = */ shallowReadUserFromEmail(resultSet.getString(7)).get())
         .setId(eventId)
-        .setOpportunities(shallowGetVolunteeringOpportunitiesByEventId(eventId))
+        .setOpportunities(getVolunteeringOpportunitiesByEventId(eventId))
         .setAttendees(
             shallowReadMultipleUsersFromEmails(new HashSet<String>(resultSet.getStringList(9))))
         .build();
