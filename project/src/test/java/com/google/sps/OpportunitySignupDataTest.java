@@ -53,13 +53,13 @@ public final class OpportunitySignupDataTest {
     VolunteeringOpportunity opportunity =
         new VolunteeringOpportunity.Builder(EVENT_ID, NAME, NUMBER_OF_SPOTS).build();
     SpannerTasks.insertVolunteeringOpportunity(opportunity);
-
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     Mockito.when(request.getParameter(OPPORTUNITY_ID)).thenReturn(opportunity.getOpportunityId());
     Mockito.when(response.getWriter()).thenReturn(writer);
+
     new OpportunitySignupDataServlet().doGet(request, response);
 
     Assert.assertEquals(
@@ -74,13 +74,13 @@ public final class OpportunitySignupDataTest {
     OpportunitySignup signup =
         new OpportunitySignup.Builder(opportunity.getOpportunityId(), VOLUNTEER_EMAIL).build();
     SpannerTasks.insertOpportunitySignup(signup);
-
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     Mockito.when(request.getParameter(OPPORTUNITY_ID)).thenReturn(opportunity.getOpportunityId());
     Mockito.when(response.getWriter()).thenReturn(writer);
+
     new OpportunitySignupDataServlet().doGet(request, response);
 
     Assert.assertEquals(
