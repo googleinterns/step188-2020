@@ -143,8 +143,8 @@ public class SpannerTasks {
   }
 
   /**
-   * Returns all events stored in DB; events will be shallow copies, so corresponding users
-   * will not have their events attached
+   * Returns all events stored in DB; events will be shallow copies, so corresponding users will not
+   * have their events attached
    *
    * @return Events with a shallow version of its host (no events attached to Users)
    */
