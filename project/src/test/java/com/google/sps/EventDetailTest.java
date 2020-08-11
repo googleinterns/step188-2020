@@ -93,12 +93,6 @@ public final class EventDetailTest {
     stringWriter.getBuffer().setLength(0);
   }
 
-  private static void insertRequiredRows() {
-    SpannerTasks.insertOrUpdateUser(USER);
-    SpannerTasks.insertorUpdateEvent(EVENT1);
-    SpannerTasks.insertorUpdateEvent(EVENT2);
-  }
-
   @Test
   public void verifyGetAllEvents() throws IOException {
     Set<Event> expectedEvents = new HashSet(Arrays.asList(EVENT1, EVENT2));
@@ -107,5 +101,11 @@ public final class EventDetailTest {
 
     Assert.assertEquals(
         CommonUtils.convertToJson(expectedEvents).trim(), stringWriter.toString().trim());
+  }
+
+  private static void insertRequiredRows() {
+    SpannerTasks.insertOrUpdateUser(USER);
+    SpannerTasks.insertorUpdateEvent(EVENT1);
+    SpannerTasks.insertorUpdateEvent(EVENT2);
   }
 }
