@@ -60,7 +60,7 @@ public class EventSpannerTasksTest {
 
   @AfterClass
   public static void tearDown() throws Exception {
-    //SpannerTestTasks.cleanup();
+    SpannerTestTasks.cleanup();
   }
 
 

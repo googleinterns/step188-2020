@@ -251,8 +251,8 @@ public final class Event {
         .mergeFrom(this);
   }
 
-  /* Overridden because db always returns new obj
-   * @returns True if all User fields are equal
+  /* Overridden because db always returns new Event obj
+   * @returns True if all Event fields are equal
    */
   @Override
   public boolean equals(Object obj)

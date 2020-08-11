@@ -109,10 +109,7 @@ public class SpannerTasks {
     if (!resultSet.next()) {
       return Optional.empty();
     }
-    // TO DO: replace with host from db, after PR #43 pushed
-    String NAME = "Bob Smith";
-    String EMAIL = "bobsmith@example.com";
-    User host = new User.Builder(NAME, EMAIL).build();
+
     return Optional.of(
         new Event.Builder(
                 /* name = */ resultSet.getString(0),
