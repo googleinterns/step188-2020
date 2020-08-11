@@ -1,12 +1,10 @@
 package com.google.sps.utilities;
 
-import com.google.cloud.Date;
 import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Statement;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
-import com.google.sps.utilities.DatabaseConstants;
 import com.google.sps.data.VolunteeringOpportunity;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -90,25 +88,27 @@ public class SpannerTasks {
     SpannerClient.getDatabaseClient().write(mutations);
   }
 
-  /** Returns List of Event Ids from DB
+  /** 
+   * Returns List of Event Ids from DB
    *
    * @param eventId List of IDs of event to be returned
-  */
+   */
   public static Set<Event> getEventsFromIds(List<String> eventIds) {
-      Set<Event> ids = new HashSet<Event>();
-      for (String eventId: eventIds) {
-        Optional<Event> event = getEventById(eventId);
-        if (event.isPresent()) {
-          ids.add(event.get());
-        }
+    Set<Event> ids = new HashSet<Event>();
+    for (String eventId: eventIds) {
+      Optional<Event> event = getEventById(eventId);
+      if (event.isPresent()) {
+        ids.add(event.get());
       }
-      return ids;
+    }
+    return ids;
   }
 
-  /** Returns Event by ID from DB
+  /** 
+   * Returns Event by ID from DB
    * 
    * @param eventId ID of event to be returned
-  */
+   */
   public static Optional<Event> getEventById(String eventId) {
     ResultSet resultSet =
         SpannerClient.getDatabaseClient()
@@ -207,6 +207,7 @@ public class SpannerTasks {
       mutations.add(builder.build());
       return mutations;
       }
+
   /**
    * Given a volunteering opportunity, insert a row with all available fields into the DB
    *

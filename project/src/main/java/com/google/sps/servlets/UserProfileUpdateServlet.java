@@ -3,7 +3,6 @@ package com.google.sps.servlets;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.User;
 import com.google.sps.utilities.CommonUtils;
-import com.google.sps.utilities.DatabaseConstants;
 import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
 import java.util.Arrays;
