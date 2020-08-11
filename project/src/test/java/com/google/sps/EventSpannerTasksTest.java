@@ -1,8 +1,10 @@
 package com.google.sps;
 import com.google.cloud.Date;
+import com.google.gson.Gson;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
+import com.google.sps.servlets.EventCreationServlet;
 import com.google.sps.utilities.SpannerClient;
 import com.google.sps.utilities.SpannerTasks;
 import com.google.sps.utilities.SpannerTestTasks;
@@ -12,9 +14,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream; 
+import javax.servlet.ServletException;
 import javax.servlet.ServletContextEvent;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -22,17 +26,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.springframework.mock.web.MockServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import com.google.gson.Gson;
-
-import org.junit.Before;
-import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import com.google.sps.servlets.EventCreationServlet;
 
 /** Unit tests for DatabaseWrapper functionality related to Event class. */
 @RunWith(JUnit4.class)
@@ -47,7 +42,7 @@ public class EventSpannerTasksTest {
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Tech", "Work")));
   private static final String LOCATION = "Remote";
   private static final Date DATE = Date.fromYearMonthDay(2016, 9, 15);
-   private static final String DATE_STRING = "09/15/2016";
+  private static final String DATE_STRING = "09/15/2016";
   private static final String TIME = "3:00PM-5:00PM";
 
   @BeforeClass
@@ -64,8 +59,8 @@ public class EventSpannerTasksTest {
   }
 
 
-  /** Verify insertion of event in db and retrieval by id*/
-  /** Also tests behavior of EventCreationServlet doGet() where request.getParameter("eventId") == event.getId() here*/
+  /** Verify insertion of event in db and retrieval by id 
+   * Also tests behavior of EventCreationServlet doGet() where doGet request.getParameter("eventId") == event.getId() */
   @Test
   public void eventInsertAndRetrieval() {
     SpannerTasks.insertOrUpdateUser(HOST);
@@ -83,7 +78,7 @@ public class EventSpannerTasksTest {
     Assert.assertEquals(dbEvent.getHost(), HOST);
   }
 
-  /** Verify getting Set<Event> from corresponding eventIds*/
+  /** Verify getting Set<Event> from corresponding eventIds */
   @Test
   public void getEventsByIdTest() {
     SpannerTasks.insertOrUpdateUser(HOST);
@@ -100,7 +95,10 @@ public class EventSpannerTasksTest {
     Assert.assertEquals(dbEvents, insertedEvents);
   }
 
-  /** Verify putting event in database through doPost with correct params and getting back correct redirectURL*/
+  /**
+   * Verify putting event in database through doPost with correct params and getting back correct
+   * redirectURL
+   */
   @Test
   public void testEventCreationDoPost() throws Exception {
     MockHttpServletRequest request = new MockHttpServletRequest();
@@ -117,6 +115,7 @@ public class EventSpannerTasksTest {
     Event returnEvent = new Gson().fromJson(response.getContentAsString(), Event.class);
 
     // Check redirected URL is the ID of the item put in as request
-    Assert.assertEquals(response.getRedirectedUrl(), "/event-details.html?eventId=" + returnEvent.getId());
+    Assert.assertEquals(
+        response.getRedirectedUrl(), "/event-details.html?eventId=" + returnEvent.getId());
   }
 }

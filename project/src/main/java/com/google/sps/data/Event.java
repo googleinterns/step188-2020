@@ -265,13 +265,19 @@ public final class Event {
     }
 
     final Event other = (Event) obj;
-    if (this.getName().equals(other.getName()) && this.getId().equals(other.getId()) &&  this.getDescription().equals(other.getDescription()) &&
-      this.getLocation().equals(other.getLocation()) && this.getDate().equals(other.getDate())  && this.getTime().equals(other.getTime())
-      && this.getLabels().equals(other.getLabels()) && this.getOpportunities().equals(other.getOpportunities()) && this.getAttendees().equals(other.getAttendees())
-      && this.getHost().equals(other.getHost())) {
+    if (this.getName().equals(other.getName())
+        && this.getId().equals(other.getId())
+        &&  this.getDescription().equals(other.getDescription())
+        && this.getLocation().equals(other.getLocation())
+        && this.getDate().equals(other.getDate())
+        && this.getTime().equals(other.getTime())
+        && this.getLabels().equals(other.getLabels())
+        && this.getOpportunities().equals(other.getOpportunities())
+        && this.getAttendees().equals(other.getAttendees())
+        && this.getHost().equals(other.getHost())) {
         return true;
     }
-      return false;
+    return false;
   }
 
   @Override

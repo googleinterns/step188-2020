@@ -222,11 +222,15 @@ public final class User {
     }
 
     final User other = (User) obj;
-    if ( this.getName().equals(other.getName()) && this.getEmail().equals(other.getEmail()) && this.getInterests().equals(other.getInterests()) &&
-      this.getSkills().equals(other.getSkills()) && this.getEventsHosting().equals(other.getEventsHosting()) && 
-      this.getEventsParticipating().equals(other.getEventsParticipating()) && this.getEventsVolunteering().equals(other.getEventsVolunteering())) {
+    if (this.getName().equals(other.getName())
+    && this.getEmail().equals(other.getEmail())
+    && this.getInterests().equals(other.getInterests())
+    && this.getSkills().equals(other.getSkills())
+    && this.getEventsHosting().equals(other.getEventsHosting())
+    && this.getEventsParticipating().equals(other.getEventsParticipating())
+    && this.getEventsVolunteering().equals(other.getEventsVolunteering())) {
       return true;
     }
-      return false;
+    return false;
   }
 }
