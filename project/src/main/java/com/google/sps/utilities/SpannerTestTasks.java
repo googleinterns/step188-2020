@@ -31,15 +31,15 @@ public class SpannerTestTasks {
                 + ") PRIMARY KEY (EventID)",
             "CREATE TABLE VolunteeringOpportunity ("
                 + "  VolunteeringOpportunityID  STRING(MAX) NOT NULL,"
-                + "  EventID  STRING(MAX) NOT NULL,"
+                + "  EventID                    STRING(MAX) NOT NULL,"
                 + "  Name                       STRING(MAX) NOT NULL,"
                 + "  NumSpotsLeft               INT64 NOT NULL,"
                 + "  RequiredSkills             ARRAY<STRING(MAX)>,"
                 + "  Volunteers                 ARRAY<STRING(MAX)>"
                 + ") PRIMARY KEY (VolunteeringOpportunityID)",
             "CREATE TABLE OpportunitySignup ("
-	        + "  VolunteeringOpportunityID STRING(MAX) NOT NULL,"
-	        + "  Email STRING(MAX) NOT NULL,"
+	        + "  VolunteeringOpportunityID  STRING(MAX) NOT NULL,"
+	        + "  Email                      STRING(MAX) NOT NULL,"
             + ") PRIMARY KEY (VolunteeringOpportunityID, Email)");
     Database db =
         SpannerClient.getDatabaseAdminClient()
