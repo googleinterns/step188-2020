@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet to get all signups for a volunteering opportunity. */
-@WebServlet("/event-volunteering-data")
+@WebServlet("/opportunity-signup-data")
 public class OpportunitySignupDataServlet extends HttpServlet {
   private static final String OPPORTUNITY_ID = "opportunity-id";
 
@@ -26,9 +26,12 @@ public class OpportunitySignupDataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String opportunityId = request.getParameter(OPPORTUNITY_ID);
+    if (opportunityId == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, String.format("No opportunity specified."));
+      return;
+    }
 
     Set<OpportunitySignup> opportunities = SpannerTasks.getSignupsByOpportunityId(opportunityId);
-    
     response.setContentType("application/json;");
     response.getWriter().println(CommonUtils.convertToJson(opportunities));
   }
