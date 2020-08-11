@@ -88,14 +88,14 @@ public class SpannerTasks {
     SpannerClient.getDatabaseClient().write(mutations);
   }
 
-  /** 
+  /**
    * Returns List of Event Ids from DB
    *
    * @param eventId List of IDs of event to be returned
    */
   public static Set<Event> getEventsFromIds(List<String> eventIds) {
     Set<Event> ids = new HashSet<Event>();
-    for (String eventId: eventIds) {
+    for (String eventId : eventIds) {
       Optional<Event> event = getEventById(eventId);
       if (event.isPresent()) {
         ids.add(event.get());
@@ -104,9 +104,9 @@ public class SpannerTasks {
     return ids;
   }
 
-  /** 
+  /**
    * Returns Event by ID from DB
-   * 
+   *
    * @param eventId ID of event to be returned
    */
   public static Optional<Event> getEventById(String eventId) {
@@ -129,12 +129,20 @@ public class SpannerTasks {
 
   /**
    * Returns all events stored in DB
+   *
    * @return Events with a shallow version of its host (no events attached to Users)
    */
   public static Set<Event> getAllEvents() {
     Set<Event> events = new HashSet<>();
-    ResultSet resultSet = SpannerClient.getDatabaseClient().singleUse().executeQuery(Statement.of(String.format(
-        "SELECT EventID, Name, Description, Labels, Location, Date, Host, Opportunities, Attendees, Time FROM %s", EVENT_TABLE)));
+    ResultSet resultSet =
+        SpannerClient.getDatabaseClient()
+            .singleUse()
+            .executeQuery(
+                Statement.of(
+                    String.format(
+                        "SELECT EventID, Name, Description, Labels, Location, Date, Host,"
+                            + " Opportunities, Attendees, Time FROM %s",
+                        EVENT_TABLE)));
     while (resultSet.next()) {
       Event event = shallowCreateEventFromDatabaseResult(resultSet);
       events.add(event);
@@ -144,17 +152,18 @@ public class SpannerTasks {
 
   private static Event shallowCreateEventFromDatabaseResult(ResultSet resultSet) {
     String eventId = resultSet.getString(0);
-    return new Event
-        .Builder(/* name = */ resultSet.getString(1),
+    return new Event.Builder(
+            /* name = */ resultSet.getString(1),
             /* description = */ resultSet.getString(2),
             /* labels = */ new HashSet<String>(resultSet.getStringList(3)),
-            /* location = */ resultSet.getString(4), 
+            /* location = */ resultSet.getString(4),
             /* date = */ resultSet.getDate(5),
             /* time = */ resultSet.getString(9),
             /* host = */ shallowReadUserFromEmail(resultSet.getString(6)).get())
         .setId(eventId)
         .setOpportunities(getVolunteeringOpportunitiesByEventId(eventId))
-        .setAttendees(shallowReadMultipleUsersFromEmails(new HashSet<String>(resultSet.getStringList(7))))
+        .setAttendees(
+            shallowReadMultipleUsersFromEmails(new HashSet<String>(resultSet.getStringList(7))))
         .build();
   }
 
@@ -184,7 +193,8 @@ public class SpannerTasks {
   private static List<Mutation> getEventMutationsFromBuilder(
       Mutation.WriteBuilder builder, Event event) {
     List<Mutation> mutations = new ArrayList<>();
-    builder.set("EventId")
+    builder
+        .set("EventId")
         .to(event.getId())
         .set("Name")
         .to(event.getName())
@@ -204,9 +214,9 @@ public class SpannerTasks {
         .toStringArray(event.getOpportunitiesIds())
         .set("Attendees")
         .toStringArray(event.getAttendeeIds());
-      mutations.add(builder.build());
-      return mutations;
-      }
+    mutations.add(builder.build());
+    return mutations;
+  }
 
   /**
    * Given a volunteering opportunity, insert a row with all available fields into the DB
