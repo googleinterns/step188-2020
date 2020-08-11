@@ -11,13 +11,13 @@ import com.google.sps.utilities.SpannerTestTasks;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -32,7 +32,7 @@ import org.springframework.mock.web.MockServletContext;
 public final class EventDetailTest {
   private static final String NAME = "Bob Smith";
   private static final String EMAIL = "bobsmith@example.com";
-  private static final Set<String> INTERESTS = 
+  private static final Set<String> INTERESTS =
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Conservation", "Food")));
   private static final Set<String> SKILLS =
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Cooking")));
@@ -44,27 +44,26 @@ public final class EventDetailTest {
       new User.Builder(NAME, EMAIL).setInterests(INTERESTS).setSkills(SKILLS).build();
   private static final Event EVENT1 =
       new Event.Builder(
-          "Weekly Meal Prep: Angel Food Cake", 
-          "In this Meal Prep Seminar, we will be teaching you how to make a delicious cake!", 
-          new HashSet<>(Arrays.asList("Tech", "Work")), 
-          "Online", 
-          DATE, 
-          TIME, 
-          USER)
+              "Weekly Meal Prep: Angel Food Cake", 
+              "In this Meal Prep Seminar, we will be teaching you how to make a delicious cake!", 
+              new HashSet<>(Arrays.asList("Tech", "Work")), 
+              "Online", 
+              DATE, 
+              TIME, 
+              USER)
           .setId(EVENT_ID1)
           .build();
   private static final Event EVENT2 =
       new Event.Builder(
-          "Chess tournaments", 
-          "Gather all the nerds in your life for the checkmate of a lifetime.", 
-          new HashSet<>(Arrays.asList("Chess", "Tournaments")), 
-          "Online", 
-          DATE, 
-          TIME, 
-          USER)
+              "Chess tournaments", 
+              "Gather all the nerds in your life for the checkmate of a lifetime.", 
+              new HashSet<>(Arrays.asList("Chess", "Tournaments")), 
+              "Online", 
+              DATE, 
+              TIME, 
+              USER)
           .setId(EVENT_ID2)
           .build();
-
   private static final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
   private static final HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
   private static final StringWriter stringWriter = new StringWriter();

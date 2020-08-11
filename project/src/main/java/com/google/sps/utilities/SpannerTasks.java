@@ -284,17 +284,17 @@ public class SpannerTasks {
     try (ResultSet resultSet =
         SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
       if (resultSet.next()) {
-          String eventId = resultSet.getString(0);
-          String name = resultSet.getString(1);
-          long numSpotsLeft = resultSet.getLong(2);
-          Set<String> requiredSkills =
-              resultSet.getStringList(3).stream().collect(Collectors.toSet());
-          result =
-              Optional.of(
-                  new VolunteeringOpportunity.Builder(eventId, name, numSpotsLeft)
-                      .setOpportunityId(opportunityId)
-                      .setRequiredSkills(requiredSkills)
-                      .build());
+        String eventId = resultSet.getString(0);
+        String name = resultSet.getString(1);
+        long numSpotsLeft = resultSet.getLong(2);
+        Set<String> requiredSkills =
+            resultSet.getStringList(3).stream().collect(Collectors.toSet());
+        result =
+            Optional.of(
+                new VolunteeringOpportunity.Builder(eventId, name, numSpotsLeft)
+                    .setOpportunityId(opportunityId)
+                    .setRequiredSkills(requiredSkills)
+                    .build());
       }
     }
     return result;
@@ -316,18 +316,18 @@ public class SpannerTasks {
                 eventId));
     try (ResultSet resultSet =
         SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
-        while (resultSet.next()) {
-            String opportunityId = resultSet.getString(0);
-            String name = resultSet.getString(1);
-            long numSpotsLeft = resultSet.getLong(2);
-            Set<String> requiredSkills =
-                resultSet.getStringList(3).stream().collect(Collectors.toSet());
-            results.add(
-                new VolunteeringOpportunity.Builder(eventId, name, numSpotsLeft)
-                    .setOpportunityId(opportunityId)
-                    .setRequiredSkills(requiredSkills)
-                    .build());
-        }
+      while (resultSet.next()) {
+          String opportunityId = resultSet.getString(0);
+          String name = resultSet.getString(1);
+          long numSpotsLeft = resultSet.getLong(2);
+          Set<String> requiredSkills =
+              resultSet.getStringList(3).stream().collect(Collectors.toSet());
+          results.add(
+              new VolunteeringOpportunity.Builder(eventId, name, numSpotsLeft)
+                  .setOpportunityId(opportunityId)
+                  .setRequiredSkills(requiredSkills)
+                  .build());
+      }
     }
     return results;
   }
