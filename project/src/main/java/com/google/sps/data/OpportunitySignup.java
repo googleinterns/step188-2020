@@ -1,6 +1,6 @@
 package com.google.sps.data;
 
-/** Class that reprents a signup for an opportunity. */
+/** Class that represents a signup for an opportunity. */
 public final class OpportunitySignup {
   private String opportunityId;
   private String email;

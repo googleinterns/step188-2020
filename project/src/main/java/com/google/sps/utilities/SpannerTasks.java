@@ -1,7 +1,6 @@
 package com.google.sps.utilities;
 
 import static com.google.cloud.spanner.TransactionRunner.TransactionCallable;
-import static com.google.cloud.spanner.Type.StructField;
 
 import com.google.cloud.Date;
 import com.google.cloud.spanner.Key;
@@ -14,8 +13,8 @@ import com.google.sps.data.Event;
 import com.google.sps.data.OpportunitySignup;
 import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -311,18 +310,18 @@ public class SpannerTasks {
       Mutation.WriteBuilder builder, OpportunitySignup signup) {
     List<Mutation> mutations = new ArrayList<>();
     builder
-        .set("VolunteeringOpportunityID")
+        .set(OPPORTUNITY_ID)
         .to(signup.getOpportunityId())
-        .set("Email")
+        .set(EMAIL)
         .to(signup.getEmail());
     mutations.add(builder.build());
     return mutations;
   }
 
   /**
-   * Given a signup, insert a row with all available fields into the DB
+   * Given a signup, insert a row with all available fields into the database
    * and decrement the number of spots for the corresponding volunteering 
-   * opportunity. 
+   * opportunity in the database.
    *
    * @param signup the signup to be inserted
    */
@@ -335,22 +334,23 @@ public class SpannerTasks {
               public Void run(TransactionContext transaction) throws Exception {
                 Struct row =
                     transaction.readRow(
-                        VOLUNTEERING_OPPORTUNITY_TABLE, Key.of(
-                            signup.getOpportunityId()), Arrays.asList(NUM_SPOTS_LEFT));
+                        VOLUNTEERING_OPPORTUNITY_TABLE,
+                        Key.of(signup.getOpportunityId()),
+                        Arrays.asList(NUM_SPOTS_LEFT));
                 long numSpotsLeft = row.getLong(0);
                 if (numSpotsLeft > 0) {
-                    List<Mutation> signupMutations =
-                        getMutationsFromBuilder(newInsertBuilderFromOpportunitySignup(), signup);
-                    transaction.buffer(signupMutations);
+                  List<Mutation> signupMutations =
+                      getMutationsFromBuilder(newInsertBuilderFromOpportunitySignup(), signup);
+                  transaction.buffer(signupMutations);
 
-                    numSpotsLeft--;
-                    transaction.buffer(
-                        Mutation.newUpdateBuilder(VOLUNTEERING_OPPORTUNITY_TABLE)
-                            .set(OPPORTUNITY_ID)
-                            .to(signup.getOpportunityId())
-                            .set(NUM_SPOTS_LEFT)
-                            .to(numSpotsLeft)
-                            .build());
+                  numSpotsLeft--;
+                  transaction.buffer(
+                      Mutation.newUpdateBuilder(VOLUNTEERING_OPPORTUNITY_TABLE)
+                          .set(OPPORTUNITY_ID)
+                          .to(signup.getOpportunityId())
+                          .set(NUM_SPOTS_LEFT)
+                          .to(numSpotsLeft)
+                          .build());
                 }
                 return null;
               }
@@ -358,7 +358,7 @@ public class SpannerTasks {
   }
 
   /**
-   * Given an opportunityId, retrieve all signups for that opportunityId
+   * Given an opportunityId, retrieve all signups for that opportunityId.
    *
    * @param opportunityId opportunityId for the opportunity to retrieve signups for
    * @return signups with given opportunityId
@@ -368,16 +368,14 @@ public class SpannerTasks {
     Statement statement =
         Statement.of(
             String.format(
-                "SELECT Email"
-                    + " FROM OpportunitySignup WHERE VolunteeringOpportunityID=\"%s\"",
+                "SELECT Email FROM OpportunitySignup WHERE VolunteeringOpportunityID=\"%s\"",
                 opportunityId));
     try (ResultSet resultSet =
-        SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
-        while (resultSet.next()) {
-            String email = resultSet.getString(0);
-            results.add(
-                new OpportunitySignup.Builder(opportunityId, email).build());
-        }
+      SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
+      while (resultSet.next()) {
+        String email = resultSet.getString(0);
+        results.add(new OpportunitySignup.Builder(opportunityId, email).build());
+      }
     }
     return results;
   }
