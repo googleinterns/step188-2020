@@ -12,3 +12,7 @@ h3 {
 #profile-form {
   margin: auto;
 }
+
+#prefilled-skills {
+  display: none;
+}
