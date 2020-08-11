@@ -2,26 +2,17 @@ package com.google.sps;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
-import com.google.cloud.Date;
-import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
 import com.google.sps.servlets.OpportunitySignupFormHandlerServlet;
 import com.google.sps.utilities.SpannerClient;
 import com.google.sps.utilities.SpannerTasks;
 import com.google.sps.utilities.SpannerTestTasks;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -60,7 +51,6 @@ public final class OpportunitySignupFormHandlerTest {
     VolunteeringOpportunity opportunity =
         new VolunteeringOpportunity.Builder(EVENT_ID, NAME, NUMBER_OF_SPOTS).build();
     SpannerTasks.insertVolunteeringOpportunity(opportunity);
-    
     helper.setEnvIsLoggedIn(true);
     String emailParameter = "test@gmail.com";
     helper.setEnvEmail(emailParameter).setEnvAuthDomain("gmail.com");
@@ -68,6 +58,7 @@ public final class OpportunitySignupFormHandlerTest {
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
     Mockito.when(request.getParameter(OPPORTUNITY_ID)).thenReturn(opportunity.getOpportunityId());
     Mockito.when(request.getParameter(EMAIL)).thenReturn(emailParameter);
+
     new OpportunitySignupFormHandlerServlet().doPost(request, response);
 
     Mockito.verify(response).sendRedirect("/event-details.html");
@@ -77,6 +68,7 @@ public final class OpportunitySignupFormHandlerTest {
   public void testAddOpportunitySignup_OpportunityIdNotSpecified() throws IOException {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+
     new OpportunitySignupFormHandlerServlet().doPost(request, response);
 
     Mockito.verify(response)
@@ -88,11 +80,11 @@ public final class OpportunitySignupFormHandlerTest {
     VolunteeringOpportunity opportunity =
         new VolunteeringOpportunity.Builder(EVENT_ID, NAME, NUMBER_OF_SPOTS).build();
     SpannerTasks.insertVolunteeringOpportunity(opportunity);
-
     helper.setEnvIsLoggedIn(false);
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
     Mockito.when(request.getParameter(OPPORTUNITY_ID)).thenReturn(opportunity.getOpportunityId());
+    
     new OpportunitySignupFormHandlerServlet().doPost(request, response);
 
     Mockito.verify(response)
