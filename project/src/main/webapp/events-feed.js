@@ -14,6 +14,7 @@ function populateAllEvents(allEvents) {
   }
 }
 
+/** Writes out relevant details to an event card */
 function populateEventContainer(event) {
   const indexOfEventCard = 25;
   $.get("event-card.html", function(eventCardTotal) {
@@ -36,6 +37,7 @@ function buildDate(year, month, dayOfMonth) {
   return month + '/' + dayOfMonth + '/' + year;
 }
 
+/** Creates a properly-formatted volunteering opportunity string */
 function buildVolunteers(opportunities) {
   let opportunityString = '';
   for (const opportunity of opportunities) {
@@ -44,6 +46,7 @@ function buildVolunteers(opportunities) {
   return opportunityString.slice(0, -2);
 }
 
+/** Creates a button label for each provided interest or skill */
 function buildAsLabels(eventCardId, labels, className) {
   for (const label of labels) {
     const newLabelButton = document.createElement('button');
@@ -55,6 +58,7 @@ function buildAsLabels(eventCardId, labels, className) {
   }
 }
 
+/** Creates the corresponding skill button labels for each volunteering opportunity */
 function buildSkillsAsLabels(eventId, opportunities) {
   for (const opportunity of opportunities) {
     buildAsLabels(eventId, opportunity.requiredSkills, 'skills');
