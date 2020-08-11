@@ -37,6 +37,7 @@ public final class EventDetailTest {
   private static final Set<String> SKILLS =
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Cooking")));
   private static final Date DATE = Date.fromYearMonthDay(2016, 9, 15);
+  private static final String LOCATION = "Online";
   private static final String TIME = "3:00PM-5:00PM";
   private static final String EVENT_ID1 = "0883de79-17d7-49a3-a866-dbd5135062a8";
   private static final String EVENT_ID2 = "4fdcd5e9-52b5-4a43-a1f3-2b697c3d5244";
@@ -47,7 +48,7 @@ public final class EventDetailTest {
               "Weekly Meal Prep: Angel Food Cake",
               "In this Meal Prep Seminar, we will be teaching you how to make a delicious cake!",
               new HashSet<>(Arrays.asList("Tech", "Work")),
-              "Online",
+              LOCATION,
               DATE,
               TIME,
               USER)
@@ -58,7 +59,7 @@ public final class EventDetailTest {
               "Chess tournaments",
               "Gather all the nerds in your life for the checkmate of a lifetime.",
               new HashSet<>(Arrays.asList("Chess", "Tournaments")),
-              "Online",
+              LOCATION,
               DATE,
               TIME,
               USER)
