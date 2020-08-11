@@ -44,23 +44,23 @@ public final class EventDetailTest {
       new User.Builder(NAME, EMAIL).setInterests(INTERESTS).setSkills(SKILLS).build();
   private static final Event EVENT1 =
       new Event.Builder(
-              "Weekly Meal Prep: Angel Food Cake", 
-              "In this Meal Prep Seminar, we will be teaching you how to make a delicious cake!", 
-              new HashSet<>(Arrays.asList("Tech", "Work")), 
-              "Online", 
-              DATE, 
-              TIME, 
+              "Weekly Meal Prep: Angel Food Cake",
+              "In this Meal Prep Seminar, we will be teaching you how to make a delicious cake!",
+              new HashSet<>(Arrays.asList("Tech", "Work")),
+              "Online",
+              DATE,
+              TIME,
               USER)
           .setId(EVENT_ID1)
           .build();
   private static final Event EVENT2 =
       new Event.Builder(
-              "Chess tournaments", 
-              "Gather all the nerds in your life for the checkmate of a lifetime.", 
-              new HashSet<>(Arrays.asList("Chess", "Tournaments")), 
-              "Online", 
-              DATE, 
-              TIME, 
+              "Chess tournaments",
+              "Gather all the nerds in your life for the checkmate of a lifetime.",
+              new HashSet<>(Arrays.asList("Chess", "Tournaments")),
+              "Online",
+              DATE,
+              TIME,
               USER)
           .setId(EVENT_ID2)
           .build();
