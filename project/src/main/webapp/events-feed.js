@@ -32,7 +32,23 @@ function populateEventContainer(event) {
         .html(buildVolunteers(event.opportunities));
     buildAsLabels(eventCardId, event.labels, 'interests');
     buildSkillsAsLabels(eventCardId, event.opportunities);
+    addLinkToRegister(eventCardId);
+    addLinkToDetails(eventCardId);
   });
+}
+
+/** Adds a hyperlink to the registration button of event card */
+function addLinkToRegister(eventCardId) {
+  const eventId = eventCardId.substring(6);
+  $('#' + eventCardId + ' .btn-primary #event-register')
+      .attr('href', `/event-details.html?eventId=${eventId}&register=true`);
+}
+
+/** Adds a hyperlink to the details button of event card */
+function addLinkToDetails(eventCardId) {
+  const eventId = eventCardId.substring(6);
+  $('#' + eventCardId + ' .btn-primary #event-details')
+      .attr('href', `/event-details.html?eventId=${eventId}&register=false`);
 }
 
 function buildDate(year, month, dayOfMonth) {
@@ -52,7 +68,7 @@ function buildVolunteers(opportunities) {
 function buildAsLabels(eventCardId, labels, className) {
   for (const label of labels) {
     const newLabelButton = document.createElement('button');
-    newLabelButton.classList.add('btn-' + className);
+    newLabelButton.classList.add(`btn-{className}`);
     newLabelButton.classList.add('btn');
     newLabelButton.disabled = true;
     newLabelButton.innerHTML = label;
