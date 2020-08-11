@@ -317,41 +317,6 @@ public class SpannerTasks {
   }
 
   /**
-   * Given an opportunityId, retrieve the corresponding volunteering opportunity
-   * WITHOUT any attached Event object IDs
-   *
-   * @param opportunityId opportunityId of the opportunity to retrieve
-   * @return volunteering opportunity wrapped in a {@link Optional}
-   */
-  public static Optional<VolunteeringOpportunity> shallowGetVolunteeringOpportunityByOppportunityId(
-      String opportunityId) {
-    Optional<VolunteeringOpportunity> result = Optional.empty();
-    Statement statement =
-        Statement.of(
-            String.format(
-                "SELECT EventID, Name, NumSpotsLeft, RequiredSkills FROM"
-                    + " VolunteeringOpportunity WHERE VolunteeringOpportunityID=\"%s\"",
-                opportunityId));
-    try (ResultSet resultSet =
-        SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
-      if (resultSet.next()) {
-        String eventId = "";
-        String name = resultSet.getString(1);
-        long numSpotsLeft = resultSet.getLong(2);
-        Set<String> requiredSkills =
-            resultSet.getStringList(3).stream().collect(Collectors.toSet());
-        result =
-            Optional.of(
-                new VolunteeringOpportunity.Builder(eventId, name, numSpotsLeft)
-                    .setOpportunityId(opportunityId)
-                    .setRequiredSkills(requiredSkills)
-                    .build());
-      }
-    }
-    return result;
-  }
-
-  /**
    * Given an eventId, retrieve all volunteering opportunities for that eventId
    *
    * @param eventId eventId for the event to retrieve volunteering opportunities for
