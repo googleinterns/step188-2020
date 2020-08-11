@@ -4,7 +4,7 @@ $(async function() {
 });
 
 async function getAllEvents() {
-  const allEvents = await fetch('event-details');
+  const allEvents = await fetch('discovery-event-details');
   return allEvents.json();
 }
 
@@ -18,17 +18,17 @@ function populateAllEvents(allEvents) {
 function populateEventContainer(event) {
   const indexOfEventCard = 25;
   $.get('event-card.html', function(eventCardTotal) {
-    const eventCardId = 'event-' + event.eventId;
+    const eventCardId = `event-${event.eventId}`;
     const eventCard = $(eventCardTotal).get(indexOfEventCard);
     $(eventCard).attr('id', eventCardId);
     $('#event-container').append(eventCard);
-    $('#' + eventCardId + ' #event-card-title').html(event.name);
-    $('#' + eventCardId + ' #event-card-description').html(event.description);
-    $('#' + eventCardId + ' #event-card-date')
+    $(`#${eventCardId} #event-card-title`).html(event.name);
+    $(`#${eventCardId} #event-card-description`).html(event.description);
+    $(`#${eventCardId} #event-card-date`)
         .html(buildDate(event.date.year, event.date.month, event.date.dayOfMonth));
-    $('#' + eventCardId + ' #event-card-time').html(event.time);
-    $('#' + eventCardId + ' #event-card-location').html(event.location);
-    $('#' + eventCardId + ' #event-card-volunteers')
+    $(`#${eventCardId} #event-card-time`).html(event.time);
+    $(`#${eventCardId} #event-card-location`).html(event.location);
+    $(`#${eventCardId} #event-card-volunteers`)
         .html(buildVolunteers(event.opportunities));
     buildAsLabels(eventCardId, event.labels, 'interests');
     buildSkillsAsLabels(eventCardId, event.opportunities);
@@ -47,7 +47,7 @@ function addLinkToRegister(eventCardId) {
 /** Adds a hyperlink to the details button of event card */
 function addLinkToDetails(eventCardId) {
   const eventId = eventCardId.substring(6);
-  $('#' + eventCardId + ' .btn-primary #event-details')
+  $('#' + eventCardId + ' .btn #event-details')
       .attr('href', `/event-details.html?eventId=${eventId}&register=false`);
 }
 
@@ -68,12 +68,12 @@ function buildVolunteers(opportunities) {
 function buildAsLabels(eventCardId, labels, className) {
   for (const label of labels) {
     const newLabelButton = document.createElement('button');
-    newLabelButton.classList.add(`btn-{className}`);
+    newLabelButton.classList.add(`btn-${className}`);
     newLabelButton.classList.add('btn');
     newLabelButton.disabled = true;
     newLabelButton.innerHTML = label;
     document
-        .querySelector('#' + eventCardId + ' #event-card-labels')
+        .querySelector(`#${eventCardId} #event-card-labels`)
         .appendChild(newLabelButton);
   }
 }
