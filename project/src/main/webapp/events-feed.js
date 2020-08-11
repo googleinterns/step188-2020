@@ -17,17 +17,19 @@ function populateAllEvents(allEvents) {
 /** Writes out relevant details to an event card */
 function populateEventContainer(event) {
   const indexOfEventCard = 25;
-  $.get("event-card.html", function(eventCardTotal) {
+  $.get('event-card.html', function(eventCardTotal) {
     const eventCardId = 'event-' + event.eventId;
     const eventCard = $(eventCardTotal).get(indexOfEventCard);
     $(eventCard).attr('id', eventCardId);
     $('#event-container').append(eventCard);
     $('#' + eventCardId + ' #event-card-title').html(event.name);
     $('#' + eventCardId + ' #event-card-description').html(event.description);
-    $('#' + eventCardId + ' #event-card-date').html(buildDate(event.date.year, event.date.month, event.date.dayOfMonth));
+    $('#' + eventCardId + ' #event-card-date')
+        .html(buildDate(event.date.year, event.date.month, event.date.dayOfMonth));
     $('#' + eventCardId + ' #event-card-time').html(event.time);
     $('#' + eventCardId + ' #event-card-location').html(event.location);
-    $('#' + eventCardId + ' #event-card-volunteers').html(buildVolunteers(event.opportunities));
+    $('#' + eventCardId + ' #event-card-volunteers')
+        .html(buildVolunteers(event.opportunities));
     buildAsLabels(eventCardId, event.labels, 'interests');
     buildSkillsAsLabels(eventCardId, event.opportunities);
   });
@@ -54,7 +56,9 @@ function buildAsLabels(eventCardId, labels, className) {
     newLabelButton.classList.add('btn');
     newLabelButton.disabled = true;
     newLabelButton.innerHTML = label;
-    document.querySelector('#' + eventCardId + ' #event-card-labels').appendChild(newLabelButton);
+    document
+        .querySelector('#' + eventCardId + ' #event-card-labels')
+        .appendChild(newLabelButton);
   }
 }
 
