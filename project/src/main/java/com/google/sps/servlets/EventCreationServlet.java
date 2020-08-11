@@ -1,19 +1,14 @@
 package com.google.sps.servlets;
 
-import com.google.appengine.api.users.UserServiceFactory;
 import com.google.cloud.Date;
 import com.google.gson.Gson;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
 import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javax.servlet.annotation.WebServlet;
@@ -30,21 +25,23 @@ public class EventCreationServlet extends HttpServlet {
     Optional<Event> eventOptional = SpannerTasks.getEventById(eventId);
 
     // If event DNE, sends 404 ERR to frontend
-    if (!eventOptional.isPresent()) {
-        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+    if (eventOptional.isPresent()) {
+      Event event = eventOptional.get();
+      response.setContentType("text/html;");
+      response.getWriter().println(new Gson().toJson(event));
     } else {
-        Event event = eventOptional.get().toBuilder().setId(eventId).build();
-        response.setContentType("text/html;");
-        response.getWriter().println(new Gson().toJson(event));
-    }  
+      response.sendError(
+          HttpServletResponse.SC_NOT_FOUND,
+          String.format("No events found with event ID %s", eventId));
+    }
   }
 
-  /** Posts new created event to database and redirects to page with created event details*/
+  /** Posts new created event to database and redirects to page with created event details */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String name = request.getParameter("name");
     String[] parsedDate = request.getParameter("date").split("/");
-    Date date = 
+    Date date =
         Date.fromYearMonthDay(
             Integer.parseInt(parsedDate[2]),
             Integer.parseInt(parsedDate[1]),
@@ -52,8 +49,10 @@ public class EventCreationServlet extends HttpServlet {
     String time = request.getParameter("time");
     String description = request.getParameter("description");
     String location = request.getParameter("location");
-    Set<String> labels = Collections.unmodifiableSet(new HashSet<>(
-        Arrays.asList("None"))); // hardcoded for now, we need to create label pool first
+    Set<String> labels =
+        Collections.unmodifiableSet(
+            new HashSet<>(
+                Arrays.asList("None"))); // hardcoded for now, we need to create label pool first
 
     /** TO DO: Replace with current logged in user after PR #43 pushed */
     String NAME = "Bob Smith";
