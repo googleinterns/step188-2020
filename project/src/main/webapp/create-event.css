@@ -16,3 +16,12 @@ h3 {
 .inline {
   display: inline-block;
 }
+
+.prefilled-pick {
+  margin-left: 10px;
+}
+
+.prefilled-pool {
+  margin-top: 20px;
+  height: 300px;
+}
