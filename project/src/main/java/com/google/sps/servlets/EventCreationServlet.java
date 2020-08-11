@@ -30,7 +30,9 @@ public class EventCreationServlet extends HttpServlet {
       response.setContentType("text/html;");
       response.getWriter().println(new Gson().toJson(event));
     } else {
-      response.sendError(HttpServletResponse.SC_NOT_FOUND);
+      response.sendError(
+          HttpServletResponse.SC_NOT_FOUND,
+          String.format("No events found with event ID %s", eventId));
     }
   }
 
