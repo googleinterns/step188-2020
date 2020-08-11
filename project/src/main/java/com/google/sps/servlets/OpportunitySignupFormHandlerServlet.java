@@ -31,7 +31,7 @@ public class OpportunitySignupFormHandlerServlet extends HttpServlet {
     if (opportunityId == null) {
       response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Opportunity ID not specified.");
     } else if (user == null) {
-      response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You have not logged in.");
+      response.sendRedirect("/index.html");
     } else {
       OpportunitySignup signup = new OpportunitySignup.Builder(opportunityId, user.getEmail()).build();
       SpannerTasks.insertOpportunitySignup(signup);

@@ -7,6 +7,7 @@ import com.google.sps.servlets.OpportunitySignupFormHandlerServlet;
 import com.google.sps.utilities.SpannerClient;
 import com.google.sps.utilities.SpannerTasks;
 import com.google.sps.utilities.SpannerTestTasks;
+import com.google.sps.utilities.TestUtils;
 import java.io.IOException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServletRequest;
@@ -23,53 +24,60 @@ import org.springframework.mock.web.MockServletContext;
 /** Test that tests the opportunity signup form functionality. */
 @RunWith(JUnit4.class)
 public final class OpportunitySignupFormHandlerTest {
-  private static final String EVENT_ID = "0883de79-17d7-49a3-a866-dbd5135062a8";
-  private static final String NAME = "Performer";
-  private static final int NUMBER_OF_SPOTS = 240;
   private static final String OPPORTUNITY_ID = "opportunity-id";
   private static final String EMAIL = "email";
-  private static final LocalServiceTestHelper helper =
+  private static final LocalServiceTestHelper authenticationHelper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig());
+  private OpportunitySignupFormHandlerServlet opportunitySignupServlet;
+  private HttpServletRequest request;
+  private HttpServletResponse response;
+  private VolunteeringOpportunity opportunity;
 
   @Before
   public void setUp() throws Exception {
-    // Mock a request to trigger the SpannerClient setup to run
+    // Mock a request to trigger the SpannerClient setup to run.
     MockServletContext mockServletContext = new MockServletContext();
     new SpannerClient().contextInitialized(new ServletContextEvent(mockServletContext));
     SpannerTestTasks.setup();
-    helper.setUp();
+
+    authenticationHelper.setUp();
+
+    opportunity = TestUtils.newVolunteeringOpportunity();
+    SpannerTasks.insertVolunteeringOpportunity(opportunity);
+
+    opportunitySignupServlet = new OpportunitySignupFormHandlerServlet();
+    request = Mockito.mock(HttpServletRequest.class);
+    response = Mockito.mock(HttpServletResponse.class);
   }
 
   @After
   public void tearDown() {
     SpannerTestTasks.cleanup();
-    helper.tearDown();
+    authenticationHelper.tearDown();
   }
 
   @Test
   public void testAddOpportunitySignup_LoggedIn() throws IOException {
-    VolunteeringOpportunity opportunity =
-        new VolunteeringOpportunity.Builder(EVENT_ID, NAME, NUMBER_OF_SPOTS).build();
-    SpannerTasks.insertVolunteeringOpportunity(opportunity);
-    helper.setEnvIsLoggedIn(true);
-    String emailParameter = "test@gmail.com";
-    helper.setEnvEmail(emailParameter).setEnvAuthDomain("gmail.com");
-    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-    HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+    authenticationHelper
+        .setEnvIsLoggedIn(true)
+        .setEnvEmail("test@gmail.com")
+        .setEnvAuthDomain("gmail.com");
     Mockito.when(request.getParameter(OPPORTUNITY_ID)).thenReturn(opportunity.getOpportunityId());
-    Mockito.when(request.getParameter(EMAIL)).thenReturn(emailParameter);
 
-    new OpportunitySignupFormHandlerServlet().doPost(request, response);
+    opportunitySignupServlet.doPost(request, response);
 
     Mockito.verify(response).sendRedirect("/event-details.html");
   }
 
   @Test
-  public void testAddOpportunitySignup_OpportunityIdNotSpecified() throws IOException {
-    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-    HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+  public void testAddOpportunitySignup_LoggedInOpportunityIdNotSpecified() throws IOException {
+    authenticationHelper
+        .setEnvIsLoggedIn(true)
+        .setEnvEmail("test@gmail.com")
+        .setEnvAuthDomain("gmail.com");
+    Mockito.when(request.getParameter(OPPORTUNITY_ID)).thenReturn(null);
 
-    new OpportunitySignupFormHandlerServlet().doPost(request, response);
+    opportunitySignupServlet.doPost(request, response);
 
     Mockito.verify(response)
         .sendError(HttpServletResponse.SC_UNAUTHORIZED, "Opportunity ID not specified.");
@@ -77,17 +85,11 @@ public final class OpportunitySignupFormHandlerTest {
 
   @Test
   public void testAddOpportunitySignup_NotLoggedIn() throws IOException {
-    VolunteeringOpportunity opportunity =
-        new VolunteeringOpportunity.Builder(EVENT_ID, NAME, NUMBER_OF_SPOTS).build();
-    SpannerTasks.insertVolunteeringOpportunity(opportunity);
-    helper.setEnvIsLoggedIn(false);
-    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-    HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+    authenticationHelper.setEnvIsLoggedIn(false);
     Mockito.when(request.getParameter(OPPORTUNITY_ID)).thenReturn(opportunity.getOpportunityId());
-    
-    new OpportunitySignupFormHandlerServlet().doPost(request, response);
 
-    Mockito.verify(response)
-        .sendError(HttpServletResponse.SC_UNAUTHORIZED, "You have not logged in.");
+    opportunitySignupServlet.doPost(request, response);
+
+    Mockito.verify(response).sendRedirect("/index.html");
   }
 }
