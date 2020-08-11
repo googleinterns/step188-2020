@@ -1,12 +1,20 @@
 package com.google.sps.utilities;
 
+import static com.google.cloud.spanner.TransactionRunner.TransactionCallable;
+
+import com.google.cloud.Date;
+import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.ResultSet;
 import com.google.cloud.spanner.Statement;
+import com.google.cloud.spanner.Struct;
+import com.google.cloud.spanner.TransactionContext;
 import com.google.sps.data.Event;
+import com.google.sps.data.OpportunitySignup;
 import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +26,13 @@ public class SpannerTasks {
   private static final String USER_TABLE = "Users";
   private static final String VOLUNTEERING_OPPORTUNITY_TABLE = "VolunteeringOpportunity";
   private static final String EVENT_TABLE = "Events";
+  private static final String OPPORTUNITY_SIGNUP_TABLE = "OpportunitySignup";
+  private static final String OPPORTUNITY_ID = "VolunteeringOpportunityID";
+  private static final String EVENT_ID = "EventID";
+  private static final String NAME = "Name";
+  private static final String EMAIL = "Email";
+  private static final String NUM_SPOTS_LEFT = "NumSpotsLeft";
+  private static final String REQUIRED_SKILLS = "RequiredSkills";
 
   /**
    * Given a user, insert or update a row with all available fields into the DB
@@ -267,15 +282,15 @@ public class SpannerTasks {
       Mutation.WriteBuilder builder, VolunteeringOpportunity opportunity) {
     List<Mutation> mutations = new ArrayList<>();
     builder
-        .set("VolunteeringOpportunityID")
+        .set(OPPORTUNITY_ID)
         .to(opportunity.getOpportunityId())
-        .set("EventID")
+        .set(EVENT_ID)
         .to(opportunity.getEventId())
-        .set("Name")
+        .set(NAME)
         .to(opportunity.getName())
-        .set("NumSpotsLeft")
+        .set(NUM_SPOTS_LEFT)
         .to(opportunity.getNumSpotsLeft())
-        .set("RequiredSkills")
+        .set(REQUIRED_SKILLS)
         .toStringArray(opportunity.getRequiredSkills());
     mutations.add(builder.build());
     return mutations;
@@ -345,5 +360,83 @@ public class SpannerTasks {
       }
     }
     return results;
+  }
+
+  private static List<Mutation> getMutationsFromBuilder(
+      Mutation.WriteBuilder builder, OpportunitySignup signup) {
+    List<Mutation> mutations = new ArrayList<>();
+    builder
+        .set(OPPORTUNITY_ID)
+        .to(signup.getOpportunityId())
+        .set(EMAIL)
+        .to(signup.getEmail());
+    mutations.add(builder.build());
+    return mutations;
+  }
+
+  /**
+   * Given a signup, insert a row with all available fields into the database
+   * and decrement the number of spots for the corresponding volunteering 
+   * opportunity in the database.
+   *
+   * @param signup the signup to be inserted
+   */
+  public static void insertOpportunitySignup(OpportunitySignup signup) {
+    SpannerClient.getDatabaseClient()
+        .readWriteTransaction()
+        .run(
+            new TransactionCallable<Void>() {
+              @Override
+              public Void run(TransactionContext transaction) throws Exception {
+                Struct row =
+                    transaction.readRow(
+                        VOLUNTEERING_OPPORTUNITY_TABLE,
+                        Key.of(signup.getOpportunityId()),
+                        Arrays.asList(NUM_SPOTS_LEFT));
+                long numSpotsLeft = row.getLong(0);
+                if (numSpotsLeft > 0) {
+                  List<Mutation> signupMutations =
+                      getMutationsFromBuilder(newInsertBuilderFromOpportunitySignup(), signup);
+                  transaction.buffer(signupMutations);
+
+                  numSpotsLeft--;
+                  transaction.buffer(
+                      Mutation.newUpdateBuilder(VOLUNTEERING_OPPORTUNITY_TABLE)
+                          .set(OPPORTUNITY_ID)
+                          .to(signup.getOpportunityId())
+                          .set(NUM_SPOTS_LEFT)
+                          .to(numSpotsLeft)
+                          .build());
+                }
+                return null;
+              }
+            });
+  }
+
+  /**
+   * Given an opportunityId, retrieve all signups for that opportunityId.
+   *
+   * @param opportunityId opportunityId for the opportunity to retrieve signups for
+   * @return signups with given opportunityId
+   */
+  public static Set<OpportunitySignup> getSignupsByOpportunityId(String opportunityId) {
+    Set<OpportunitySignup> results = new HashSet<OpportunitySignup>();
+    Statement statement =
+        Statement.of(
+            String.format(
+                "SELECT Email FROM OpportunitySignup WHERE VolunteeringOpportunityID=\"%s\"",
+                opportunityId));
+    try (ResultSet resultSet =
+      SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
+      while (resultSet.next()) {
+        String email = resultSet.getString(0);
+        results.add(new OpportunitySignup.Builder(opportunityId, email).build());
+      }
+    }
+    return results;
+  }
+
+  private static Mutation.WriteBuilder newInsertBuilderFromOpportunitySignup() {
+    return Mutation.newInsertBuilder(OPPORTUNITY_SIGNUP_TABLE);
   }
 }
