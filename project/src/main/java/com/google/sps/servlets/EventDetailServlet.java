@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/event-details")
+@WebServlet("/discovery-event-details")
 public class EventDetailServlet extends HttpServlet {
   /** Returns all event details from database */
   @Override
