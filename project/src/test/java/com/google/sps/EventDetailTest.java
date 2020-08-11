@@ -68,7 +68,7 @@ public final class EventDetailTest {
   private static final HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
   private static final StringWriter stringWriter = new StringWriter();
   private static final PrintWriter writer = new PrintWriter(stringWriter);
-    
+
   @BeforeClass
   public static void setUp() throws Exception {
     // Mock a request to trigger the SpannerClient setup to run
