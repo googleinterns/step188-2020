@@ -5,6 +5,7 @@ import com.google.cloud.Date;
 import com.google.gson.Gson;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
+import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
 import java.text.ParseException;
@@ -33,7 +34,7 @@ public class EventCreationServlet extends HttpServlet {
     if (eventOptional.isPresent()) {
       Event event = eventOptional.get().toBuilder().setId(eventId).build();
       response.setContentType("text/html;");
-      response.getWriter().println(new Gson().toJson(event));
+      response.getWriter().println(CommonUtils.convertToJson(event));
     } else {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
     }  
@@ -57,15 +58,13 @@ public class EventCreationServlet extends HttpServlet {
             new HashSet<>(
                 Arrays.asList("None"))); // hardcoded for now, we need to create label pool first
 
-    /** TO DO: Replace with current logged in user after PR #43 pushed */
-    String NAME = "Bob Smith";
-    String EMAIL = "bobsmith@example.com";
-    User host = new User.Builder(NAME, EMAIL).build();
+    User host = SpannerTasks.getLoggedInUser().get();
     Event event = new Event.Builder(name, description, labels, location, date, time, host).build();
     SpannerTasks.insertorUpdateEvent(event);
 
     String redirectUrl = "/event-details.html?eventId=" + event.getId();
     response.sendRedirect(redirectUrl);
-    response.getWriter().println(new Gson().toJson(SpannerTasks.getEventById(event.getId()).get().toBuilder().build()));
+    // Event in database
+    response.getWriter().println(CommonUtils.convertToJson(SpannerTasks.getEventById(event.getId()).get().toBuilder().build()));
   }
 }

@@ -1,5 +1,6 @@
 package com.google.sps.utilities;
 
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.cloud.Date;
 import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.ResultSet;
@@ -19,6 +20,21 @@ public class SpannerTasks {
   private static final String USER_TABLE = "Users";
   private static final String VOLUNTEERING_OPPORTUNITY_TABLE = "VolunteeringOpportunity";
   private static final String EVENT_TABLE = "Events";
+
+  /**
+   * Get current loggedin User Optional
+   */
+  public static Optional<User> getLoggedInUser() {
+
+    String email = UserServiceFactory.getUserService().getCurrentUser().getEmail();
+    Optional<User> userOptional = readUserFromEmail(email);
+
+    if (userOptional.isPresent()) {
+      return userOptional;
+    } else {
+      return Optional.empty();
+    }  
+  }
 
   /**
    * Given a user, insert or update a row with all available fields into the DB
