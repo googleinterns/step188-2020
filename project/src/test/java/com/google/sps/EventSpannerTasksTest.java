@@ -76,7 +76,6 @@ public class EventSpannerTasksTest {
     authenticationHelper.tearDown();
   }
 
-
   /** Verify insertion of event in db and retrieval by id 
    * Also tests behavior of EventCreationServlet doGet() where doGet request.getParameter("eventId") == event.getId() */
   @Test
@@ -146,7 +145,6 @@ public class EventSpannerTasksTest {
     Assert.assertEquals(returnedEvent.getHost().getName(), HOST_NAME);
     Assert.assertEquals(returnedEvent.getHost().getEmail(), EMAIL);
   }
-
 
   /**
    * Verify getting event from valid id in /create-event doGet()
