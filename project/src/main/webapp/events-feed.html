@@ -5,8 +5,6 @@
     <title>STEP 188 Project</title>
     <link rel="stylesheet" href="events-feed.css" />
     <link rel="stylesheet" href="styles.css" />
-    <script src="shared.js"></script>
-    <script src="script.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <link
@@ -25,6 +23,9 @@
       integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
       crossorigin="anonymous"
     ></script>
+    <script src="events-feed.js"></script>
+    <script src="shared.js"></script>
+    <script src="script.js"></script>
   </head>
   <body>
     <div id="header"></div>
@@ -62,109 +63,7 @@
     </div>
     <br />
     <br />
-    <div class="container">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">
-            Weekly Meal Prep: Angel Food Cake
-          </h5>
-          <p class="card-text">
-            In this Meal Prep Seminar, we will be teaching you how to make a
-            delicious cake!
-          </p>
-          <div class="display-inline-block">
-            <button type="button" class="btn btn-interest" disabled>
-              Conservation
-            </button>
-            <button type="button" class="btn btn-interest" disabled>
-              Food
-            </button>
-            <button type="button" class="btn btn-skill" disabled>
-              Cooking
-            </button>
-          </div>
-          <br />
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item">Date: 06/20/2020, 6:00 PM</li>
-            <li class="list-group-item">Location: Online</li>
-            <li class="list-group-item">
-              <p class="card-text">Volunteers Needed: Translator</p>
-            </li>
-            <button class="btn">
-              <a href="event-details.html">See more details</a>
-            </button>
-            <button type="button" class="btn btn-primary">
-              <a href="event-details.html">Register</a>
-            </button>
-          </ul>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">
-            Basketball Tournament
-          </h5>
-          <p class="card-text">
-            Join us as the Los Angeles local high school women's basketball
-            teams compete in non-league games.
-          </p>
-          <div class="display-inline-block">
-            <button type="button" class="btn btn-interest" disabled>
-              Sports
-            </button>
-          </div>
-          <br />
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item">Date: 06/22/2020, 6:00 PM</li>
-            <li class="list-group-item">Location: Los Angeles High School</li>
-            <li class="list-group-item">
-              <p class="card-text">
-                Volunteers Needed: Scorekeeper, Timekeeper, Shot-clock operator
-              </p>
-            </li>
-            <button class="btn">
-              <a href="event-details.html">See more details</a>
-            </button>
-            <button type="button" class="btn btn-primary">
-              <a href="event-details.html">Register</a>
-            </button>
-          </ul>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">
-            Basketball Tournament
-          </h5>
-          <p class="card-text">
-            Join us as the Los Angeles local high school women's basketball
-            teams compete in non-league games.
-          </p>
-          <div class="display-inline-block">
-            <button type="button" class="btn btn-interest" disabled>
-              Sports
-            </button>
-          </div>
-          <br />
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item">Date: 06/22/2020, 6:00 PM</li>
-            <li class="list-group-item">Location: Los Angeles High School</li>
-            <li class="list-group-item">
-              <p class="card-text">
-                Volunteers Needed: Scorekeeper, Timekeeper, Shot-clock operator
-              </p>
-            </li>
-            <button class="btn">
-              <a href="event-details.html">See more details</a>
-            </button>
-            <button type="button" class="btn btn-primary">
-              <a href="event-details.html">Register</a>
-            </button>
-          </ul>
-        </div>
-      </div>
+    <div class="container" id="event-container">
     </div>
   </body>
 </html>
