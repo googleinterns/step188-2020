@@ -4,6 +4,7 @@ import com.google.cloud.Date;
 import com.google.gson.Gson;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
+import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
 import java.util.Arrays;
@@ -34,6 +35,7 @@ public class EventCreationServlet extends HttpServlet {
           HttpServletResponse.SC_NOT_FOUND,
           String.format("No events found with event ID %s", eventId));
     }
+
   }
 
   /** Posts new created event to database and redirects to page with created event details */
@@ -42,26 +44,25 @@ public class EventCreationServlet extends HttpServlet {
     String name = request.getParameter("name");
     String[] parsedDate = request.getParameter("date").split("/");
     Date date =
-        Date.fromYearMonthDay(
-            Integer.parseInt(parsedDate[2]),
-            Integer.parseInt(parsedDate[1]),
-            Integer.parseInt(parsedDate[0]));
+         Date.fromYearMonthDay(
+            /*Year=*/ Integer.parseInt(parsedDate[2]),
+            /*Month=*/ Integer.parseInt(parsedDate[0]),
+            /*Day=*/ Integer.parseInt(parsedDate[1]));
     String time = request.getParameter("time");
     String description = request.getParameter("description");
     String location = request.getParameter("location");
-    Set<String> labels =
+    Set<String> labels = 
         Collections.unmodifiableSet(
             new HashSet<>(
                 Arrays.asList("None"))); // hardcoded for now, we need to create label pool first
 
-    /** TO DO: Replace with current logged in user after PR #43 pushed */
-    String NAME = "Bob Smith";
-    String EMAIL = "bobsmith@example.com";
-    User host = new User.Builder(NAME, EMAIL).build();
+    User host = SpannerTasks.getLoggedInUser().get();
     Event event = new Event.Builder(name, description, labels, location, date, time, host).build();
     SpannerTasks.insertorUpdateEvent(event);
 
     String redirectUrl = "/event-details.html?eventId=" + event.getId();
     response.sendRedirect(redirectUrl);
+    // Event in database
+    response.getWriter().println(CommonUtils.convertToJson(SpannerTasks.getEventById(event.getId()).get().toBuilder().build()));
   }
 }

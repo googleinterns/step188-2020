@@ -23,6 +23,7 @@ public class SpannerTestTasks {
                 + "  Name           STRING(MAX) NOT NULL,"
                 + "  Description    STRING(MAX),"
                 + "  Date           DATE,"
+                + "  Time           STRING(MAX),"
                 + "  Location       STRING(MAX),"
                 + "  Attendees      ARRAY<STRING(MAX)>,"
                 + "  Host           STRING(MAX),"
