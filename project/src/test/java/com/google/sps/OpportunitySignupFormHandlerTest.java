@@ -41,9 +41,6 @@ public final class OpportunitySignupFormHandlerTest {
 
     authenticationHelper.setUp();
 
-    opportunity = TestUtils.newVolunteeringOpportunity();
-    SpannerTasks.insertVolunteeringOpportunity(opportunity);
-
     opportunitySignupServlet = new OpportunitySignupFormHandlerServlet();
     request = Mockito.mock(HttpServletRequest.class);
     response = Mockito.mock(HttpServletResponse.class);
@@ -57,6 +54,8 @@ public final class OpportunitySignupFormHandlerTest {
 
   @Test
   public void testAddOpportunitySignup_LoggedIn() throws IOException {
+    VolunteeringOpportunity opportunity = TestUtils.newVolunteeringOpportunity();
+    SpannerTasks.insertVolunteeringOpportunity(opportunity);
     authenticationHelper
         .setEnvIsLoggedIn(true)
         .setEnvEmail("test@gmail.com")
@@ -70,6 +69,8 @@ public final class OpportunitySignupFormHandlerTest {
 
   @Test
   public void testAddOpportunitySignup_LoggedInOpportunityIdNotSpecified() throws IOException {
+    VolunteeringOpportunity opportunity = TestUtils.newVolunteeringOpportunity();
+    SpannerTasks.insertVolunteeringOpportunity(opportunity);
     authenticationHelper
         .setEnvIsLoggedIn(true)
         .setEnvEmail("test@gmail.com")
@@ -84,6 +85,8 @@ public final class OpportunitySignupFormHandlerTest {
 
   @Test
   public void testAddOpportunitySignup_NotLoggedIn() throws IOException {
+    VolunteeringOpportunity opportunity = TestUtils.newVolunteeringOpportunity();
+    SpannerTasks.insertVolunteeringOpportunity(opportunity);
     authenticationHelper.setEnvIsLoggedIn(false);
     Mockito.when(request.getParameter(PARAMETER_OPPORTUNITY_ID)).thenReturn(opportunity.getOpportunityId());
 
