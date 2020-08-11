@@ -1,9 +1,8 @@
 package com.google.sps.servlets;
- 
+
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.OpportunitySignup;
-import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -15,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/opportunity-signup-form-handler")
 public class OpportunitySignupFormHandlerServlet extends HttpServlet {
   private static final String OPPORTUNITY_ID = "opportunity-id";
- 
+
   /**
    * Inserts opportunity signup with parameter value for name and current user email.
    *
@@ -33,7 +32,8 @@ public class OpportunitySignupFormHandlerServlet extends HttpServlet {
     } else if (user == null) {
       response.sendRedirect("/index.html");
     } else {
-      OpportunitySignup signup = new OpportunitySignup.Builder(opportunityId, user.getEmail()).build();
+      OpportunitySignup signup =
+          new OpportunitySignup.Builder(opportunityId, user.getEmail()).build();
       SpannerTasks.insertOpportunitySignup(signup);
 
       response.sendRedirect("/event-details.html");

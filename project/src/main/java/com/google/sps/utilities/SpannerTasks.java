@@ -310,11 +310,7 @@ public class SpannerTasks {
   private static List<Mutation> getMutationsFromBuilder(
       Mutation.WriteBuilder builder, OpportunitySignup signup) {
     List<Mutation> mutations = new ArrayList<>();
-    builder
-        .set(OPPORTUNITY_ID)
-        .to(signup.getOpportunityId())
-        .set(EMAIL)
-        .to(signup.getEmail());
+    builder.set(OPPORTUNITY_ID).to(signup.getOpportunityId()).set(EMAIL).to(signup.getEmail());
     mutations.add(builder.build());
     return mutations;
   }
@@ -372,7 +368,7 @@ public class SpannerTasks {
                 "SELECT Email FROM OpportunitySignup WHERE VolunteeringOpportunityID=\"%s\"",
                 opportunityId));
     try (ResultSet resultSet =
-      SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
+        SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
       while (resultSet.next()) {
         String email = resultSet.getString(0);
         results.add(new OpportunitySignup.Builder(opportunityId, email).build());

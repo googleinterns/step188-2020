@@ -60,7 +60,8 @@ public final class OpportunitySignupFormHandlerTest {
         .setEnvIsLoggedIn(true)
         .setEnvEmail("test@gmail.com")
         .setEnvAuthDomain("gmail.com");
-    Mockito.when(request.getParameter(PARAMETER_OPPORTUNITY_ID)).thenReturn(opportunity.getOpportunityId());
+    Mockito.when(request.getParameter(PARAMETER_OPPORTUNITY_ID))
+        .thenReturn(opportunity.getOpportunityId());
 
     opportunitySignupServlet.doPost(request, response);
 
@@ -88,7 +89,8 @@ public final class OpportunitySignupFormHandlerTest {
     VolunteeringOpportunity opportunity = TestUtils.newVolunteeringOpportunity();
     SpannerTasks.insertVolunteeringOpportunity(opportunity);
     authenticationHelper.setEnvIsLoggedIn(false);
-    Mockito.when(request.getParameter(PARAMETER_OPPORTUNITY_ID)).thenReturn(opportunity.getOpportunityId());
+    Mockito.when(request.getParameter(PARAMETER_OPPORTUNITY_ID))
+        .thenReturn(opportunity.getOpportunityId());
 
     opportunitySignupServlet.doPost(request, response);
 
