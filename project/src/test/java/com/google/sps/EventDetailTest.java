@@ -75,7 +75,9 @@ public final class EventDetailTest {
     // Mock a request to trigger the SpannerClient setup to run
     MockServletContext mockServletContext = new MockServletContext();
     new SpannerClient().contextInitialized(new ServletContextEvent(mockServletContext));
+    
     SpannerTestTasks.setup();
+
     Mockito.when(response.getWriter()).thenReturn(writer);
     insertRequiredRows();
   }
