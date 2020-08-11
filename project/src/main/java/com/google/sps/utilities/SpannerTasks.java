@@ -140,8 +140,8 @@ public class SpannerTasks {
             .executeQuery(
                 Statement.of(
                     String.format(
-                        "SELECT EventID, Name, Description, Labels, Location, Date, Host,"
-                            + " Opportunities, Attendees, Time FROM %s",
+                        "SELECT EventID, Name, Description, Labels, Location, Date, Time,"
+                            + " Host, Opportunities, Attendees FROM %s",
                         EVENT_TABLE)));
     while (resultSet.next()) {
       Event event = shallowCreateEventFromDatabaseResult(resultSet);
@@ -158,12 +158,12 @@ public class SpannerTasks {
             /* labels = */ new HashSet<String>(resultSet.getStringList(3)),
             /* location = */ resultSet.getString(4),
             /* date = */ resultSet.getDate(5),
-            /* time = */ resultSet.getString(9),
-            /* host = */ shallowReadUserFromEmail(resultSet.getString(6)).get())
+            /* time = */ resultSet.getString(6),
+            /* host = */ shallowReadUserFromEmail(resultSet.getString(7)).get())
         .setId(eventId)
         .setOpportunities(shallowGetVolunteeringOpportunitiesByEventId(eventId))
         .setAttendees(
-            shallowReadMultipleUsersFromEmails(new HashSet<String>(resultSet.getStringList(7))))
+            shallowReadMultipleUsersFromEmails(new HashSet<String>(resultSet.getStringList(9))))
         .build();
   }
 
