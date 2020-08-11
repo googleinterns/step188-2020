@@ -112,11 +112,10 @@ public class SpannerTasks {
   }
 
   private static String formatMultipleValuesForQuery(List<String> values) {
-    String formatted = "";
-    for (String value : values) {
-      formatted += String.format("'%s',", value);
-    }
-    return formatted.substring(0, formatted.length() - 1);
+    return values
+        .stream()
+        .map(value -> String.format("'%s'", value)
+        .collect( Collectors.joining( "," ) )
   }
 
   /**
