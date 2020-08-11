@@ -94,14 +94,14 @@ public class SpannerTasks {
    * @param eventId List of IDs of event to be returned
    */
   public static Set<Event> getEventsFromIds(List<String> eventIds) {
-    Set<Event> ids = new HashSet<Event>();
+    Set<Event> events = new HashSet<Event>();
     for (String eventId : eventIds) {
       Optional<Event> event = getEventById(eventId);
       if (event.isPresent()) {
-        ids.add(event.get());
+        events.add(event.get());
       }
     }
-    return ids;
+    return events;
   }
 
   /**
