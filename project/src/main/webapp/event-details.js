@@ -83,21 +83,38 @@ function getLinkForOpportunity(opportunityId) {
 }
 
 /**
- * Gets event details from database and fills out event page with details
+ * Gets event details from database with eventId and fills out event page with details
  */
-function getEventDetails() {
+async function getEventDetails() {
+    //make sign up link go to correct
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  fetch(
-      '/create-event?' +
-      new URLSearchParams({'eventId': urlParams.get('eventId')}))
-      .then((res) => (res.json())).then((data) => {
-        document.getElementById('name').innerHTML = data['name'];
-        document.getElementById('description').innerHTML = data['description'];
-        document.getElementById('date').innerHTML = `Date: 
-          ${data['date'].month}/
-            ${data['date'].dayOfMonth}/${data['date'].year}`;
-        document.getElementById('location').innerHTML =
-          `Location: ${data['location']}`;
-      });
+  const eventId = urlParams.get('eventId');
+
+  //if to register
+  const registerBool = urlParams.get('register') ? urlParams.get('register'): "false";
+
+  //if to view event details
+  console.log("REGISTER IS");
+  console.log(registerBool);
+  if (registerBool === "true") {
+      registerEvent(eventId)
+  }
+//   const response = await fetch('/create-event?' + new URLSearchParams({'eventId': eventId}))
+//   const data = await response.json();
+//   document.getElementById('name').innerHTML = data['name'];
+//   document.getElementById('description').innerHTML = data['description'];
+//   document.getElementById('date').innerHTML = `Date: 
+//   ${data['date'].month}/${data['date'].dayOfMonth}/${data['date'].year}`;
+//   document.getElementById('location').innerHTML =
+//     `Location: ${data['location']}`;
+//   document.getElementById('time').innerHTML = `Time: ${data['time']}`;
+//   const link = '/event-edit.html?eventId=' + eventId;
+//   document.getElementById('editLink').setAttribute('href', link);
+}
+
+async function registerEvent(eventId) {
+  const response = await fetch('/register-event?' + new URLSearchParams({'eventId': eventId}), {method: 'POST'} );
+    console.log("OKKKKK");
+
 }
