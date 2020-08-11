@@ -30,6 +30,7 @@ public class SpannerTasks {
   private static final String OPPORTUNITY_ID = "VolunteeringOpportunityID";
   private static final String EVENT_ID = "EventID";
   private static final String NAME = "Name";
+  private static final String EMAIL = "Email";
   private static final String NUM_SPOTS_LEFT = "NumSpotsLeft";
   private static final String REQUIRED_SKILLS = "RequiredSkills";
 
