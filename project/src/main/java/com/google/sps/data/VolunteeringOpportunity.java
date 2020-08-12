@@ -10,7 +10,6 @@ public final class VolunteeringOpportunity {
   private String name;
   private long numSpotsLeft;
   private Set<String> requiredSkills;
-  private Set<User> volunteers;
 
   public static class Builder {
     // Required parameters
@@ -21,14 +20,12 @@ public final class VolunteeringOpportunity {
 
     // Optional parameters
     private Set<String> requiredSkills;
-    private Set<User> volunteers;
 
     public Builder(String eventId, String name, long numSpotsLeft) {
       this.eventId = eventId;
       this.name = name;
       this.numSpotsLeft = numSpotsLeft;
       this.requiredSkills = new HashSet<>();
-      this.volunteers = new HashSet<>();
     }
 
     public Builder setOpportunityId(String opportunityId) {
@@ -61,21 +58,6 @@ public final class VolunteeringOpportunity {
       return this;
     }
 
-    public Builder setVolunteers(Set<User> volunteers) {
-      this.volunteers = volunteers;
-      return this;
-    }
-
-    public Builder addVolunteer(User volunteer) {
-      this.volunteers.add(volunteer);
-      return this;
-    }
-
-    public Builder removeVolunteer(User volunteer) {
-      this.volunteers.remove(volunteer);
-      return this;
-    }
-
     public VolunteeringOpportunity build() {
       return new VolunteeringOpportunity(this);
     }
@@ -89,9 +71,7 @@ public final class VolunteeringOpportunity {
       if (!other.getRequiredSkills().isEmpty()) {
         this.requiredSkills = other.getRequiredSkills();
       }
-      if (!other.getVolunteers().isEmpty()) {
-        this.volunteers = other.getVolunteers();
-      }
+
       return this;
     }
   }
@@ -102,7 +82,6 @@ public final class VolunteeringOpportunity {
     name = builder.name;
     numSpotsLeft = builder.numSpotsLeft;
     requiredSkills = builder.requiredSkills;
-    volunteers = builder.volunteers;
   }
 
   public String getOpportunityId() {
@@ -123,10 +102,6 @@ public final class VolunteeringOpportunity {
 
   public long getNumSpotsLeft() {
     return this.numSpotsLeft;
-  }
-
-  public Set<User> getVolunteers() {
-    return this.volunteers;
   }
 
   public Builder toBuilder() {
