@@ -1,5 +1,7 @@
 $(document).ready(function() {
   showCurrentUserInfo();
+  populatePrefilled('interests');
+  populatePrefilled('skills');
 });
 
 /**

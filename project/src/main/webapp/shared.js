@@ -83,3 +83,11 @@ async function addTagBackToPool(item, tagId) {
 function removeTagsFromPool(clickedAdder) {
   $(clickedAdder).parent().hide();
 }
+
+function togglePrefilledSkills() {
+  $('#prefilled-skills').toggle();
+}
+
+function togglePrefilledInterests() {
+  $('#prefilled-interests').toggle();
+}

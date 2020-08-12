@@ -48,19 +48,31 @@
         <label for="interests">Interests</label>
         <select
           id="interests"
-          data-role="tagsinput"
           name="interests"
+          data-role="tagsinput"
           multiple
         ></select>
+        <button 
+          type="button"
+          class="btn btn-light prefilled-pick"
+          onclick="togglePrefilledInterests();"
+        >+ Pick</button>
+        <div id="prefilled-interests" class="overflow-auto prefilled-pool"></div>
       </div>
       <div class="form-group">
         <label for="skills">Skills</label>
         <select
           id="skills"
-          data-role="tagsinput"
           name="skills"
+          data-role="tagsinput"
           multiple
         ></select>
+        <button 
+          type="button"
+          class="btn btn-light prefilled-pick"
+          onclick="togglePrefilledSkills();"
+        >+ Pick</button>
+        <div id="prefilled-skills" class="overflow-auto prefilled-pool"></div>
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
