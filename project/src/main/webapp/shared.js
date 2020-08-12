@@ -45,7 +45,6 @@ function populatePrefilled(elementId) {
       $('#prefilled-' + elementId).append(newTag);
     }
   })
-  
 }
 
 async function moveTagsFromPoolToInput(clickedAdder, tagId) {
@@ -108,8 +107,8 @@ function populateEventContainer(event, containerId) {
     $(`#${eventCardId} #event-card-location`).html(event.location);
     $(`#${eventCardId} #event-card-volunteers`)
         .html(buildVolunteers(event.opportunities));
-    buildAsLabels(eventCardId, event.labels, 'interests');
-    buildSkillsAsLabels(eventCardId, event.opportunities);
+    buildAsLabels(`#${eventCardId} #event-card-labels`, event.labels, 'interests');
+    buildSkillsAsLabels(`#${eventCardId} #event-card-labels`, event.opportunities);
     addLinkToRegister(eventCardId);
     addLinkToDetails(eventCardId);
   });
@@ -143,7 +142,7 @@ function buildVolunteers(opportunities) {
 }
 
 /** Creates a button label for each provided interest or skill */
-function buildAsLabels(eventCardId, labels, className) {
+function buildAsLabels(querySelector, labels, className) {
   for (const label of labels) {
     const newLabelButton = document.createElement('button');
     newLabelButton.classList.add(`btn-${className}`);
@@ -151,14 +150,14 @@ function buildAsLabels(eventCardId, labels, className) {
     newLabelButton.disabled = true;
     newLabelButton.innerHTML = label;
     document
-        .querySelector(`#${eventCardId} #event-card-labels`)
+        .querySelector(querySelector)
         .appendChild(newLabelButton);
   }
 }
 
 /** Creates the corresponding skill button labels for each volunteering opportunity */
-function buildSkillsAsLabels(eventId, opportunities) {
+function buildSkillsAsLabels(querySelector, opportunities) {
   for (const opportunity of opportunities) {
-    buildAsLabels(eventId, opportunity.requiredSkills, 'skills');
+    buildAsLabels(querySelector, opportunity.requiredSkills, 'skills');
   }
 }
