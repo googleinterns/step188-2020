@@ -3,7 +3,6 @@ package com.google.sps.servlets;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.User;
 import com.google.sps.utilities.CommonUtils;
-import com.google.sps.utilities.DatabaseConstants;
 import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
 import java.util.Arrays;
@@ -26,7 +25,7 @@ public class UserProfileUpdateServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO: Add tests for this once test setup is ready
-    Optional<User> userOptional = SpannerTasks.readUserFromEmail(email);
+    Optional<User> userOptional = SpannerTasks.shallowReadUserFromEmail(email);
     String userJson;
     if (!userOptional.isPresent()) {
       userJson =
