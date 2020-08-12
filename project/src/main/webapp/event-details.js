@@ -91,7 +91,7 @@ function getLinkForOpportunity(opportunityId) {
 }
 
 /**
- * Gets event details from database and fills out event page with details
+ * Gets event details from database and fills out event page with details.
  */
 function getEventDetails() {
   const queryString = window.location.search;
@@ -131,9 +131,9 @@ async function populateOpportunitiesDropdown() {
 
 /**
  * Returns option with given name as text and opportunityId as value.
- * @param {string} opportunityId Opportunity ID of the opportunity option to
+ * @param {string} opportunityId value of the opportunity option to
  *     return
- * @param {string} name name text for the opportunity option to return
+ * @param {string} name text for the opportunity option to return
  * @return {string}
  */
 function getOptionForOpportunity(opportunityId, name) {
