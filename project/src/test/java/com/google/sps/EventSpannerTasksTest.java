@@ -44,7 +44,7 @@ public class EventSpannerTasksTest {
   private static final User HOST = new User.Builder(HOST_NAME, EMAIL).build();
   private static final String ATTENDEE_NAME = "New attendee";
   private static final String ATTENDEE_EMAIL = "attendee@example.com";
-  private static final Set<User> ATTENDEE = new HashSet<User>(Arrays.asList(new User.Builder(ATTENDEE_NAME, ATTENDEE_EMAIL).build()));
+  private static final User ATTENDEE = new User.Builder(ATTENDEE_NAME, ATTENDEE_EMAIL).build();
   private static final String EVENT_NAME = "Team Meeting";
   private static final String NEW_EVENT_NAME = "Daily Team Meeting";
   private static final String DESCRIPTION = "Daily Team Sync";
@@ -69,6 +69,8 @@ public class EventSpannerTasksTest {
 
   @Before 
   public void testSetUp() throws Exception {
+    //Host inserted because needed to query getEventById() in db
+    SpannerTasks.insertOrUpdateUser(HOST);
     request = new MockHttpServletRequest();
     response = new MockHttpServletResponse();
     authenticationHelper.setUp();
@@ -76,35 +78,17 @@ public class EventSpannerTasksTest {
 
   @AfterClass
   public static void tearDown() throws Exception {
-    SpannerTestTasks.cleanup();
-    authenticationHelper.tearDown();
+    //SpannerTestTasks.cleanup();
+    //authenticationHelper.tearDown();
   }
-
-//   @Before
-//   public void setUp() throws Exception {
-//     // Mock a request to trigger the SpannerClient setup to run.
-//     MockServletContext mockServletContext = new MockServletContext();
-//     new SpannerClient().contextInitialized(new ServletContextEvent(mockServletContext));
-//     SpannerTestTasks.setup();
-
-//     request = new MockHttpServletRequest();
-//     response = new MockHttpServletResponse();
-//     authenticationHelper.setUp();
-//   }
-
-//   @After
-//   public void tearDown() {
-//     SpannerTestTasks.cleanup();
-//     authenticationHelper.tearDown();
-//   }
 
   /** Verify insertion of event in db and retrieval by id 
    * Also tests behavior of EventCreationServlet doGet() where doGet request.getParameter("eventId") == event.getId() */
   @Test
   public void eventInsertAndRetrieval() {
+    SpannerTasks.insertOrUpdateUser(HOST);
     Event event =
         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
-    SpannerTasks.insertOrUpdateUser(HOST);
     SpannerTasks.insertOrUpdateEvent(event);
     Event dbEvent = SpannerTasks.getEventById(event.getId()).get();
 
@@ -121,11 +105,11 @@ public class EventSpannerTasksTest {
   /** Verify getting Set<Event> from corresponding eventIds */
   @Test
   public void getEventsByIdTest() {
+    SpannerTasks.insertOrUpdateUser(HOST);
     Event event =
         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
     Event otherEvent =
         new Event.Builder(NEW_EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
-    SpannerTasks.insertOrUpdateUser(HOST);
     SpannerTasks.insertOrUpdateEvent(event);
     SpannerTasks.insertOrUpdateEvent(otherEvent);
     Set<Event> actualEvents = new HashSet<>(Arrays.asList(event, otherEvent));
@@ -173,9 +157,9 @@ public class EventSpannerTasksTest {
    */
   @Test
   public void testEventCreationDoGet() throws Exception {
+    SpannerTasks.insertOrUpdateUser(HOST);
     Event event =
         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
-    SpannerTasks.insertOrUpdateUser(HOST);
     SpannerTasks.insertOrUpdateEvent(event);
 
     request.addParameter("eventId", event.getId());
@@ -201,33 +185,34 @@ public class EventSpannerTasksTest {
 
     Assert.assertEquals(response.getStatus(), HttpServletResponse.SC_NOT_FOUND);
   }
-  //FNISH TEST
+
   /**
-   * Verify registering for event //SHOULD ADD ATTENDEE, try 2 diff logged in users
-   //try full stack, paste in correct html file
+   * Verify registering for event that already has attendee
    */
   @Test
   public void testEventRegistrationDoGet() throws Exception {
+    SpannerTasks.insertOrUpdateUser(HOST);
+    //Existing event to sign up for
+    SpannerTasks.insertOrUpdateUser(ATTENDEE);
     Event event =
-        new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).setAttendees(ATTENDEE).build();
+        new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST)
+        .setAttendees(new HashSet<User>(Arrays.asList(ATTENDEE))).build();
+    request.addParameter("eventId", event.getId());   
+    SpannerTasks.insertOrUpdateEvent(event);
+    // User that is registering
     authenticationHelper
         .setEnvIsLoggedIn(true)
         .setEnvEmail(EMAIL)
         .setEnvAuthDomain("example.com");
-    request.addParameter("eventId", event.getId());   
-
-    SpannerTasks.insertOrUpdateUser(HOST);
-    SpannerTasks.insertOrUpdateEvent(event);
 
     new EventRegistrationServlet().doPost(request, response);
     Event returnedEvent = new Gson().fromJson(response.getContentAsString(), Event.class);
-
     Assert.assertEquals(returnedEvent.getName(), EVENT_NAME);
     Assert.assertEquals(returnedEvent.getDescription(), DESCRIPTION);
     Assert.assertEquals(returnedEvent.getLocation(), LOCATION);
     Assert.assertEquals(returnedEvent.getDate(), DATE);
     Assert.assertEquals(returnedEvent.getTime(), TIME);
-    Assert.assertEquals(returnedEvent.getHost().getName(), HOST_NAME);
-    Assert.assertEquals(returnedEvent.getHost().getEmail(), EMAIL);
+    Assert.assertTrue(new ReflectionEquals(returnedEvent.getAttendees(),/*excludeFields= */ null)
+        .matches(new HashSet<User>(Arrays.asList(ATTENDEE, HOST))));
   }
 }
