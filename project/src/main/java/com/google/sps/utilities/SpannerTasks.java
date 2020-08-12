@@ -112,7 +112,7 @@ public class SpannerTasks {
    *
    * @param event the event to be inserted or updated; event's ID field should not exist in DB
    */
-  public static void insertorUpdateEvent(Event event) {
+  public static void insertOrUpdateEvent(Event event) {
     List<Mutation> mutations =
         getEventMutationsFromBuilder(Mutation.newInsertOrUpdateBuilder(EVENT_TABLE), event);
     SpannerClient.getDatabaseClient().write(mutations);
@@ -168,24 +168,6 @@ public class SpannerTasks {
     if (!resultSet.next()) {
       return Optional.empty();
     }
-
-    // TO DO: replace with host from db, after PR #43 pushed
-    String NAME = "Bob Smith";
-    String EMAIL = "bobsmith@example.com";
-    User host = new User.Builder(NAME, EMAIL).build();
-    /* remove Hardcoded date */
-    Date date = Date.fromYearMonthDay(2016, 9, 15);
-    return Optional.of(
-        new Event.Builder(
-                /* name = */ resultSet.getString(0),
-               /* description = */ resultSet.getString(1),
-                /* labels = */ new HashSet<String>(resultSet.getStringList(2)),
-                /* location = */ resultSet.getString(3),
-                /* date = */ Date.parseDate(resultSet.getString(4)),
-                /* time= */ resultSet.getString(5),
-                /* host = */ host)
-            .build());
-    // TO DO: set volunteer opportunities, attendees by Querying those by ID, wait for PR 43, 44
     return Optional.of(shallowCreateEventFromDatabaseResult(resultSet));
   }
 
