@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/register-event")
-public class EventRegistration extends HttpServlet {
+public class EventRegistrationServlet extends HttpServlet {
   /** Update event with logged in user as attendee when they hit register*/
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {

@@ -91,13 +91,16 @@ async function getEventDetails() {
   const urlParams = new URLSearchParams(queryString);
   const eventId = urlParams.get('eventId');
 
-  //if to register
+  //Register for event
   const registerBool = urlParams.get('register') ? urlParams.get('register'): "false";
   if (registerBool === "true") {
       registerEvent(eventId)
   }
+
+  //View event details
   const response = await fetch('/create-event?' + new URLSearchParams({'eventId': eventId}))
   const data = await response.json();
+  console.log(data);
   document.getElementById('name').innerHTML = data['name'];
   document.getElementById('description').innerHTML = data['description'];
   document.getElementById('date').innerHTML = `Date: 
@@ -107,7 +110,6 @@ async function getEventDetails() {
   document.getElementById('time').innerHTML = `Time: ${data['time']}`;
   const link = '/event-edit.html?eventId=' + eventId;
   document.getElementById('editLink').setAttribute('href', link);
-// // CHANGE LINK TO SIGNUP TO PROPER EVENT ID 
 }
 
 async function registerEvent(eventId) {

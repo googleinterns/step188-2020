@@ -28,14 +28,15 @@ public class EventCreationServlet extends HttpServlet {
     // If event DNE, sends 404 ERR to frontend
     if (eventOptional.isPresent()) {
       Event event = eventOptional.get();
+      System.out.println(event);
       response.setContentType("text/html;");
       response.getWriter().println(new Gson().toJson(event));
     } else {
+        System.out.println("NO EVENT");
       response.sendError(
           HttpServletResponse.SC_NOT_FOUND,
           String.format("No events found with event ID %s", eventId));
     }
-
   }
 
   /** Posts new created event to database and redirects to page with created event details */

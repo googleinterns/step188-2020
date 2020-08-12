@@ -29,7 +29,6 @@ public class SpannerTestTasks {
                 + "  Host           STRING(MAX),"
                 + "  Labels         ARRAY<STRING(MAX)>,"
                 + "  Opportunities  ARRAY<STRING(MAX)>,"
-                + "  Time           STRING(MAX)"
                 + ") PRIMARY KEY (EventID)",
             "CREATE TABLE VolunteeringOpportunity ("
                 + "  VolunteeringOpportunityID  STRING(MAX) NOT NULL,"

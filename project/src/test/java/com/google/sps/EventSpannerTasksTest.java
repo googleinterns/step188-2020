@@ -73,8 +73,8 @@ public class EventSpannerTasksTest {
 
   @AfterClass
   public static void tearDown() throws Exception {
-    SpannerTestTasks.cleanup();
-    authenticationHelper.tearDown();
+    //SpannerTestTasks.cleanup();
+    //authenticationHelper.tearDown();
   }
 
   /** Verify insertion of event in db and retrieval by id 
@@ -84,7 +84,7 @@ public class EventSpannerTasksTest {
     Event event =
         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
     SpannerTasks.insertOrUpdateUser(HOST);
-    SpannerTasks.insertorUpdateEvent(event);
+    SpannerTasks.insertOrUpdateEvent(event);
     Event dbEvent = SpannerTasks.getEventById(event.getId()).get();
 
     Assert.assertEquals(dbEvent.getName(), EVENT_NAME);
@@ -105,8 +105,8 @@ public class EventSpannerTasksTest {
     Event otherEvent =
         new Event.Builder(NEW_EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
     SpannerTasks.insertOrUpdateUser(HOST);
-    SpannerTasks.insertorUpdateEvent(event);
-    SpannerTasks.insertorUpdateEvent(otherEvent);
+    SpannerTasks.insertOrUpdateEvent(event);
+    SpannerTasks.insertOrUpdateEvent(otherEvent);
     Set<Event> actualEvents = new HashSet<>(Arrays.asList(event, otherEvent));
     Set<Event> insertedEvents = SpannerTasks.getEventsFromIds(Arrays.asList(event.getId(), otherEvent.getId()));
     List<Event> insertedEventsList = insertedEvents.stream().collect(Collectors.toCollection(ArrayList::new));
@@ -155,7 +155,7 @@ public class EventSpannerTasksTest {
     Event event =
         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
     SpannerTasks.insertOrUpdateUser(HOST);
-    SpannerTasks.insertorUpdateEvent(event);
+    SpannerTasks.insertOrUpdateEvent(event);
 
     request.addParameter("eventId", event.getId());
     new EventCreationServlet().doGet(request, response);
@@ -180,27 +180,28 @@ public class EventSpannerTasksTest {
 
     Assert.assertEquals(response.getStatus(), HttpServletResponse.SC_NOT_FOUND);
   }
+  //FNISH TEST
   /**
    * Verify registering for event //SHOULD ADD ATTENDEE, try 2 diff logged in users
    //try full stack, paste in correct html file
    */
-  @Test
-  public void testEventRegistrationDoGet() throws Exception {
-    Event event =
-        new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
-    SpannerTasks.insertOrUpdateUser(HOST);
-    SpannerTasks.insertorUpdateEvent(event);
+//   @Test
+//   public void testEventRegistrationDoGet() throws Exception {
+//     Event event =
+//         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
+//     SpannerTasks.insertOrUpdateUser(HOST);
+//     SpannerTasks.insertOrUpdateEvent(event);
 
-    request.addParameter("eventId", event.getId());
-    new EventRegistrationServlet().doGet(request, response);
-    Event returnedEvent = new Gson().fromJson(response.getContentAsString(), Event.class);
+//     request.addParameter("eventId", event.getId());
+//     new EventRegistrationServlet().doGet(request, response);
+//     Event returnedEvent = new Gson().fromJson(response.getContentAsString(), Event.class);
 
-    Assert.assertEquals(returnedEvent.getName(), EVENT_NAME);
-    Assert.assertEquals(returnedEvent.getDescription(), DESCRIPTION);
-    Assert.assertEquals(returnedEvent.getLocation(), LOCATION);
-    Assert.assertEquals(returnedEvent.getDate(), DATE);
-    Assert.assertEquals(returnedEvent.getTime(), TIME);
-    Assert.assertEquals(returnedEvent.getHost().getName(), HOST_NAME);
-    Assert.assertEquals(returnedEvent.getHost().getEmail(), EMAIL);
-  }
+//     Assert.assertEquals(returnedEvent.getName(), EVENT_NAME);
+//     Assert.assertEquals(returnedEvent.getDescription(), DESCRIPTION);
+//     Assert.assertEquals(returnedEvent.getLocation(), LOCATION);
+//     Assert.assertEquals(returnedEvent.getDate(), DATE);
+//     Assert.assertEquals(returnedEvent.getTime(), TIME);
+//     Assert.assertEquals(returnedEvent.getHost().getName(), HOST_NAME);
+//     Assert.assertEquals(returnedEvent.getHost().getEmail(), EMAIL);
+//   }
 }
