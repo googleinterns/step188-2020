@@ -55,7 +55,7 @@ public class EventCreationServlet extends HttpServlet {
 
     User host = SpannerTasks.getLoggedInUser().get();
     Event event = new Event.Builder(name, description, labels, location, date, time, host).build();
-    SpannerTasks.insertorUpdateEvent(event);
+    SpannerTasks.insertOrUpdateEvent(event);
 
     String redirectUrl = "/event-details.html?eventId=" + event.getId();
     response.sendRedirect(redirectUrl);
