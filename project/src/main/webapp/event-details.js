@@ -27,10 +27,10 @@ async function checkLoginStatus() {
 async function getVolunteeringOpportunities() {
   const response = await fetch('/event-volunteering-data');
   const opportunities = await response.json();
-  //volunteers = getVolunteersByOpportunityId(opportunities[key].opportunityId);
   for (const key in opportunities) {
-    const volunteers = await getVolunteersByOpportunityId(opportunities[key].opportunityId);
     if (opportunities.hasOwnProperty(key)) {
+      const volunteers =
+          await getVolunteersByOpportunityId(opportunities[key].opportunityId);
       $('#volunteering-opportunities')
           .append(getListItemForOpportunity(
               opportunities[key].opportunityId,
@@ -51,6 +51,7 @@ async function getVolunteeringOpportunities() {
  * @param {string} name name of opportunity
  * @param {string} numSpotsLeft number of spots left for opportunity
  * @param {string[]} requiredSkills skills for opportunity
+ * @param {string} volunteers volunteers for opportunity
  * @return {string}
  */
 function getListItemForOpportunity(
@@ -110,9 +111,8 @@ function getEventDetails() {
 }
 
 /**
- * Adds the volunteering opportunities for which the current user is not
- * a volunteer and for which the number of attendee spots is greater than 0
- * to the dropdown selection.
+ * Adds the volunteering opportunities for which the number of attendee spots
+ * is greater than 0 to the dropdown selection.
  */
 async function populateOpportunitiesDropdown() {
   const response = await fetch('/event-volunteering-data');
@@ -132,7 +132,8 @@ async function populateOpportunitiesDropdown() {
 /**
  * Returns option with given name as text and opportunityId as value.
  * @param {string} opportunityId Opportunity ID of the opportunity option to
- *     return.
+ *     return
+ * @param {string} name name text for the opportunity option to return
  * @return {string}
  */
 function getOptionForOpportunity(opportunityId, name) {
@@ -141,17 +142,19 @@ function getOptionForOpportunity(opportunityId, name) {
 
 /**
  * Returns volunteer emails for the given opportunityId.
- * @param {string} opportunityId Opportunity ID for which to return 
- *     volunteers
+ * @param {string} opportunityId Opportunity ID for which to return
+ *     volunteer emails
  * @return {string[]}
  */
 async function getVolunteersByOpportunityId(opportunityId) {
   const response =
       await fetch(`/opportunity-signup-data?opportunity-id=${opportunityId}`);
   const volunteerData = await response.json();
-  var volunteers = [];
+  const volunteers = [];
   for (const key in volunteerData) {
-    volunteers.push(volunteerData[key].email);
+    if (volunteerData.hasOwnProperty(key)) {
+      volunteers.push(volunteerData[key].email);
+    }
   }
   return volunteers;
 }
