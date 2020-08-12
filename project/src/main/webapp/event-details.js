@@ -93,28 +93,25 @@ async function getEventDetails() {
 
   //if to register
   const registerBool = urlParams.get('register') ? urlParams.get('register'): "false";
-
-  //if to view event details
-  console.log("REGISTER IS");
-  console.log(registerBool);
   if (registerBool === "true") {
       registerEvent(eventId)
   }
-//   const response = await fetch('/create-event?' + new URLSearchParams({'eventId': eventId}))
-//   const data = await response.json();
-//   document.getElementById('name').innerHTML = data['name'];
-//   document.getElementById('description').innerHTML = data['description'];
-//   document.getElementById('date').innerHTML = `Date: 
-//   ${data['date'].month}/${data['date'].dayOfMonth}/${data['date'].year}`;
-//   document.getElementById('location').innerHTML =
-//     `Location: ${data['location']}`;
-//   document.getElementById('time').innerHTML = `Time: ${data['time']}`;
-//   const link = '/event-edit.html?eventId=' + eventId;
-//   document.getElementById('editLink').setAttribute('href', link);
+  const response = await fetch('/create-event?' + new URLSearchParams({'eventId': eventId}))
+  const data = await response.json();
+  document.getElementById('name').innerHTML = data['name'];
+  document.getElementById('description').innerHTML = data['description'];
+  document.getElementById('date').innerHTML = `Date: 
+  ${data['date'].month}/${data['date'].dayOfMonth}/${data['date'].year}`;
+  document.getElementById('location').innerHTML =
+    `Location: ${data['location']}`;
+  document.getElementById('time').innerHTML = `Time: ${data['time']}`;
+  const link = '/event-edit.html?eventId=' + eventId;
+  document.getElementById('editLink').setAttribute('href', link);
+// // CHANGE LINK TO SIGNUP TO PROPER EVENT ID 
 }
 
 async function registerEvent(eventId) {
   const response = await fetch('/register-event?' + new URLSearchParams({'eventId': eventId}), {method: 'POST'} );
-    console.log("OKKKKK");
-
+  document.getElementById('signupLink').setAttribute('href', "");
+  document.getElementById('signupLink').innerHTML = 'You are signed up for this event.'
 }
