@@ -7,6 +7,7 @@ import com.google.sps.data.Event;
 import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
 import com.google.sps.servlets.EventCreationServlet;
+import com.google.sps.servlets.EventRegistrationServlet;
 import com.google.sps.utilities.SpannerClient;
 import com.google.sps.utilities.SpannerTasks;
 import com.google.sps.utilities.SpannerTestTasks;
@@ -178,5 +179,28 @@ public class EventSpannerTasksTest {
     new EventCreationServlet().doGet(request, response);
 
     Assert.assertEquals(response.getStatus(), HttpServletResponse.SC_NOT_FOUND);
+  }
+  /**
+   * Verify registering for event //SHOULD ADD ATTENDEE, try 2 diff logged in users
+   //try full stack, paste in correct html file
+   */
+  @Test
+  public void testEventRegistrationDoGet() throws Exception {
+    Event event =
+        new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
+    SpannerTasks.insertOrUpdateUser(HOST);
+    SpannerTasks.insertorUpdateEvent(event);
+
+    request.addParameter("eventId", event.getId());
+    new EventRegistrationServlet().doGet(request, response);
+    Event returnedEvent = new Gson().fromJson(response.getContentAsString(), Event.class);
+
+    Assert.assertEquals(returnedEvent.getName(), EVENT_NAME);
+    Assert.assertEquals(returnedEvent.getDescription(), DESCRIPTION);
+    Assert.assertEquals(returnedEvent.getLocation(), LOCATION);
+    Assert.assertEquals(returnedEvent.getDate(), DATE);
+    Assert.assertEquals(returnedEvent.getTime(), TIME);
+    Assert.assertEquals(returnedEvent.getHost().getName(), HOST_NAME);
+    Assert.assertEquals(returnedEvent.getHost().getEmail(), EMAIL);
   }
 }

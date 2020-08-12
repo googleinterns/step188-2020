@@ -40,7 +40,7 @@ public class SpannerTasks {
   public static Optional<User> getLoggedInUser() {
 
     String email = UserServiceFactory.getUserService().getCurrentUser().getEmail();
-    Optional<User> userOptional = readUserFromEmail(email);
+    Optional<User> userOptional = shallowReadUserFromEmail(email);
 
     if (userOptional.isPresent()) {
       return userOptional;
@@ -112,7 +112,7 @@ public class SpannerTasks {
    *
    * @param event the event to be inserted or updated; event's ID field should not exist in DB
    */
-  public static void insertorUpdateEvent(Event event) {
+  public static void insertOrUpdateEvent(Event event) {
     List<Mutation> mutations =
         getEventMutationsFromBuilder(Mutation.newInsertOrUpdateBuilder(EVENT_TABLE), event);
     SpannerClient.getDatabaseClient().write(mutations);
