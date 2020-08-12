@@ -180,3 +180,4 @@ public class EventSpannerTasksTest {
     Assert.assertEquals(response.getStatus(), HttpServletResponse.SC_NOT_FOUND);
   }
 }
+
