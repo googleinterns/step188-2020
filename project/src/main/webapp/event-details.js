@@ -6,6 +6,7 @@ window.onload = function onLoad() {
   getEventDetails();
   checkLoginStatus();
   getVolunteeringOpportunities();
+  populateOpportunitiesDropdown();
 };
 
 
@@ -26,14 +27,17 @@ async function checkLoginStatus() {
 async function getVolunteeringOpportunities() {
   const response = await fetch('/event-volunteering-data');
   const opportunities = await response.json();
+  //volunteers = getVolunteersByOpportunityId(opportunities[key].opportunityId);
   for (const key in opportunities) {
+    const volunteers = await getVolunteersByOpportunityId(opportunities[key].opportunityId);
     if (opportunities.hasOwnProperty(key)) {
       $('#volunteering-opportunities')
           .append(getListItemForOpportunity(
               opportunities[key].opportunityId,
               opportunities[key].name,
               opportunities[key].numSpotsLeft,
-              opportunities[key].requiredSkills));
+              opportunities[key].requiredSkills,
+              volunteers));
     }
   }
 }
@@ -50,9 +54,11 @@ async function getVolunteeringOpportunities() {
  * @return {string}
  */
 function getListItemForOpportunity(
-    opportunityId, name, numSpotsLeft, requiredSkills) {
+    opportunityId, name, numSpotsLeft, requiredSkills, volunteers) {
   requiredSkillsText =
       requiredSkills.length ? requiredSkills.toString() : 'None';
+  volunteersText =
+      volunteers.length ? volunteers.toString() : 'None';
   let editLink = '';
 
   // If the user is logged in and the current user is the event host,
@@ -63,7 +69,8 @@ function getListItemForOpportunity(
   return `<li class="list-group-item">
           <p class="card-text">Volunteer Name: ${name}</p>
            <p class="card-text">Volunteer Spots Left: ${numSpotsLeft}</p>
-           <p class="card-text">Required Skills: ${requiredSkillsText}</p>${
+           <p class="card-text">Required Skills: ${requiredSkillsText}</p>
+           <p class="card-text">Volunteers: ${volunteersText}</p>${
   editLink}</li>`;
 }
 
@@ -100,4 +107,51 @@ function getEventDetails() {
         document.getElementById('location').innerHTML =
           `Location: ${data['location']}`;
       });
+}
+
+/**
+ * Adds the volunteering opportunities for which the current user is not
+ * a volunteer and for which the number of attendee spots is greater than 0
+ * to the dropdown selection.
+ */
+async function populateOpportunitiesDropdown() {
+  const response = await fetch('/event-volunteering-data');
+  const opportunities = await response.json();
+  for (const key in opportunities) {
+    if (opportunities.hasOwnProperty(key)) {
+      if (opportunities[key].numSpotsLeft > 0) {
+        $('#opportunities-options')
+            .append(getOptionForOpportunity(
+                opportunities[key].opportunityId,
+                opportunities[key].name));
+      }
+    }
+  }
+}
+
+/**
+ * Returns option with given name as text and opportunityId as value.
+ * @param {string} opportunityId Opportunity ID of the opportunity option to
+ *     return.
+ * @return {string}
+ */
+function getOptionForOpportunity(opportunityId, name) {
+  return `<option value=${opportunityId}>${name}</option>`;
+}
+
+/**
+ * Returns volunteer emails for the given opportunityId.
+ * @param {string} opportunityId Opportunity ID for which to return 
+ *     volunteers
+ * @return {string[]}
+ */
+async function getVolunteersByOpportunityId(opportunityId) {
+  const response =
+      await fetch(`/opportunity-signup-data?opportunity-id=${opportunityId}`);
+  const volunteerData = await response.json();
+  var volunteers = [];
+  for (const key in volunteerData) {
+    volunteers.push(volunteerData[key].email);
+  }
+  return volunteers;
 }

@@ -52,6 +52,20 @@
             <li class="list-group-item">Attendee Spots Left: 240</li>
           </ul>
         </div>
+        </div>
+       <form
+        method="post"
+        action="/opportunity-signup-form-handler"
+        id="opportunity-signup-form"
+        class="hidden"
+        >
+        <div class="form-group">
+          <label for="volunteer-signup-form">Select a volunteer role:</label>
+          <select class="form-control" name="opportunity-id" id="opportunities-options">
+          </select>
+        </div>
+        <button class="submit" type="submit">Submit</button>
+        </form>
       </div>
     </div>
   </body>
