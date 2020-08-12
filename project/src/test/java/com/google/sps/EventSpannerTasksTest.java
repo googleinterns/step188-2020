@@ -42,6 +42,9 @@ public class EventSpannerTasksTest {
   private static final String HOST_NAME = "Bob Smith";
   private static final String EMAIL = "bobsmith@example.com";
   private static final User HOST = new User.Builder(HOST_NAME, EMAIL).build();
+  private static final String ATTENDEE_NAME = "New attendee";
+  private static final String ATTENDEE_EMAIL = "attendee@example.com";
+  private static final Set<User> ATTENDEE = new HashSet<User>(Arrays.asList(new User.Builder(ATTENDEE_NAME, ATTENDEE_EMAIL).build()));
   private static final String EVENT_NAME = "Team Meeting";
   private static final String NEW_EVENT_NAME = "Daily Team Meeting";
   private static final String DESCRIPTION = "Daily Team Sync";
@@ -73,9 +76,27 @@ public class EventSpannerTasksTest {
 
   @AfterClass
   public static void tearDown() throws Exception {
-    //SpannerTestTasks.cleanup();
-    //authenticationHelper.tearDown();
+    SpannerTestTasks.cleanup();
+    authenticationHelper.tearDown();
   }
+
+//   @Before
+//   public void setUp() throws Exception {
+//     // Mock a request to trigger the SpannerClient setup to run.
+//     MockServletContext mockServletContext = new MockServletContext();
+//     new SpannerClient().contextInitialized(new ServletContextEvent(mockServletContext));
+//     SpannerTestTasks.setup();
+
+//     request = new MockHttpServletRequest();
+//     response = new MockHttpServletResponse();
+//     authenticationHelper.setUp();
+//   }
+
+//   @After
+//   public void tearDown() {
+//     SpannerTestTasks.cleanup();
+//     authenticationHelper.tearDown();
+//   }
 
   /** Verify insertion of event in db and retrieval by id 
    * Also tests behavior of EventCreationServlet doGet() where doGet request.getParameter("eventId") == event.getId() */
@@ -185,23 +206,28 @@ public class EventSpannerTasksTest {
    * Verify registering for event //SHOULD ADD ATTENDEE, try 2 diff logged in users
    //try full stack, paste in correct html file
    */
-//   @Test
-//   public void testEventRegistrationDoGet() throws Exception {
-//     Event event =
-//         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
-//     SpannerTasks.insertOrUpdateUser(HOST);
-//     SpannerTasks.insertOrUpdateEvent(event);
+  @Test
+  public void testEventRegistrationDoGet() throws Exception {
+    Event event =
+        new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).setAttendees(ATTENDEE).build();
+    authenticationHelper
+        .setEnvIsLoggedIn(true)
+        .setEnvEmail(EMAIL)
+        .setEnvAuthDomain("example.com");
+    request.addParameter("eventId", event.getId());   
 
-//     request.addParameter("eventId", event.getId());
-//     new EventRegistrationServlet().doGet(request, response);
-//     Event returnedEvent = new Gson().fromJson(response.getContentAsString(), Event.class);
+    SpannerTasks.insertOrUpdateUser(HOST);
+    SpannerTasks.insertOrUpdateEvent(event);
 
-//     Assert.assertEquals(returnedEvent.getName(), EVENT_NAME);
-//     Assert.assertEquals(returnedEvent.getDescription(), DESCRIPTION);
-//     Assert.assertEquals(returnedEvent.getLocation(), LOCATION);
-//     Assert.assertEquals(returnedEvent.getDate(), DATE);
-//     Assert.assertEquals(returnedEvent.getTime(), TIME);
-//     Assert.assertEquals(returnedEvent.getHost().getName(), HOST_NAME);
-//     Assert.assertEquals(returnedEvent.getHost().getEmail(), EMAIL);
-//   }
+    new EventRegistrationServlet().doPost(request, response);
+    Event returnedEvent = new Gson().fromJson(response.getContentAsString(), Event.class);
+
+    Assert.assertEquals(returnedEvent.getName(), EVENT_NAME);
+    Assert.assertEquals(returnedEvent.getDescription(), DESCRIPTION);
+    Assert.assertEquals(returnedEvent.getLocation(), LOCATION);
+    Assert.assertEquals(returnedEvent.getDate(), DATE);
+    Assert.assertEquals(returnedEvent.getTime(), TIME);
+    Assert.assertEquals(returnedEvent.getHost().getName(), HOST_NAME);
+    Assert.assertEquals(returnedEvent.getHost().getEmail(), EMAIL);
+  }
 }

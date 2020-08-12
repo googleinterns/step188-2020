@@ -5,6 +5,7 @@ import com.google.cloud.Date;
 import com.google.gson.Gson;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
+import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
 import java.text.ParseException;
@@ -36,9 +37,10 @@ public class EventRegistrationServlet extends HttpServlet {
         Event event = eventOptional.get().toBuilder().setId(eventId).addAttendee(SpannerTasks.getLoggedInUser().get()).build();
         SpannerTasks.insertOrUpdateEvent(event);
 
-        //change redirect so not called twice
+    //redirect to event details
     String redirectUrl = "/event-details.html?eventId=" + event.getId() + "&register=false";
     response.sendRedirect(redirectUrl);
+    response.getWriter().println(CommonUtils.convertToJson(SpannerTasks.getEventById(event.getId()).get().toBuilder().build()));
     } 
   }
 }
