@@ -35,6 +35,7 @@ public class UserProfileEventsServlet extends HttpServlet {
     }
 
     try {
+      response.setContentType("application/json;");
       response.getWriter().println(getEventsJSONByEmail(eventType, user.getEmail()));
     } catch (IllegalArgumentException e) {
       response.sendError(
