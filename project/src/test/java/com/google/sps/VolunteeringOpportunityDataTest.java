@@ -1,8 +1,6 @@
 package com.google.sps;
  
-import com.google.sps.data.OpportunitySignup;
 import com.google.sps.data.VolunteeringOpportunity;
-import com.google.sps.servlets.OpportunitySignupDataServlet;
 import com.google.sps.servlets.VolunteeringOpportunityDataServlet;
 import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.SpannerClient;
@@ -12,9 +10,6 @@ import com.google.sps.utilities.TestUtils;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.UUID;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +21,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockServletContext;
- 
+
 /** Test that tests getting the signups for a volunteering opportunity. */
 @RunWith(JUnit4.class)
 public final class VolunteeringOpportunityDataTest {
@@ -36,7 +31,7 @@ public final class VolunteeringOpportunityDataTest {
   private StringWriter stringWriter;
   private PrintWriter printWriter;
   private VolunteeringOpportunityDataServlet opportunityDataServlet;
- 
+
   @Before
   public void setUp() throws Exception {
     // Mock a request to trigger the SpannerClient setup to run
@@ -49,21 +44,20 @@ public final class VolunteeringOpportunityDataTest {
     stringWriter = new StringWriter();
     printWriter = new PrintWriter(stringWriter);
     Mockito.when(response.getWriter()).thenReturn(printWriter);
- 
+
     opportunityDataServlet = new VolunteeringOpportunityDataServlet();
   }
- 
+
   @After
   public void tearDown() {
     SpannerTestTasks.cleanup();
   }
- 
+
   @Test
   public void getOpportunity_opportunityIdInDatabase() throws IOException {
     VolunteeringOpportunity opportunity = TestUtils.newVolunteeringOpportunity();
     SpannerTasks.insertVolunteeringOpportunity(opportunity);
-    Mockito
-        .when(request.getParameter(PARAMETER_OPPORTUNITY_ID))
+    Mockito.when(request.getParameter(PARAMETER_OPPORTUNITY_ID))
         .thenReturn(opportunity.getOpportunityId());
  
     opportunityDataServlet.doGet(request, response);
@@ -73,28 +67,26 @@ public final class VolunteeringOpportunityDataTest {
   }
 
   @Test
-  public void getOpportunity_opportunityNotSpecified_sendErrorResponse() throws IOException {
-    Mockito
-        .when(request.getParameter(PARAMETER_OPPORTUNITY_ID))
-        .thenReturn(null);
- 
-    opportunityDataServlet.doGet(request, response);
- 
-    Mockito.verify(response)
-        .sendError(HttpServletResponse.SC_BAD_REQUEST, "No opportunity id specified.");
-  }
- 
-  @Test
   public void getOpportunity_opportunityIdNotInDatabase_sendErrorResponse() throws IOException {
     String opportunityId = TestUtils.newRandomId();
-    Mockito
-        .when(request.getParameter(PARAMETER_OPPORTUNITY_ID))
-        .thenReturn(opportunityId);
+    Mockito.when(request.getParameter(PARAMETER_OPPORTUNITY_ID)).thenReturn(opportunityId);
  
     opportunityDataServlet.doGet(request, response);
  
     Mockito.verify(response)
-        .sendError(HttpServletResponse.SC_BAD_REQUEST,
+        .sendError(
+            HttpServletResponse.SC_BAD_REQUEST,
             String.format("Error: No opportunity found for opportunityId %s", opportunityId));
+  }
+
+  @Test
+  public void getOpportunity_opportunityNotSpecified_sendErrorResponse() throws IOException {
+    Mockito.when(request.getParameter(PARAMETER_OPPORTUNITY_ID)).thenReturn(null);
+ 
+    opportunityDataServlet.doGet(request, response);
+ 
+    Mockito.verify(response)
+        .sendError(
+            HttpServletResponse.SC_BAD_REQUEST, "No opportunity id specified.");
   }
 }
