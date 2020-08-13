@@ -4,31 +4,65 @@ async function isLoggedIn() {
   return loginStatus.loginState === 'LOGGED_IN';
 }
 
+/** Get label pool */
 async function getPrefilledInformation(informationCategory) {
-  const response = 
-      await fetch('/prefilled-information?' + new URLSearchParams({'category': informationCategory}))
+  const response =
+      await fetch(
+          `/prefilled-information?${new URLSearchParams({'category': informationCategory})}`);
   return response.json();
 }
 
-function buildTag(tagClass) {
+/** Create a label tag with the add button next to it */
+function buildTagWithAdder(tagClass, text) {
+  let group = buildGroup();
+  const addButton = buildAdder(tagClass);
+  const tag = buildTag(tagClass);
+
+  group.appendChild(addButton);
+  group.appendChild(tag);
+  group = setText(group, tagClass, text);
+  return group;
+}
+
+/** Create a label tag without the add button next to it */
+function buildTagWithoutAdder(tagClass, text) {
+  let group = buildGroup();
+  const tag = buildTag(tagClass);
+
+  group.appendChild(tag);
+  group = setText(group, tagClass, text);
+  return group;
+}
+
+/** Create a group for buttons */
+function buildGroup() {
   const group = document.createElement('div');
   group.classList.add('btn-group');
   group.setAttribute('role', 'group');
+  return group;
+}
 
+/** Create an add button */
+function buildAdder(tagClass) {
   const addButton = document.createElement('button');
   addButton.setAttribute('type', 'button');
   addButton.classList.add('btn', 'btn-secondary', 'adder', tagClass);
   addButton.textContent = '+';
+  return addButton;
+}
 
+function setText(group, tagClass, text) {
+  group.querySelector('.btn-' + tagClass).textContent = text;
+  return group;
+}
+
+function buildTag(tagClass) {
   const tag = document.createElement('button');
   tag.setAttribute('type', 'button');
   tag.disabled = true;
   tag.classList.add('btn', 'btn-secondary', 'btn-' + tagClass);
   tag.classList.add(tagClass);
-
-  group.appendChild(addButton);
-  group.appendChild(tag);
-  return group;
+  return tag;
 }
 
 /** Adds relevant tags to input box when corresponding option is clicked */
@@ -37,15 +71,13 @@ function populatePrefilled(elementId) {
   getPrefilledInformation(elementId).then((prefilledInfo) => {
     for (const info of prefilledInfo) {
       // Build the option
-      const newTag = buildTag(elementId);
-      newTag.querySelector('.btn-' + elementId).textContent = info;
+      const newTag = buildTagWithAdder(elementId, info);
       newTag.querySelector('.adder').addEventListener('click', function() {
         moveTagsFromPoolToInput(this, '#' + elementId);
       });
       $('#prefilled-' + elementId).append(newTag);
     }
   })
-  
 }
 
 async function moveTagsFromPoolToInput(clickedAdder, tagId) {
@@ -55,27 +87,39 @@ async function moveTagsFromPoolToInput(clickedAdder, tagId) {
 
 /** Add tag to user input box once it is chosen */
 function addTagsToInput(clickedAdder, tagId) {
-  $.getScript('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js', function() {
-    $(tagId).on('itemAdded', function() {
-      if ($(tagId).prevAll().length > 2) {
-        const otherId = tagId === '#interests' ? '#skills' : '#interests';
-        $(otherId).prev().remove();
-        $(tagId).prev().prev().remove();
-      }
-    });
-    $(tagId).on('itemRemoved', function(event) {
-      addTagBackToPool(event.item, tagId);
-    });
+  $(tagId).on('itemAdded', function() {
+    removeExtraInputs(tagId);
+  });
+  $(tagId).on('itemRemoved', function(event) {
+    addTagBackToPool(event.item, tagId);
+  });
+  getTagsScriptWithCallback(function() {
     $(tagId).tagsinput('refresh');
     $(tagId).tagsinput('add', $(clickedAdder).next().html());
   });
+}
+
+/** Removes any extra inputs initialized by scripts */
+function removeExtraInputs(className) {
+  if ($(className).prevAll().length > 2) {
+    const otherName = className === '#interests' ? '#skills' : '#interests';
+    $(otherName).prev().remove();
+    $(className).prev().prev().remove();
+  }
+}
+
+function getTagsScriptWithCallback(callback) {
+  $.getScript(
+      'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js',
+      callback);
 }
 
 /** Puts item back into pool if it was a preset */
 async function addTagBackToPool(item, tagId) {
   const prefilledItems = await getPrefilledInformation(tagId);
   if (prefilledItems.includes(item)) {
-    $(tagId + '-div > .prefilled-pool > .btn-group:contains("' + item + '")').show();
+    $(tagId + '-div > .prefilled-pool > .btn-group:contains("' + item + '")')
+        .show();
   }
 }
 
@@ -84,6 +128,13 @@ function removeTagsFromPool(clickedAdder) {
   $(clickedAdder).parent().hide();
 }
 
+function togglePrefilledSkills() {
+  $('#prefilled-skills').toggle();
+}
+
+function togglePrefilledInterests() {
+  $('#prefilled-interests').toggle();
+}
 
 /** Writes out relevant details to an event card */
 function populateEventContainer(event, containerId) {
@@ -96,13 +147,17 @@ function populateEventContainer(event, containerId) {
     $(`#${eventCardId} #event-card-title`).html(event.name);
     $(`#${eventCardId} #event-card-description`).html(event.description);
     $(`#${eventCardId} #event-card-date`)
-        .html(buildDate(event.date.year, event.date.month, event.date.dayOfMonth));
+        .html(
+            buildDate(
+                event.date.year, event.date.month, event.date.dayOfMonth));
     $(`#${eventCardId} #event-card-time`).html(event.time);
     $(`#${eventCardId} #event-card-location`).html(event.location);
     $(`#${eventCardId} #event-card-volunteers`)
         .html(buildVolunteers(event.opportunities));
-    buildAsLabels(eventCardId, event.labels, 'interests');
-    buildSkillsAsLabels(eventCardId, event.opportunities);
+    buildAsLabels(
+        `#${eventCardId} #event-card-labels`, event.labels, 'interests');
+    buildSkillsAsLabels(
+        `#${eventCardId} #event-card-labels`, event.opportunities);
     addLinkToRegister(eventCardId);
     addLinkToDetails(eventCardId);
   });
@@ -136,7 +191,7 @@ function buildVolunteers(opportunities) {
 }
 
 /** Creates a button label for each provided interest or skill */
-function buildAsLabels(eventCardId, labels, className) {
+function buildAsLabels(querySelector, labels, className) {
   for (const label of labels) {
     const newLabelButton = document.createElement('button');
     newLabelButton.classList.add(`btn-${className}`);
@@ -144,14 +199,17 @@ function buildAsLabels(eventCardId, labels, className) {
     newLabelButton.disabled = true;
     newLabelButton.innerHTML = label;
     document
-        .querySelector(`#${eventCardId} #event-card-labels`)
+        .querySelector(querySelector)
         .appendChild(newLabelButton);
   }
 }
 
-/** Creates the corresponding skill button labels for each volunteering opportunity */
-function buildSkillsAsLabels(eventId, opportunities) {
+/**
+ * Creates the corresponding skill button labels for each volunteering
+ * opportunity
+ */
+function buildSkillsAsLabels(querySelector, opportunities) {
   for (const opportunity of opportunities) {
-    buildAsLabels(eventId, opportunity.requiredSkills, 'skills');
+    buildAsLabels(querySelector, opportunity.requiredSkills, 'skills');
   }
 }
