@@ -86,7 +86,6 @@ public class EventSpannerTasksTest {
    * Also tests behavior of EventCreationServlet doGet() where doGet request.getParameter("eventId") == event.getId() */
   @Test
   public void eventInsertAndRetrieval() {
-    SpannerTasks.insertOrUpdateUser(HOST);
     Event event =
         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
     SpannerTasks.insertOrUpdateEvent(event);
@@ -105,7 +104,6 @@ public class EventSpannerTasksTest {
   /** Verify getting Set<Event> from corresponding eventIds */
   @Test
   public void getEventsByIdTest() {
-    SpannerTasks.insertOrUpdateUser(HOST);
     Event event =
         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
     Event otherEvent =
@@ -126,7 +124,6 @@ public class EventSpannerTasksTest {
    */
   @Test
   public void testEventCreationDoPost() throws Exception {
-    SpannerTasks.insertOrUpdateUser(HOST);
     request.addParameter("name", EVENT_NAME);
     request.addParameter("date", DATE_STRING);
     request.addParameter("time", TIME);
@@ -157,7 +154,6 @@ public class EventSpannerTasksTest {
    */
   @Test
   public void testEventCreationDoGet() throws Exception {
-    SpannerTasks.insertOrUpdateUser(HOST);
     Event event =
         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
     SpannerTasks.insertOrUpdateEvent(event);
@@ -191,7 +187,6 @@ public class EventSpannerTasksTest {
    */
   @Test
   public void testEventRegistrationDoGet() throws Exception {
-    SpannerTasks.insertOrUpdateUser(HOST);
     //Existing event to sign up for
     SpannerTasks.insertOrUpdateUser(ATTENDEE);
     Event event =

@@ -196,7 +196,7 @@ public class SpannerTasks {
 
   private static Event shallowCreateEventFromDatabaseResult(ResultSet resultSet) {
     String eventId = resultSet.getString(0);
-    Event event = new Event.Builder(
+    return new Event.Builder(
             /* name = */ resultSet.getString(1),
             /* description = */ resultSet.getString(2),
             /* labels = */ new HashSet<String>(resultSet.getStringList(3)),
@@ -209,7 +209,6 @@ public class SpannerTasks {
         .setAttendees(
             shallowReadMultipleUsersFromEmails(new HashSet<String>(resultSet.getStringList(9))))
         .build();
-        return event;
   }
 
   private static List<Mutation> getUserMutationsFromBuilder(
