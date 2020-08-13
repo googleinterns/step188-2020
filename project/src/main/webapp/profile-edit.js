@@ -23,11 +23,7 @@ async function showCurrentUserInfo() {
  */
 function populateExisting(className, userData) {
   $(className).on('itemAdded', function() {
-    if ($(className).prevAll().length > 2) {
-      const otherName = className === '#interests' ? '#skills' : '#interests';
-      $(otherName).prev().remove();
-      $(className).prev().prev().remove();
-    }
+    removeExtraInputs(className);
   });
 
   const existingLabels = userData[className];

@@ -88,11 +88,7 @@ async function moveTagsFromPoolToInput(clickedAdder, tagId) {
 /** Add tag to user input box once it is chosen */
 function addTagsToInput(clickedAdder, tagId) {
   $(tagId).on('itemAdded', function() {
-    if ($(tagId).prevAll().length > 2) {
-      const otherId = tagId === '#interests' ? '#skills' : '#interests';
-      $(otherId).prev().remove();
-      $(tagId).prev().prev().remove();
-    }
+    removeExtraInputs(tagId);
   });
   $(tagId).on('itemRemoved', function(event) {
     addTagBackToPool(event.item, tagId);
@@ -101,6 +97,15 @@ function addTagsToInput(clickedAdder, tagId) {
     $(tagId).tagsinput('refresh');
     $(tagId).tagsinput('add', $(clickedAdder).next().html());
   });
+}
+
+/** Removes any extra inputs initialized by scripts */
+function removeExtraInputs(className) {
+  if ($(className).prevAll().length > 2) {
+    const otherName = className === '#interests' ? '#skills' : '#interests';
+    $(otherName).prev().remove();
+    $(className).prev().prev().remove();
+  }
 }
 
 function getTagsScriptWithCallback(callback) {
