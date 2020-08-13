@@ -45,12 +45,12 @@
           />
         </div>
         <br />
-        <div class="row">
-          <div class="col-lg-6">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text" id="basic-addon1">Date</span>
-              </div>
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Date</span>
+            </div>
               <input
                 type="text"
                 class="form-control"
@@ -79,17 +79,51 @@
             </div>
           </div>
         </div>
-        <br />
-        <div class="inline">
-          <text> Tags: </text>
-          <div class="container">
-            <span class="badge badge-primary text-medium"> Tag 1</span>
-            <span class="badge badge-primary text-medium"> Tag 2</span>
-            <span class="badge badge-secondary text-medium"> + Tag</span>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="input-group" id="interests-div">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="interests">Interests</label>
+            </div>
+            <select
+              id="interests"
+              name="interests"
+              data-role="tagsinput"
+              multiple
+            ></select>
+            <button 
+              type="button"
+              class="btn btn-light prefilled-pick"
+              onclick="togglePrefilledInterests();"
+            >+ Pick</button>
+            <div id="prefilled-interests" class="overflow-auto prefilled-pool"></div>
           </div>
         </div>
-        <br />
-        <br />
+        <div class="col-lg-6">
+          <div class="input-group" id="skills-div">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="skills">Skills</label>
+            </div>
+            <select
+              id="skills"
+              name="skills"
+              data-role="tagsinput"
+              multiple
+            ></select>
+            <button 
+              type="button"
+              class="btn btn-light prefilled-pick"
+              onclick="togglePrefilledSkills();"
+            >+ Pick</button>
+            <div id="prefilled-skills" class="overflow-auto prefilled-pool"></div>
+          </div>
+        </div>
+      </div>
+      </div>
+      <br />
+      <br />
         <div class="input-group">
           <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon1">Description</span>
