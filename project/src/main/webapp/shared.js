@@ -103,10 +103,10 @@ function addTagsToInput(clickedAdder, tagId) {
   });
 }
 
-function getTagsScriptWithCallback(fn) {
+function getTagsScriptWithCallback(callback) {
   $.getScript(
       'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js',
-      fn);
+      callback);
 }
 
 /** Puts item back into pool if it was a preset */
