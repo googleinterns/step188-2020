@@ -41,6 +41,7 @@ public class UserProfileEventsTest {
   private static final LocalServiceTestHelper authenticationHelper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig());
   private static final String PARAMETER_EVENT_TYPE = "event-type";
+  private static final String HOSTING = "hosting";
   private static final String VOLUNTEERING = "volunteering";
   private static final String HOST_NAME = "Bob Smith";
   private static final String HOST_EMAIL = "bobsmith@example.com";
@@ -72,8 +73,44 @@ public class UserProfileEventsTest {
   }
 
   @Test
-  public void getUserEventsHosting() throws IOException {
-    // TO DO: Add tests for events hosting.
+  public void getUserEventsHosting_zeroEvents() throws IOException {
+    User host = TestUtils.newUser();
+  
+    SpannerTasks.insertOrUpdateUser(host);
+
+    authenticationHelper
+        .setEnvIsLoggedIn(true)
+        .setEnvEmail(EMAIL)
+        .setEnvAuthDomain(AUTH_DOMAIN);
+    Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(HOSTING);
+
+    profileEventsServlet.doGet(request, response);
+
+    Assert.assertEquals(
+        CommonUtils.convertToJson(new HashSet<>()).trim(),
+        stringWriter.toString().trim());
+  }
+
+  @Test
+  public void getUserEventsHosting_nonzeroEvents() throws IOException {
+    User host = TestUtils.newUserWithEmail(EMAIL);
+    Event event = TestUtils.newEventWithHost(host);
+    host = host.toBuilder().addEventHosting(event).build();
+  
+    SpannerTasks.insertOrUpdateUser(host);
+    SpannerTasks.insertorUpdateEvent(event);
+
+    authenticationHelper
+        .setEnvIsLoggedIn(true)
+        .setEnvEmail(EMAIL)
+        .setEnvAuthDomain(AUTH_DOMAIN);
+    Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(HOSTING);
+
+    profileEventsServlet.doGet(request, response);
+
+    Assert.assertEquals(
+        CommonUtils.convertToJson(Arrays.asList(event)).trim(),
+        stringWriter.toString().trim());
   }
 
   @Test
