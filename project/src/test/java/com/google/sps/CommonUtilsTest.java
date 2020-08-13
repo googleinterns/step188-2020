@@ -34,10 +34,10 @@ public final class CommonUtilsTest {
   @Test
   public void volunteeringOpportunityToJson() {
     // Given a VolunteeringOpportunity, verify that all of its fields are properly converted to JSON
+    String eventId = "0883de79-17d7-49a3-a866-dbd5135062a8";
     String name = "Meal Prep Workshop";
     long numSpotsLeft = 40;
     String requiredSkill = "Cooking";
-    String eventId = "0883de79-17d7-49a3-a866-dbd5135062a8";
     VolunteeringOpportunity opportunity =
         new VolunteeringOpportunity.Builder(eventId, name, numSpotsLeft)
             .setRequiredSkills(new HashSet<>(Arrays.asList(requiredSkill)))

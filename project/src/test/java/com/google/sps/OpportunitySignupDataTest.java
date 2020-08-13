@@ -30,7 +30,6 @@ import org.springframework.mock.web.MockServletContext;
 @RunWith(JUnit4.class)
 public final class OpportunitySignupDataTest {
   private static final String PARAMETER_OPPORTUNITY_ID = "opportunity-id";
-  private VolunteeringOpportunity opportunity;
   private HttpServletRequest request;
   private HttpServletResponse response;
   private StringWriter stringWriter;

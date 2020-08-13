@@ -30,7 +30,6 @@ public final class OpportunitySignupFormHandlerTest {
   private OpportunitySignupFormHandlerServlet opportunitySignupServlet;
   private HttpServletRequest request;
   private HttpServletResponse response;
-  private VolunteeringOpportunity opportunity;
 
   @Before
   public void setUp() throws Exception {
