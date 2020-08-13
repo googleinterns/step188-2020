@@ -208,3 +208,4 @@ function buildSkillsAsLabels(querySelector, opportunities) {
     buildAsLabels(querySelector, opportunity.requiredSkills, 'skills');
   }
 }
+
