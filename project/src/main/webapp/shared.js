@@ -4,6 +4,7 @@ async function isLoggedIn() {
   return loginStatus.loginState === 'LOGGED_IN';
 }
 
+/** Get label pool */
 async function getPrefilledInformation(informationCategory) {
   const response =
       await fetch(
@@ -11,6 +12,7 @@ async function getPrefilledInformation(informationCategory) {
   return response.json();
 }
 
+/** Create a label tag with the add button next to it */
 function buildTagWithAdder(tagClass, text) {
   let group = buildGroup();
   const addButton = buildAdder(tagClass);
@@ -22,6 +24,7 @@ function buildTagWithAdder(tagClass, text) {
   return group;
 }
 
+/** Create a label tag without the add button next to it */
 function buildTagWithoutAdder(tagClass, text) {
   let group = buildGroup();
   const tag = buildTag(tagClass);
@@ -31,6 +34,7 @@ function buildTagWithoutAdder(tagClass, text) {
   return group;
 }
 
+/** Create a group for buttons */
 function buildGroup() {
   const group = document.createElement('div');
   group.classList.add('btn-group');
@@ -38,6 +42,7 @@ function buildGroup() {
   return group;
 }
 
+/** Create an add button */
 function buildAdder(tagClass) {
   const addButton = document.createElement('button');
   addButton.setAttribute('type', 'button');
