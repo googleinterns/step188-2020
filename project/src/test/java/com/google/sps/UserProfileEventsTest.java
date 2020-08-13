@@ -70,17 +70,45 @@ public class UserProfileEventsTest {
   }
 
   @Test
-  public void verifyGetUser_EventsHosting() throws IOException {
+  public void getUserEventsHosting() throws IOException {
     
   }
 
   @Test
-  public void verifyGetUser_EventsParticipating() throws IOException {
+  public void getUserEventsParticipating() throws IOException {
     
   }
 
   @Test
-  public void verifyGetUser_EventsVolunteering() throws IOException {
+  public void getUserEventsVolunteering_noVolunteerSignupsForUser() throws IOException {
+    String userEmail = "test@gmail.com";
+    User user = TestUtils.newUserWithEmail(userEmail);
+    SpannerTasks.insertOrUpdateUser(user);
+
+    User host = new User.Builder(HOST_NAME, EMAIL).build();
+    SpannerTasks.insertOrUpdateUser(host);
+    Event event = TestUtils.newEventWithHost(host);
+    SpannerTasks.insertorUpdateEvent(event);
+
+    VolunteeringOpportunity opportunity =
+    TestUtils.newVolunteeringOpportunityWithEventId(event.getId());
+    SpannerTasks.insertVolunteeringOpportunity(opportunity);
+
+    authenticationHelper
+        .setEnvIsLoggedIn(true)
+        .setEnvEmail(userEmail)
+        .setEnvAuthDomain("gmail.com");
+    Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(VOLUNTEERING);
+
+    profileEventsServlet.doGet(request, response);
+
+    Assert.assertEquals(
+        CommonUtils.convertToJson(new HashSet<>()).trim(),
+        stringWriter.toString().trim());
+  }
+
+  @Test
+  public void getUserEventsVolunteering_nonzeroVolunteerSignupsForUser() throws IOException {
     String userEmail = "test@gmail.com";
     User user = TestUtils.newUserWithEmail(userEmail);
     SpannerTasks.insertOrUpdateUser(user);
@@ -113,7 +141,7 @@ public class UserProfileEventsTest {
   }
 
   @Test
-  public void verifyGetUserEvents_EventNotSpecified() throws IOException {
+  public void verifyGetUserEvents_eventNotSpecified_sendErrorResponse() throws IOException {
     authenticationHelper
         .setEnvIsLoggedIn(true)
         .setEnvEmail("test@gmail.com")
@@ -127,7 +155,7 @@ public class UserProfileEventsTest {
   }
 
   @Test
-  public void verifyGetUserEvents_InvalidParameter() throws IOException {
+  public void verifyGetUserEvents_invalidParameter_sendErrorResponse() throws IOException {
     authenticationHelper
         .setEnvIsLoggedIn(true)
         .setEnvEmail("test@gmail.com")
@@ -141,7 +169,7 @@ public class UserProfileEventsTest {
   }
 
   @Test
-  public void verifyGetUserEvents_NotLoggedIn() throws Exception {
+  public void verifyGetUserEvents_notLoggedIn_redirectToLogin() throws Exception {
     authenticationHelper.setEnvIsLoggedIn(false);
     Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(VOLUNTEERING);
 

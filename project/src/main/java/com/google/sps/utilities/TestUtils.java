@@ -30,14 +30,14 @@ public class TestUtils {
   private static final String VOLUNTEER_EMAIL = "volunteer@gmail.com";
 
 
-  /** Return a new User object with arbitrary attributes. */
+  /** Returns a new User object with arbitrary attributes. */
   public static User newUser() {
     return new User.Builder(NAME, EMAIL).build();
   }
 
   /*
-   * Return a new user with given email.
-   * @param email used to create a User object.
+   * Returns a new User object with given email.
+   * @param email used to create a User object
    * @return a user with given email
    */
   public static User newUserWithEmail(String email) {
@@ -45,7 +45,7 @@ public class TestUtils {
   }
 
   /*
-   * Return a new Event object with the given eventId.
+   * Returns a new Event object with the given user as host.
    * @param user host to be used to create a Event object
    * @return an event with given user as host
    */
@@ -53,14 +53,14 @@ public class TestUtils {
     return new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, user).build();
   }
 
-  /** Return a new VolunteeringOpportunity object with arbitrary parameters. */
+  /** Returns a new VolunteeringOpportunity object with arbitrary parameters. */
   public static VolunteeringOpportunity newVolunteeringOpportunity() {
     return new VolunteeringOpportunity.Builder(EVENT_ID, OPPORTUNITY_NAME, NUMBER_OF_SPOTS).build();
   }
 
   /*
-   * Return a new VolunteeringOpportunity object with the given eventId.
-   * @param eventId event ID  used to create a VolunteeringOpportunity object
+   * Returns a new VolunteeringOpportunity object with the given eventId.
+   * @param eventId event ID used to create a VolunteeringOpportunity object
    * @return a volunteering opportunity with the given event ID
    */
   public static VolunteeringOpportunity newVolunteeringOpportunityWithEventId(String eventId) {
@@ -68,8 +68,8 @@ public class TestUtils {
   }
 
   /*
-   * Return a new OpportunitySignup object with the given opportunityId.
-   * @param opportunityId opportunity ID to create a OpportunitySignup object
+   * Returns a new OpportunitySignup object with the given opportunityId.
+   * @param opportunityId opportunity ID to create an OpportunitySignup object
    * @return an opportunity signup with given opportunity ID
    */
   public static OpportunitySignup newOpportunitySignupWithOpportunityId(String opportunityId) {
