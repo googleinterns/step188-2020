@@ -495,7 +495,7 @@ public class SpannerTasks {
 
   /**
    * Given a user email retrieve all events that the user is 
-   * participating in.
+   * participating in by querying events that the user is an attendee of.
    *
    * @param email loggedIn user email
    * @return events where the user is participating
