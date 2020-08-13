@@ -91,13 +91,14 @@ function getLinkForOpportunity(opportunityId) {
 }
 
 /**
- * Gets event details from database with eventId and fills out event page with details
+ * Gets event details from database with eventId and uses to fill event page
  */
 async function getEventDetails() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const eventId = urlParams.get('eventId');
-  const response = await fetch('/create-event?' + new URLSearchParams({'eventId': eventId}))
+  const response = await fetch('/create-event?'
+    + new URLSearchParams({'eventId': eventId}));
   const data = await response.json();
   document.getElementById('name').innerHTML = data['name'];
   document.getElementById('description').innerHTML = data['description'];
