@@ -91,15 +91,25 @@ function getLinkForOpportunity(opportunityId) {
 }
 
 /**
- * Gets event details from database with eventId and uses to fill event page
+ * Gets event details from database with eventId and fills out event page with details
+ * If registering for event, register user then show event details
  */
 async function getEventDetails() {
+    //make sign up link go to correct
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const eventId = urlParams.get('eventId');
-  const response = await fetch('/create-event?' +
-    new URLSearchParams({'eventId': eventId}));
+
+  //Register for event, if register param not specified, default to not registering
+  const registerBool = urlParams.get('register') ? urlParams.get('register'): 'false';
+  if (registerBool === "true") {
+      registerEvent(eventId)
+  }
+
+  //View event details
+  const response = await fetch('/create-event?' + new URLSearchParams({'eventId': eventId}))
   const data = await response.json();
+  console.log(data);
   document.getElementById('name').innerHTML = data['name'];
   document.getElementById('description').innerHTML = data['description'];
   document.getElementById('date').innerHTML = `Date: 
@@ -107,8 +117,13 @@ async function getEventDetails() {
   document.getElementById('location').innerHTML =
     `Location: ${data['location']}`;
   document.getElementById('time').innerHTML = `Time: ${data['time']}`;
-  document.getElementById('editLink')
-    .setAttribute('href', `/event-edit.html?eventId=${eventId}`);
+  document.getElementById('editLink').setAttribute('href', `/event-edit.html?eventId=${eventId}`);
+}
+
+async function registerEvent(eventId) {
+  const response = await fetch('/register-event?' + new URLSearchParams({'eventId': eventId}), {method: 'POST'} );
+  document.getElementById('signupLink').setAttribute('href', '');
+  document.getElementById('signupLink').innerHTML = 'You are signed up for this event.'
 }
 
 /**
