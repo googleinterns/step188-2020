@@ -101,6 +101,7 @@ function addTagsToInput(clickedAdder, tagId) {
 
 /** Removes any extra inputs initialized by scripts */
 function removeExtraInputs(className) {
+  console.log(className + ' ' + $(className).prevAll().length);
   if ($(className).prevAll().length > 2) {
     const otherName = className === '#interests' ? '#skills' : '#interests';
     $(otherName).prev().remove();

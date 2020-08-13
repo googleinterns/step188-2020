@@ -2,6 +2,7 @@ $(document).ready(function() {
   showCurrentUserInfo();
   populatePrefilled('interests');
   populatePrefilled('skills');
+  removeAllExtraInputs();
 });
 
 /**
@@ -22,7 +23,6 @@ async function showCurrentUserInfo() {
  * Populates inputs with labels that already exist
  */
 function populateExisting(className, userData) {
-  removeExtraInputs(className);
   $(className).on('itemAdded', function() {
     removeExtraInputs(className);
   });
@@ -33,4 +33,9 @@ function populateExisting(className, userData) {
       $(`#${className}`).tagsinput('add', label);
     }
   });
+}
+
+function removeAllExtraInputs() {
+  removeExtraInputs('interests');
+  removeExtraInputs('skills');
 }
