@@ -18,8 +18,10 @@ async function getCurrentProfileData() {
 function updateProfileBasics(userData) {
   $('#name').text(userData['name']);
   $('#email').text(userData['email']);
-  $('#interests').text(userData['interests']);
-  $('#skills').text(userData['skills']);
+  buildAsLabels(
+        `#interests`, userData['interests'], 'interests');
+  buildSkillsAsLabels(
+      `#skills`, userData['skills']);
 }
 
 /** Populate the user profile with all associated events */
