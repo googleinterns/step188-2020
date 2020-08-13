@@ -7,29 +7,23 @@ import com.google.sps.data.EventVolunteering;
 import com.google.sps.data.OpportunitySignup;
 import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
-import com.google.sps.servlets.OpportunitySignupFormHandlerServlet;
 import com.google.sps.servlets.UserProfileEventsServlet;
-
 import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.SpannerClient;
 import com.google.sps.utilities.SpannerTasks;
 import com.google.sps.utilities.SpannerTestTasks;
 import com.google.sps.utilities.TestUtils;
 import java.io.IOException;
-import com.google.sps.data.User;
-import com.google.sps.data.Event;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
-import java.util.Set;
 import java.util.HashSet;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -44,7 +38,8 @@ public class UserProfileEventsTest {
   private StringWriter stringWriter;
   private PrintWriter printWriter;
   private UserProfileEventsServlet profileEventsServlet;
-  private static final LocalServiceTestHelper authenticationHelper = new LocalServiceTestHelper(new LocalUserServiceTestConfig());
+  private static final LocalServiceTestHelper authenticationHelper =
+      new LocalServiceTestHelper(new LocalUserServiceTestConfig());
   private static final String PARAMETER_EVENT_TYPE = "event-type";
   private static final String VOLUNTEERING = "volunteering";
   private static final String HOST_NAME = "Bob Smith";
@@ -88,15 +83,20 @@ public class UserProfileEventsTest {
   public void verifyGetUser_EventsVolunteering() throws IOException {
     String userEmail = "test@gmail.com";
     User user = TestUtils.newUserWithEmail(userEmail);
-    User host = new User.Builder(HOST_NAME, EMAIL).build();
     SpannerTasks.insertOrUpdateUser(user);
+
+    User host = new User.Builder(HOST_NAME, EMAIL).build();
     SpannerTasks.insertOrUpdateUser(host);
     Event event = TestUtils.newEventWithHost(host);
     SpannerTasks.insertorUpdateEvent(event);
-    VolunteeringOpportunity opportunity = TestUtils.newVolunteeringOpportunityWithEventId(event.getId());
+
+    VolunteeringOpportunity opportunity =
+        TestUtils.newVolunteeringOpportunityWithEventId(event.getId());
     SpannerTasks.insertVolunteeringOpportunity(opportunity);
-    OpportunitySignup opportunitySignup = new OpportunitySignup.Builder(opportunity.getOpportunityId(), user.getEmail()).build();
+    OpportunitySignup opportunitySignup =
+        new OpportunitySignup.Builder(opportunity.getOpportunityId(), user.getEmail()).build();
     SpannerTasks.insertOpportunitySignup(opportunitySignup);
+
     authenticationHelper
         .setEnvIsLoggedIn(true)
         .setEnvEmail(userEmail)
@@ -106,32 +106,24 @@ public class UserProfileEventsTest {
     profileEventsServlet.doGet(request, response);
 
     Assert.assertEquals(
-        CommonUtils.convertToJson(new HashSet<>(Arrays.asList(new EventVolunteering(event, opportunity.getName())))).trim(),
+        CommonUtils.convertToJson(
+            new HashSet<>(Arrays.asList(new EventVolunteering(event, opportunity.getName()))))
+        .trim(),
         stringWriter.toString().trim());
   }
 
   @Test
   public void verifyGetUserEvents_EventNotSpecified() throws IOException {
-    String userEmail = "test@gmail.com";
-    User user = TestUtils.newUserWithEmail(userEmail);
-    User host = new User.Builder(HOST_NAME, EMAIL).build();
-    SpannerTasks.insertOrUpdateUser(user);
-    SpannerTasks.insertOrUpdateUser(host);
-    Event event = TestUtils.newEventWithHost(host);
-    SpannerTasks.insertorUpdateEvent(event);
-    VolunteeringOpportunity opportunity = TestUtils.newVolunteeringOpportunityWithEventId(event.getId());
-    SpannerTasks.insertVolunteeringOpportunity(opportunity);
-    OpportunitySignup opportunitySignup = new OpportunitySignup.Builder(opportunity.getOpportunityId(), user.getEmail()).build();
-    SpannerTasks.insertOpportunitySignup(opportunitySignup);
     authenticationHelper
         .setEnvIsLoggedIn(true)
-        .setEnvEmail(userEmail)
+        .setEnvEmail("test@gmail.com")
         .setEnvAuthDomain("gmail.com");
     Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(null);
 
     profileEventsServlet.doGet(request, response);
 
-    Mockito.verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "No event type specified.");
+    Mockito.verify(response)
+        .sendError(HttpServletResponse.SC_BAD_REQUEST, "No event type specified.");
   }
 
   @Test
@@ -144,7 +136,8 @@ public class UserProfileEventsTest {
 
     profileEventsServlet.doGet(request, response);
 
-    Mockito.verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid event type.");
+    Mockito.verify(response)
+        .sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid event type.");
   }
 
   @Test
