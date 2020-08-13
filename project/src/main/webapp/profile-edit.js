@@ -18,6 +18,9 @@ async function showCurrentUserInfo() {
   populateExisting('skills', userData);
 }
 
+/** 
+ * Populates inputs with labels that already exist
+ */
 function populateExisting(className, userData) {
   $(className).on('itemAdded', function() {
     if ($(className).prevAll().length > 2) {
