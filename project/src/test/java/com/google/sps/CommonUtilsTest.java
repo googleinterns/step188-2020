@@ -37,42 +37,47 @@ public final class CommonUtilsTest {
     String name = "Meal Prep Workshop";
     long numSpotsLeft = 40;
     String requiredSkill = "Cooking";
-    String opportunityId = "0883de79-17d7-49a3-a866-dbd5135062a8";
-    User volunteer = new User.Builder("Bob Smith", "bobsmith@example.com").build();
+    String eventId = "0883de79-17d7-49a3-a866-dbd5135062a8";
     VolunteeringOpportunity opportunity =
-        new VolunteeringOpportunity.Builder(opportunityId, name, numSpotsLeft)
+        new VolunteeringOpportunity.Builder(eventId, name, numSpotsLeft)
             .setRequiredSkills(new HashSet<>(Arrays.asList(requiredSkill)))
-            .setVolunteers(new HashSet<>(Arrays.asList(volunteer)))
             .build();
     String expectedJson =
         String.format(
-            "{%s:%s,%s:%s,%s:%s,%s:%d,%s:%s,%s:[{%s:%s,%s:%s,%s:%s,%s:%s,%s:%s,%s:%s,%s:%s}]}",
+            "{%s:%s,%s:%s,%s:%s,%s:%d,%s:%s}",
             wrapInQuotes("opportunityId"),
             wrapInQuotes(opportunity.getOpportunityId()),
             wrapInQuotes("eventId"),
-            wrapInQuotes(opportunityId),
+            wrapInQuotes(eventId),
             wrapInQuotes("name"),
             wrapInQuotes(name),
             wrapInQuotes("numSpotsLeft"),
             numSpotsLeft,
             wrapInQuotes("requiredSkills"),
-            new HashSet<String>(Arrays.asList(wrapInQuotes(requiredSkill))),
-            wrapInQuotes("volunteers"),
-            wrapInQuotes("name"),
-            wrapInQuotes(volunteer.getName()),
-            wrapInQuotes("email"),
-            wrapInQuotes(volunteer.getEmail()),
-            wrapInQuotes("interests"),
-            volunteer.getInterests(),
-            wrapInQuotes("skills"),
-            volunteer.getSkills(),
-            wrapInQuotes("eventsHosting"),
-            volunteer.getEventsHosting(),
-            wrapInQuotes("eventsParticipating"),
-            volunteer.getEventsParticipating(),
-            wrapInQuotes("eventsVolunteering"),
-            volunteer.getEventsVolunteering());
+            new HashSet<String>(Arrays.asList(wrapInQuotes(requiredSkill))));
     Assert.assertEquals(expectedJson, CommonUtils.convertToJson(opportunity));
+  }
+
+  @Test
+  public void userToJson() {
+  // Given an User, verify that all of its fields are properly converted to JSON
+  User user = new User.Builder("Bob Smith", "bobsmith@example.com").build();
+  String expectedJson =
+    String.format("{%s:%s,%s:%s,%s:%s,%s:%s,%s:%s,%s:%s,%s:%s}",
+        wrapInQuotes("name"),
+        wrapInQuotes(user.getName()),
+        wrapInQuotes("email"),
+        wrapInQuotes(user.getEmail()),
+        wrapInQuotes("interests"),
+        user.getInterests(),
+        wrapInQuotes("skills"),
+        user.getSkills(),
+        wrapInQuotes("eventsHosting"),
+        user.getEventsHosting(),
+        wrapInQuotes("eventsParticipating"),
+        user.getEventsParticipating(),
+        wrapInQuotes("eventsVolunteering"),
+        user.getEventsVolunteering());
   }
 
   @Test
