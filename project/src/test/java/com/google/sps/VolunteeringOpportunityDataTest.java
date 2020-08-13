@@ -1,5 +1,5 @@
 package com.google.sps;
- 
+
 import com.google.sps.data.VolunteeringOpportunity;
 import com.google.sps.servlets.VolunteeringOpportunityDataServlet;
 import com.google.sps.utilities.CommonUtils;
@@ -38,7 +38,7 @@ public final class VolunteeringOpportunityDataTest {
     MockServletContext mockServletContext = new MockServletContext();
     new SpannerClient().contextInitialized(new ServletContextEvent(mockServletContext));
     SpannerTestTasks.setup();
- 
+
     request = Mockito.mock(HttpServletRequest.class);
     response = Mockito.mock(HttpServletResponse.class);
     stringWriter = new StringWriter();
@@ -59,11 +59,10 @@ public final class VolunteeringOpportunityDataTest {
     SpannerTasks.insertVolunteeringOpportunity(opportunity);
     Mockito.when(request.getParameter(PARAMETER_OPPORTUNITY_ID))
         .thenReturn(opportunity.getOpportunityId());
- 
+
     opportunityDataServlet.doGet(request, response);
- 
-    Assert.assertEquals(
-        CommonUtils.convertToJson(opportunity), stringWriter.toString().trim());
+
+    Assert.assertEquals(CommonUtils.convertToJson(opportunity), stringWriter.toString().trim());
   }
 
   @Test
@@ -86,7 +85,6 @@ public final class VolunteeringOpportunityDataTest {
     opportunityDataServlet.doGet(request, response);
  
     Mockito.verify(response)
-        .sendError(
-            HttpServletResponse.SC_BAD_REQUEST, "No opportunity id specified.");
+        .sendError(HttpServletResponse.SC_BAD_REQUEST, "No opportunity id specified.");
   }
 }
