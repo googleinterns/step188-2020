@@ -34,9 +34,12 @@ public class EventRegistrationServlet extends HttpServlet {
     if (!eventOptional.isPresent()) {
         response.sendError(HttpServletResponse.SC_NOT_FOUND);
     } else {
-      // Register logged in user for event
-      Event event = eventOptional.get().toBuilder().setId(eventId).addAttendee(SpannerTasks.getLoggedInUser().get()).build();
-
+      // Register loggedin user for event if not host
+      User loggedInUser = SpannerTasks.getLoggedInUser().get();
+      Event event = eventOptional.get();
+      if (event.getHost() != loggedInUser ) {
+      SpannerTasks.insertOrUpdateEvent(event.toBuilder().setId(eventId).addAttendee(loggedInUser).build());
+      }
       //redirect to event details
       String redirectUrl = "/event-details.html?eventId=" + event.getId() + "&register=false";
       response.sendRedirect(redirectUrl);

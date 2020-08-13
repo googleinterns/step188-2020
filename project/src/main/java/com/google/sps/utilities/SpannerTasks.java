@@ -79,7 +79,6 @@ public class SpannerTasks {
                         USER_TABLE, email)));
 
     if (!resultSet.next()) {
-                System.out.println("empty user id");
       return Optional.empty();
     }
 
@@ -166,7 +165,6 @@ public class SpannerTasks {
 
     /** If ID does not exist */
     if (!resultSet.next()) {
-        System.out.println("empty event id");
       return Optional.empty();
     }
     return Optional.of(shallowCreateEventFromDatabaseResult(resultSet));
@@ -197,7 +195,6 @@ public class SpannerTasks {
   }
 
   private static Event shallowCreateEventFromDatabaseResult(ResultSet resultSet) {
-      System.out.println(shallowReadUserFromEmail(resultSet.getString(7)).get());
     String eventId = resultSet.getString(0);
     Event event = new Event.Builder(
             /* name = */ resultSet.getString(1),
