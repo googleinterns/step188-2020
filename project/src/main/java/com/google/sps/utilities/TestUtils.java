@@ -29,7 +29,6 @@ public class TestUtils {
   private static final int NUMBER_OF_SPOTS = 240;
   private static final String VOLUNTEER_EMAIL = "volunteer@gmail.com";
 
-
   /** Returns a new User object with arbitrary attributes. */
   public static User newUser() {
     return new User.Builder(NAME, EMAIL).build();
