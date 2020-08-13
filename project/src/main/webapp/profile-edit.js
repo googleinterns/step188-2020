@@ -12,8 +12,6 @@ async function showCurrentUserInfo() {
   const userData = await response.json();
 
   const userName = userData['name'];
-  const userInterests = userData['interests'];
-  const userSkills = userData['skills'];
 
   $('#name').val(userName);
   populateExisting('interests', userData);
@@ -21,10 +19,18 @@ async function showCurrentUserInfo() {
 }
 
 function populateExisting(className, userData) {
+  $(className).on('itemAdded', function() {
+    if ($(className).prevAll().length > 2) {
+      const otherName = className === '#interests' ? '#skills' : '#interests';
+      $(otherName).prev().remove();
+      $(className).prev().prev().remove();
+    }
+  });
+
   const existingLabels = userData[className];
   getTagsScriptWithCallback(function() {
     for (const label of existingLabels) {
-      $(`#${className}`).append(buildTagWithoutAdder(className, label));
+      $(`#${className}`).tagsinput('add', label);
     }
   });
 }
