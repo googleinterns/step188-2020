@@ -153,7 +153,7 @@ function populateEventContainer(event, containerId) {
     $(`#${eventCardId} #event-card-time`).html(event.time);
     $(`#${eventCardId} #event-card-location`).html(event.location);
     $(`#${eventCardId} #event-card-volunteers`)
-        .html(buildVolunteers(event.opportunities));
+        .html(buildVolunteers(event.opportunities
     buildAsLabels(
         `#${eventCardId} #event-card-labels`, event.labels, 'interests');
     buildSkillsAsLabels(
@@ -213,4 +213,3 @@ function buildSkillsAsLabels(querySelector, opportunities) {
     buildAsLabels(querySelector, opportunity.requiredSkills, 'skills');
   }
 }
-
