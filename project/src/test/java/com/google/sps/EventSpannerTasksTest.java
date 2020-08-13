@@ -88,7 +88,7 @@ public class EventSpannerTasksTest {
   public void eventInsertAndRetrieval() {
     Event event =
         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
-    SpannerTasks.insertOrUpdateEvent(event);
+    SpannerTasks.insertorUpdateEvent(event);
     Event dbEvent = SpannerTasks.getEventById(event.getId()).get();
 
     Assert.assertEquals(dbEvent.getName(), EVENT_NAME);
@@ -108,8 +108,8 @@ public class EventSpannerTasksTest {
         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
     Event otherEvent =
         new Event.Builder(NEW_EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
-    SpannerTasks.insertOrUpdateEvent(event);
-    SpannerTasks.insertOrUpdateEvent(otherEvent);
+    SpannerTasks.insertorUpdateEvent(event);
+    SpannerTasks.insertorUpdateEvent(otherEvent);
     Set<Event> actualEvents = new HashSet<>(Arrays.asList(event, otherEvent));
     Set<Event> insertedEvents = SpannerTasks.getEventsFromIds(Arrays.asList(event.getId(), otherEvent.getId()));
     List<Event> insertedEventsList = insertedEvents.stream().collect(Collectors.toCollection(ArrayList::new));
@@ -156,7 +156,7 @@ public class EventSpannerTasksTest {
   public void testEventCreationDoGet() throws Exception {
     Event event =
         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
-    SpannerTasks.insertOrUpdateEvent(event);
+    SpannerTasks.insertorUpdateEvent(event);
 
     request.addParameter("eventId", event.getId());
     new EventCreationServlet().doGet(request, response);
@@ -193,7 +193,7 @@ public class EventSpannerTasksTest {
         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST)
         .setAttendees(new HashSet<User>(Arrays.asList(ATTENDEE))).build();
     request.addParameter("eventId", event.getId());   
-    SpannerTasks.insertOrUpdateEvent(event);
+    SpannerTasks.insertorUpdateEvent(event);
     // User that is registering
     authenticationHelper
         .setEnvIsLoggedIn(true)
