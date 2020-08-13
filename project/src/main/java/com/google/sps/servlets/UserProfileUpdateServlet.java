@@ -7,6 +7,7 @@ import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javax.json.Json;
@@ -56,12 +57,16 @@ public class UserProfileUpdateServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get the input from the form.
     String name = request.getParameter("name");
-    Set<String> interests = new HashSet<>(Arrays.asList(request.getParameter("interests")));
-    Set<String> skills = new HashSet<>(Arrays.asList(request.getParameter("skills")));
+    Set<String> interests = new HashSet<>(splitAsList(request.getParameter("interests")));
+    Set<String> skills = new HashSet<>(splitAsList(request.getParameter("skills")));
     User updatedUser =
         new User.Builder(name, email).setInterests(interests).setSkills(skills).build();
 
     SpannerTasks.insertOrUpdateUser(updatedUser);
     response.sendRedirect("/profile.html");
+  }
+
+  private static List<String> splitAsList(String values) {
+    return Arrays.asList(values.split("\\s*,\\s*"));
   }
 }
