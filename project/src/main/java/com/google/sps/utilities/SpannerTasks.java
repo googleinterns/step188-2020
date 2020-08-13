@@ -492,4 +492,39 @@ public class SpannerTasks {
     }
     return results;
   }
+
+  /**
+   * Given a user email retrieve all events that the user is 
+   * participating in.
+   *
+   * @param email loggedIn user email
+   * @return events where the user is participating
+  */
+  public static Set<Event> getEventsParticipatingByEmail(String email) {
+    Set<Event> results = new HashSet<Event>();
+    Statement statement = Statement.of(
+        String.format(
+            "SELECT EventID, Name, Description, Labels, Location, Date, Time, Host, Attendees"
+            + " FROM %s WHERE \"%s\" IN UNNEST(Attendees)",
+                EVENT_TABLE, email ));
+    try (ResultSet resultSet =
+        SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
+      while (resultSet.next()) {
+        Event event =
+            new Event.Builder(
+                    /* name = */ resultSet.getString(1),
+                    /* description = */ resultSet.getString(2),
+                    /* labels = */ new HashSet<String>(resultSet.getStringList(3)),
+                    /* location = */ resultSet.getString(4),
+                    /* date = */ resultSet.getDate(5),
+                    /* time = */ resultSet.getString(6),
+                    /* host = */ shallowReadUserFromEmail(resultSet.getString(7)).get())
+                .setId(resultSet.getString(0))
+                .setAttendees(shallowReadMultipleUsersFromEmails(new HashSet<String>(resultSet.getStringList(8))))
+                .build();
+        results.add(event);
+      }
+    }
+    return results;
+  }
 }
