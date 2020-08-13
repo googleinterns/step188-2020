@@ -109,7 +109,6 @@ async function getEventDetails() {
   //View event details
   const response = await fetch('/create-event?' + new URLSearchParams({'eventId': eventId}))
   const data = await response.json();
-  console.log(data);
   document.getElementById('name').innerHTML = data['name'];
   document.getElementById('description').innerHTML = data['description'];
   document.getElementById('date').innerHTML = `Date: 
