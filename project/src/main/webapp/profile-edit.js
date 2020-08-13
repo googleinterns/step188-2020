@@ -1,7 +1,5 @@
 $(document).ready(function() {
   showCurrentUserInfo();
-  populatePrefilled('interests');
-  populatePrefilled('skills');
 });
 
 /**
@@ -16,6 +14,15 @@ async function showCurrentUserInfo() {
   const userSkills = userData['skills'];
 
   $('#name').val(userName);
-  $('#interests').val(userInterests);
-  $('#skills').val(userSkills);
+  populateExisting('interests', userData);
+  populateExisting('skills', userData);
+}
+
+function populateExisting(className, userData) {
+  const existingLabels = userData[className];
+  getTagsScriptWithCallback(function() {
+    for (const label of existingLabels) {
+      $(`#${className}`).append(buildTagWithoutAdder(className, label));
+    }
+  });
 }

@@ -10,25 +10,53 @@ async function getPrefilledInformation(informationCategory) {
   return response.json();
 }
 
-function buildTag(tagClass) {
+function buildTagWithAdder(tagClass, text) {
+  let group = buildGroup();
+  const addButton = buildAdder(tagClass);
+  const tag = buildTag(tagClass);
+
+  group.appendChild(addButton);
+  group.appendChild(tag);
+  group = setText(group, tagClass, text);
+  return group;
+}
+
+function buildTagWithoutAdder(tagClass, text) {
+  let group = buildGroup();
+  const tag = buildTag(tagClass);
+
+  group.appendChild(tag);
+  group = setText(group, tagClass, text);
+  return group;
+}
+
+function buildGroup() {
   const group = document.createElement('div');
   group.classList.add('btn-group');
   group.setAttribute('role', 'group');
+  return group
+}
 
+function buildAdder(tagClass) {
   const addButton = document.createElement('button');
   addButton.setAttribute('type', 'button');
   addButton.classList.add('btn', 'btn-secondary', 'adder', tagClass);
   addButton.textContent = '+';
+  return addButton;
+}
 
+function setText(group, tagClass, text) {
+  group.querySelector('.btn-' + tagClass).textContent = text;
+  return group;
+}
+
+function buildTag(tagClass) {
   const tag = document.createElement('button');
   tag.setAttribute('type', 'button');
   tag.disabled = true;
   tag.classList.add('btn', 'btn-secondary', 'btn-' + tagClass);
   tag.classList.add(tagClass);
-
-  group.appendChild(addButton);
-  group.appendChild(tag);
-  return group;
+  return tag;
 }
 
 /** Adds relevant tags to input box when corresponding option is clicked */
@@ -37,8 +65,7 @@ function populatePrefilled(elementId) {
   getPrefilledInformation(elementId).then((prefilledInfo) => {
     for (const info of prefilledInfo) {
       // Build the option
-      const newTag = buildTag(elementId);
-      newTag.querySelector('.btn-' + elementId).textContent = info;
+      const newTag = buildTagWithAdder(elementId, info);
       newTag.querySelector('.adder').addEventListener('click', function() {
         moveTagsFromPoolToInput(this, '#' + elementId);
       });
@@ -54,7 +81,6 @@ async function moveTagsFromPoolToInput(clickedAdder, tagId) {
 
 /** Add tag to user input box once it is chosen */
 function addTagsToInput(clickedAdder, tagId) {
-  $.getScript('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js', function() {
     $(tagId).on('itemAdded', function() {
       if ($(tagId).prevAll().length > 2) {
         const otherId = tagId === '#interests' ? '#skills' : '#interests';
@@ -65,9 +91,14 @@ function addTagsToInput(clickedAdder, tagId) {
     $(tagId).on('itemRemoved', function(event) {
       addTagBackToPool(event.item, tagId);
     });
+  getTagsScriptWithCallback(function() {
     $(tagId).tagsinput('refresh');
     $(tagId).tagsinput('add', $(clickedAdder).next().html());
   });
+}
+
+function getTagsScriptWithCallback(fn) {
+  $.getScript('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js', fn);
 }
 
 /** Puts item back into pool if it was a preset */
