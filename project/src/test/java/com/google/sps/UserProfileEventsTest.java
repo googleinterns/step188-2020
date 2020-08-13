@@ -7,7 +7,9 @@ import com.google.sps.data.EventVolunteering;
 import com.google.sps.data.OpportunitySignup;
 import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
+import com.google.sps.servlets.OpportunitySignupFormHandlerServlet;
 import com.google.sps.servlets.UserProfileEventsServlet;
+
 import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.SpannerClient;
 import com.google.sps.utilities.SpannerTasks;
@@ -27,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -40,53 +43,67 @@ public class UserProfileEventsTest {
   private HttpServletResponse response;
   private StringWriter stringWriter;
   private PrintWriter printWriter;
-  private UserProfileEventsServlet userProfileEventsServlet;
-  private static final LocalServiceTestHelper authenticationHelper =
-    new LocalServiceTestHelper(new LocalUserServiceTestConfig());
+  private UserProfileEventsServlet profileEventsServlet;
+  private static final LocalServiceTestHelper authenticationHelper = new LocalServiceTestHelper(new LocalUserServiceTestConfig());
+  private static final String PARAMETER_EVENT_TYPE = "event-type";
+  private static final String VOLUNTEERING = "volunteering";
+  private static final String HOST_NAME = "Bob Smith";
+  private static final String EMAIL = "bobsmith@example.com";
+  private static final String INVALID_EVENT_TYPE = "all";
 
   @Before
   public void setUp() throws Exception {
-    // Mock a request to trigger the SpannerClient setup to run
     MockServletContext mockServletContext = new MockServletContext();
     new SpannerClient().contextInitialized(new ServletContextEvent(mockServletContext));
     SpannerTestTasks.setup();
 
+    authenticationHelper.setUp();
+
+    profileEventsServlet = new UserProfileEventsServlet();
+    
     request = Mockito.mock(HttpServletRequest.class);
     response = Mockito.mock(HttpServletResponse.class);
     stringWriter = new StringWriter();
     printWriter = new PrintWriter(stringWriter);
     Mockito.when(response.getWriter()).thenReturn(printWriter);
-
-    userProfileEventsServlet = new UserProfileEventsServlet();
   }
 
-  @AfterClass
-  public static void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     SpannerTestTasks.cleanup();
+    authenticationHelper.tearDown();
   }
 
   @Test
-  public void verifyGetUserEventsHosting() {
+  public void verifyGetUser_EventsHosting() throws IOException {
     
   }
 
   @Test
-  public void verifyGetUserEventsParticipating() {
+  public void verifyGetUser_EventsParticipating() throws IOException {
     
   }
 
   @Test
-  public void verifyGetUserEventsVolunteering() throws IOException {
-    User user = TestUtils.newUser();
+  public void verifyGetUser_EventsVolunteering() throws IOException {
+    String userEmail = "test@gmail.com";
+    User user = TestUtils.newUserWithEmail(userEmail);
+    User host = new User.Builder(HOST_NAME, EMAIL).build();
     SpannerTasks.insertOrUpdateUser(user);
-    Event event = TestUtils.newEvent();
+    SpannerTasks.insertOrUpdateUser(host);
+    Event event = TestUtils.newEventWithHost(host);
     SpannerTasks.insertorUpdateEvent(event);
     VolunteeringOpportunity opportunity = TestUtils.newVolunteeringOpportunityWithEventId(event.getId());
     SpannerTasks.insertVolunteeringOpportunity(opportunity);
     OpportunitySignup opportunitySignup = new OpportunitySignup.Builder(opportunity.getOpportunityId(), user.getEmail()).build();
     SpannerTasks.insertOpportunitySignup(opportunitySignup);
+    authenticationHelper
+        .setEnvIsLoggedIn(true)
+        .setEnvEmail(userEmail)
+        .setEnvAuthDomain("gmail.com");
+    Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(VOLUNTEERING);
 
-    userProfileEventsServlet.doGet(request, response);
+    profileEventsServlet.doGet(request, response);
 
     Assert.assertEquals(
         CommonUtils.convertToJson(new HashSet<>(Arrays.asList(new EventVolunteering(event, opportunity.getName())))).trim(),
@@ -94,22 +111,50 @@ public class UserProfileEventsTest {
   }
 
   @Test
-  public void verifyGetUserEventsInvalidParameter() {
-    
+  public void verifyGetUserEvents_EventNotSpecified() throws IOException {
+    String userEmail = "test@gmail.com";
+    User user = TestUtils.newUserWithEmail(userEmail);
+    User host = new User.Builder(HOST_NAME, EMAIL).build();
+    SpannerTasks.insertOrUpdateUser(user);
+    SpannerTasks.insertOrUpdateUser(host);
+    Event event = TestUtils.newEventWithHost(host);
+    SpannerTasks.insertorUpdateEvent(event);
+    VolunteeringOpportunity opportunity = TestUtils.newVolunteeringOpportunityWithEventId(event.getId());
+    SpannerTasks.insertVolunteeringOpportunity(opportunity);
+    OpportunitySignup opportunitySignup = new OpportunitySignup.Builder(opportunity.getOpportunityId(), user.getEmail()).build();
+    SpannerTasks.insertOpportunitySignup(opportunitySignup);
+    authenticationHelper
+        .setEnvIsLoggedIn(true)
+        .setEnvEmail(userEmail)
+        .setEnvAuthDomain("gmail.com");
+    Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(null);
+
+    profileEventsServlet.doGet(request, response);
+
+    Mockito.verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "No event type specified.");
   }
 
   @Test
-  public void verifyPostUserEventsHosting() {
-    
+  public void verifyGetUserEvents_InvalidParameter() throws IOException {
+    authenticationHelper
+        .setEnvIsLoggedIn(true)
+        .setEnvEmail("test@gmail.com")
+        .setEnvAuthDomain("gmail.com");
+    Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(INVALID_EVENT_TYPE);
+
+    profileEventsServlet.doGet(request, response);
+
+    Mockito.verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid event type.");
   }
 
   @Test
-  public void verifyPostUserEventsParticipating() {
-    
+  public void verifyGetUserEvents_NotLoggedIn() throws Exception {
+    authenticationHelper.setEnvIsLoggedIn(false);
+    Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(VOLUNTEERING);
+
+    profileEventsServlet.doGet(request, response);
+
+    Mockito.verify(response).sendRedirect("/index.html");
   }
 
-  @Test
-  public void verifyPostUserEventsInvalidParameter() {
-    
-  }
 }

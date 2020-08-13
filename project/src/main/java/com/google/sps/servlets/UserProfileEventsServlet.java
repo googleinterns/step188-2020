@@ -1,5 +1,6 @@
 package com.google.sps.servlets;
 
+import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.EventVolunteering;
 import com.google.sps.utilities.CommonUtils;
@@ -15,22 +16,28 @@ import javax.servlet.http.HttpServletResponse;
 public class UserProfileEventsServlet extends HttpServlet {
   private static final String EVENT_TYPE = "event-type";
   private static final String VOLUNTEERING = "volunteering";
-  private static final String email =
-      UserServiceFactory.getUserService().getCurrentUser().getEmail();
 
   /** Gets the current user's corresponding events in DB */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String eventType = request.getParameter(EVENT_TYPE);
-    if (eventType.equals(VOLUNTEERING)) {
-        Set<EventVolunteering> eventsVolunteering = SpannerTasks.getEventsVolunteeringByEmail(email);
-        response.getWriter().println(CommonUtils.convertToJson(eventsVolunteering));
+    User user = UserServiceFactory.getUserService().getCurrentUser();
+
+    if (user == null) {
+      response.sendRedirect("/index.html");
+    } else if (eventType == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, String.format("No event type specified."));
+      return;
+    } else {
+        switch(eventType) {
+          case VOLUNTEERING:
+            Set<EventVolunteering> eventsVolunteering = SpannerTasks.getEventsVolunteeringByEmail(user.getEmail());
+            response.getWriter().println(CommonUtils.convertToJson(eventsVolunteering));
+            break;
+          // TO DO: add case statements for hosting and participating with retrieval of data
+          default:
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, String.format("Invalid event type."));
+        }
     }
-  }
-
-  /** Updates the current user's corresponding events in DB */
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
   }
 }
