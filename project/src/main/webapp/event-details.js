@@ -84,6 +84,7 @@ function getLinkForOpportunity(opportunityId) {
 
 /**
  * Gets event details from database with eventId and fills out event page with details
+ * If registering for event, register user then show event details
  */
 async function getEventDetails() {
     //make sign up link go to correct
@@ -91,8 +92,8 @@ async function getEventDetails() {
   const urlParams = new URLSearchParams(queryString);
   const eventId = urlParams.get('eventId');
 
-  //Register for event
-  const registerBool = urlParams.get('register') ? urlParams.get('register'): "false";
+  //Register for event, if register param not specified, default to not registering
+  const registerBool = urlParams.get('register') ? urlParams.get('register'): 'false';
   if (registerBool === "true") {
       registerEvent(eventId)
   }
@@ -108,12 +109,11 @@ async function getEventDetails() {
   document.getElementById('location').innerHTML =
     `Location: ${data['location']}`;
   document.getElementById('time').innerHTML = `Time: ${data['time']}`;
-  const link = '/event-edit.html?eventId=' + eventId;
-  document.getElementById('editLink').setAttribute('href', link);
+  document.getElementById('editLink').setAttribute('href', `/event-edit.html?eventId=${eventId}`);
 }
 
 async function registerEvent(eventId) {
   const response = await fetch('/register-event?' + new URLSearchParams({'eventId': eventId}), {method: 'POST'} );
-  document.getElementById('signupLink').setAttribute('href', "");
+  document.getElementById('signupLink').setAttribute('href', '');
   document.getElementById('signupLink').innerHTML = 'You are signed up for this event.'
 }
