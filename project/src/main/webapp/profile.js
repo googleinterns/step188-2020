@@ -4,7 +4,6 @@ $(document).ready(function() {
 
 async function updateProfile() {
   const userData = await getCurrentProfileData();
-  console.log(userData);
   updateProfileBasics(userData);
   updateProfileEvents();
 }
