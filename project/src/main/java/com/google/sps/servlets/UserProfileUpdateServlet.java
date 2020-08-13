@@ -25,7 +25,6 @@ public class UserProfileUpdateServlet extends HttpServlet {
   /** Writes out information for the user corresponding to the logged-in email */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // TODO: Add tests for this once test setup is ready
     Optional<User> userOptional = SpannerTasks.shallowReadUserFromEmail(email);
     String userJson;
     if (!userOptional.isPresent()) {
@@ -35,9 +34,13 @@ public class UserProfileUpdateServlet extends HttpServlet {
               .add("email", email)
               .add("interests", CommonUtils.createJsonArray(new HashSet<>()))
               .add("skills", CommonUtils.createJsonArray(new HashSet<>()))
+              .add("eventsHosting", CommonUtils.createJsonArray(new HashSet<>()))
+              .add("eventsParticipating", CommonUtils.createJsonArray(new HashSet<>()))
+              .add("eventsVolunteering", CommonUtils.createJsonArray(new HashSet<>()))
               .build()
               .toString();
     } else {
+      // TODO: When PRs for user profile events are merged, update the events here
       User user = userOptional.get();
       userJson =
           Json.createObjectBuilder()
@@ -45,6 +48,9 @@ public class UserProfileUpdateServlet extends HttpServlet {
               .add("email", email)
               .add("interests", CommonUtils.createJsonArray(user.getInterests()))
               .add("skills", CommonUtils.createJsonArray(user.getSkills()))
+              .add("eventsHosting", CommonUtils.createJsonArray(new HashSet<>()))
+              .add("eventsParticipating", CommonUtils.createJsonArray(new HashSet<>()))
+              .add("eventsVolunteering", CommonUtils.createJsonArray(new HashSet<>()))
               .build()
               .toString();
     }
