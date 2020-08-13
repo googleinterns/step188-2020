@@ -1,3 +1,7 @@
+window.onload = function onLoad() {
+  getEventDetails();
+};
+
 /**
  * Gets event details from database to put in form and allow edits
  */

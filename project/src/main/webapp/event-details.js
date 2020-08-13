@@ -106,8 +106,7 @@ async function getEventDetails() {
   document.getElementById('location').innerHTML =
     `Location: ${data['location']}`;
   document.getElementById('time').innerHTML = `Time: ${data['time']}`;
-  const link = '/event-edit.html?eventId=' + eventId;
-  document.getElementById('editLink').setAttribute('href', link);
+  document.getElementById('editLink').setAttribute('href', `/event-edit.html?eventId=${eventId}`);
 }
 
 /**
