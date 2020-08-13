@@ -16,14 +16,10 @@ async function getCurrentProfileData() {
 
 /** Populate the user profile with name, email, interests, skills */
 function updateProfileBasics(userData) {
-  const userName = userData['name'];
-  const userEmail = userData['email'];
-  const userInterests = userData['interests'];
-  const userSkills = userData['skills'];
-  $('#name').text(userName);
-  $('#email').text(userEmail);
-  $('#interests').text(userInterests);
-  $('#skills').text(userSkills);
+  $('#name').text(userData['name']);
+  $('#email').text(userData['email']);
+  $('#interests').text(userData['interests']);
+  $('#skills').text(userData['skills']);
 }
 
 /** Populate the user profile with all associated events */
