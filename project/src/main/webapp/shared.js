@@ -5,8 +5,9 @@ async function isLoggedIn() {
 }
 
 async function getPrefilledInformation(informationCategory) {
-  const response = 
-      await fetch('/prefilled-information?' + new URLSearchParams({'category': informationCategory}))
+  const response =
+      await fetch(
+          `/prefilled-information?${new URLSearchParams({'category': informationCategory})}`);
   return response.json();
 }
 
@@ -34,7 +35,7 @@ function buildGroup() {
   const group = document.createElement('div');
   group.classList.add('btn-group');
   group.setAttribute('role', 'group');
-  return group
+  return group;
 }
 
 function buildAdder(tagClass) {
@@ -98,14 +99,17 @@ function addTagsToInput(clickedAdder, tagId) {
 }
 
 function getTagsScriptWithCallback(fn) {
-  $.getScript('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js', fn);
+  $.getScript(
+      'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js',
+      fn);
 }
 
 /** Puts item back into pool if it was a preset */
 async function addTagBackToPool(item, tagId) {
   const prefilledItems = await getPrefilledInformation(tagId);
   if (prefilledItems.includes(item)) {
-    $(tagId + '-div > .prefilled-pool > .btn-group:contains("' + item + '")').show();
+    $(tagId + '-div > .prefilled-pool > .btn-group:contains("' + item + '")')
+        .show();
   }
 }
 
@@ -133,13 +137,17 @@ function populateEventContainer(event, containerId) {
     $(`#${eventCardId} #event-card-title`).html(event.name);
     $(`#${eventCardId} #event-card-description`).html(event.description);
     $(`#${eventCardId} #event-card-date`)
-        .html(buildDate(event.date.year, event.date.month, event.date.dayOfMonth));
+        .html(
+            buildDate(
+                event.date.year, event.date.month, event.date.dayOfMonth));
     $(`#${eventCardId} #event-card-time`).html(event.time);
     $(`#${eventCardId} #event-card-location`).html(event.location);
     $(`#${eventCardId} #event-card-volunteers`)
         .html(buildVolunteers(event.opportunities));
-    buildAsLabels(`#${eventCardId} #event-card-labels`, event.labels, 'interests');
-    buildSkillsAsLabels(`#${eventCardId} #event-card-labels`, event.opportunities);
+    buildAsLabels(
+        `#${eventCardId} #event-card-labels`, event.labels, 'interests');
+    buildSkillsAsLabels(
+        `#${eventCardId} #event-card-labels`, event.opportunities);
     addLinkToRegister(eventCardId);
     addLinkToDetails(eventCardId);
   });
@@ -186,7 +194,10 @@ function buildAsLabels(querySelector, labels, className) {
   }
 }
 
-/** Creates the corresponding skill button labels for each volunteering opportunity */
+/**
+ * Creates the corresponding skill button labels for each volunteering
+ * opportunity
+ */
 function buildSkillsAsLabels(querySelector, opportunities) {
   for (const opportunity of opportunities) {
     buildAsLabels(querySelector, opportunity.requiredSkills, 'skills');
