@@ -97,8 +97,8 @@ async function getEventDetails() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const eventId = urlParams.get('eventId');
-  const response = await fetch('/create-event?'
-    + new URLSearchParams({'eventId': eventId}));
+  const response = await fetch('/create-event?' +
+    new URLSearchParams({'eventId': eventId}));
   const data = await response.json();
   document.getElementById('name').innerHTML = data['name'];
   document.getElementById('description').innerHTML = data['description'];
@@ -107,7 +107,8 @@ async function getEventDetails() {
   document.getElementById('location').innerHTML =
     `Location: ${data['location']}`;
   document.getElementById('time').innerHTML = `Time: ${data['time']}`;
-  document.getElementById('editLink').setAttribute('href', `/event-edit.html?eventId=${eventId}`);
+  document.getElementById('editLink')
+    .setAttribute('href', `/event-edit.html?eventId=${eventId}`);
 }
 
 /**
