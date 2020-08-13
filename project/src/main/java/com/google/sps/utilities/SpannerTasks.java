@@ -465,7 +465,7 @@ public class SpannerTasks {
     Statement statement =
         Statement.of(
             String.format(
-                "SELECT Events.Name, Events.Description, Events.Labels, Events.Location, "
+                "SELECT Events.EventID, Events.Name, Events.Description, Events.Labels, Events.Location, "
                     + "Events.Date, Events.Time, Events.Host, VolunteeringOpportunity.Name FROM Events INNER JOIN VolunteeringOpportunity ON "
                         + "Events.EventID = VolunteeringOpportunity.EventID INNER JOIN OpportunitySignup ON "
                             + "VolunteeringOpportunity.VolunteeringOpportunityID = OpportunitySignup.VolunteeringOpportunityID WHERE Email=\"%s\"",
@@ -473,8 +473,14 @@ public class SpannerTasks {
     try (ResultSet resultSet =
         SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
       while (resultSet.next()) {
-        results.add(
-            new EventVolunteering(/* event = */ shallowCreateEventFromDatabaseResult(resultSet), /* opportunityName = */ resultSet.getString(1)));
+        Event event = new Event.Builder( /* name = */ resultSet.getString(1),
+        /* description = */ resultSet.getString(2),
+        /* labels = */ new HashSet<String>(resultSet.getStringList(3)),
+        /* location = */ resultSet.getString(4),
+        /* date = */ resultSet.getDate(5),
+        /* time = */ resultSet.getString(6),
+        /* host = */ shallowReadUserFromEmail(resultSet.getString(7)).get()).setId(resultSet.getString(0)).build();
+        results.add(new EventVolunteering(event, /* opportunityName = */ resultSet.getString(8)));
       }
     }
     return results;
