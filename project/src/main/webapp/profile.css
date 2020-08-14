@@ -32,3 +32,8 @@ h3 {
 .list-group-item {
   border: none;
 }
+
+img {
+  height: 240px;
+  width: 240px;
+}

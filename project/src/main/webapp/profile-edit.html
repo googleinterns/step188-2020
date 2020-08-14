@@ -40,42 +40,57 @@
       action="/profile-update"
       method="POST"
     >
-      <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" class="form-control" id="name" name="name" />
-      </div>
-      <div class="form-group">
-        <div class="input-group" id="interests-div">
-          <label for="interests">Interests</label>
-          <input
-            id="interests"
-            name="interests"
-            data-role="tagsinput"
-            multiple
-          ></input>
-          <button 
-            type="button"
-            class="btn btn-light prefilled-pick"
-            onclick="togglePrefilledInterests();"
-          >+ Pick</button>
-          <div id="prefilled-interests" class="overflow-auto prefilled-pool"></div>
+      <div class="row">
+        <div class="col-sm-3">
+          <img src="assets/default_profile.jpg" />
+          <br />
+          <div class="form-group">
+            <label for="profile-picture">Upload a new image: </label>
+            <br />
+            <input type="file" name="profile-picture" />
+          </div>
         </div>
-      </div>
-      <div class="form-group">
-        <div class="input-group" id="skills-div">
-          <label for="skills">Skills</label>
-          <input
-            id="skills"
-            name="skills"
-            data-role="tagsinput"
-            multiple
-          ></input>
-          <button 
-            type="button"
-            class="btn btn-light prefilled-pick"
-            onclick="togglePrefilledSkills();"
-          >+ Pick</button>
-          <div id="prefilled-skills" class="overflow-auto prefilled-pool"></div>
+        <div class="col-sm-9">
+          <div class="form-group">
+            <div class="input-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name" name="name" />
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group" id="interests-div">
+              <label for="interests">Interests</label>
+              <input
+                id="interests"
+                name="interests"
+                data-role="tagsinput"
+                multiple
+              ></input>
+              <button 
+                type="button"
+                class="btn btn-light prefilled-pick"
+                onclick="togglePrefilledInterests();"
+              >+ Pick</button>
+              <div id="prefilled-interests" class="overflow-auto prefilled-pool"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group" id="skills-div">
+              <label for="skills">Skills</label>
+              <input
+                id="skills"
+                name="skills"
+                data-role="tagsinput"
+                multiple
+              ></input>
+              <button 
+                type="button"
+                class="btn btn-light prefilled-pick"
+                onclick="togglePrefilledSkills();"
+              >+ Pick</button>
+              <div id="prefilled-skills" class="overflow-auto prefilled-pool"></div>
+            </div>
+          </div>
         </div>
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
