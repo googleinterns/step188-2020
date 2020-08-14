@@ -7,6 +7,7 @@ import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javax.json.Json;
@@ -24,7 +25,6 @@ public class UserProfileUpdateServlet extends HttpServlet {
   /** Writes out information for the user corresponding to the logged-in email */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // TODO: Add tests for this once test setup is ready
     Optional<User> userOptional = SpannerTasks.shallowReadUserFromEmail(email);
     String userJson;
     if (!userOptional.isPresent()) {
@@ -34,9 +34,13 @@ public class UserProfileUpdateServlet extends HttpServlet {
               .add("email", email)
               .add("interests", CommonUtils.createJsonArray(new HashSet<>()))
               .add("skills", CommonUtils.createJsonArray(new HashSet<>()))
+              .add("eventsHosting", CommonUtils.createJsonArray(new HashSet<>()))
+              .add("eventsParticipating", CommonUtils.createJsonArray(new HashSet<>()))
+              .add("eventsVolunteering", CommonUtils.createJsonArray(new HashSet<>()))
               .build()
               .toString();
     } else {
+      // TODO: When PRs for user profile events are merged, update the events here
       User user = userOptional.get();
       userJson =
           Json.createObjectBuilder()
@@ -44,6 +48,9 @@ public class UserProfileUpdateServlet extends HttpServlet {
               .add("email", email)
               .add("interests", CommonUtils.createJsonArray(user.getInterests()))
               .add("skills", CommonUtils.createJsonArray(user.getSkills()))
+              .add("eventsHosting", CommonUtils.createJsonArray(new HashSet<>()))
+              .add("eventsParticipating", CommonUtils.createJsonArray(new HashSet<>()))
+              .add("eventsVolunteering", CommonUtils.createJsonArray(new HashSet<>()))
               .build()
               .toString();
     }
@@ -56,12 +63,16 @@ public class UserProfileUpdateServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get the input from the form.
     String name = request.getParameter("name");
-    Set<String> interests = new HashSet<>(Arrays.asList(request.getParameter("interests")));
-    Set<String> skills = new HashSet<>(Arrays.asList(request.getParameter("skills")));
+    Set<String> interests = new HashSet<>(splitAsList(request.getParameter("interests")));
+    Set<String> skills = new HashSet<>(splitAsList(request.getParameter("skills")));
     User updatedUser =
         new User.Builder(name, email).setInterests(interests).setSkills(skills).build();
 
     SpannerTasks.insertOrUpdateUser(updatedUser);
     response.sendRedirect("/profile.html");
+  }
+
+  private static List<String> splitAsList(String values) {
+    return Arrays.asList(values.split("\\s*,\\s*"));
   }
 }

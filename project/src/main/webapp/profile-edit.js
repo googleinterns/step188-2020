@@ -11,7 +11,6 @@ $(document).ready(function() {
 async function showCurrentUserInfo() {
   const response = await fetch('/profile-update');
   const userData = await response.json();
-
   const userName = userData['name'];
 
   $('#name').val(userName);
@@ -36,6 +35,22 @@ function populateExisting(className, userData) {
 }
 
 function removeAllExtraInputs() {
-  removeExtraInputs('interests');
-  removeExtraInputs('skills');
+  removeExtraInputs('#interests');
+  removeExtraInputs('#skills');
+}
+
+function getInterests() {
+  return getLabels('interests');
+}
+
+function getSkills() {
+  return getLabels('skills');
+}
+
+function getLabels(labelType) {
+  let labels = [];
+  for (const label of $(`#${labelType}`).children()) {
+    labels.push(label.value);
+  }
+  return labels;
 }
