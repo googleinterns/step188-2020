@@ -48,6 +48,8 @@ public class CommonUtils {
    */
   public static Set<String> getParameterValues(HttpServletRequest request, String name) {
     String[] values = request.getParameterValues(name);
+    if (values == null)
+      return new HashSet<String>();
     Set<String> nonEmptyValues = new HashSet<String>();
     for (String value : values) {
       if (!value.isEmpty()) {
