@@ -47,9 +47,7 @@ public class OpportunitySignupTasksTest {
     OpportunitySignup actualSignup =
         SpannerTasks.getSignupsByOpportunityId(opportunityId).stream().findFirst().get();
     VolunteeringOpportunity actualOpportunity =
-        SpannerTasks.getVolunteeringOpportunityByOppportunityId(opportunityId).stream()
-            .findFirst()
-            .get();
+        SpannerTasks.getVolunteeringOpportunityByOppportunityId(opportunityId).get();
 
     Assert.assertEquals(actualSignup.getEmail(), EMAIL);
     Assert.assertEquals(actualSignup.getOpportunityId(), opportunity.getOpportunityId());

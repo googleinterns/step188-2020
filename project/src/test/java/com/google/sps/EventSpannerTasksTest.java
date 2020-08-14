@@ -207,3 +207,4 @@ public class EventSpannerTasksTest {
             .matches(new HashSet<User>(Arrays.asList(ATTENDEE, HOST))));
   }
 }
+

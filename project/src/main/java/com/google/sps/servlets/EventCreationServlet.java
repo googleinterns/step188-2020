@@ -37,7 +37,7 @@ public class EventCreationServlet extends HttpServlet {
     }
   }
 
-  /** Posts new created event to database and redirects to page with created event details */
+  /** Posts new created event to database and redirects to page with created event details*/
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String name = request.getParameter("name");
@@ -50,10 +50,8 @@ public class EventCreationServlet extends HttpServlet {
     String time = request.getParameter("time");
     String description = request.getParameter("description");
     String location = request.getParameter("location");
-    Set<String> labels = 
-        Collections.unmodifiableSet(
-            new HashSet<>(
-                Arrays.asList("None"))); // hardcoded for now, we need to create label pool first
+    Set<String> labels = Collections.unmodifiableSet(new HashSet<>(
+        Arrays.asList("None"))); // hardcoded for now, we need to create label pool first
 
     User host = SpannerTasks.getLoggedInUser().get();
     Event event = new Event.Builder(name, description, labels, location, date, time, host).build();

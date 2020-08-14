@@ -1,5 +1,8 @@
 $(document).ready(function() {
   showCurrentUserInfo();
+  populatePrefilled('interests');
+  populatePrefilled('skills');
+  removeAllExtraInputs();
 });
 
 /**
@@ -8,12 +11,46 @@ $(document).ready(function() {
 async function showCurrentUserInfo() {
   const response = await fetch('/profile-update');
   const userData = await response.json();
-
   const userName = userData['name'];
-  const userInterests = userData['interests'];
-  const userSkills = userData['skills'];
 
   $('#name').val(userName);
-  $('#interests').val(userInterests);
-  $('#skills').val(userSkills);
+  populateExisting('interests', userData);
+  populateExisting('skills', userData);
+}
+
+/** 
+ * Populates inputs with labels that already exist
+ */
+function populateExisting(className, userData) {
+  $(className).on('itemAdded', function() {
+    removeExtraInputs(className);
+  });
+
+  const existingLabels = userData[className];
+  getTagsScriptWithCallback(function() {
+    for (const label of existingLabels) {
+      $(`#${className}`).tagsinput('add', label);
+    }
+  });
+}
+
+function removeAllExtraInputs() {
+  removeExtraInputs('#interests');
+  removeExtraInputs('#skills');
+}
+
+function getInterests() {
+  return getLabels('interests');
+}
+
+function getSkills() {
+  return getLabels('skills');
+}
+
+function getLabels(labelType) {
+  let labels = [];
+  for (const label of $(`#${labelType}`).children()) {
+    labels.push(label.value);
+  }
+  return labels;
 }
