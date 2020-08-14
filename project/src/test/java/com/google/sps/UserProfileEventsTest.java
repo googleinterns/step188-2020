@@ -21,6 +21,7 @@ import java.util.HashSet;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.After;
 import org.junit.Before;
@@ -28,9 +29,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
-import org.springframework.mock.web.MockServletContext;
 import org.skyscreamer.jsonassert.JSONAssert;
-import org.json.JSONException;
+import org.springframework.mock.web.MockServletContext;
 
 /** Unit tests for updates and retrievals for a user's corresponding events. */
 @RunWith(JUnit4.class)
