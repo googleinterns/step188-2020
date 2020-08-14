@@ -69,7 +69,7 @@ public class EventSpannerTasksTest {
 
   @Before 
   public void testSetUp() throws Exception {
-    //Host inserted because needed to query getEventById() in db
+    // Host inserted because needed to query getEventById() in db
     SpannerTasks.insertOrUpdateUser(HOST);
     request = new MockHttpServletRequest();
     response = new MockHttpServletResponse();
@@ -83,7 +83,8 @@ public class EventSpannerTasksTest {
   }
 
   /** Verify insertion of event in db and retrieval by id 
-   * Also tests behavior of EventCreationServlet doGet() where doGet request.getParameter("eventId") == event.getId() */
+   * Also tests behavior of EventCreationServlet doGet() where doGet request.getParameter("eventId") == event.getId()
+   */
   @Test
   public void eventInsertAndRetrieval() {
     Event event =
@@ -111,16 +112,19 @@ public class EventSpannerTasksTest {
     SpannerTasks.insertorUpdateEvent(event);
     SpannerTasks.insertorUpdateEvent(otherEvent);
     Set<Event> actualEvents = new HashSet<>(Arrays.asList(event, otherEvent));
-    Set<Event> insertedEvents = SpannerTasks.getEventsFromIds(Arrays.asList(event.getId(), otherEvent.getId()));
-    List<Event> insertedEventsList = insertedEvents.stream().collect(Collectors.toCollection(ArrayList::new));
-    List<Event> actualEventsList = actualEvents.stream().collect(Collectors.toCollection(ArrayList::new));
+    Set<Event> insertedEvents =
+        SpannerTasks.getEventsFromIds(Arrays.asList(event.getId(), otherEvent.getId()));
+    List<Event> insertedEventsList =
+        insertedEvents.stream().collect(Collectors.toCollection(ArrayList::new));
+    List<Event> actualEventsList =
+        actualEvents.stream().collect(Collectors.toCollection(ArrayList::new));
 
     Assert.assertTrue(new ReflectionEquals(insertedEventsList,/*excludeFields= */ null).matches(actualEventsList));
   }
 
   /**
-   * Verify putting event in database through /create-event doPost with correct params and
-   * getting back correct event out of db
+   * Verify putting event in database through /create-event doPost with correct params and getting 
+   * back correct event out of db
    */
   @Test
   public void testEventCreationDoPost() throws Exception {
@@ -129,13 +133,9 @@ public class EventSpannerTasksTest {
     request.addParameter("time", TIME);
     request.addParameter("description", DESCRIPTION);
     request.addParameter("location", LOCATION);
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail(EMAIL)
-        .setEnvAuthDomain("example.com");
+    authenticationHelper.setEnvIsLoggedIn(true).setEnvEmail(EMAIL).setEnvAuthDomain("example.com");
 
     new EventCreationServlet().doPost(request, response);
-
     // Get back Event posted in db
     Event returnedEvent = new Gson().fromJson(response.getContentAsString(), Event.class);
 
@@ -149,9 +149,7 @@ public class EventSpannerTasksTest {
     Assert.assertEquals(returnedEvent.getHost().getEmail(), EMAIL);
   }
 
-  /**
-   * Verify getting event from valid id in /create-event doGet()
-   */
+  /** Verify getting event from valid id in /create-event doGet() */
   @Test
   public void testEventCreationDoGet() throws Exception {
     Event event =
@@ -171,9 +169,7 @@ public class EventSpannerTasksTest {
     Assert.assertEquals(returnedEvent.getHost().getEmail(), EMAIL);
   }
 
-  /**
-   * Verify getting event from invalid id in /create-event doGet()
-   */
+  /** Verify getting event from invalid id in /create-event doGet() */
   @Test
   public void testEventCreationDoGetInvalid() throws Exception {
     request.addParameter("eventId", /*invalid id= */ "1");
@@ -191,14 +187,12 @@ public class EventSpannerTasksTest {
     SpannerTasks.insertOrUpdateUser(ATTENDEE);
     Event event =
         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST)
-        .setAttendees(new HashSet<User>(Arrays.asList(ATTENDEE))).build();
+            .setAttendees(new HashSet<User>(Arrays.asList(ATTENDEE)))
+            .build();
     request.addParameter("eventId", event.getId());   
     SpannerTasks.insertorUpdateEvent(event);
     // User that is registering
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail(EMAIL)
-        .setEnvAuthDomain("example.com");
+    authenticationHelper.setEnvIsLoggedIn(true).setEnvEmail(EMAIL).setEnvAuthDomain("example.com");
 
     new EventRegistrationServlet().doPost(request, response);
     Event returnedEvent = new Gson().fromJson(response.getContentAsString(), Event.class);
@@ -208,7 +202,8 @@ public class EventSpannerTasksTest {
     Assert.assertEquals(returnedEvent.getLocation(), LOCATION);
     Assert.assertEquals(returnedEvent.getDate(), DATE);
     Assert.assertEquals(returnedEvent.getTime(), TIME);
-    Assert.assertTrue(new ReflectionEquals(returnedEvent.getAttendees(),/*excludeFields= */ null)
-        .matches(new HashSet<User>(Arrays.asList(ATTENDEE, HOST))));
+    Assert.assertTrue(
+        new ReflectionEquals(returnedEvent.getAttendees(),/*excludeFields= */ null)
+            .matches(new HashSet<User>(Arrays.asList(ATTENDEE, HOST))));
   }
 }

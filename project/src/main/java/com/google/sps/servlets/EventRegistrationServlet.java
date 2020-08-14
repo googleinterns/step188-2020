@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/register-event")
 public class EventRegistrationServlet extends HttpServlet {
-  /** Update event with logged in user as attendee when they hit register*/
+  /** Update event with logged in user as attendee when they hit register */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String eventId = request.getParameter("eventId");
@@ -35,9 +35,10 @@ public class EventRegistrationServlet extends HttpServlet {
       User loggedInUser = SpannerTasks.getLoggedInUser().get();
       Event event = eventOptional.get();
       if (event.getHost() != loggedInUser ) {
-      SpannerTasks.insertOrUpdateEvent(event.toBuilder().setId(eventId).addAttendee(loggedInUser).build());
+      SpannerTasks.insertOrUpdateEvent(
+          event.toBuilder().setId(eventId).addAttendee(loggedInUser).build());
       }
-      //redirect to event details
+      // redirect to event details
       String redirectUrl = "/event-details.html?eventId=" + event.getId() + "&register=false";
       response.sendRedirect(redirectUrl);
       response.getWriter().println(CommonUtils.convertToJson(event));
