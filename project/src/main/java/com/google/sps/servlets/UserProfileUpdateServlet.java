@@ -19,41 +19,28 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that handles user profile edits. */
 @WebServlet("/profile-update")
 public class UserProfileUpdateServlet extends HttpServlet {
-  private static final String email =
-      UserServiceFactory.getUserService().getCurrentUser().getEmail();
+  private static String email;
 
   /** Writes out information for the user corresponding to the logged-in email */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    email = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     Optional<User> userOptional = SpannerTasks.shallowReadUserFromEmail(email);
-    String userJson;
-    if (!userOptional.isPresent()) {
-      userJson =
-          Json.createObjectBuilder()
-              .add("name", "anonymous")
-              .add("email", email)
-              .add("interests", CommonUtils.createJsonArray(new HashSet<>()))
-              .add("skills", CommonUtils.createJsonArray(new HashSet<>()))
-              .add("eventsHosting", CommonUtils.createJsonArray(new HashSet<>()))
-              .add("eventsParticipating", CommonUtils.createJsonArray(new HashSet<>()))
-              .add("eventsVolunteering", CommonUtils.createJsonArray(new HashSet<>()))
-              .build()
-              .toString();
+    User user;
+    if (userOptional.isPresent()) {
+      user = userOptional.get();
     } else {
-      // TODO: When PRs for user profile events are merged, update the events here
-      User user = userOptional.get();
-      userJson =
-          Json.createObjectBuilder()
-              .add("name", user.getName())
-              .add("email", email)
-              .add("interests", CommonUtils.createJsonArray(user.getInterests()))
-              .add("skills", CommonUtils.createJsonArray(user.getSkills()))
-              .add("eventsHosting", CommonUtils.createJsonArray(new HashSet<>()))
-              .add("eventsParticipating", CommonUtils.createJsonArray(new HashSet<>()))
-              .add("eventsVolunteering", CommonUtils.createJsonArray(new HashSet<>()))
-              .build()
-              .toString();
+      user = new User.Builder("anonymous", email).build();
+      SpannerTasks.insertOrUpdateUser(user);
     }
+    String userJson =
+        Json.createObjectBuilder()
+            .add("name", user.getName())
+            .add("email", email)
+            .add("interests", CommonUtils.createJsonArray(user.getInterests()))
+            .add("skills", CommonUtils.createJsonArray(user.getSkills()))
+            .build()
+            .toString();
     response.setContentType("application/json;charset=UTF-8");
     response.getWriter().println(userJson);
   }
@@ -61,6 +48,7 @@ public class UserProfileUpdateServlet extends HttpServlet {
   /** Given user fields, inserts or updates the corresponding entry in storage */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    email = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     // Get the input from the form.
     String name = request.getParameter("name");
     Set<String> interests = new HashSet<>(splitAsList(request.getParameter("interests")));
