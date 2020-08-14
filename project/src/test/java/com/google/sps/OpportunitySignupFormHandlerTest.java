@@ -25,6 +25,7 @@ import org.springframework.mock.web.MockServletContext;
 @RunWith(JUnit4.class)
 public final class OpportunitySignupFormHandlerTest {
   private static final String PARAMETER_OPPORTUNITY_ID = "opportunity-id";
+  private static final String PARAMETER_EVENT_ID = "event-id";
   private static final LocalServiceTestHelper authenticationHelper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig());
   private OpportunitySignupFormHandlerServlet opportunitySignupServlet;
@@ -61,10 +62,13 @@ public final class OpportunitySignupFormHandlerTest {
         .setEnvAuthDomain("gmail.com");
     Mockito.when(request.getParameter(PARAMETER_OPPORTUNITY_ID))
         .thenReturn(opportunity.getOpportunityId());
+    String eventId = opportunity.getEventId();
+    Mockito.when(request.getParameter(PARAMETER_EVENT_ID))
+        .thenReturn(eventId);
 
     opportunitySignupServlet.doPost(request, response);
 
-    Mockito.verify(response).sendRedirect("/event-details.html");
+    Mockito.verify(response).sendRedirect(String.format("/event-details.html?eventId=%s", eventId));
   }
 
   @Test
@@ -76,11 +80,31 @@ public final class OpportunitySignupFormHandlerTest {
         .setEnvEmail("test@gmail.com")
         .setEnvAuthDomain("gmail.com");
     Mockito.when(request.getParameter(PARAMETER_OPPORTUNITY_ID)).thenReturn(null);
+    Mockito.when(request.getParameter(PARAMETER_EVENT_ID))
+        .thenReturn(opportunity.getEventId());
 
     opportunitySignupServlet.doPost(request, response);
 
     Mockito.verify(response)
         .sendError(HttpServletResponse.SC_BAD_REQUEST, "Opportunity ID not specified.");
+  }
+
+  @Test
+  public void testAddOpportunitySignup_LoggedInEventIdNotSpecified() throws IOException {
+    VolunteeringOpportunity opportunity = TestUtils.newVolunteeringOpportunity();
+    SpannerTasks.insertVolunteeringOpportunity(opportunity);
+    authenticationHelper
+        .setEnvIsLoggedIn(true)
+        .setEnvEmail("test@gmail.com")
+        .setEnvAuthDomain("gmail.com");
+    Mockito.when(request.getParameter(PARAMETER_OPPORTUNITY_ID)).thenReturn(null);
+    Mockito.when(request.getParameter(PARAMETER_EVENT_ID))
+        .thenReturn(null);
+
+    opportunitySignupServlet.doPost(request, response);
+
+    Mockito.verify(response)
+        .sendError(HttpServletResponse.SC_BAD_REQUEST, "Event ID not specified.");
   }
 
   @Test
@@ -90,6 +114,8 @@ public final class OpportunitySignupFormHandlerTest {
     authenticationHelper.setEnvIsLoggedIn(false);
     Mockito.when(request.getParameter(PARAMETER_OPPORTUNITY_ID))
         .thenReturn(opportunity.getOpportunityId());
+    Mockito.when(request.getParameter(PARAMETER_EVENT_ID))
+        .thenReturn(opportunity.getEventId());
 
     opportunitySignupServlet.doPost(request, response);
 
