@@ -75,7 +75,6 @@ public class UserProfileEventsTest {
   @Test
   public void getUserEventsHosting_zeroEvents() throws IOException {
     User host = TestUtils.newUser();
-  
     SpannerTasks.insertOrUpdateUser(host);
 
     setAuthenticationHelper();
