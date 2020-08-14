@@ -70,11 +70,10 @@ public final class EventVolunteeringDataTest {
   }
  
   @Test
-  public void testGetOppportunities_EventIdNotInDatabase() throws IOException {
-    String eventId = TestUtils.newRandomId();
+  public void testGetOppportunities_EventNotInDatabase() throws IOException {
     Mockito
         .when(request.getParameter(PARAMETER_EVENT_ID))
-        .thenReturn(eventId);
+        .thenReturn(TestUtils.newRandomId());
  
     eventVolunteeringDataServlet.doGet(request, response);
  
