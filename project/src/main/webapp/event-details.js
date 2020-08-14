@@ -8,6 +8,7 @@ window.onload = async function onLoad() {
   const loginStatus = await getLoginStatus();
   populateVolunteeringOpportunitiesUI(eventHost, loginStatus);
   makeCreateOpportunityButtonVisible(eventHost, loginStatus);
+  setSignupAction();
 };
 
 
@@ -208,8 +209,17 @@ function makeCreateOpportunityButtonVisible(eventHost, loginStatus) {
   const eventId = urlParams.get('eventId');
 
   if (loginStatus.loginState === 'LOGGED_IN' && !loginStatus.userEmail.localeCompare(eventHost)) {
-    $('#create-opportunities')
+    $('#add-opportunity')
           .append(`<a href=
       /create-volunteering-opportunity.html?event-id=${eventId}>Add an volunteering opportunity</a>`);
   }
+}
+
+function setSignupAction() {
+  const params = (new URL(document.location)).searchParams;
+  const eventId = params.get('eventId');
+
+  const opportunitySignupForm = document.getElementById('opportunity-signup-form');
+  opportunitySignupForm.action =
+      `/opportunity-signup-form-handler?event-id=${eventId}`;
 }

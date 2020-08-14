@@ -38,15 +38,12 @@
             <li class="list-group-item input" id="date"></li>
             <li class="list-group-item input" id="time"></li>
             <li class="list-group-item input" id="location"></li>
-            <li class="list-group-item">
-              <p class="card-text">Volunteer Type: Translator</p>
-              <p class="card-text">Volunteer Spots Left: 1</p>
-            </li>
-            <li class="list-group-item">Attendee Spots Left: 240</li>
-            <li class="list-group-item"><div id="create-opportunities"></div></li>
           </ul>
         </div>
         </div>
+       <br>
+       <div id="add-opportunity"></div>
+       <br>
        <form
         method="post"
         action="/opportunity-signup-form-handler"
@@ -59,13 +56,14 @@
           </select>
         </div>
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Submit</button>
+        </form>
+        <br>
         <button type="button" class="btn btn-primary">
           <a id= "signup-link" href="signup.html">Register</a>
         </button>
         <button type="button" class="btn btn-primary">
         <a id= "editLink" href="event-edit.html">Edit</a>
         </button>
-        </form>
       </div>
     </div>
   </body>
