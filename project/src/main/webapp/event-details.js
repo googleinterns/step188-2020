@@ -100,9 +100,8 @@ async function getEventDetails() {
   const urlParams = new URLSearchParams(queryString);
   const eventId = urlParams.get('eventId');
 
-  //Register for event, if register param not specified, default to not registering
-  const registerBool = urlParams.get('register') ? urlParams.get('register'): 'false';
-  if (registerBool === "true") {
+  //Register for event
+  if ((urlParams.get('register')) === "true") {
       registerEvent(eventId)
   }
 
@@ -119,10 +118,11 @@ async function getEventDetails() {
   document.getElementById('editLink').setAttribute('href', `/event-edit.html?eventId=${eventId}`);
 }
 
+/** Call doPost to register logged in user for event */
 async function registerEvent(eventId) {
   const response = await fetch('/register-event?' + new URLSearchParams({'eventId': eventId}), {method: 'POST'} );
-  document.getElementById('signupLink').setAttribute('href', '');
-  document.getElementById('signupLink').innerHTML = 'You are signed up for this event.'
+  document.getElementById('signup-link').setAttribute('href', '');
+  document.getElementById('signup-link').innerHTML = 'You are signed up for this event.'
 }
 
 /**
