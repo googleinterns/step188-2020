@@ -78,10 +78,7 @@ public class UserProfileEventsTest {
   
     SpannerTasks.insertOrUpdateUser(host);
 
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail(EMAIL)
-        .setEnvAuthDomain(AUTH_DOMAIN);
+    setAuthenticationHelper();
     Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(HOSTING);
 
     profileEventsServlet.doGet(request, response);
@@ -95,15 +92,11 @@ public class UserProfileEventsTest {
   public void getUserEventsHosting_nonzeroEvents() throws IOException {
     User host = TestUtils.newUserWithEmail(EMAIL);
     Event event = TestUtils.newEventWithHost(host);
-    host = host.toBuilder().addEventHosting(event).build();
   
-    SpannerTasks.insertOrUpdateUser(host);
+    SpannerTasks.insertOrUpdateUser(host.toBuilder().addEventHosting(event).build());
     SpannerTasks.insertorUpdateEvent(event);
 
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail(EMAIL)
-        .setEnvAuthDomain(AUTH_DOMAIN);
+    setAuthenticationHelper();
     Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(HOSTING);
 
     profileEventsServlet.doGet(request, response);
@@ -132,10 +125,7 @@ public class UserProfileEventsTest {
     TestUtils.newVolunteeringOpportunityWithEventId(event.getId());
     SpannerTasks.insertVolunteeringOpportunity(opportunity);
 
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail(EMAIL)
-        .setEnvAuthDomain(AUTH_DOMAIN);
+    setAuthenticationHelper();
     Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(VOLUNTEERING);
 
     profileEventsServlet.doGet(request, response);
@@ -163,10 +153,7 @@ public class UserProfileEventsTest {
         new OpportunitySignup.Builder(opportunity.getOpportunityId(), userEmail).build();
     SpannerTasks.insertOpportunitySignup(opportunitySignup);
 
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail(userEmail)
-        .setEnvAuthDomain("gmail.com");
+    setAuthenticationHelper();
     Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(VOLUNTEERING);
 
     profileEventsServlet.doGet(request, response);
@@ -180,10 +167,7 @@ public class UserProfileEventsTest {
 
   @Test
   public void verifyGetUserEvents_eventNotSpecified_sendErrorResponse() throws IOException {
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail(EMAIL)
-        .setEnvAuthDomain(AUTH_DOMAIN);
+    setAuthenticationHelper();
     Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(null);
 
     profileEventsServlet.doGet(request, response);
@@ -194,10 +178,7 @@ public class UserProfileEventsTest {
 
   @Test
   public void verifyGetUserEvents_invalidParameter_sendErrorResponse() throws IOException {
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail(EMAIL)
-        .setEnvAuthDomain(AUTH_DOMAIN);
+    setAuthenticationHelper();
     Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(INVALID_EVENT_TYPE);
 
     profileEventsServlet.doGet(request, response);
@@ -216,4 +197,10 @@ public class UserProfileEventsTest {
     Mockito.verify(response).sendRedirect("/index.html");
   }
 
+  private static void setAuthenticationHelper() {
+    authenticationHelper
+        .setEnvIsLoggedIn(true)
+        .setEnvEmail(EMAIL)
+        .setEnvAuthDomain(AUTH_DOMAIN);
+  }
 }
