@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.json.Json;
 import javax.json.JsonArray;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -16,6 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.mockito.Mockito;
 
 /** */
 @RunWith(JUnit4.class)
@@ -111,6 +114,15 @@ public final class CommonUtilsTest {
 
     Assert.assertEquals(
         StringUtils.EMPTY, CommonUtils.getParameter(request, NAME, StringUtils.EMPTY));
+  }
+
+  @Test
+  public void getParameterwithNoValuesReturnEmptySet() {
+    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+    HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+    Mockito.when(request.getParameter(NAME)).thenReturn(null);
+
+    Assert.assertTrue(CommonUtils.getParameterValues(request, NAME).isEmpty());
   }
 
   @Test
