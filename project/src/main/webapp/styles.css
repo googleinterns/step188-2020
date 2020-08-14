@@ -3,6 +3,7 @@
   border: none !important;
   color: black !important;
   cursor: default !important;
+  margin: 0.25rem;
 }
 
 .btn-skills {
@@ -10,6 +11,7 @@
   border: none !important;
   color: black !important;
   cursor: default !important;
+  margin: 0.25rem;
 }
 
 .adder {
