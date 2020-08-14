@@ -39,9 +39,7 @@ public class SpannerTasks {
    */
   public static Optional<User> getLoggedInUser() {
     String email = UserServiceFactory.getUserService().getCurrentUser().getEmail();
-    Optional<User> userOptional = shallowReadUserFromEmail(email);
-
-    return userOptional.isPresent() ? userOptional: Optional.empty();
+    return shallowReadUserFromEmail(email).isPresent() ? shallowReadUserFromEmail(email) : Optional.empty();
   }
 
   /**
