@@ -39,8 +39,8 @@ public class SpannerTestTasks {
                 + "  Volunteers                 ARRAY<STRING(MAX)>"
                 + ") PRIMARY KEY (VolunteeringOpportunityID)",
             "CREATE TABLE OpportunitySignup ("
-	            + "  VolunteeringOpportunityID  STRING(MAX) NOT NULL,"
-	            + "  Email                      STRING(MAX) NOT NULL,"
+	          + "  VolunteeringOpportunityID  STRING(MAX) NOT NULL,"
+	          + "  Email                      STRING(MAX) NOT NULL,"
                 + ") PRIMARY KEY (VolunteeringOpportunityID, Email)");
     Database db =
         SpannerClient.getDatabaseAdminClient()
