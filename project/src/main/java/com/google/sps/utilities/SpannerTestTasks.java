@@ -26,6 +26,7 @@ public class SpannerTestTasks {
                 + "  Location       STRING(MAX),"
                 + "  Attendees      ARRAY<STRING(MAX)>,"
                 + "  Host           STRING(MAX),"
+                + "  Time           STRING(MAX),"
                 + "  Labels         ARRAY<STRING(MAX)>,"
                 + "  Opportunities  ARRAY<STRING(MAX)>,"
                 + ") PRIMARY KEY (EventID)",

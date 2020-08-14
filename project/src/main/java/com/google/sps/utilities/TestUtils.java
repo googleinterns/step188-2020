@@ -66,10 +66,10 @@ public class TestUtils {
   public static OpportunitySignup newOpportunitySignupWithOpportunityId(String opportunityId) {
     return new OpportunitySignup.Builder(opportunityId, VOLUNTEER_EMAIL).build();
   }
-  
+
   /** Returns a new User object with arbitrary attributes. */
   public static User newUser(String email) {
-    return new User.Builder(USER_NAME, email).setInterests(INTERESTS).setSkills(SKILLS).build();
+    return new User.Builder(NAME, email).setInterests(INTERESTS).setSkills(SKILLS).build();
   }
   
   /** Returns a random ID. */
