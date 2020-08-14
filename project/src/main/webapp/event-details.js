@@ -86,7 +86,6 @@ function getLinkForOpportunity(opportunityId) {
  * Gets event details from database and fills out event page with details
  */
 function getEventDetails() {
-    //make sign up link go to correct
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   fetch(

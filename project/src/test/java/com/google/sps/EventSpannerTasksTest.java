@@ -202,6 +202,7 @@ public class EventSpannerTasksTest {
 
     new EventRegistrationServlet().doPost(request, response);
     Event returnedEvent = new Gson().fromJson(response.getContentAsString(), Event.class);
+
     Assert.assertEquals(returnedEvent.getName(), EVENT_NAME);
     Assert.assertEquals(returnedEvent.getDescription(), DESCRIPTION);
     Assert.assertEquals(returnedEvent.getLocation(), LOCATION);
