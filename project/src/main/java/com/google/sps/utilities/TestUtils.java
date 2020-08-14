@@ -47,7 +47,15 @@ public class TestUtils {
    * Returns a new Event object with arbitrary parameters.
    */
   public static Event newEvent() {
-    return new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, new User.Builder(NAME, EMAIL).build()).build();
+    return new Event.Builder(
+            EVENT_NAME,
+            DESCRIPTION,
+            LABELS,
+            LOCATION,
+            DATE,
+            TIME,
+            new User.Builder(NAME, EMAIL).build())
+        .build();
   }
 
   /*

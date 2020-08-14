@@ -51,7 +51,7 @@ public final class EventVolunteeringDataTest {
  
     eventVolunteeringDataServlet = new EventVolunteeringDataServlet();
   }
- 
+
   @After
   public void tearDown() {
     SpannerTestTasks.cleanup();
@@ -59,28 +59,23 @@ public final class EventVolunteeringDataTest {
  
   @Test
   public void testGetOpportunities_EventNotSpecified() throws IOException {
-    Mockito
-        .when(request.getParameter(PARAMETER_EVENT_ID))
-        .thenReturn(null);
+    Mockito.when(request.getParameter(PARAMETER_EVENT_ID)).thenReturn(null);
  
     eventVolunteeringDataServlet.doGet(request, response);
  
     Mockito.verify(response)
         .sendError(HttpServletResponse.SC_BAD_REQUEST, String.format("No event specified."));
   }
- 
+
   @Test
   public void testGetOppportunities_EventNotInDatabase() throws IOException {
-    Mockito
-        .when(request.getParameter(PARAMETER_EVENT_ID))
-        .thenReturn(TestUtils.newRandomId());
+    Mockito.when(request.getParameter(PARAMETER_EVENT_ID)).thenReturn(TestUtils.newRandomId());
  
     eventVolunteeringDataServlet.doGet(request, response);
  
-    Assert.assertEquals(
-        CommonUtils.convertToJson(new HashSet()), stringWriter.toString().trim());
+    Assert.assertEquals(CommonUtils.convertToJson(new HashSet()), stringWriter.toString().trim());
   }
- 
+
   @Test
   public void testGetOpportunities_NoOpportunities() throws IOException {
     Event event = TestUtils.newEvent();
@@ -91,10 +86,9 @@ public final class EventVolunteeringDataTest {
 
     eventVolunteeringDataServlet.doGet(request, response);
  
-    Assert.assertEquals(
-        CommonUtils.convertToJson(new HashSet()), stringWriter.toString().trim());
+    Assert.assertEquals(CommonUtils.convertToJson(new HashSet()), stringWriter.toString().trim());
   }
- 
+
   @Test
   public void testGetOpportunities_NonzeroOpportunities() throws IOException {
     Event event = TestUtils.newEvent();
