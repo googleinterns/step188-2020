@@ -50,18 +50,15 @@ public class UserProfileEventsServlet extends HttpServlet {
    * @return JSON representing the event data
    * @throw IllegalArgumentException if eventType is invalid
    */
-  private String getEventsJSONByEmail(String eventType, String userEmail) {
-    String eventsJSON;
+  private static String getEventsJSONByEmail(String eventType, String userEmail) {
     switch (eventType) {
       case VOLUNTEERING:
         Set<EventVolunteering> eventsVolunteering =
             SpannerTasks.getEventsVolunteeringByEmail(userEmail);
-        eventsJSON = CommonUtils.convertToJson(eventsVolunteering);
-        break;
+        return CommonUtils.convertToJson(eventsVolunteering);
       // TO DO: add case statements for hosting and participating with retrieval of data
       default:
         throw new IllegalArgumentException("Invalid event type.");
     }
-    return eventsJSON;
   }
 }

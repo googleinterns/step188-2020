@@ -178,5 +178,4 @@ public class UserProfileEventsTest {
 
     Mockito.verify(response).sendRedirect("/index.html");
   }
-
 }
