@@ -1,12 +1,13 @@
-const eventHost = 'test@example.com'; // hard-coded event host value
+let eventHost = 'test@example.com'; // hard-coded event host value
 let loginState = null;
 let currentUser = null;
 
-window.onload = function onLoad() {
+window.onload = async function onLoad() {
   getEventDetails();
-  checkLoginStatus();
-  getVolunteeringOpportunities();
-  populateOpportunitiesDropdown();
+  const eventHost = await getEventHost();
+  const loginStatus = await getLoginStatus();
+  populateVolunteeringOpportunitiesUI(eventHost, loginStatus);
+  makeCreateOpportunityButtonVisible(eventHost, loginStatus);
 };
 
 
@@ -14,19 +15,27 @@ window.onload = function onLoad() {
  * Check the current login status to update
  * isLoggedIn and currentUser.
  */
-async function checkLoginStatus() {
+async function getLoginStatus() {
   const response = await fetch('/login-status');
   const loginStatus = await response.json();
-  loginState = loginStatus.loginState;
-  currentUser = loginStatus.userEmail;
+  return loginStatus;
 }
 
 /**
  * Adds the volunteering opportunities to the event card.
  */
-async function getVolunteeringOpportunities() {
-  const response = await fetch('/event-volunteering-data');
+async function populateVolunteeringOpportunitiesUI(eventHost, loginStatus) {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const eventId = urlParams.get('eventId');
+
+  const response = await fetch(`/event-volunteering-data?event-id=${eventId}`);
   const opportunities = await response.json();
+  showVolunteeringOpportunities(opportunities, eventHost, loginStatus);
+  populateOpportunitiesDropdown(opportunities);
+}
+
+async function showVolunteeringOpportunities(opportunities, eventHost, loginStatus) {
   for (const key in opportunities) {
     if (opportunities.hasOwnProperty(key)) {
       const volunteers =
@@ -37,7 +46,7 @@ async function getVolunteeringOpportunities() {
               opportunities[key].name,
               opportunities[key].numSpotsLeft,
               opportunities[key].requiredSkills,
-              volunteers));
+              volunteers, eventHost, loginStatus));
     }
   }
 }
@@ -55,7 +64,10 @@ async function getVolunteeringOpportunities() {
  * @return {string}
  */
 function getListItemForOpportunity(
-    opportunityId, name, numSpotsLeft, requiredSkills, volunteers) {
+    opportunityId, name, numSpotsLeft, requiredSkills, volunteers, eventHost, loginStatus) {
+  console.log(loginStatus.loginState);
+  console.log(loginStatus.currentUser);
+  console.log(eventHost);
   requiredSkillsText =
       requiredSkills.length ? requiredSkills.toString() : 'None';
   volunteersText =
@@ -64,7 +76,7 @@ function getListItemForOpportunity(
 
   // If the user is logged in and the current user is the event host,
   // then show the edit link for the volunteering opportunity.
-  if (loginState === 'LOGGED_IN' && !currentUser.localeCompare(eventHost)) {
+  if (loginStatus.loginState === 'LOGGED_IN' && !loginStatus.userEmail.localeCompare(eventHost)) {
     editLink = getLinkForOpportunity(opportunityId);
   }
   return `<li class="list-group-item">
@@ -118,6 +130,24 @@ async function getEventDetails() {
   document.getElementById('editLink').setAttribute('href', `/event-edit.html?eventId=${eventId}`);
 }
 
+async function getEventHost() {
+    //make sign up link go to correct
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const eventId = urlParams.get('eventId');
+
+  //Register for event
+  if ((urlParams.get('register')) === "true") {
+      registerEvent(eventId)
+  }
+
+  //View event details
+  const response = await fetch('/create-event?' + new URLSearchParams({'eventId': eventId}))
+  const data = await response.json();
+  const eventHost = data['host'].email;
+  return eventHost;
+}
+
 /** Call doPost to register logged in user for event */
 async function registerEvent(eventId) {
   const response = await fetch('/register-event?' + new URLSearchParams({'eventId': eventId}), {method: 'POST'} );
@@ -129,9 +159,7 @@ async function registerEvent(eventId) {
  * Adds the volunteering opportunities for which the number of attendee spots
  * is greater than 0 to the dropdown selection.
  */
-async function populateOpportunitiesDropdown() {
-  const response = await fetch('/event-volunteering-data');
-  const opportunities = await response.json();
+async function populateOpportunitiesDropdown(opportunities) {
   for (const key in opportunities) {
     if (opportunities.hasOwnProperty(key)) {
       if (opportunities[key].numSpotsLeft > 0) {
@@ -172,4 +200,16 @@ async function getVolunteersByOpportunityId(opportunityId) {
     }
   }
   return volunteers;
+}
+
+function makeCreateOpportunityButtonVisible(eventHost, loginStatus) {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const eventId = urlParams.get('eventId');
+
+  if (loginStatus.loginState === 'LOGGED_IN' && !loginStatus.userEmail.localeCompare(eventHost)) {
+    $('#create-opportunities')
+          .append(`<a href=
+      /create-volunteering-opportunity.html?event-id=${eventId}>Add an volunteering opportunity</a>`);
+  }
 }
