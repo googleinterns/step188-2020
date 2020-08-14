@@ -1,7 +1,8 @@
 package com.google.sps.utilities;
 
-import com.google.appengine.api.users.UserServiceFactory;
 import static com.google.cloud.spanner.TransactionRunner.TransactionCallable;
+
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.cloud.Date;
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.Mutation;
@@ -10,6 +11,7 @@ import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.sps.data.Event;
+import com.google.sps.data.EventVolunteering;
 import com.google.sps.data.OpportunitySignup;
 import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
@@ -168,24 +170,6 @@ public class SpannerTasks {
     if (!resultSet.next()) {
       return Optional.empty();
     }
-
-    // TO DO: replace with host from db, after PR #43 pushed
-    String NAME = "Bob Smith";
-    String EMAIL = "bobsmith@example.com";
-    User host = new User.Builder(NAME, EMAIL).build();
-    /* remove Hardcoded date */
-    Date date = Date.fromYearMonthDay(2016, 9, 15);
-    return Optional.of(
-        new Event.Builder(
-                /* name = */ resultSet.getString(0),
-               /* description = */ resultSet.getString(1),
-                /* labels = */ new HashSet<String>(resultSet.getStringList(2)),
-                /* location = */ resultSet.getString(3),
-                /* date = */ Date.parseDate(resultSet.getString(4)),
-                /* time= */ resultSet.getString(5),
-                /* host = */ host)
-            .build());
-    // TO DO: set volunteer opportunities, attendees by Querying those by ID, wait for PR 43, 44
     return Optional.of(shallowCreateEventFromDatabaseResult(resultSet));
   }
 
@@ -467,5 +451,45 @@ public class SpannerTasks {
 
   private static Mutation.WriteBuilder newInsertBuilderFromOpportunitySignup() {
     return Mutation.newInsertBuilder(OPPORTUNITY_SIGNUP_TABLE);
+  }
+
+  /**
+   * Given an email retrieve all events for which the user with the email is 
+   * volunteering for.
+   *
+   * @param email email for the user to retrieve events volunteering for
+   * @return events where the user is volunteering
+  */
+  public static Set<EventVolunteering> getEventsVolunteeringByEmail(String email) {
+    Set<EventVolunteering> results = new HashSet<EventVolunteering>();
+    Statement statement =
+        Statement.of(
+            String.format(
+                "SELECT Events.EventID, Events.Name, Events.Description, Events.Labels,"
+                    + " Events.Location, Events.Date, Events.Time, Events.Host,"
+                    + " VolunteeringOpportunity.Name FROM Events INNER JOIN"
+                    + " VolunteeringOpportunity ON Events.EventID ="
+                    + " VolunteeringOpportunity.EventID INNER JOIN OpportunitySignup ON"
+                    + " VolunteeringOpportunity.VolunteeringOpportunityID ="
+                    + " OpportunitySignup.VolunteeringOpportunityID WHERE Email=\"%s\"",
+                email));
+    try (ResultSet resultSet =
+        SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
+      while (resultSet.next()) {
+        Event event =
+            new Event.Builder(
+                    /* name = */ resultSet.getString(1),
+                    /* description = */ resultSet.getString(2),
+                    /* labels = */ new HashSet<String>(resultSet.getStringList(3)),
+                    /* location = */ resultSet.getString(4),
+                    /* date = */ resultSet.getDate(5),
+                    /* time = */ resultSet.getString(6),
+                    /* host = */ shallowReadUserFromEmail(resultSet.getString(7)).get())
+                .setId(resultSet.getString(0))
+                .build();
+        results.add(new EventVolunteering(event, /* opportunityName = */ resultSet.getString(8)));
+      }
+    }
+    return results;
   }
 }

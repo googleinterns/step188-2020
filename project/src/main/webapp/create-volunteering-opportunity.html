@@ -2,6 +2,8 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
@@ -17,53 +19,65 @@
       integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js"></script>
     <script src="shared.js"></script>
     <script src="script.js"></script>
     <script src="create-volunteering-opportunity.js"></script>
   </head>
   <body>
     <div id="header"></div>
-    <div class="col">
-      <br /><br />
-      <form
-        method="post"
-        action="/volunteering-form-handler"
-        id="volunteering-opportunity-form"
-        class="hidden"
-      >
-        <h3>Add a volunteering opportunity for your event.</h3>
+    <form
+      method="post"
+      action="/volunteering-form-handler"
+      id="volunteering-opportunity-form"
+      class="hidden"
+    >
+      <h3>Add a volunteering opportunity for your event.</h3>
+      <div class="input-group" id="name-div">
+        <div class="input-group-prepend">
+          <label class="input-group-text" for="name-div">Name</label>
+        </div>
         <input
           name="name"
           type="text"
           class="form-control"
-          placeholder="Volunteer Opportunity Name"
           aria-describedby="basic-addon1"
         />
+      </div>
+      <br />
+      <div class="input-group" id="spots-div">
+        <div class="input-group-prepend">
+          <label class="input-group-text" for="spots-div">Quantity needed</label>
+        </div>
         <input
           name="num-spots-left"
           type="text"
           class="form-control"
-          placeholder="Quantity Needed"
           aria-describedby="basic-addon1"
         />
-        <br />
-        <div class="row clearfix">
-          <div class="col-md-12 column" id="skills">
-            <input
-              type="text"
-              name="required-skill"
-              placeholder="Enter a skill"
-              class="form-control"
-            />
-          </div>
+      </div>
+      <br />
+      <div class="input-group" id="skills-div">
+        <div class="input-group-prepend">
+          <label class="input-group-text" for="skills">Skills</label>
         </div>
-        <button type="button" id="add_row" class="btn btn-default pull-left">
-          Add Row
-        </button>
-        <button type="submit" class="btn btn-primary mx-auto d-block">
-          Submit
-        </button>
-      </form>
-    </div>
+        <select
+          id="skills"
+          name="skills"
+          data-role="tagsinput"
+          multiple
+        ></select>
+        <button
+          type="button"
+          class="btn btn-light prefilled-pick"
+          onclick="togglePrefilledSkills();"
+        >+ Pick</button>
+        <div id="prefilled-skills" class="overflow-auto prefilled-pool"></div>
+      </div>
+      <br />
+      <button type="submit" class="btn btn-primary mx-auto d-block">
+        Submit
+      </button>
+    </form>
   </body>
 </html>

@@ -2,7 +2,6 @@ package com.google.sps.servlets;
 
 import com.google.sps.data.VolunteeringOpportunity;
 import com.google.sps.utilities.CommonUtils;
-import com.google.sps.utilities.DatabaseConstants;
 import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
 import java.util.Optional;
@@ -27,19 +26,20 @@ public class VolunteeringOpportunityDataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String opportunityId = request.getParameter(OPPORTUNITY_ID);
+    if (opportunityId == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No opportunity id specified.");
+      return;
+    }
 
     Optional<VolunteeringOpportunity> opportunity =
         SpannerTasks.getVolunteeringOpportunityByOppportunityId(opportunityId);
-
-    if (opportunity.isPresent()) {
-      response.setContentType("application/json;");
-      response.getWriter().println(CommonUtils.convertToJson(opportunity.get()));
-    } else {
-      response.setContentType("text/html;");
+    if (!opportunity.isPresent()) {
       response
-          .getWriter()
-          .println(
-              String.format("Error: No opportunity found for opportunityId %s", opportunityId));
+        .sendError(HttpServletResponse.SC_BAD_REQUEST,
+        String.format("Error: No opportunity found for opportunityId %s", opportunityId));
+      return;
     }
+    response.setContentType("application/json;");
+    response.getWriter().println(CommonUtils.convertToJson(opportunity.get()));
   }
 }
