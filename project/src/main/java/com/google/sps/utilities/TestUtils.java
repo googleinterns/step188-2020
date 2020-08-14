@@ -15,7 +15,6 @@ public class TestUtils {
   private static final String NAME = "Performer";
   private static final int NUMBER_OF_SPOTS = 240;
   private static final String VOLUNTEER_EMAIL = "volunteer@gmail.com";
-
   private static final String USER_NAME = "Bob Smith";
   private static final Set<String> INTERESTS =
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Conservation", "Food")));
