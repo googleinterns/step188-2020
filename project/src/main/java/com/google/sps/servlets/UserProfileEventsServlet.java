@@ -2,6 +2,7 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.sps.data.Event;
 import com.google.sps.data.EventVolunteering;
 import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.SpannerTasks;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 public class UserProfileEventsServlet extends HttpServlet {
   private static final String EVENT_TYPE = "event-type";
   private static final String VOLUNTEERING = "volunteering";
+  private static final String PARTICIPATING = "participating";
 
   /** 
    * Gets the current user's events corresponding to the event type specified as a parameter.
@@ -57,7 +59,13 @@ public class UserProfileEventsServlet extends HttpServlet {
             SpannerTasks.getEventsVolunteeringByEmail(userEmail);
         eventJSON = CommonUtils.convertToJson(eventsVolunteering);
         break;
-      // TO DO: add case statements for hosting and participating with retrieval of data
+      case PARTICIPATING:
+        Set<Event> eventsParticipating =
+            SpannerTasks.getEventsParticipatingByEmail(userEmail);
+        eventJSON = CommonUtils.convertToJson(eventsParticipating);
+        break;
+
+      // TO DO: add case statements for hostingwith retrieval of data
       default:
         throw new IllegalArgumentException("Invalid event type.");
     }
