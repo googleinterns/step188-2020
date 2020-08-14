@@ -31,7 +31,7 @@ import org.springframework.mock.web.MockServletContext;
 public class UserProfileUpdateTest {
   private static final String EMAIL = "test@example.com";
   private static final String DOMAIN = "example.com";
-  private static final User EXPECTED_USER = TestUtils.newUser(EMAIL);
+  private static final User USER = TestUtils.newUser(EMAIL);
 
   private static final LocalServiceTestHelper authenticationHelper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig());
@@ -59,31 +59,32 @@ public class UserProfileUpdateTest {
 
   @Test
   public void testGetUpdatedUser() throws Exception {
-    SpannerTasks.insertOrUpdateUser(EXPECTED_USER);
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail(EMAIL)
-        .setEnvAuthDomain(DOMAIN);
+    SpannerTasks.insertOrUpdateUser(USER);
+    setAuthenticationHelper();
 
     new UserProfileUpdateServlet().doGet(request, response);
  
     Assert.assertEquals(
-        CommonUtils.convertToJson(EXPECTED_USER), stringWriter.toString().trim());
+        CommonUtils.convertToJson(USER), stringWriter.toString().trim());
   }
 
   @Test
   public void testPostUpdatedUser() throws Exception {
-    Mockito.when(request.getParameter("name")).thenReturn(EXPECTED_USER.getName());
-    Mockito.doReturn(EXPECTED_USER.getInterests().toString()).when(request).getParameter("interests");
-    Mockito.doReturn(EXPECTED_USER.getSkills().toString()).when(request).getParameter("skills");
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail(EMAIL)
-        .setEnvAuthDomain(DOMAIN);
+    Mockito.when(request.getParameter("name")).thenReturn(USER.getName());
+    Mockito.doReturn(USER.getInterests().toString()).when(request).getParameter("interests");
+    Mockito.doReturn(USER.getSkills().toString()).when(request).getParameter("skills");
+    setAuthenticationHelper();
 
     new UserProfileUpdateServlet().doPost(request, response);
 
     Mockito.verify(response).sendRedirect("/profile.html");
+  }
+
+  private static void setAuthenticationHelper() {
+    authenticationHelper
+        .setEnvIsLoggedIn(true)
+        .setEnvEmail(EMAIL)
+        .setEnvAuthDomain(DOMAIN);
   }
 }
 
