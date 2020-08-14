@@ -33,17 +33,21 @@
     <br /><br />
     <h3>Create an Event</h3>
     <br />
-    <div class="col">
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="basic-addon1">Name</span>
+    <form id="create-event" action="/create-event" method="POST">
+      <div class="col">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Name</span>
+          </div>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Event Name"
+            id="name"
+            name="name"
+            aria-describedby="basic-addon1"
+          />
         </div>
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Event Name"
-          aria-describedby="basic-addon1"
-        />
       </div>
       <br />
       <div class="row">
@@ -52,27 +56,32 @@
             <div class="input-group-prepend">
               <span class="input-group-text" id="basic-addon1">Date</span>
             </div>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Event Date"
-              aria-describedby="basic-addon1"
-            />
-          </div>
-        </div>
-        <br />
-        <br />
-        <div class="col-lg-6">
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon1">Time</span>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="dd/MM/yyyy"
+                id="date"
+                name="date"
+                aria-describedby="basic-addon1"
+              />
             </div>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Time"
-              aria-describedby="basic-addon1"
-            />
+          </div>
+          <br />
+          <br />
+          <div class="col-lg-6">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Time</span>
+              </div>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Time"
+                id="time"
+                name="time"
+                aria-describedby="basic-addon1"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -120,63 +129,73 @@
       </div>
       <br />
       <br />
+      <div class="col">
       <div class="input-group">
         <div class="input-group-prepend">
           <span class="input-group-text" id="basic-addon1">Description</span>
         </div>
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Describe your event!"
-          aria-describedby="basic-addon1"
-        />
-      </div>
-      <br />
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="basic-addon1">Where</span>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Describe your event!"
+            id="description"
+            name="description"
+            aria-describedby="basic-addon1"
+          />
         </div>
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Where your event will be held"
-          aria-describedby="basic-addon1"
-        />
-      </div>
-      <br />
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="basic-addon1">Wanted</span>
+        <br />
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Where</span>
+          </div>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Where your event will be held"
+            id="location"
+            name="location"
+            aria-describedby="basic-addon1"
+          />
         </div>
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Volunteer Type"
-          aria-describedby="basic-addon1"
-        />
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Quantity Needed"
-          aria-describedby="basic-addon1"
-        />
-      </div>
-      <br />
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="basic-addon1">Attendees</span>
+        <br />
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Wanted</span>
+          </div>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Volunteer Type"
+            aria-describedby="basic-addon1"
+          />
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Quantity Needed"
+            aria-describedby="basic-addon1"
+          />
         </div>
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Max number of attendees"
-          aria-describedby="basic-addon1"
-        />
+        <br />
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Attendees</span>
+          </div>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Max number of attendees"
+            aria-describedby="basic-addon1"
+          />
+        </div>
+        </div>
+        <br />
       </div>
-      <br />
-    </div>
-    <button type="submit" class="btn btn-primary mx-auto d-block">
-      Submit
-    </button>
+      <button
+        type="submit"
+        class="btn btn-primary mx-auto d-block"
+      >
+        Submit
+      </button>
+    </form>
   </body>
 </html>

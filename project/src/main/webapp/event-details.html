@@ -22,29 +22,22 @@
     <script src="script.js"></script>
     <script src="event-details.js"></script>
   </head>
-  <body class>
+  <body>
     <div id="header"></div>
     <div class="container">
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">
-            Weekly Meal Prep: Angel Food Cake
-          </h5>
-          <p class="card-text">
-            In this Meal Prep Seminar, we will be teaching you how to make a
-            delicious cake!
-          </p>
-          <button class="btn">
-            <a href="signup.html">Sign up!</a>
-          </button>
+        <h5 class="card-title input" id="name"></h5>
+          <p class="card-text input" id="description"></p>
+          <br />
           <br />
           <ul
             id="volunteering-opportunities"
             class="list-group list-group-flush"
           >
-            <li class="list-group-item">Date: 06/20/2020</li>
-            <li class="list-group-item">Time: 6:00 PM</li>
-            <li class="list-group-item">Location: Online</li>
+            <li class="list-group-item input" id="date"></li>
+            <li class="list-group-item input" id="time"></li>
+            <li class="list-group-item input" id="location"></li>
             <li class="list-group-item">
               <p class="card-text">Volunteer Type: Translator</p>
               <p class="card-text">Volunteer Spots Left: 1</p>
@@ -65,6 +58,12 @@
           </select>
         </div>
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Submit</button>
+        <button type="button" class="btn btn-primary">
+          <a href="signup.html">Register</a>
+        </button>
+        <button type="button" class="btn btn-primary">
+        <a id= "editLink" href="event-edit.html">Edit</a>
+        </button>
         </form>
       </div>
     </div>

@@ -155,7 +155,6 @@ public final class Event {
     }
 
     public Builder mergeFrom(Event other) {
-      this.eventId = other.getId();
       this.name = other.getName();
       this.description = other.getDescription();
       this.labels = other.getLabels();
