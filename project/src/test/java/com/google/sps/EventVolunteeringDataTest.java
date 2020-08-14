@@ -58,7 +58,7 @@ public final class EventVolunteeringDataTest {
   }
  
   @Test
-  public void testGetSignups_EventNotSpecified() throws IOException {
+  public void testGetOpportunities_EventNotSpecified() throws IOException {
     Mockito
         .when(request.getParameter(PARAMETER_EVENT_ID))
         .thenReturn(null);
@@ -86,7 +86,6 @@ public final class EventVolunteeringDataTest {
   public void testGetOpportunities_NoOpportunities() throws IOException {
     Event event = TestUtils.newEvent();
     SpannerTasks.insertorUpdateEvent(event);
-
     Mockito
         .when(request.getParameter(PARAMETER_EVENT_ID))
         .thenReturn(event.getId());
