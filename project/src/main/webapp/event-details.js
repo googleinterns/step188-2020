@@ -1,19 +1,15 @@
-let eventHost = 'test@example.com'; // hard-coded event host value
-let loginState = null;
-let currentUser = null;
-
 window.onload = async function onLoad() {
   getEventDetails();
   const eventHost = await getEventHost();
   const loginStatus = await getLoginStatus();
   populateVolunteeringOpportunitiesUI(eventHost, loginStatus);
-  showCreateOpportunityButton(eventHost, loginStatus);
+  showCreateOpportunityLink(eventHost, loginStatus);
   setSignupAction();
 };
 
 
 /**
- * Return the current login status.
+ * Returns the current login status.
  */
 async function getLoginStatus() {
   const response = await fetch('/login-status');
@@ -22,7 +18,11 @@ async function getLoginStatus() {
 }
 
 /**
- * Adds the volunteering opportunities to the event card.
+ * Adds the volunteering opportunities to the event card and the dropdown
+ * in the signup form.
+ * @param {string} eventHost email of the host of the event
+ * @param {Object} loginStatus status of
+ *      current user
  */
 async function populateVolunteeringOpportunitiesUI(eventHost, loginStatus) {
   const eventId = getEventId();
@@ -33,7 +33,15 @@ async function populateVolunteeringOpportunitiesUI(eventHost, loginStatus) {
   populateOpportunitiesDropdown(opportunities);
 }
 
-async function showVolunteeringOpportunities(opportunities, eventHost, loginStatus) {
+/**
+ * Should the volunteering opportunities of the event card and if the
+ * eventHost is the current user, add the edit link for each opportunity.
+ * @param {Object} opportunities
+ * @param {string} eventHost email of the host of the event
+ * @param {Object} loginStatus status of current user
+ */
+async function showVolunteeringOpportunities(
+    opportunities, eventHost, loginStatus) {
   for (const key in opportunities) {
     if (opportunities.hasOwnProperty(key)) {
       const volunteers =
@@ -59,10 +67,13 @@ async function showVolunteeringOpportunities(opportunities, eventHost, loginStat
  * @param {string} numSpotsLeft number of spots left for opportunity
  * @param {string[]} requiredSkills skills for opportunity
  * @param {string} volunteers volunteers for opportunity
+ * @param {string} eventHost email of the host of the event
+ * @param {Object} loginStatus status of current user
  * @return {string}
  */
 function getListItemForOpportunity(
-    opportunityId, name, numSpotsLeft, requiredSkills, volunteers, eventHost, loginStatus) {
+    opportunityId, name, numSpotsLeft, requiredSkills,
+    volunteers, eventHost, loginStatus) {
   requiredSkillsText =
       requiredSkills.length ? requiredSkills.toString() : 'None';
   volunteersText =
@@ -71,7 +82,8 @@ function getListItemForOpportunity(
 
   // If the user is logged in and the current user is the event host,
   // then show the edit link for the volunteering opportunity.
-  if (loginStatus.loginState === 'LOGGED_IN' && !loginStatus.userEmail.localeCompare(eventHost)) {
+  if (loginStatus.loginState === 'LOGGED_IN' &&
+    !loginStatus.userEmail.localeCompare(eventHost)) {
     editLink = getLinkForOpportunity(opportunityId);
   }
   return `<li class="list-group-item">
@@ -105,18 +117,18 @@ function getLinkForOpportunity(opportunityId) {
  * If registering for event, register user then show event details
  */
 async function getEventDetails() {
-    //make sign up link go to correct
+  // make sign up link go to correct
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const eventId = urlParams.get('eventId');
 
-  //Register for event
-  if ((urlParams.get('register')) === "true") {
-      registerEvent(eventId)
+  // Register for event
+  if ((urlParams.get('register')) === 'true') {
+    registerEvent(eventId);
   }
 
-  //View event details
-  const response = await fetch('/create-event?' + new URLSearchParams({'eventId': eventId}))
+  // View event details
+  const response = await fetch('/create-event?' + new URLSearchParams({'eventId': eventId}));
   const data = await response.json();
   document.getElementById('name').innerHTML = data['name'];
   document.getElementById('description').innerHTML = data['description'];
@@ -129,7 +141,7 @@ async function getEventDetails() {
 }
 
 async function getEventHost() {
-  const response = await fetch('/create-event?' + new URLSearchParams({'eventId': getEventId()}))
+  const response = await fetch('/create-event?' + new URLSearchParams({'eventId': getEventId()}));
   const data = await response.json();
   const eventHost = data['host'].email;
   return eventHost;
@@ -139,12 +151,13 @@ async function getEventHost() {
 async function registerEvent(eventId) {
   const response = await fetch('/register-event?' + new URLSearchParams({'eventId': eventId}), {method: 'POST'} );
   document.getElementById('signup-link').setAttribute('href', '');
-  document.getElementById('signup-link').innerHTML = 'You are signed up for this event.'
+  document.getElementById('signup-link').innerHTML = 'You are signed up for this event.';
 }
 
 /**
  * Adds the volunteering opportunities for which the number of attendee spots
  * is greater than 0 to the dropdown selection.
+ * @param {Object[]} opportunities to display in dropdown
  */
 async function populateOpportunitiesDropdown(opportunities) {
   for (const key in opportunities) {
@@ -189,16 +202,25 @@ async function getVolunteersByOpportunityId(opportunityId) {
   return volunteers;
 }
 
-function showCreateOpportunityButton(eventHost, loginStatus) {
+/*
+ * Shows the link to create new volunteering
+ * opportunities if the current user is the event host.
+ */
+function showCreateOpportunityLink(eventHost, loginStatus) {
   const eventId = getEventId();
 
-  if (loginStatus.loginState === 'LOGGED_IN' && !loginStatus.userEmail.localeCompare(eventHost)) {
+  if (loginStatus.loginState === 'LOGGED_IN' &&
+      !loginStatus.userEmail.localeCompare(eventHost)) {
     $('#add-opportunity')
-          .append(`<a href=
-      /create-volunteering-opportunity.html?event-id=${eventId}>Add an volunteering opportunity</a>`);
+        .append(`<a href=
+            /create-volunteering-opportunity.html?event-id=${eventId}>\
+                Add an volunteering opportunity</a>`);
   }
 }
 
+/**
+ * Set the signup action in the signup form.
+ */
 function setSignupAction() {
   const params = (new URL(document.location)).searchParams;
   const eventId = params.get('eventId');
@@ -208,6 +230,10 @@ function setSignupAction() {
       `/opportunity-signup-form-handler?event-id=${eventId}`;
 }
 
+/**
+ * Get the event id from the query string.
+ * @return {string} the event id in the query string
+ */
 function getEventId() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);

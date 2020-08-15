@@ -21,21 +21,22 @@ async function getVolunteeringOpportunityFormData() {
   numSpotsLeftInput.value = opportunityData.numSpotsLeft;
 
   populateExistingSkills(opportunityData.requiredSkills);
-  
+
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const eventId = urlParams.get('event-id');
 
   const opportunityForm = document.getElementById('opportunity-form');
   opportunityForm.action =
-      `/volunteering-form-handler?opportunity-id=${opportunityId}&event-id=${eventId}`;
+      `/volunteering-form-handler?opportunity-id=${opportunityId}&event-id= \
+          ${eventId}`;
 }
 
-/** 
- * Populates inputs with skill labels that already exist
+/**
+ * Populates inputs with skill labels that already exist.
+ * @param {string[]} existingSkills skill labels for the opportunity.
  */
 function populateExistingSkills(existingSkills) {
-  console.log(existingSkills)
   $('#skills').on('itemAdded', function() {
     removeExtraInputs('#skills');
   });

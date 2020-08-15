@@ -11,7 +11,8 @@ async function setActionToCorrectRedirectURL() {
   const params = (new URL(document.location)).searchParams;
   const eventId = params.get('event-id');
 
-  const opportunityForm = document.getElementById('volunteering-opportunity-form');
+  const opportunityForm =
+    document.getElementById('volunteering-opportunity-form');
   opportunityForm.action =
       `/volunteering-form-handler?event-id=${eventId}`;
 }
