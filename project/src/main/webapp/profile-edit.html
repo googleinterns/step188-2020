@@ -35,21 +35,32 @@
     <br />
     <br />
     <form
-      class="col-8"
-      id="profile-form"
-      action="/profile-update"
+      id="image-form"
       method="POST"
+      enctype="multipart/form-data"
     >
       <div class="row">
         <div class="col-sm-3">
-          <img src="assets/default_profile.jpg" />
-          <br />
+          <img id="profile-picture" />
+          <br /><br />
           <div class="form-group">
             <label for="profile-picture">Upload a new image: </label>
             <br />
-            <input type="file" name="profile-picture" />
+            <div class="form-group">
+              <div class="input-group">
+                <input type="file" name="profile-picture" />
+              </div>
+            </div>
           </div>
+          <button type="submit" class="btn btn-primary">Update profile picture</button>
         </div>
+      </form>
+      <form
+        class="col-8"
+        id="profile-form"
+        action="/profile-update"
+        method="POST"
+      >
         <div class="col-sm-9">
           <div class="form-group">
             <div class="input-group">
@@ -91,9 +102,9 @@
               <div id="prefilled-skills" class="overflow-auto prefilled-pool"></div>
             </div>
           </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
         </div>
-      </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+      </form>
+    </div>
   </body>
 </html>
