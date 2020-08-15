@@ -41,7 +41,7 @@ public class SpannerTasks {
    */
   public static Optional<User> getLoggedInUser() {
     String email = UserServiceFactory.getUserService().getCurrentUser().getEmail();
-    return shallowReadUserFromEmail(email).isPresent() ? shallowReadUserFromEmail(email) : Optional.empty();
+    return shallowReadUserFromEmail(email);
   }
 
   /**
@@ -70,8 +70,7 @@ public class SpannerTasks {
             .executeQuery(
                 Statement.of(
                     String.format(
-                        "SELECT Name, Interests, Skills, EventsHosting, EventsParticipating,"
-                            + " EventsVolunteering FROM %s WHERE Email='%s'",
+                        "SELECT Name, Interests, Skills, Image FROM %s WHERE Email='%s'",
                         USER_TABLE, email)));
 
     if (!resultSet.next()) {
@@ -82,6 +81,7 @@ public class SpannerTasks {
         new User.Builder(/* name = */ resultSet.getString(0), /* email = */ email)
             .setInterests(new HashSet<String>(resultSet.getStringList(1)))
             .setSkills(new HashSet<String>(resultSet.getStringList(2)))
+            .setImageUrl(resultSet.getString(3))
             .build());
   }
 
@@ -224,7 +224,9 @@ public class SpannerTasks {
         .set("EventsParticipating")
         .toStringArray(user.getEventsParticipatingIds())
         .set("EventsVolunteering")
-        .toStringArray(user.getEventsVolunteeringIds());
+        .toStringArray(user.getEventsVolunteeringIds())
+        .set("Image")
+        .to(user.getImageUrl());
     mutations.add(builder.build());
     return mutations;
   }
