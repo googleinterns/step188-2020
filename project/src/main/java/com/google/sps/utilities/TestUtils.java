@@ -68,8 +68,13 @@ public class TestUtils {
   }
   
   /** Returns a new User object with arbitrary attributes. */
-  public static User newUser(String email) {
-    return new User.Builder(USER_NAME, email).setInterests(INTERESTS).setSkills(SKILLS).build();
+  public static User newUser() {
+    return new User.Builder(NAME, EMAIL).setInterests(INTERESTS).setSkills(SKILLS).build();
+  }
+
+  /** Returns a new User object with arbitrary attributes and given email. */
+  public static User newUserWithEmail(String email) {
+    return new User.Builder(NAME, email).setInterests(INTERESTS).setSkills(SKILLS).build();
   }
   
   /** Returns a random ID. */
