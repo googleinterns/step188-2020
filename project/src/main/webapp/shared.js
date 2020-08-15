@@ -213,3 +213,14 @@ function buildSkillsAsLabels(querySelector, opportunities) {
     buildAsLabels(querySelector, opportunity.requiredSkills, 'skills');
   }
 }
+
+/**
+ * Adds currently-attributed profile image to logged-in user
+ * If the user has no profile image, add the default one
+ */
+async function populateExistingProfileImage() {
+  const response = await fetch('/blob-handler');
+  const imageUrl = await response.text();
+  const realImageUrl = imageUrl ? imageUrl : 'assets/default_profile.jpg';
+  $('#profile-picture').attr('src', realImageUrl);
+}
