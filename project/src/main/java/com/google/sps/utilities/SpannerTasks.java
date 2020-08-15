@@ -40,15 +40,8 @@ public class SpannerTasks {
    * Get current loggedin User Optional
    */
   public static Optional<User> getLoggedInUser() {
-
     String email = UserServiceFactory.getUserService().getCurrentUser().getEmail();
-    Optional<User> userOptional = shallowReadUserFromEmail(email);
-
-    if (userOptional.isPresent()) {
-      return userOptional;
-    } else {
-      return Optional.empty();
-    }  
+    return shallowReadUserFromEmail(email).isPresent() ? shallowReadUserFromEmail(email) : Optional.empty();
   }
 
   /**
@@ -451,6 +444,43 @@ public class SpannerTasks {
 
   private static Mutation.WriteBuilder newInsertBuilderFromOpportunitySignup() {
     return Mutation.newInsertBuilder(OPPORTUNITY_SIGNUP_TABLE);
+  }
+
+  /**
+   * Given an email, retrieve all events for which the user with the email is
+   * hosting.
+   *
+   * @param email email for the user to retrieve events hosting
+   * @return events where the user is host
+   */
+  public static Set<Event> getEventsHostingByEmail(String email) {
+    Set<Event> results = new HashSet<>();
+    ResultSet resultSet =
+        SpannerClient.getDatabaseClient()
+            .singleUse()
+            .executeQuery(
+                Statement.of(
+                    String.format(
+                        "SELECT Events.EventID, Events.Name, Events.Description, Events.Labels,"
+                            + " Events.Location, Events.Date, Events.Time, Events.Host"
+                            + " FROM Events INNER JOIN"
+                            + " Users ON Events.EventID IN UNNEST(Users.EventsHosting) WHERE Email=\"%s\"",
+                        email)));
+    while (resultSet.next()) {
+      Event event =
+          new Event.Builder(
+                  /* name = */ resultSet.getString(1),
+                  /* description = */ resultSet.getString(2),
+                  /* labels = */ new HashSet<String>(resultSet.getStringList(3)),
+                  /* location = */ resultSet.getString(4),
+                  /* date = */ resultSet.getDate(5),
+                  /* time = */ resultSet.getString(6),
+                  /* host = */ shallowReadUserFromEmail(resultSet.getString(7)).get())
+              .setId(resultSet.getString(0))
+              .build();
+      results.add(event);
+    }
+    return results;
   }
 
   /**
