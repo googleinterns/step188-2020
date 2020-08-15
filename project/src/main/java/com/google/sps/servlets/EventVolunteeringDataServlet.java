@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet to get all volunteering data for a given event */
 @WebServlet("/event-volunteering-data")
 public class EventVolunteeringDataServlet extends HttpServlet {
-  private static final String EVENT_ID = "event-id";
+  private static final String HARDCODED_EVENT_ID = "0883de79-17d7-49a3-a866-dbd5135062a8";
 
   /**
    * Queries database for all opportunities with event ID given in the request parameter and writes
@@ -26,14 +26,10 @@ public class EventVolunteeringDataServlet extends HttpServlet {
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String eventId = request.getParameter(EVENT_ID);
-    if (eventId == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, String.format("No event specified."));
-      return;
-    }
-
+    // TO DO: change eventId to parameter value
     Set<VolunteeringOpportunity> opportunities =
-        SpannerTasks.getVolunteeringOpportunitiesByEventId(eventId);
+        SpannerTasks.getVolunteeringOpportunitiesByEventId(HARDCODED_EVENT_ID);
+
     response.setContentType("application/json;");
     response.getWriter().println(CommonUtils.convertToJson(opportunities));
   }
