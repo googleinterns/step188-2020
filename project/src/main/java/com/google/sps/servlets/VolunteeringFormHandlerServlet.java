@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that handles submission of the form for creating volunteering opportunities. */
 @WebServlet("/volunteering-form-handler")
 public class VolunteeringFormHandlerServlet extends HttpServlet {
-  private static final String OPPORTUNITY_ID = "oppportunity-id";
+  private static final String OPPORTUNITY_ID = "opportunity-id";
   private static final String NAME = "name";
   private static final String NUM_SPOTS_LEFT = "num-spots-left";
   private static final String REQUIRED_SKILL = "required-skill";
@@ -30,13 +30,13 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
    */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String eventId = request.getParameter(EVENT_ID);
     String opportunityId = request.getParameter(OPPORTUNITY_ID);
     String name =  request.getParameter(NAME);
     long numSpotsLeft =
         Long.parseLong(CommonUtils.getParameter(request, NUM_SPOTS_LEFT, /* DefaultValue= */ "0"));
     Set<String> requiredSkills = CommonUtils.getParameterValues(request, REQUIRED_SKILL);
-    
+    String eventId = request.getParameter(EVENT_ID);
+
     if (name == null) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Name not specified.");
       return;
