@@ -95,8 +95,11 @@ function getListItemForOpportunity(
  * @return {string}
  */
 function getLinkForOpportunity(opportunityId) {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const eventId = urlParams.get('eventId');
   return `<a href="/update-volunteering-opportunity.html?opportunity-id=${
-    opportunityId}"
+    opportunityId}&event-id=${eventId}"
           id="logout-prompt"
           class="btn btn-outline-success my-2 my-sm-0"
           type="button"
