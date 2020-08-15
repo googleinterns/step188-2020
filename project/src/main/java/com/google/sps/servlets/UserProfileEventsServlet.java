@@ -56,13 +56,11 @@ public class UserProfileEventsServlet extends HttpServlet {
       case VOLUNTEERING:
         Set<EventVolunteering> eventsVolunteering =
             SpannerTasks.getEventsVolunteeringByEmail(userEmail);
-        eventsJSON = CommonUtils.convertToJson(eventsVolunteering);
-        break;
+        return CommonUtils.convertToJson(eventsVolunteering);
       case HOSTING:
         Set<Event> eventsHosting =
             SpannerTasks.getEventsHostingByEmail(userEmail);
-        eventsJSON = CommonUtils.convertToJson(eventsHosting);
-        break;
+        return CommonUtils.convertToJson(eventsHosting);
       default:
         throw new IllegalArgumentException("Invalid event type.");
     }

@@ -37,6 +37,7 @@ public class UserProfileUpdateServlet extends HttpServlet {
               .add("eventsHosting", CommonUtils.createJsonArray(new HashSet<>()))
               .add("eventsParticipating", CommonUtils.createJsonArray(new HashSet<>()))
               .add("eventsVolunteering", CommonUtils.createJsonArray(new HashSet<>()))
+              .add("imageUrl", "")
               .build()
               .toString();
     } else {
@@ -51,6 +52,7 @@ public class UserProfileUpdateServlet extends HttpServlet {
               .add("eventsHosting", CommonUtils.createJsonArray(new HashSet<>()))
               .add("eventsParticipating", CommonUtils.createJsonArray(new HashSet<>()))
               .add("eventsVolunteering", CommonUtils.createJsonArray(new HashSet<>()))
+              .add("imageUrl", user.getImageUrl())
               .build()
               .toString();
     }
