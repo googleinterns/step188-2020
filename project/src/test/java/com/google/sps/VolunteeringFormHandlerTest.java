@@ -21,7 +21,7 @@ import org.mockito.Mockito;
 import org.springframework.mock.web.MockServletContext;
 
 
-/** Test that tests the opportunity signup form functionality. */
+/** Test that tests the volunteering opportunity form functionality. */
 @RunWith(JUnit4.class)
 public final class VolunteeringFormHandlerTest {
   private static final String PARAMETER_OPPORTUNITY_ID = "opportunity-id";
