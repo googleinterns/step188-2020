@@ -5,7 +5,7 @@ $(function() {
 });
 
 /**
- * Set the form action to include query parameter for eventId
+ * Set the opportunity form action to include query parameter for eventId.
  */
 async function setActionToCorrectRedirectURL() {
   const params = (new URL(document.location)).searchParams;

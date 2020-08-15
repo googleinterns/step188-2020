@@ -4,7 +4,7 @@ $(async function() {
 });
 
 async function getAllEvents() {
-  const allEvents = await fetch('/discovery-event-details');
+  const allEvents = await fetch('discovery-event-details');
   return allEvents.json();
 }
 

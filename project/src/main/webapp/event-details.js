@@ -7,14 +7,13 @@ window.onload = async function onLoad() {
   const eventHost = await getEventHost();
   const loginStatus = await getLoginStatus();
   populateVolunteeringOpportunitiesUI(eventHost, loginStatus);
-  makeCreateOpportunityButtonVisible(eventHost, loginStatus);
+  showCreateOpportunityButton(eventHost, loginStatus);
   setSignupAction();
 };
 
 
 /**
- * Check the current login status to update
- * isLoggedIn and currentUser.
+ * Return the current login status.
  */
 async function getLoginStatus() {
   const response = await fetch('/login-status');
@@ -26,9 +25,7 @@ async function getLoginStatus() {
  * Adds the volunteering opportunities to the event card.
  */
 async function populateVolunteeringOpportunitiesUI(eventHost, loginStatus) {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const eventId = urlParams.get('eventId');
+  const eventId = getEventId();
 
   const response = await fetch(`/event-volunteering-data?event-id=${eventId}`);
   const opportunities = await response.json();
@@ -66,9 +63,6 @@ async function showVolunteeringOpportunities(opportunities, eventHost, loginStat
  */
 function getListItemForOpportunity(
     opportunityId, name, numSpotsLeft, requiredSkills, volunteers, eventHost, loginStatus) {
-  console.log(loginStatus.loginState);
-  console.log(loginStatus.currentUser);
-  console.log(eventHost);
   requiredSkillsText =
       requiredSkills.length ? requiredSkills.toString() : 'None';
   volunteersText =
@@ -135,18 +129,7 @@ async function getEventDetails() {
 }
 
 async function getEventHost() {
-    //make sign up link go to correct
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const eventId = urlParams.get('eventId');
-
-  //Register for event
-  if ((urlParams.get('register')) === "true") {
-      registerEvent(eventId)
-  }
-
-  //View event details
-  const response = await fetch('/create-event?' + new URLSearchParams({'eventId': eventId}))
+  const response = await fetch('/create-event?' + new URLSearchParams({'eventId': getEventId()}))
   const data = await response.json();
   const eventHost = data['host'].email;
   return eventHost;
@@ -206,10 +189,8 @@ async function getVolunteersByOpportunityId(opportunityId) {
   return volunteers;
 }
 
-function makeCreateOpportunityButtonVisible(eventHost, loginStatus) {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const eventId = urlParams.get('eventId');
+function showCreateOpportunityButton(eventHost, loginStatus) {
+  const eventId = getEventId();
 
   if (loginStatus.loginState === 'LOGGED_IN' && !loginStatus.userEmail.localeCompare(eventHost)) {
     $('#add-opportunity')
@@ -225,4 +206,10 @@ function setSignupAction() {
   const opportunitySignupForm = document.getElementById('opportunity-signup-form');
   opportunitySignupForm.action =
       `/opportunity-signup-form-handler?event-id=${eventId}`;
+}
+
+function getEventId() {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  return urlParams.get('eventId');
 }
