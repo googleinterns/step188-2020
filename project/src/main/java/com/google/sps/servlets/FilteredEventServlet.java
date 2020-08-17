@@ -31,7 +31,7 @@ public class FilteredEventServlet extends HttpServlet {
       response.sendError(
           HttpServletResponse.SC_NOT_FOUND,
           String.format("No events found with labels %s", labelParams));
-    } else { // If event DNE, sends 404 ERR to frontend
+    } else {
       response.setContentType("application/json;");
       response.getWriter().println(CommonUtils.convertToJson(events));
     }
