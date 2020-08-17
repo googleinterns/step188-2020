@@ -34,6 +34,21 @@ public class TestUtils {
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Cooking")));
 
   /*
+   * Returns a new Event object with arbitrary parameters.
+   */
+  public static Event newEvent() {
+    return new Event.Builder(
+            EVENT_NAME,
+            DESCRIPTION,
+            LABELS,
+            LOCATION,
+            DATE,
+            TIME,
+            new User.Builder(NAME, EMAIL).build())
+        .build();
+  }
+
+  /*
    * Returns a new Event object with the given user as host.
    * @param user host to be used to create a Event object
    * @return an event with given user as host

@@ -21,6 +21,7 @@ import java.util.HashSet;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.After;
 import org.junit.Before;
@@ -28,6 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.mock.web.MockServletContext;
 
 /** Unit tests for updates and retrievals for a user's corresponding events. */
@@ -41,9 +43,11 @@ public class UserProfileEventsTest {
   private static final LocalServiceTestHelper authenticationHelper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig());
   private static final String PARAMETER_EVENT_TYPE = "event-type";
+  private static final String HOSTING = "hosting";
   private static final String VOLUNTEERING = "volunteering";
-  private static final String HOST_NAME = "Bob Smith";
-  private static final String HOST_EMAIL = "bobsmith@example.com";
+  private static final String PARTICIPATING = "participating";
+  private static final String HOST_NAME = "Host Bob";
+  private static final String HOST_EMAIL = "hostbobsmith@example.com";
   private static final String INVALID_EVENT_TYPE = "all";
   private static final String EMAIL = "test@example.com";
    private static final String AUTH_DOMAIN = "example.com";
@@ -72,13 +76,36 @@ public class UserProfileEventsTest {
   }
 
   @Test
-  public void getUserEventsHosting() throws IOException {
-    // TO DO: Add tests for events hosting.
+  public void getUserEventsHosting_zeroEvents() throws IOException {
+    User host = TestUtils.newUser();
+    SpannerTasks.insertOrUpdateUser(host);
+
+    setAuthenticationHelper();
+    Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(HOSTING);
+
+    profileEventsServlet.doGet(request, response);
+
+    Assert.assertEquals(
+        CommonUtils.convertToJson(new HashSet<>()).trim(),
+        stringWriter.toString().trim());
   }
 
   @Test
-  public void getUserEventsParticipating() throws IOException {
-    // TO DO: Add tests for events
+  public void getUserEventsHosting_nonzeroEvents() throws IOException {
+    User host = TestUtils.newUserWithEmail(EMAIL);
+    Event event = TestUtils.newEventWithHost(host);
+  
+    SpannerTasks.insertOrUpdateUser(host.toBuilder().addEventHosting(event).build());
+    SpannerTasks.insertorUpdateEvent(event);
+
+    setAuthenticationHelper();
+    Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(HOSTING);
+
+    profileEventsServlet.doGet(request, response);
+
+    Assert.assertEquals(
+        CommonUtils.convertToJson(Arrays.asList(event)).trim(),
+        stringWriter.toString().trim());
   }
 
   @Test
@@ -95,10 +122,7 @@ public class UserProfileEventsTest {
     TestUtils.newVolunteeringOpportunityWithEventId(event.getId());
     SpannerTasks.insertVolunteeringOpportunity(opportunity);
 
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail(EMAIL)
-        .setEnvAuthDomain(AUTH_DOMAIN);
+    setAuthenticationHelper();
     Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(VOLUNTEERING);
 
     profileEventsServlet.doGet(request, response);
@@ -126,10 +150,7 @@ public class UserProfileEventsTest {
         new OpportunitySignup.Builder(opportunity.getOpportunityId(), userEmail).build();
     SpannerTasks.insertOpportunitySignup(opportunitySignup);
 
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail(userEmail)
-        .setEnvAuthDomain("gmail.com");
+    setAuthenticationHelper();
     Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(VOLUNTEERING);
 
     profileEventsServlet.doGet(request, response);
@@ -143,10 +164,7 @@ public class UserProfileEventsTest {
 
   @Test
   public void verifyGetUserEvents_eventNotSpecified_sendErrorResponse() throws IOException {
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail(EMAIL)
-        .setEnvAuthDomain(AUTH_DOMAIN);
+    setAuthenticationHelper();
     Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(null);
 
     profileEventsServlet.doGet(request, response);
@@ -157,10 +175,7 @@ public class UserProfileEventsTest {
 
   @Test
   public void verifyGetUserEvents_invalidParameter_sendErrorResponse() throws IOException {
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail(EMAIL)
-        .setEnvAuthDomain(AUTH_DOMAIN);
+    setAuthenticationHelper();
     Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(INVALID_EVENT_TYPE);
 
     profileEventsServlet.doGet(request, response);
@@ -177,5 +192,49 @@ public class UserProfileEventsTest {
     profileEventsServlet.doGet(request, response);
 
     Mockito.verify(response).sendRedirect("/index.html");
+  }
+
+  /*Test to get all events logged in user is participating in */
+  @Test
+  public void getUserEventsParticipating() throws IOException {
+    //Logged in user
+    User user = TestUtils.newUserWithEmail(EMAIL);
+    String userEmail = user.getEmail(); 
+    SpannerTasks.insertOrUpdateUser(user);
+    authenticationHelper
+        .setEnvIsLoggedIn(true)
+        .setEnvEmail(userEmail)
+        .setEnvAuthDomain("example.com");
+    //Random Attendee
+    User ATTENDEE = new User.Builder("New attendee", "attendee@example.com").build();
+    SpannerTasks.insertOrUpdateUser(ATTENDEE);   
+    User host = new User.Builder(HOST_NAME, HOST_EMAIL).build();
+    SpannerTasks.insertOrUpdateUser(host);
+
+    Event event = TestUtils.newEventWithHost(host).toBuilder()
+      .setAttendees(new HashSet<User>(Arrays.asList(ATTENDEE, user))).build();
+    SpannerTasks.insertorUpdateEvent(event);
+    Event event2 = TestUtils.newEventWithHost(host).toBuilder()
+      .setAttendees(new HashSet<User>(Arrays.asList(user))).build();
+    SpannerTasks.insertorUpdateEvent(event2);
+
+    Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(PARTICIPATING);
+
+    profileEventsServlet.doGet(request, response);
+
+    try {
+    //Asserts unordered JSON, otherwise leads to flakey tests
+    JSONAssert.assertEquals(CommonUtils.convertToJson(
+        new HashSet<>(Arrays.asList(event, event2))).trim(),stringWriter.toString().trim(), false);
+    } catch (JSONException e) {
+        System.out.println("JSON conversion failed.");
+    }
+  }
+
+  private static void setAuthenticationHelper() {
+    authenticationHelper
+        .setEnvIsLoggedIn(true)
+        .setEnvEmail(EMAIL)
+        .setEnvAuthDomain(AUTH_DOMAIN);
   }
 }
