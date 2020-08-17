@@ -19,6 +19,10 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that handles user profile edits. */
 @WebServlet("/profile-update")
 public class UserProfileUpdateServlet extends HttpServlet {
+  private static final String NAME = "name";
+  private static final String EMAIL = "email";
+  private static final String INTERESTS = "interests";
+  private static final String SKILLS = "skills";
   private static String email;
 
   /** Writes out information for the user corresponding to the logged-in email */
@@ -35,10 +39,10 @@ public class UserProfileUpdateServlet extends HttpServlet {
     }
     String userJson =
         Json.createObjectBuilder()
-            .add("name", user.getName())
-            .add("email", email)
-            .add("interests", CommonUtils.createJsonArray(user.getInterests()))
-            .add("skills", CommonUtils.createJsonArray(user.getSkills()))
+            .add(NAME, user.getName())
+            .add(EMAIL, email)
+            .add(INTERESTS, CommonUtils.createJsonArray(user.getInterests()))
+            .add(SKILLS, CommonUtils.createJsonArray(user.getSkills()))
             .build()
             .toString();
     response.setContentType("application/json;charset=UTF-8");
@@ -50,9 +54,9 @@ public class UserProfileUpdateServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     email = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     // Get the input from the form.
-    String name = request.getParameter("name");
-    Set<String> interests = new HashSet<>(splitAsList(request.getParameter("interests")));
-    Set<String> skills = new HashSet<>(splitAsList(request.getParameter("skills")));
+    String name = request.getParameter(NAME);
+    Set<String> interests = new HashSet<>(splitAsList(request.getParameter(INTERESTS)));
+    Set<String> skills = new HashSet<>(splitAsList(request.getParameter(SKILLS)));
     User updatedUser =
         new User.Builder(name, email).setInterests(interests).setSkills(skills).build();
 
