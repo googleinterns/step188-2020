@@ -23,18 +23,17 @@ public class FilteredEventServlet extends HttpServlet {
   /** Returns events as specified by interest filters */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
     String labelParams = request.getParameter("labelParams");
     String[] labelParamsArr = labelParams.split("-");
     Set<Event> events = SpannerTasks.getFilteredEvents(labelParamsArr);
 
-    if (!events.isEmpty()) {
-        response.setContentType("application/json;");
-        response.getWriter().println(CommonUtils.convertToJson(events));
-    } else { // If event DNE, sends 404 ERR to frontend
+    if (events.isEmpty()) {
       response.sendError(
           HttpServletResponse.SC_NOT_FOUND,
           String.format("No events found with labels %s", labelParams));
+    } else { // If event DNE, sends 404 ERR to frontend
+      response.setContentType("application/json;");
+      response.getWriter().println(CommonUtils.convertToJson(events));
     }
   }
 }
