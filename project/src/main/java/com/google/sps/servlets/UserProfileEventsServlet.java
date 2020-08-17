@@ -18,6 +18,7 @@ public class UserProfileEventsServlet extends HttpServlet {
   private static final String EVENT_TYPE = "event-type";
   private static final String HOSTING = "hosting";
   private static final String VOLUNTEERING = "volunteering";
+  private static final String PARTICIPATING = "participating";
 
   /** 
    * Gets the current user's events corresponding to the event type specified as a parameter.
@@ -56,13 +57,15 @@ public class UserProfileEventsServlet extends HttpServlet {
       case VOLUNTEERING:
         Set<EventVolunteering> eventsVolunteering =
             SpannerTasks.getEventsVolunteeringByEmail(userEmail);
-        eventsJSON = CommonUtils.convertToJson(eventsVolunteering);
-        break;
+        return CommonUtils.convertToJson(eventsVolunteering);
+      case PARTICIPATING:
+        Set<Event> eventsParticipating =
+            SpannerTasks.getEventsParticipatingByEmail(userEmail);
+        return CommonUtils.convertToJson(eventsParticipating);
       case HOSTING:
         Set<Event> eventsHosting =
             SpannerTasks.getEventsHostingByEmail(userEmail);
-        eventsJSON = CommonUtils.convertToJson(eventsHosting);
-        break;
+        return CommonUtils.convertToJson(eventsHosting);
       default:
         throw new IllegalArgumentException("Invalid event type.");
     }
