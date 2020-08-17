@@ -117,7 +117,7 @@ public final class EventDetailTest {
     try {
       JSONAssert.assertEquals(CommonUtils.convertToJson(expectedEvents).trim(),stringWriter.toString().trim(), /*ordered=*/ false);
     } catch (JSONException e) {
-        System.out.println("JSON conversion failed.");
+      System.out.println("JSON conversion failed.");
     }
   }
 
@@ -131,7 +131,7 @@ public final class EventDetailTest {
     try {
       JSONAssert.assertEquals(CommonUtils.convertToJson(expectedEvents).trim(),stringWriter.toString().trim(), /*ordered=*/ false);
     } catch (JSONException e) {
-        System.out.println("JSON conversion failed.");
+      System.out.println("JSON conversion failed.");
     }
   }
 
