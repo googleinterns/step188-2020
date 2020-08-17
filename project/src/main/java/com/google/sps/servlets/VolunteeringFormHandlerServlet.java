@@ -4,6 +4,9 @@ import com.google.sps.data.VolunteeringOpportunity;
 import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -34,7 +37,7 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
     String name = request.getParameter(NAME);
     long numSpotsLeft =
         Long.parseLong(CommonUtils.getParameter(request, NUM_SPOTS_LEFT, /* DefaultValue= */ "0"));
-    Set<String> requiredSkills = CommonUtils.getParameterValues(request, REQUIRED_SKILL);
+    Set<String> requiredSkills = new HashSet<>(splitAsList(request.getParameter(REQUIRED_SKILL)));
     String eventId = request.getParameter(EVENT_ID);
 
     if (name == null) {
@@ -77,5 +80,9 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
             .build();
     // TO DO: change eventId to parameter value
     SpannerTasks.updateVolunteeringOpportunity(opportunity);
+  }
+
+  private static List<String> splitAsList(String values) {
+    return Arrays.asList(values.split("\\s*,\\s*"));
   }
 }
