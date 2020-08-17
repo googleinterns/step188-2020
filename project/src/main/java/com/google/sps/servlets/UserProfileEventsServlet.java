@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/user-events")
 public class UserProfileEventsServlet extends HttpServlet {
   private static final String EVENT_TYPE = "event-type";
+  private static final String HOSTING = "hosting";
   private static final String VOLUNTEERING = "volunteering";
   private static final String PARTICIPATING = "participating";
 
@@ -48,10 +49,10 @@ public class UserProfileEventsServlet extends HttpServlet {
    * Get the events of the given type for the given email.
    * @param eventType type of event data to retrieve
    * @param userEmail user for which to retrieve events
-   * @return JSON representing the events
+   * @return JSON representing the event data
    * @throw IllegalArgumentException if eventType is invalid
    */
-  private String getEventsJSONByEmail(String eventType, String userEmail) {
+  private static String getEventsJSONByEmail(String eventType, String userEmail) {
     switch (eventType) {
       case VOLUNTEERING:
         Set<EventVolunteering> eventsVolunteering =
@@ -61,8 +62,10 @@ public class UserProfileEventsServlet extends HttpServlet {
         Set<Event> eventsParticipating =
             SpannerTasks.getEventsParticipatingByEmail(userEmail);
         return CommonUtils.convertToJson(eventsParticipating);
-
-      // TO DO: add case statements for hostingwith retrieval of data
+      case HOSTING:
+        Set<Event> eventsHosting =
+            SpannerTasks.getEventsHostingByEmail(userEmail);
+        return CommonUtils.convertToJson(eventsHosting);
       default:
         throw new IllegalArgumentException("Invalid event type.");
     }

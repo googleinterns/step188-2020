@@ -43,6 +43,7 @@ public class UserProfileEventsTest {
   private static final LocalServiceTestHelper authenticationHelper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig());
   private static final String PARAMETER_EVENT_TYPE = "event-type";
+  private static final String HOSTING = "hosting";
   private static final String VOLUNTEERING = "volunteering";
   private static final String PARTICIPATING = "participating";
   private static final String HOST_NAME = "Host Bob";
@@ -75,8 +76,36 @@ public class UserProfileEventsTest {
   }
 
   @Test
-  public void getUserEventsHosting() throws IOException {
-    // TO DO: Add tests for events hosting.
+  public void getUserEventsHosting_zeroEvents() throws IOException {
+    User host = TestUtils.newUser();
+    SpannerTasks.insertOrUpdateUser(host);
+
+    setAuthenticationHelper();
+    Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(HOSTING);
+
+    profileEventsServlet.doGet(request, response);
+
+    Assert.assertEquals(
+        CommonUtils.convertToJson(new HashSet<>()).trim(),
+        stringWriter.toString().trim());
+  }
+
+  @Test
+  public void getUserEventsHosting_nonzeroEvents() throws IOException {
+    User host = TestUtils.newUserWithEmail(EMAIL);
+    Event event = TestUtils.newEventWithHost(host);
+  
+    SpannerTasks.insertOrUpdateUser(host.toBuilder().addEventHosting(event).build());
+    SpannerTasks.insertorUpdateEvent(event);
+
+    setAuthenticationHelper();
+    Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(HOSTING);
+
+    profileEventsServlet.doGet(request, response);
+
+    Assert.assertEquals(
+        CommonUtils.convertToJson(Arrays.asList(event)).trim(),
+        stringWriter.toString().trim());
   }
 
   @Test
@@ -93,7 +122,7 @@ public class UserProfileEventsTest {
     TestUtils.newVolunteeringOpportunityWithEventId(event.getId());
     SpannerTasks.insertVolunteeringOpportunity(opportunity);
 
-    setAuthenticationHelper()
+    setAuthenticationHelper();
     Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(VOLUNTEERING);
 
     profileEventsServlet.doGet(request, response);
@@ -121,10 +150,7 @@ public class UserProfileEventsTest {
         new OpportunitySignup.Builder(opportunity.getOpportunityId(), userEmail).build();
     SpannerTasks.insertOpportunitySignup(opportunitySignup);
 
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail(userEmail)
-        .setEnvAuthDomain("gmail.com");
+    setAuthenticationHelper();
     Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(VOLUNTEERING);
 
     profileEventsServlet.doGet(request, response);
