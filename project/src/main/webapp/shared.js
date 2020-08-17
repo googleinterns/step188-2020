@@ -4,6 +4,15 @@ async function isLoggedIn() {
   return loginStatus.loginState === 'LOGGED_IN';
 }
 
+/**
+ * Returns the current login status.
+ */
+async function getLoginStatus() {
+  const response = await fetch('/login-status');
+  const loginStatus = await response.json();
+  return loginStatus;
+}
+
 /** Get label pool */
 async function getPrefilledInformation(informationCategory) {
   const response =

@@ -12,7 +12,7 @@ async function setActionToCorrectRedirectURL() {
   const eventId = params.get('event-id');
 
   const opportunityForm =
-    document.getElementById('volunteering-opportunity-form');
+      document.getElementById('volunteering-opportunity-form');
   opportunityForm.action =
       `/volunteering-form-handler?event-id=${eventId}`;
 }

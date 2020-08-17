@@ -7,16 +7,6 @@ window.onload = async function onLoad() {
   setSignupAction();
 };
 
-
-/**
- * Returns the current login status.
- */
-async function getLoginStatus() {
-  const response = await fetch('/login-status');
-  const loginStatus = await response.json();
-  return loginStatus;
-}
-
 /**
  * Adds the volunteering opportunities to the event card and the dropdown
  * in the signup form.
