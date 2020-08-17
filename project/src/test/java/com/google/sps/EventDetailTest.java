@@ -4,6 +4,7 @@ import com.google.cloud.Date;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
 import com.google.sps.servlets.EventDetailServlet;
+import com.google.sps.servlets.FilteredEventServlet;
 import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.SpannerClient;
 import com.google.sps.utilities.SpannerTasks;
@@ -18,6 +19,7 @@ import java.util.Set;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -26,7 +28,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.mock.web.MockServletContext;
+
 
 @RunWith(JUnit4.class)
 public final class EventDetailTest {
@@ -101,6 +105,34 @@ public final class EventDetailTest {
 
     Assert.assertEquals(
         CommonUtils.convertToJson(expectedEvents).trim(), stringWriter.toString().trim());
+  }
+
+  @Test
+  public void verifyGetFilteredEvents() throws IOException {
+    Set<Event> expectedEvents = new HashSet(Arrays.asList(EVENT1, EVENT2));
+    Mockito.when(request.getParameter("labelParams")).thenReturn( "Work-Chess");
+
+    new FilteredEventServlet().doGet(request, response);
+
+    try {
+      JSONAssert.assertEquals(CommonUtils.convertToJson(expectedEvents).trim(),stringWriter.toString().trim(), /*ordered=*/ false);
+    } catch (JSONException e) {
+        System.out.println("JSON conversion failed.");
+    }
+  }
+
+  @Test
+  public void verifyGetOneFilteredEvent() throws IOException {
+    Set<Event> expectedEvents = new HashSet(Arrays.asList(EVENT1));
+    Mockito.when(request.getParameter("labelParams")).thenReturn( "Work");
+
+    new FilteredEventServlet().doGet(request, response);
+
+    try {
+      JSONAssert.assertEquals(CommonUtils.convertToJson(expectedEvents).trim(),stringWriter.toString().trim(), /*ordered=*/ false);
+    } catch (JSONException e) {
+        System.out.println("JSON conversion failed.");
+    }
   }
 
   private static void insertRequiredRows() {
