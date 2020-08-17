@@ -48,7 +48,7 @@ public class EventSpannerTasksTest {
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Tech", "Work")));
   private static final String LOCATION = "Remote";
   private static final Date DATE = Date.fromYearMonthDay(2016, 9, 15);
-  private static final String DATE_STRING = "09/15/2016";
+  private static final String DATE_STRING = "2016-09-15";
   private static final String TIME = "3:00PM-5:00PM";
   private MockHttpServletRequest request;
   private MockHttpServletResponse response;
@@ -126,6 +126,7 @@ public class EventSpannerTasksTest {
     request.addParameter("time", TIME);
     request.addParameter("description", DESCRIPTION);
     request.addParameter("location", LOCATION);
+    request.addParameter("interests", "Tech");
     authenticationHelper
         .setEnvIsLoggedIn(true)
         .setEnvEmail(EMAIL)
