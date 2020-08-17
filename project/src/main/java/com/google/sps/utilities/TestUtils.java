@@ -2,7 +2,6 @@ package com.google.sps.utilities;
 
 import com.google.cloud.Date;
 import com.google.sps.data.Event;
-import com.google.sps.data.User;
 import com.google.sps.data.OpportunitySignup;
 import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
