@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 public class BlobUrlServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-    String uploadUrl = blobstoreService.createUploadUrl("/blob-handler");
+    String uploadUrl =
+        BlobstoreServiceFactory.getBlobstoreService().createUploadUrl("/blob-handler");
 
     response.setContentType("text/html");
     response.getWriter().println(uploadUrl);
