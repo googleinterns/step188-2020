@@ -19,6 +19,14 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that handles user profile edits. */
 @WebServlet("/profile-update")
 public class UserProfileUpdateServlet extends HttpServlet {
+  private static final String NAME = "name";
+  private static final String EMAIL = "email";
+  private static final String INTERESTS = "interests";
+  private static final String SKILLS = "skills";
+  private static final String EVENTS_HOSTING = "eventsHosting";
+  private static final String EVENTS_PARTICIPATING = "eventsParticipating";
+  private static final String EVENTS_VOLUNTEERING = "eventsVolunteering";
+  private static final String IMAGE_URL = "imageUrl";
   private static final String email =
       UserServiceFactory.getUserService().getCurrentUser().getEmail();
 
@@ -30,14 +38,14 @@ public class UserProfileUpdateServlet extends HttpServlet {
     if (!userOptional.isPresent()) {
       userJson =
           Json.createObjectBuilder()
-              .add("name", "anonymous")
-              .add("email", email)
-              .add("interests", CommonUtils.createJsonArray(new HashSet<>()))
-              .add("skills", CommonUtils.createJsonArray(new HashSet<>()))
-              .add("eventsHosting", CommonUtils.createJsonArray(new HashSet<>()))
-              .add("eventsParticipating", CommonUtils.createJsonArray(new HashSet<>()))
-              .add("eventsVolunteering", CommonUtils.createJsonArray(new HashSet<>()))
-              .add("imageUrl", "")
+              .add(NAME, "anonymous")
+              .add(EMAIL, email)
+              .add(INTERESTS, CommonUtils.createJsonArray(new HashSet<>()))
+              .add(SKILLS, CommonUtils.createJsonArray(new HashSet<>()))
+              .add(EVENTS_HOSTING, CommonUtils.createJsonArray(new HashSet<>()))
+              .add(EVENTS_PARTICIPATING, CommonUtils.createJsonArray(new HashSet<>()))
+              .add(EVENTS_VOLUNTEERING, CommonUtils.createJsonArray(new HashSet<>()))
+              .add(IMAGE_URL, "")
               .build()
               .toString();
     } else {
@@ -45,14 +53,14 @@ public class UserProfileUpdateServlet extends HttpServlet {
       User user = userOptional.get();
       userJson =
           Json.createObjectBuilder()
-              .add("name", user.getName())
-              .add("email", email)
-              .add("interests", CommonUtils.createJsonArray(user.getInterests()))
-              .add("skills", CommonUtils.createJsonArray(user.getSkills()))
-              .add("eventsHosting", CommonUtils.createJsonArray(new HashSet<>()))
-              .add("eventsParticipating", CommonUtils.createJsonArray(new HashSet<>()))
-              .add("eventsVolunteering", CommonUtils.createJsonArray(new HashSet<>()))
-              .add("imageUrl", user.getImageUrl())
+              .add(NAME, user.getName())
+              .add(EMAIL, email)
+              .add(INTERESTS, CommonUtils.createJsonArray(user.getInterests()))
+              .add(SKILLS, CommonUtils.createJsonArray(user.getSkills()))
+              .add(EVENTS_HOSTING, CommonUtils.createJsonArray(new HashSet<>()))
+              .add(EVENTS_PARTICIPATING, CommonUtils.createJsonArray(new HashSet<>()))
+              .add(EVENTS_VOLUNTEERING, CommonUtils.createJsonArray(new HashSet<>()))
+              .add(IMAGE_URL, user.getImageUrl())
               .build()
               .toString();
     }
@@ -64,9 +72,9 @@ public class UserProfileUpdateServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get the input from the form.
-    String name = request.getParameter("name");
-    Set<String> interests = new HashSet<>(splitAsList(request.getParameter("interests")));
-    Set<String> skills = new HashSet<>(splitAsList(request.getParameter("skills")));
+    String name = request.getParameter(NAME);
+    Set<String> interests = new HashSet<>(splitAsList(request.getParameter(INTERESTS)));
+    Set<String> skills = new HashSet<>(splitAsList(request.getParameter(SKILLS)));
     User updatedUser =
         new User.Builder(name, email).setInterests(interests).setSkills(skills).build();
 
