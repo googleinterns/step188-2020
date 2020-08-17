@@ -2,7 +2,6 @@ package com.google.sps.utilities;
 
 import com.google.cloud.Date;
 import com.google.sps.data.Event;
-import com.google.sps.data.User;
 import com.google.sps.data.OpportunitySignup;
 import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
@@ -29,7 +28,7 @@ public class TestUtils {
   private static final String OPPORTUNITY_NAME = "Performer";
   private static final int NUMBER_OF_SPOTS = 240;
   private static final String VOLUNTEER_EMAIL = "volunteer@gmail.com";
-  
+
   private static final Set<String> INTERESTS =
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Conservation", "Food")));
   private static final Set<String> SKILLS =

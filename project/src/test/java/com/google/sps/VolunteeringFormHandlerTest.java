@@ -16,7 +16,6 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockServletContext;
 
-
 /** Test that tests the volunteering opportunity form functionality. */
 @RunWith(JUnit4.class)
 public final class VolunteeringFormHandlerTest {

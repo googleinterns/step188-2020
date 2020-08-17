@@ -63,7 +63,7 @@ public final class CommonUtilsTest {
 
   @Test
   public void userToJson() {
-  // Given an User, verify that all of its fields are properly converted to JSON
+    // Given an User, verify that all of its fields are properly converted to JSON
     User user = new User.Builder("Bob Smith", "bobsmith@example.com").build();
     String expectedJson =
         String.format(

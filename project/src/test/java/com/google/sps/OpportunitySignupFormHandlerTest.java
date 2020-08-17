@@ -20,7 +20,6 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockServletContext;
 
-
 /** Test that tests the opportunity signup form functionality. */
 @RunWith(JUnit4.class)
 public final class OpportunitySignupFormHandlerTest {
