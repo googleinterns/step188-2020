@@ -93,10 +93,7 @@ public class UserProfileEventsTest {
     TestUtils.newVolunteeringOpportunityWithEventId(event.getId());
     SpannerTasks.insertVolunteeringOpportunity(opportunity);
 
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail(EMAIL)
-        .setEnvAuthDomain(AUTH_DOMAIN);
+    setAuthenticationHelper()
     Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(VOLUNTEERING);
 
     profileEventsServlet.doGet(request, response);
@@ -141,10 +138,7 @@ public class UserProfileEventsTest {
 
   @Test
   public void verifyGetUserEvents_eventNotSpecified_sendErrorResponse() throws IOException {
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail(EMAIL)
-        .setEnvAuthDomain(AUTH_DOMAIN);
+    setAuthenticationHelper();
     Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(null);
 
     profileEventsServlet.doGet(request, response);
@@ -155,10 +149,7 @@ public class UserProfileEventsTest {
 
   @Test
   public void verifyGetUserEvents_invalidParameter_sendErrorResponse() throws IOException {
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail(EMAIL)
-        .setEnvAuthDomain(AUTH_DOMAIN);
+    setAuthenticationHelper();
     Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(INVALID_EVENT_TYPE);
 
     profileEventsServlet.doGet(request, response);
@@ -202,6 +193,7 @@ public class UserProfileEventsTest {
     SpannerTasks.insertorUpdateEvent(event2);
 
     Mockito.when(request.getParameter(PARAMETER_EVENT_TYPE)).thenReturn(PARTICIPATING);
+
     profileEventsServlet.doGet(request, response);
 
     try {
@@ -211,5 +203,12 @@ public class UserProfileEventsTest {
     } catch (JSONException e) {
         System.out.println("JSON conversion failed.");
     }
+  }
+
+  private static void setAuthenticationHelper() {
+    authenticationHelper
+        .setEnvIsLoggedIn(true)
+        .setEnvEmail(EMAIL)
+        .setEnvAuthDomain(AUTH_DOMAIN);
   }
 }

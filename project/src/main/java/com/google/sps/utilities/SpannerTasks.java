@@ -497,7 +497,7 @@ public class SpannerTasks {
    * Given a user email retrieve all events that the user is 
    * participating in by querying events that the user is an attendee of.
    *
-   * @param email loggedIn user email
+   * @param email of loggedIn user email
    * @return events where the user is participating
   */
   public static Set<Event> getEventsParticipatingByEmail(String email) {
