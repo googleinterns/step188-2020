@@ -1,11 +1,7 @@
 package com.google.sps;
 
-import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
-import com.google.sps.data.VolunteeringOpportunity;
 import com.google.sps.servlets.VolunteeringFormHandlerServlet;
 import com.google.sps.utilities.SpannerClient;
-import com.google.sps.utilities.SpannerTasks;
 import com.google.sps.utilities.SpannerTestTasks;
 import com.google.sps.utilities.TestUtils;
 import java.io.IOException;
@@ -19,7 +15,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockServletContext;
-
 
 /** Test that tests the volunteering opportunity form functionality. */
 @RunWith(JUnit4.class)
@@ -68,8 +63,7 @@ public final class VolunteeringFormHandlerTest {
 
     eventVolunteeringFormHandlerServlet.doPost(request, response);
 
-    Mockito.verify(response)
-        .sendError(HttpServletResponse.SC_BAD_REQUEST, "Name not specified.");
+    Mockito.verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Name not specified.");
   }
 
   @Test
