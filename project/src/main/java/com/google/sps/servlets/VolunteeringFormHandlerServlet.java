@@ -17,7 +17,7 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
   private static final String NAME = "name";
   private static final String NUM_SPOTS_LEFT = "num-spots-left";
   private static final String REQUIRED_SKILL = "required-skill";
-  private static final String HARDCODED_EVENT_ID = "0883de79-17d7-49a3-a866-dbd5135062a8";
+  private static final String EVENT_ID = "event-id";
 
   /**
    * Inserts volunteering opportunity with parameter values for attributes into the database if
@@ -31,24 +31,33 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String opportunityId = request.getParameter(OPPORTUNITY_ID);
-    String name = CommonUtils.getParameter(request, NAME, /* DefaultValue= */ "");
+    String name = request.getParameter(NAME);
     long numSpotsLeft =
         Long.parseLong(CommonUtils.getParameter(request, NUM_SPOTS_LEFT, /* DefaultValue= */ "0"));
     Set<String> requiredSkills = CommonUtils.getParameterValues(request, REQUIRED_SKILL);
+    String eventId = request.getParameter(EVENT_ID);
+
+    if (name == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Name not specified.");
+      return;
+    } else if (eventId == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Event ID not specified.");
+      return;
+    }
 
     // If opportunityId is not passed as a parameter, perform an insert else perform an update
     if (opportunityId == null) {
-      insertVolunteeringOpportunityInDB(name, numSpotsLeft, requiredSkills);
+      insertVolunteeringOpportunityInDB(eventId, name, numSpotsLeft, requiredSkills);
     } else {
-      updateVolunteeringOpportunityInDB(opportunityId, name, numSpotsLeft, requiredSkills);
+      updateVolunteeringOpportunityInDB(opportunityId, eventId, name, numSpotsLeft, requiredSkills);
     }
-    response.sendRedirect("/events-feed.html");
+    response.sendRedirect(String.format("/event-details.html?eventId=%s", eventId));
   }
 
   private static void insertVolunteeringOpportunityInDB(
-      String name, long numSpotsLeft, Set<String> requiredSkills) {
+      String eventId, String name, long numSpotsLeft, Set<String> requiredSkills) {
     VolunteeringOpportunity opportunity =
-        new VolunteeringOpportunity.Builder(HARDCODED_EVENT_ID, name, numSpotsLeft)
+        new VolunteeringOpportunity.Builder(eventId, name, numSpotsLeft)
             .setRequiredSkills(requiredSkills)
             .build();
     // TO DO: change eventId to parameter value
@@ -56,9 +65,13 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
   }
 
   private static void updateVolunteeringOpportunityInDB(
-      String opportunityId, String name, long numSpotsLeft, Set<String> requiredSkills) {
+      String opportunityId,
+      String eventId,
+      String name,
+      long numSpotsLeft,
+      Set<String> requiredSkills) {
     VolunteeringOpportunity opportunity =
-        new VolunteeringOpportunity.Builder(HARDCODED_EVENT_ID, name, numSpotsLeft)
+        new VolunteeringOpportunity.Builder(eventId, name, numSpotsLeft)
             .setOpportunityId(opportunityId)
             .setRequiredSkills(requiredSkills)
             .build();
