@@ -45,7 +45,7 @@ function populateFilters(filters) {
 // Gives HTML for checkboxes
 function getCheckboxes(key, value) {
     return `<input type="checkbox" id=${key} name=${key} value=${key}>
-<label for=${key}> ${key} (${value})</label><br>`
+  <label for=${key}> ${key} (${value})</label><br>`
 }
 
 // Gets checked checkboxes and returns events that match that filter
