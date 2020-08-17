@@ -56,15 +56,11 @@ public final class OpportunitySignupFormHandlerTest {
   public void testAddOpportunitySignup_LoggedIn() throws IOException {
     VolunteeringOpportunity opportunity = TestUtils.newVolunteeringOpportunity();
     SpannerTasks.insertVolunteeringOpportunity(opportunity);
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail("test@gmail.com")
-        .setEnvAuthDomain("gmail.com");
+    setUserToLoggedIn();
     Mockito.when(request.getParameter(PARAMETER_OPPORTUNITY_ID))
         .thenReturn(opportunity.getOpportunityId());
     String eventId = opportunity.getEventId();
-    Mockito.when(request.getParameter(PARAMETER_EVENT_ID))
-        .thenReturn(eventId);
+    Mockito.when(request.getParameter(PARAMETER_EVENT_ID)).thenReturn(eventId);
 
     opportunitySignupServlet.doPost(request, response);
 
@@ -75,13 +71,9 @@ public final class OpportunitySignupFormHandlerTest {
   public void testAddOpportunitySignup_LoggedInOpportunityIdNotSpecified() throws IOException {
     VolunteeringOpportunity opportunity = TestUtils.newVolunteeringOpportunity();
     SpannerTasks.insertVolunteeringOpportunity(opportunity);
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail("test@gmail.com")
-        .setEnvAuthDomain("gmail.com");
+    setUserToLoggedIn();
     Mockito.when(request.getParameter(PARAMETER_OPPORTUNITY_ID)).thenReturn(null);
-    Mockito.when(request.getParameter(PARAMETER_EVENT_ID))
-        .thenReturn(opportunity.getEventId());
+    Mockito.when(request.getParameter(PARAMETER_EVENT_ID)).thenReturn(opportunity.getEventId());
 
     opportunitySignupServlet.doPost(request, response);
 
@@ -93,13 +85,9 @@ public final class OpportunitySignupFormHandlerTest {
   public void testAddOpportunitySignup_LoggedInEventIdNotSpecified() throws IOException {
     VolunteeringOpportunity opportunity = TestUtils.newVolunteeringOpportunity();
     SpannerTasks.insertVolunteeringOpportunity(opportunity);
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail("test@gmail.com")
-        .setEnvAuthDomain("gmail.com");
+    setUserToLoggedIn();
     Mockito.when(request.getParameter(PARAMETER_OPPORTUNITY_ID)).thenReturn(null);
-    Mockito.when(request.getParameter(PARAMETER_EVENT_ID))
-        .thenReturn(null);
+    Mockito.when(request.getParameter(PARAMETER_EVENT_ID)).thenReturn(null);
 
     opportunitySignupServlet.doPost(request, response);
 
@@ -114,11 +102,17 @@ public final class OpportunitySignupFormHandlerTest {
     authenticationHelper.setEnvIsLoggedIn(false);
     Mockito.when(request.getParameter(PARAMETER_OPPORTUNITY_ID))
         .thenReturn(opportunity.getOpportunityId());
-    Mockito.when(request.getParameter(PARAMETER_EVENT_ID))
-        .thenReturn(opportunity.getEventId());
+    Mockito.when(request.getParameter(PARAMETER_EVENT_ID)).thenReturn(opportunity.getEventId());
 
     opportunitySignupServlet.doPost(request, response);
 
     Mockito.verify(response).sendRedirect("/index.html");
+  }
+
+  private static void setUserToLoggedIn() {
+    authenticationHelper
+        .setEnvIsLoggedIn(true)
+        .setEnvEmail("test@gmail.com")
+        .setEnvAuthDomain("gmail.com");
   }
 }

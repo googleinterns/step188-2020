@@ -17,8 +17,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.mockito.Mockito;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 /** */
 @RunWith(JUnit4.class)
@@ -64,23 +64,24 @@ public final class CommonUtilsTest {
   @Test
   public void userToJson() {
   // Given an User, verify that all of its fields are properly converted to JSON
-  User user = new User.Builder("Bob Smith", "bobsmith@example.com").build();
-  String expectedJson =
-    String.format("{%s:%s,%s:%s,%s:%s,%s:%s,%s:%s,%s:%s,%s:%s}",
-        wrapInQuotes("name"),
-        wrapInQuotes(user.getName()),
-        wrapInQuotes("email"),
-        wrapInQuotes(user.getEmail()),
-        wrapInQuotes("interests"),
-        user.getInterests(),
-        wrapInQuotes("skills"),
-        user.getSkills(),
-        wrapInQuotes("eventsHosting"),
-        user.getEventsHosting(),
-        wrapInQuotes("eventsParticipating"),
-        user.getEventsParticipating(),
-        wrapInQuotes("eventsVolunteering"),
-        user.getEventsVolunteering());
+    User user = new User.Builder("Bob Smith", "bobsmith@example.com").build();
+    String expectedJson =
+        String.format(
+            "{%s:%s,%s:%s,%s:%s,%s:%s,%s:%s,%s:%s,%s:%s}",
+            wrapInQuotes("name"),
+            wrapInQuotes(user.getName()),
+            wrapInQuotes("email"),
+            wrapInQuotes(user.getEmail()),
+            wrapInQuotes("interests"),
+            user.getInterests(),
+            wrapInQuotes("skills"),
+            user.getSkills(),
+            wrapInQuotes("eventsHosting"),
+            user.getEventsHosting(),
+            wrapInQuotes("eventsParticipating"),
+            user.getEventsParticipating(),
+            wrapInQuotes("eventsVolunteering"),
+            user.getEventsVolunteering());
   }
 
   @Test

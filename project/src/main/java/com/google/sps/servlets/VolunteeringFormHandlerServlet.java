@@ -31,7 +31,7 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String opportunityId = request.getParameter(OPPORTUNITY_ID);
-    String name =  request.getParameter(NAME);
+    String name = request.getParameter(NAME);
     long numSpotsLeft =
         Long.parseLong(CommonUtils.getParameter(request, NUM_SPOTS_LEFT, /* DefaultValue= */ "0"));
     Set<String> requiredSkills = CommonUtils.getParameterValues(request, REQUIRED_SKILL);
@@ -65,7 +65,11 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
   }
 
   private static void updateVolunteeringOpportunityInDB(
-      String opportunityId, String eventId, String name, long numSpotsLeft, Set<String> requiredSkills) {
+      String opportunityId,
+      String eventId,
+      String name,
+      long numSpotsLeft,
+      Set<String> requiredSkills) {
     VolunteeringOpportunity opportunity =
         new VolunteeringOpportunity.Builder(eventId, name, numSpotsLeft)
             .setOpportunityId(opportunityId)

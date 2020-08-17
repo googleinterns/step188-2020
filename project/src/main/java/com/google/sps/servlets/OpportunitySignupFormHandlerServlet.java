@@ -9,7 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
- 
+
 /** Servlet that handles submission of the form for signing up for opportunities. */
 @WebServlet("/opportunity-signup-form-handler")
 public class OpportunitySignupFormHandlerServlet extends HttpServlet {
@@ -28,7 +28,7 @@ public class OpportunitySignupFormHandlerServlet extends HttpServlet {
     String opportunityId = request.getParameter(OPPORTUNITY_ID);
     String eventId = request.getParameter(EVENT_ID);
     User user = UserServiceFactory.getUserService().getCurrentUser();
-    
+
     if (eventId == null) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Event ID not specified.");
     } else if (opportunityId == null) {
@@ -41,6 +41,6 @@ public class OpportunitySignupFormHandlerServlet extends HttpServlet {
       SpannerTasks.insertOpportunitySignup(signup);
 
       response.sendRedirect(String.format("/event-details.html?eventId=%s", eventId));
-    }   
+    }
   }
 }
