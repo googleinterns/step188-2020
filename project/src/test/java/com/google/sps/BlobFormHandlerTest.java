@@ -34,10 +34,8 @@ public class BlobFormHandlerTest {
   private static final String DOMAIN = "example.com";
   private static final String IMAGE_URL = "image-url.com";
   private static final User USER = TestUtils.newUserWithEmail(EMAIL);
-
   private static final LocalServiceTestHelper authenticationHelper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig());
-
   private static final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
   private static final HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
   private static final StringWriter stringWriter = new StringWriter();
