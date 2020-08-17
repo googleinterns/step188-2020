@@ -29,6 +29,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet("/blob-handler")
 public class BlobFormHandlerServlet extends HttpServlet {
+  private static final String PROFILE_PICTURE = "profile-picture";
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Optional<User> userOptional = SpannerTasks.getLoggedInUser();
@@ -59,7 +61,7 @@ public class BlobFormHandlerServlet extends HttpServlet {
   private String getUploadedFileUrl(HttpServletRequest request) {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
-    List<BlobKey> blobKeys = blobs.get("profile-picture");
+    List<BlobKey> blobKeys = blobs.get(PROFILE_PICTURE);
 
     // User submitted form without selecting a file, so we can't get a URL. (dev server)
     if (blobKeys == null || blobKeys.isEmpty()) {
