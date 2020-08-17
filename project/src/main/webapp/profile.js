@@ -16,7 +16,7 @@ async function getCurrentProfileData() {
 
 /** Populate the user profile with name, email, interests, skills */
 function updateProfileBasics(userData) {
-  $('#name').text(userData['name']);
+  $('.name').text(userData['name']);
   $('#email').text(userData['email']);
   buildAsLabels(`#interests`, userData['interests'], 'interests');
   buildAsLabels(`#skills`, userData['skills'], 'skills');
@@ -46,8 +46,15 @@ async function updateUserEventsParticipating() {
 async function updateUserEventsVolunteering() {
   const userEventsVolunteering = await getUserEvents('volunteering');
   for (const eventVolunteering of userEventsVolunteering) {
-    populateEventContainer(eventVolunteering, 'events-volunteering');
+    const event = eventVolunteering.event;
+    await populateEventContainer(event, 'events-volunteering');
+    addVolunteerRole(event.eventId, eventVolunteering.opportunityName);
   }
+}
+
+function addVolunteerRole(eventId, opportunity) {
+  $(`#event-${eventId} #event-card-labels`)
+      .append(`<br /><br /><div><b>Role: ${opportunity}</b></div>`);
 }
 
 async function getUserEvents(eventType) {
