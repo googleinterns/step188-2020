@@ -2,6 +2,8 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
@@ -17,6 +19,8 @@
       integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
       crossorigin="anonymous"
     ></script>
+    <script src="shared.js"></script>
+    <script src="script.js"></script>
     <script src="update-volunteering-opportunity.js"></script>
   </head>
   <body>
@@ -48,20 +52,23 @@
           aria-describedby="basic-addon1"
         />
         <br />
-        <div class="row clearfix">
-          <div class="col-md-12 column" id="skills">
-            <input
-              id="required-skill"
-              type="text"
-              name="required-skill"
-              placeholder="Enter a skill"
-              class="form-control"
-            />
-          </div>
+        <div class="input-group" id="skills-div">
+        <div class="input-group-prepend">
+          <label class="input-group-text" for="skills">Skills</label>
         </div>
-        <button type="button" id="add-row" class="btn btn-default pull-left">
-          Add Row
-        </button>
+        <input
+          id="skills"
+          name="required-skill"
+          data-role="tagsinput"
+          multiple
+        ></input>
+        <button
+          type="button"
+          class="btn btn-light prefilled-pick"
+          onclick="togglePrefilledSkills();"
+        >+ Pick</button>
+        <div id="prefilled-skills" class="overflow-auto prefilled-pool"></div>
+        </div>
         <button type="submit" class="btn btn-primary mx-auto d-block">
           Submit
         </button>
