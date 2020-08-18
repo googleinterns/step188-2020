@@ -1,5 +1,6 @@
 package com.google.sps;
 
+import com.google.cloud.Date;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
@@ -38,6 +39,7 @@ public final class EventRankingTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
+    int currentYear = new java.util.Date().getYear();
     EVENT_CONSERVATION_FOOD_MUSIC = TestUtils
         .newEvent()
         .toBuilder()
@@ -47,11 +49,13 @@ public final class EventRankingTest {
         .newEvent()
         .toBuilder()
         .setLabels(new HashSet<>(Arrays.asList(FOOD, MUSIC)))
+        .setDate(Date.fromYearMonthDay(currentYear + 1, 1, 1))
         .build();
     EVENT_CONSERVATION_MUSIC = TestUtils
         .newEvent()
         .toBuilder()
         .setLabels(new HashSet<>(Arrays.asList(CONSERVATION, MUSIC)))
+        .setDate(Date.fromYearMonthDay(currentYear + 2, 1, 1))
         .build();
     EVENT_FOOD = TestUtils
         .newEvent()
@@ -70,7 +74,10 @@ public final class EventRankingTest {
         .setSkills(SKILLS_MUSIC)
         .build();
     OPPORTUNITY_MUSIC = new VolunteeringOpportunity.Builder(EVENT_FOOD_MUSIC.getId(), "", 1).build();
-    EVENT_FOOD_MUSIC = EVENT_FOOD_MUSIC.toBuilder().addOpportunity(OPPORTUNITY_MUSIC).build();
+    EVENT_FOOD_MUSIC = EVENT_FOOD_MUSIC
+        .toBuilder()
+        .addOpportunity(OPPORTUNITY_MUSIC)
+        .build();
   }
 
   @Test
