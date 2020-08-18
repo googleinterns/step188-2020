@@ -39,6 +39,7 @@ public final class EventDetailTest {
   private static final Date DATE = Date.fromYearMonthDay(2016, 9, 15);
   private static final String LOCATION = "Online";
   private static final String TIME = "3:00PM-5:00PM";
+  private static final String IMAGE_URL = "image-url.com";
   private static final String EVENT_ID1 = "0883de79-17d7-49a3-a866-dbd5135062a8";
   private static final String EVENT_ID2 = "4fdcd5e9-52b5-4a43-a1f3-2b697c3d5244";
   private static final User USER =
@@ -53,6 +54,7 @@ public final class EventDetailTest {
               TIME,
               USER)
           .setId(EVENT_ID1)
+          .setImageUrl(IMAGE_URL)
           .build();
   private static final Event EVENT2 =
       new Event.Builder(
@@ -64,6 +66,7 @@ public final class EventDetailTest {
               TIME,
               USER)
           .setId(EVENT_ID2)
+          .setImageUrl(IMAGE_URL)
           .build();
   private static final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
   private static final HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
