@@ -20,7 +20,7 @@ import org.junit.runners.JUnit4;
 
 /** Tests the ranking algorithm for event discovery */
 @RunWith(JUnit4.class)
-public final class EventRankingTest {
+public final class EventRankerTest {
   private static final String CONSERVATION = "conservation";
   private static final String FOOD = "food";
   private static final String MUSIC = "music";
