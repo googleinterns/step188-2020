@@ -31,7 +31,7 @@ import org.springframework.mock.web.MockServletContext;
 public class UserProfileUpdateTest {
   private static final String EMAIL = "test@example.com";
   private static final String DOMAIN = "example.com";
-  private static final User USER = TestUtils.newUser(EMAIL);
+  private static final User USER = TestUtils.newUserWithEmail(EMAIL);
 
   private static final LocalServiceTestHelper authenticationHelper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig());
