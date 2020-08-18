@@ -2,7 +2,6 @@ package com.google.sps.utilities;
 
 import com.google.cloud.Date;
 import com.google.sps.data.Event;
-import com.google.sps.data.User;
 import com.google.sps.data.OpportunitySignup;
 import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
@@ -29,11 +28,25 @@ public class TestUtils {
   private static final String OPPORTUNITY_NAME = "Performer";
   private static final int NUMBER_OF_SPOTS = 240;
   private static final String VOLUNTEER_EMAIL = "volunteer@gmail.com";
-  
   private static final Set<String> INTERESTS =
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Conservation", "Food")));
   private static final Set<String> SKILLS =
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Cooking")));
+
+  /*
+   * Returns a new Event object with arbitrary parameters.
+   */
+  public static Event newEvent() {
+    return new Event.Builder(
+            EVENT_NAME,
+            DESCRIPTION,
+            LABELS,
+            LOCATION,
+            DATE,
+            TIME,
+            new User.Builder(NAME, EMAIL).build())
+        .build();
+  }
 
   /*
    * Returns a new Event object with the given user as host.
@@ -66,7 +79,7 @@ public class TestUtils {
   public static OpportunitySignup newOpportunitySignupWithOpportunityId(String opportunityId) {
     return new OpportunitySignup.Builder(opportunityId, VOLUNTEER_EMAIL).build();
   }
-  
+
   /** Returns a new User object with arbitrary attributes. */
   public static User newUser() {
     return new User.Builder(NAME, EMAIL).setInterests(INTERESTS).setSkills(SKILLS).build();
@@ -76,7 +89,7 @@ public class TestUtils {
   public static User newUserWithEmail(String email) {
     return new User.Builder(NAME, email).setInterests(INTERESTS).setSkills(SKILLS).build();
   }
-  
+
   /** Returns a random ID. */
   public static String newRandomId() {
     return UUID.randomUUID().toString();

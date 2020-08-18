@@ -33,6 +33,7 @@ public class UserProfileUpdateServlet extends HttpServlet {
   /** Writes out information for the user corresponding to the logged-in email */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    email = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     Optional<User> userOptional = SpannerTasks.shallowReadUserFromEmail(email);
     String userJson;
     if (!userOptional.isPresent()) {
@@ -63,7 +64,22 @@ public class UserProfileUpdateServlet extends HttpServlet {
               .add(IMAGE_URL, user.getImageUrl())
               .build()
               .toString();
+    User user;
+    if (userOptional.isPresent()) {
+      user = userOptional.get();
+    } else {
+      user = new User.Builder("anonymous", email).build();
+      SpannerTasks.insertOrUpdateUser(user);
+
     }
+    String userJson =
+        Json.createObjectBuilder()
+            .add(NAME, user.getName())
+            .add(EMAIL, email)
+            .add(INTERESTS, CommonUtils.createJsonArray(user.getInterests()))
+            .add(SKILLS, CommonUtils.createJsonArray(user.getSkills()))
+            .build()
+            .toString();
     response.setContentType("application/json;charset=UTF-8");
     response.getWriter().println(userJson);
   }
@@ -71,6 +87,7 @@ public class UserProfileUpdateServlet extends HttpServlet {
   /** Given user fields, inserts or updates the corresponding entry in storage */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    email = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     // Get the input from the form.
     String name = request.getParameter(NAME);
     Set<String> interests = new HashSet<>(splitAsList(request.getParameter(INTERESTS)));

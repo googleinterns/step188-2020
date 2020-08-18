@@ -18,6 +18,7 @@ public class UserProfileEventsServlet extends HttpServlet {
   private static final String EVENT_TYPE = "event-type";
   private static final String HOSTING = "hosting";
   private static final String VOLUNTEERING = "volunteering";
+  private static final String PARTICIPATING = "participating";
 
   /** 
    * Gets the current user's events corresponding to the event type specified as a parameter.
@@ -57,6 +58,10 @@ public class UserProfileEventsServlet extends HttpServlet {
         Set<EventVolunteering> eventsVolunteering =
             SpannerTasks.getEventsVolunteeringByEmail(userEmail);
         return CommonUtils.convertToJson(eventsVolunteering);
+      case PARTICIPATING:
+        Set<Event> eventsParticipating =
+            SpannerTasks.getEventsParticipatingByEmail(userEmail);
+        return CommonUtils.convertToJson(eventsParticipating);
       case HOSTING:
         Set<Event> eventsHosting =
             SpannerTasks.getEventsHostingByEmail(userEmail);
