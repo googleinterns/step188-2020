@@ -132,22 +132,16 @@ public final class EventRankerTest {
   public void testServletGetRanking() throws IOException {
     setAuthenticationHelper(EMAIL);
     SpannerTasks.insertOrUpdateUser(USER_CONSERVATION_FOOD_MUSIC);
-    Set<Event> events =
-        new HashSet<>(
-            Arrays.asList(
-                EVENT_FOOD,
-                EVENT_SEWING));
+    Set<Event> events = new HashSet<>(Arrays.asList(EVENT_FOOD, EVENT_SEWING));
     for (Event event : events) {
       SpannerTasks.insertorUpdateEvent(event);
     }
-    List<Event> expectedEvents =
-        EventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, events);
+    List<Event> expectedEvents = EventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, events);
 
     new EventRankerServlet().doGet(request, response);
 
     Assert.assertEquals(
-        CommonUtils.convertToJson(expectedEvents).trim(),
-        stringWriter.toString().trim());
+        CommonUtils.convertToJson(expectedEvents).trim(), stringWriter.toString().trim());
   }
 
   @Test
@@ -156,8 +150,7 @@ public final class EventRankerTest {
 
     new EventRankerServlet().doGet(request, response);
 
-    Mockito.verify(response)
-        .sendError(HttpServletResponse.SC_BAD_REQUEST, "User not found.");
+    Mockito.verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "User not found.");
   }
 
   private static void setUpDatabase() throws Exception {

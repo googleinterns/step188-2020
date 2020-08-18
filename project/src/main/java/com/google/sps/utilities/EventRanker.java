@@ -6,8 +6,8 @@ import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class EventRanker {
