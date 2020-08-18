@@ -32,8 +32,6 @@ public class EventRegistrationServlet extends HttpServlet {
 
     // If event DNE, sends 404 ERR to frontend
     if (eventOptional.isPresent()) {
-      response.sendError(HttpServletResponse.SC_NOT_FOUND);
-    } else {
       User loggedInUser = SpannerTasks.getLoggedInUser().get();
       Event event = eventOptional.get();
       if (event.getHost() != loggedInUser ) {
@@ -44,6 +42,8 @@ public class EventRegistrationServlet extends HttpServlet {
       String redirectUrl = "/event-details.html?eventId=" + event.getId() + "&register=false";
       response.sendRedirect(redirectUrl);
       response.getWriter().println(CommonUtils.convertToJson(event));
+    } else {
+      response.sendError(HttpServletResponse.SC_NOT_FOUND);
     } 
   }
 }
