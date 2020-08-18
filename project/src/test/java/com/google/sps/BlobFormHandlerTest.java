@@ -31,6 +31,7 @@ import org.springframework.mock.web.MockServletContext;
 @RunWith(JUnit4.class)
 public class BlobFormHandlerTest {
   private static final String EMAIL = "test@example.com";
+  private static final String INVALID_EMAIL = "invalid@example.com";
   private static final String DOMAIN = "example.com";
   private static final String IMAGE_URL = "image-url.com";
   private static final User USER = TestUtils.newUserWithEmail(EMAIL);
@@ -61,7 +62,7 @@ public class BlobFormHandlerTest {
   public void testGetImageUrl() throws Exception {
     SpannerTasks.insertOrUpdateUser(
         USER.toBuilder().setImageUrl(IMAGE_URL).build());
-    setAuthenticationHelper();
+    setAuthenticationHelper(EMAIL);
 
     new BlobFormHandlerServlet().doGet(request, response);
  
@@ -72,17 +73,27 @@ public class BlobFormHandlerTest {
   public void testGetUploadUrl() throws Exception {
     SpannerTasks.insertOrUpdateUser(
         USER.toBuilder().setImageUrl(IMAGE_URL).build());
-    setAuthenticationHelper();
+    setAuthenticationHelper(EMAIL);
 
     new BlobUrlServlet().doGet(request, response);
 
     Assert.assertFalse(IMAGE_URL.isEmpty());
   }
 
-  private static void setAuthenticationHelper() {
+  Test
+  public void testBlobstoreInvalidUser() throws Exception {
+    setAuthenticationHelper(INVALID_EMAIL);
+
+    new BlobUrlServlet().doGet(request, response);
+
+    Mockito.verify(response)
+        .sendError(HttpServletResponse.SC_BAD_REQUEST, "Error with getting current user: does not exist");
+  }
+
+  private static void setAuthenticationHelper(String email) {
     authenticationHelper
         .setEnvIsLoggedIn(true)
-        .setEnvEmail(EMAIL)
+        .setEnvEmail(email)
         .setEnvAuthDomain(DOMAIN);
   }
 }
