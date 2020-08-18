@@ -70,13 +70,14 @@ public final class EventRankingTest {
         .setInterests(INTERESTS_CONSERVATION_FOOD)
         .setSkills(SKILLS_MUSIC)
         .build();
-    OPPORTUNITY_MUSIC = new VolunteeringOpportunity.Builder(EVENT_FOOD_MUSIC.getId(), "", 1);
-    EVENT_FOOD_MUSIC = EVENT_FOOD_MUSIC.toBuilder().addVolunteeringOpportunity(OPPORTUNITY_MUSIC);
+    OPPORTUNITY_MUSIC = new VolunteeringOpportunity.Builder(EVENT_FOOD_MUSIC.getId(), "", 1).build();
+    EVENT_FOOD_MUSIC = EVENT_FOOD_MUSIC.toBuilder().addOpportunity(OPPORTUNITY_MUSIC).build();
   }
 
   @Test
   public void testRankingEmptyEvents() throws IOException {
-    Assert.assertEqual(new ArrayList<Event>(), eventRanker.rankEvents(new HashSet<Event>()));
+    Assert.assertEquals(
+        new ArrayList<Event>(), eventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, new HashSet<Event>()));
   }
 
   @Test

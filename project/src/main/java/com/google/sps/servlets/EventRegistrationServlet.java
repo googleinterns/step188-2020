@@ -37,7 +37,7 @@ public class EventRegistrationServlet extends HttpServlet {
       User loggedInUser = SpannerTasks.getLoggedInUser().get();
       Event event = eventOptional.get();
       if (event.getHost() != loggedInUser ) {
-      SpannerTasks.insertOrUpdateEvent(
+      SpannerTasks.insertorUpdateEvent(
           event.toBuilder().setId(eventId).addAttendee(loggedInUser).build());
       }
       // redirect to event details
