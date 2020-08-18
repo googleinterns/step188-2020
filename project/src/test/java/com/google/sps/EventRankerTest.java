@@ -60,7 +60,7 @@ public final class EventRankerTest {
   private static VolunteeringOpportunity OPPORTUNITY_MUSIC;
   private static String NAME = "Bob Smith";
   private static String EMAIL = "test@example.com";
-  private static String DOMAIN;
+  private static String INVALID_EMAIL = "invalid@example.com";
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -130,7 +130,7 @@ public final class EventRankerTest {
 
   @Test
   public void testServletGetRanking() throws IOException {
-    setAuthenticationHelper();
+    setAuthenticationHelper(EMAIL);
     SpannerTasks.insertOrUpdateUser(USER_CONSERVATION_FOOD_MUSIC);
     Set<Event> events =
         new HashSet<>(
@@ -148,6 +148,16 @@ public final class EventRankerTest {
     Assert.assertEquals(
         CommonUtils.convertToJson(expectedEvents).trim(),
         stringWriter.toString().trim());
+  }
+
+  @Test
+  public void testServletGetRankingError() throws IOException {
+    setAuthenticationHelper(INVALID_EMAIL);
+
+    new EventRankerServlet().doGet(request, response);
+
+    Mockito.verify(response)
+        .sendError(HttpServletResponse.SC_BAD_REQUEST, "User not found.");
   }
 
   private static void setUpDatabase() throws Exception {
@@ -194,14 +204,13 @@ public final class EventRankerTest {
     OPPORTUNITY_MUSIC =
         new VolunteeringOpportunity.Builder(EVENT_FOOD_MUSIC.getId(), "", 1).build();
     EVENT_FOOD_MUSIC = EVENT_FOOD_MUSIC.toBuilder().addOpportunity(OPPORTUNITY_MUSIC).build();
-    DOMAIN = getDomain(EMAIL);
   }
 
-  private static void setAuthenticationHelper() {
+  private static void setAuthenticationHelper(String email) {
     authenticationHelper
         .setEnvIsLoggedIn(true)
-        .setEnvEmail(EMAIL)
-        .setEnvAuthDomain(DOMAIN);
+        .setEnvEmail(email)
+        .setEnvAuthDomain(getDomain(email));
   }
 
   private static String getDomain(String email) {
