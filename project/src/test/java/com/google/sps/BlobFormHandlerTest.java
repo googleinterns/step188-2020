@@ -80,7 +80,7 @@ public class BlobFormHandlerTest {
     Assert.assertFalse(IMAGE_URL.isEmpty());
   }
 
-  Test
+  @Test
   public void testBlobstoreInvalidUser() throws Exception {
     setAuthenticationHelper(INVALID_EMAIL);
 
