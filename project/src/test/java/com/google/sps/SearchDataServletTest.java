@@ -37,7 +37,17 @@ public class SearchDataServletTest {
   private static final String WALKING = "walking";
   private static final String CAKE = "cake";
   private static final String MUSIC = "music";
- 
+  private static final String DESCRIPTION_WITH_MUSIC_KEYWORD =
+    "This is an annual event held at the State Capitol to celebrate agricultures."
+    + "The event will include food, live music and educational booths with public speakers."
+    + "Event hours is 9 am- 1 pm. 2550 attendees anticipated.";
+  private static final String DESCRIPTION_WITH_WALKING_KEYWORD =
+    "Sutter Middle School will be walking to McKinley Park. 7th grade class and teachers"
+    + " will have a picnic, play games and eat lunch at the park and Clunie Pool.";
+  private static final String DESCRIPTION_WITHOUT_CAKE_KEYWORD =
+    "Sutter Middle School will be walking to McKinley Park. 7th grade class and teachers"
+    + " will have a picnic, play games and eat lunch at the park and Clunie Pool.";
+
   @Before
   public void setUp() throws Exception {
     postRequest = Mockito.mock(HttpServletRequest.class);
@@ -60,7 +70,7 @@ public class SearchDataServletTest {
   public void addEventAndRetrieveResultsForKeywordNotInEventDescription_noResultsReturned()
       throws IOException {
     Mockito.when(postRequest.getParameter(PARAMETER_DESCRIPTION))
-        .thenReturn(newDescriptionWithoutCakeKeyword());
+        .thenReturn(DESCRIPTION_WITHOUT_CAKE_KEYWORD);
     Mockito.when(postRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(EVENT_ID_1);
     Mockito.when(getRequest.getParameter(PARAMETER_KEYWORD)).thenReturn(CAKE);
 
@@ -74,7 +84,7 @@ public class SearchDataServletTest {
   public void addEventAndRetrieveResultsForKeywordInEventDescription_oneResultReturned()
       throws IOException {
     Mockito.when(postRequest.getParameter(PARAMETER_DESCRIPTION))
-        .thenReturn(newDescriptionWithWalkingKeyword());
+        .thenReturn(DESCRIPTION_WITH_WALKING_KEYWORD);
     Mockito.when(postRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(EVENT_ID_1);
     Mockito.when(getRequest.getParameter(PARAMETER_KEYWORD)).thenReturn(WALKING);
 
@@ -89,12 +99,12 @@ public class SearchDataServletTest {
   @Test
   public void addTwoEventsAndRetrieveResultsForKeywordInDescriptionOfTwoEvents_twoResultsReturned()
       throws IOException {
-    Mockito.when(postRequest.getParameter(PARAMETER_DESCRIPTION))
-        .thenReturn(newDescriptionWithMusicKeyword());
     Mockito.when(postRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(EVENT_ID_1);
-    Mockito.when(secondPostRequest.getParameter(PARAMETER_DESCRIPTION))
-        .thenReturn(newDescriptionWithMusicKeyword());
+    Mockito.when(postRequest.getParameter(PARAMETER_DESCRIPTION))
+        .thenReturn(DESCRIPTION_WITH_MUSIC_KEYWORD);
     Mockito.when(secondPostRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(EVENT_ID_2);
+     Mockito.when(secondPostRequest.getParameter(PARAMETER_DESCRIPTION))
+        .thenReturn(DESCRIPTION_WITH_MUSIC_KEYWORD);
     Mockito.when(getRequest.getParameter(PARAMETER_KEYWORD)).thenReturn(MUSIC);
 
     searchDataServlet.doPost(postRequest, postResponse);
@@ -126,21 +136,5 @@ public class SearchDataServletTest {
     Mockito.verify(postResponse)
         .sendError(
             HttpServletResponse.SC_BAD_REQUEST, String.format("No event ID specified."));
-  }
-
-  private static String newDescriptionWithMusicKeyword() {
-    return "This is an annual event held at the State Capitol to celebrate agricultures."
-        + "The event will include food, live music and educational booths with public speakers."
-        + "Event hours is 9 am- 1 pm. 2550 attendees anticipated.";
-  }
-
-  private static String newDescriptionWithWalkingKeyword() {
-    return "Sutter Middle School will be walking to McKinley Park. 7th grade class and teachers"
-        + " will have a picnic, play games and eat lunch at the park and Clunie Pool.";
-  }
-
-  private static String newDescriptionWithoutCakeKeyword() {
-    return "Sutter Middle School will be walking to McKinley Park. 7th grade class and teachers"
-        + " will have a picnic, play games and eat lunch at the park and Clunie Pool.";
   }
 }
