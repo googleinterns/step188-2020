@@ -21,7 +21,6 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public final class EventRankingTest {
   private static final EventRanker eventRanker = new EventRanker();
-  private static final String EMAIL = "test@example.com";
   private static final String CONSERVATION = "conservation";
   private static final String FOOD = "food";
   private static final String MUSIC = "music";
@@ -66,7 +65,7 @@ public final class EventRankingTest {
         .setLabels(new HashSet<>(Arrays.asList(SEWING)))
         .build();
     USER_CONSERVATION_FOOD_MUSIC = TestUtils
-        .newUser(EMAIL)
+        .newUser()
         .toBuilder()
         .setInterests(INTERESTS_CONSERVATION_FOOD)
         .setSkills(SKILLS_MUSIC)
