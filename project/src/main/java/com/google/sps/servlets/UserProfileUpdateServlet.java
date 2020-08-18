@@ -23,19 +23,54 @@ public class UserProfileUpdateServlet extends HttpServlet {
   private static final String EMAIL = "email";
   private static final String INTERESTS = "interests";
   private static final String SKILLS = "skills";
-  private static String email;
+  private static final String EVENTS_HOSTING = "eventsHosting";
+  private static final String EVENTS_PARTICIPATING = "eventsParticipating";
+  private static final String EVENTS_VOLUNTEERING = "eventsVolunteering";
+  private static final String IMAGE_URL = "imageUrl";
+  private static final String email =
+      UserServiceFactory.getUserService().getCurrentUser().getEmail();
 
   /** Writes out information for the user corresponding to the logged-in email */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     email = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     Optional<User> userOptional = SpannerTasks.shallowReadUserFromEmail(email);
+    String userJson;
+    if (!userOptional.isPresent()) {
+      userJson =
+          Json.createObjectBuilder()
+              .add(NAME, "anonymous")
+              .add(EMAIL, email)
+              .add(INTERESTS, CommonUtils.createJsonArray(new HashSet<>()))
+              .add(SKILLS, CommonUtils.createJsonArray(new HashSet<>()))
+              .add(EVENTS_HOSTING, CommonUtils.createJsonArray(new HashSet<>()))
+              .add(EVENTS_PARTICIPATING, CommonUtils.createJsonArray(new HashSet<>()))
+              .add(EVENTS_VOLUNTEERING, CommonUtils.createJsonArray(new HashSet<>()))
+              .add(IMAGE_URL, "")
+              .build()
+              .toString();
+    } else {
+      // TODO: When PRs for user profile events are merged, update the events here
+      User user = userOptional.get();
+      userJson =
+          Json.createObjectBuilder()
+              .add(NAME, user.getName())
+              .add(EMAIL, email)
+              .add(INTERESTS, CommonUtils.createJsonArray(user.getInterests()))
+              .add(SKILLS, CommonUtils.createJsonArray(user.getSkills()))
+              .add(EVENTS_HOSTING, CommonUtils.createJsonArray(new HashSet<>()))
+              .add(EVENTS_PARTICIPATING, CommonUtils.createJsonArray(new HashSet<>()))
+              .add(EVENTS_VOLUNTEERING, CommonUtils.createJsonArray(new HashSet<>()))
+              .add(IMAGE_URL, user.getImageUrl())
+              .build()
+              .toString();
     User user;
     if (userOptional.isPresent()) {
       user = userOptional.get();
     } else {
       user = new User.Builder("anonymous", email).build();
       SpannerTasks.insertOrUpdateUser(user);
+
     }
     String userJson =
         Json.createObjectBuilder()
