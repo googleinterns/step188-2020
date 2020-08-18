@@ -23,6 +23,9 @@ public class UserProfileUpdateServlet extends HttpServlet {
   private static final String EMAIL = "email";
   private static final String INTERESTS = "interests";
   private static final String SKILLS = "skills";
+  private static final String EVENTS_HOSTING = "eventsHosting";
+  private static final String EVENTS_PARTICIPATING = "eventsParticipating";
+  private static final String EVENTS_VOLUNTEERING = "eventsVolunteering";
   private static String email;
 
   /** Writes out information for the user corresponding to the logged-in email */
@@ -43,6 +46,9 @@ public class UserProfileUpdateServlet extends HttpServlet {
             .add(EMAIL, email)
             .add(INTERESTS, CommonUtils.createJsonArray(user.getInterests()))
             .add(SKILLS, CommonUtils.createJsonArray(user.getSkills()))
+            .add(EVENTS_HOSTING, CommonUtils.createJsonArray(new HashSet<>()))
+            .add(EVENTS_PARTICIPATING, CommonUtils.createJsonArray(new HashSet<>()))
+            .add(EVENTS_VOLUNTEERING, CommonUtils.createJsonArray(new HashSet<>()))
             .build()
             .toString();
     response.setContentType("application/json;charset=UTF-8");
