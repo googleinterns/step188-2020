@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockServletContext;
 
-/** Unit tests for Search Data servlet. */
+/** Unit tests for adding new events to search index and retrieving search results. */
 @RunWith(JUnit4.class)
 public class SearchDataServletTest {
   private HttpServletRequest postRequest;
@@ -37,7 +37,6 @@ public class SearchDataServletTest {
   private static final String EVENT_ID_2 = TestUtils.newRandomId();
   private static final String PARAMETER_KEYWORD = "keyword";
   private static final String PARAMETER_EVENT_ID = "event-id";
-  private static final String PARAMETER_NAME = "name";
   private static final String PARAMETER_DESCRIPTION = "description";
   private static final String WALKING = "walking";
   private static final String CAKE = "cake";
@@ -47,10 +46,13 @@ public class SearchDataServletTest {
   public void setUp() throws Exception {
     postRequest = Mockito.mock(HttpServletRequest.class);
     postResponse = Mockito.mock(HttpServletResponse.class);
+
     secondPostRequest = Mockito.mock(HttpServletRequest.class);
     secondPostResponse = Mockito.mock(HttpServletResponse.class);
+
     getRequest = Mockito.mock(HttpServletRequest.class);
     getResponse = Mockito.mock(HttpServletResponse.class);
+
     stringWriter = new StringWriter();
     printWriter = new PrintWriter(stringWriter);
     Mockito.when(getResponse.getWriter()).thenReturn(printWriter);
@@ -59,7 +61,7 @@ public class SearchDataServletTest {
   }
 
   @Test
-  public void addEventAndRetrieveResultsForKeywordNotInEventInfo_noResultsReturned()
+  public void addEventAndRetrieveResultsForKeywordNotInEventDescription_noResultsReturned()
       throws IOException {
     Mockito.when(postRequest.getParameter(PARAMETER_DESCRIPTION))
         .thenReturn(newDescriptionWithoutCakeKeyword());
@@ -74,7 +76,7 @@ public class SearchDataServletTest {
   }
 
   @Test
-  public void addEventAndRetrieveResultsForKeywordInOnEventDescription_oneResultReturned()
+  public void addEventAndRetrieveResultsForKeywordInEventDescription_oneResultReturned()
       throws IOException {
     Mockito.when(postRequest.getParameter(PARAMETER_DESCRIPTION))
         .thenReturn(newDescriptionWithWalkingKeyword());
