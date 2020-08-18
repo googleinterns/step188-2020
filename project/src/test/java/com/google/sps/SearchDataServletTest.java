@@ -7,19 +7,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
-import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletContextEvent;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.mock.web.MockServletContext;
 
 /** Unit tests for adding new events to search index and retrieving search results. */
 @RunWith(JUnit4.class)
@@ -56,7 +52,7 @@ public class SearchDataServletTest {
     stringWriter = new StringWriter();
     printWriter = new PrintWriter(stringWriter);
     Mockito.when(getResponse.getWriter()).thenReturn(printWriter);
- 
+
     searchDataServlet = new SearchDataServlet();
   }
 
@@ -71,8 +67,7 @@ public class SearchDataServletTest {
     searchDataServlet.doPost(postRequest, postResponse);
     searchDataServlet.doGet(getRequest, getResponse);
 
-    Assert.assertEquals(
-        CommonUtils.convertToJson(Arrays.asList()), stringWriter.toString().trim());
+    Assert.assertEquals(CommonUtils.convertToJson(Arrays.asList()), stringWriter.toString().trim());
   }
 
   @Test
@@ -107,7 +102,8 @@ public class SearchDataServletTest {
     searchDataServlet.doGet(getRequest, getResponse);
 
     Assert.assertEquals(
-        CommonUtils.convertToJson(Arrays.asList(EVENT_ID_1, EVENT_ID_2)), stringWriter.toString().trim());
+        CommonUtils.convertToJson(Arrays.asList(EVENT_ID_1, EVENT_ID_2)),
+        stringWriter.toString().trim());
   }
 
   @Test
@@ -117,7 +113,8 @@ public class SearchDataServletTest {
     searchDataServlet.doGet(getRequest, getResponse);
  
     Mockito.verify(getResponse)
-        .sendError(HttpServletResponse.SC_BAD_REQUEST, String.format("No keyword specified."));
+        .sendError(
+            HttpServletResponse.SC_BAD_REQUEST, String.format("No keyword specified."));
   }
 
   @Test
@@ -127,7 +124,8 @@ public class SearchDataServletTest {
     searchDataServlet.doPost(postRequest, postResponse);
  
     Mockito.verify(postResponse)
-        .sendError(HttpServletResponse.SC_BAD_REQUEST, String.format("No event ID specified."));
+        .sendError(
+            HttpServletResponse.SC_BAD_REQUEST, String.format("No event ID specified."));
   }
 
   private static String newDescriptionWithMusicKeyword() {
@@ -138,11 +136,11 @@ public class SearchDataServletTest {
 
   private static String newDescriptionWithWalkingKeyword() {
     return "Sutter Middle School will be walking to McKinley Park. 7th grade class and teachers"
-               + " will have a picnic, play games and eat lunch at the park and Clunie Pool.";
+        + " will have a picnic, play games and eat lunch at the park and Clunie Pool.";
   }
 
   private static String newDescriptionWithoutCakeKeyword() {
     return "Sutter Middle School will be walking to McKinley Park. 7th grade class and teachers"
-               + " will have a picnic, play games and eat lunch at the park and Clunie Pool.";
+        + " will have a picnic, play games and eat lunch at the park and Clunie Pool.";
   }
 }
