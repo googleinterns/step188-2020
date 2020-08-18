@@ -59,8 +59,8 @@ public class SearchDataServlet extends HttpServlet {
   }
 
   /**
-    * Add keywords to the index with mapping to given event ID.
-    */
+   * Add keywords to the index with mapping to given event ID.
+   */
   private void addKeywordsToIndex(String eventId, String[] keywords) {
     for (String keyword : keywords) {
       keywordToEventIds.put(keyword, eventId);
