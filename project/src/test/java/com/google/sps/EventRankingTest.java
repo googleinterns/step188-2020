@@ -27,8 +27,7 @@ public final class EventRankingTest {
   private static final String SEWING = "sewing";
   private static final Set<String> INTERESTS_CONSERVATION_FOOD =
       new HashSet<>(Arrays.asList(CONSERVATION, FOOD));
-  private static final Set<String> SKILLS_MUSIC =
-      new HashSet<>(Arrays.asList(MUSIC));
+  private static final Set<String> SKILLS_MUSIC = new HashSet<>(Arrays.asList(MUSIC));
   private static Event EVENT_CONSERVATION_FOOD_MUSIC;
   private static Event EVENT_FOOD_MUSIC;
   private static Event EVENT_CONSERVATION_MUSIC;
@@ -40,60 +39,52 @@ public final class EventRankingTest {
   @BeforeClass
   public static void setUp() throws Exception {
     int currentYear = new java.util.Date().getYear();
-    EVENT_CONSERVATION_FOOD_MUSIC = TestUtils
-        .newEvent()
-        .toBuilder()
-        .setLabels(new HashSet<>(Arrays.asList(CONSERVATION, FOOD, MUSIC)))
-        .build();
-    EVENT_FOOD_MUSIC = TestUtils
-        .newEvent()
-        .toBuilder()
-        .setLabels(new HashSet<>(Arrays.asList(FOOD, MUSIC)))
-        .setDate(Date.fromYearMonthDay(currentYear + 1, 1, 1))
-        .build();
-    EVENT_CONSERVATION_MUSIC = TestUtils
-        .newEvent()
-        .toBuilder()
-        .setLabels(new HashSet<>(Arrays.asList(CONSERVATION, MUSIC)))
-        .setDate(Date.fromYearMonthDay(currentYear + 2, 1, 1))
-        .build();
-    EVENT_FOOD = TestUtils
-        .newEvent()
-        .toBuilder()
-        .setLabels(new HashSet<>(Arrays.asList(FOOD)))
-        .build();
-    EVENT_SEWING = TestUtils
-        .newEvent()
-        .toBuilder()
-        .setLabels(new HashSet<>(Arrays.asList(SEWING)))
-        .build();
-    USER_CONSERVATION_FOOD_MUSIC = TestUtils
-        .newUser()
-        .toBuilder()
-        .setInterests(INTERESTS_CONSERVATION_FOOD)
-        .setSkills(SKILLS_MUSIC)
-        .build();
-    OPPORTUNITY_MUSIC = new VolunteeringOpportunity.Builder(EVENT_FOOD_MUSIC.getId(), "", 1).build();
-    EVENT_FOOD_MUSIC = EVENT_FOOD_MUSIC
-        .toBuilder()
-        .addOpportunity(OPPORTUNITY_MUSIC)
-        .build();
+    EVENT_CONSERVATION_FOOD_MUSIC =
+        TestUtils.newEvent().toBuilder()
+            .setLabels(new HashSet<>(Arrays.asList(CONSERVATION, FOOD, MUSIC)))
+            .build();
+    EVENT_FOOD_MUSIC =
+        TestUtils.newEvent().toBuilder()
+            .setLabels(new HashSet<>(Arrays.asList(FOOD, MUSIC)))
+            .setDate(Date.fromYearMonthDay(currentYear + 1, 1, 1))
+            .build();
+    EVENT_CONSERVATION_MUSIC =
+        TestUtils.newEvent().toBuilder()
+            .setLabels(new HashSet<>(Arrays.asList(CONSERVATION, MUSIC)))
+            .setDate(Date.fromYearMonthDay(currentYear + 2, 1, 1))
+            .build();
+    EVENT_FOOD =
+        TestUtils.newEvent().toBuilder().setLabels(new HashSet<>(Arrays.asList(FOOD))).build();
+    EVENT_SEWING =
+        TestUtils.newEvent().toBuilder().setLabels(new HashSet<>(Arrays.asList(SEWING))).build();
+    USER_CONSERVATION_FOOD_MUSIC =
+        TestUtils.newUser().toBuilder()
+            .setInterests(INTERESTS_CONSERVATION_FOOD)
+            .setSkills(SKILLS_MUSIC)
+            .build();
+    OPPORTUNITY_MUSIC =
+        new VolunteeringOpportunity.Builder(EVENT_FOOD_MUSIC.getId(), "", 1).build();
+    EVENT_FOOD_MUSIC = EVENT_FOOD_MUSIC.toBuilder().addOpportunity(OPPORTUNITY_MUSIC).build();
   }
 
   @Test
   public void testRankingEmptyEvents() throws IOException {
     Assert.assertEquals(
-        new ArrayList<Event>(), EventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, new HashSet<Event>()));
+        new ArrayList<Event>(),
+        EventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, new HashSet<Event>()));
   }
 
   @Test
   public void testRankingUntiedEvents() throws IOException {
-    Set<Event> eventsToRank = new HashSet<>(
-        Arrays.asList(EVENT_FOOD, EVENT_SEWING, EVENT_CONSERVATION_FOOD_MUSIC, EVENT_FOOD_MUSIC));
+    Set<Event> eventsToRank =
+        new HashSet<>(
+            Arrays.asList(
+                EVENT_FOOD, EVENT_SEWING, EVENT_CONSERVATION_FOOD_MUSIC, EVENT_FOOD_MUSIC));
     List<Event> expectedEventRanking =
         Arrays.asList(EVENT_CONSERVATION_FOOD_MUSIC, EVENT_FOOD_MUSIC, EVENT_FOOD, EVENT_SEWING);
 
-    List<Event> actualEventRanking = EventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, eventsToRank);
+    List<Event> actualEventRanking =
+        EventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, eventsToRank);
 
     Assert.assertEquals(expectedEventRanking, actualEventRanking);
   }
@@ -105,7 +96,8 @@ public final class EventRankingTest {
     List<Event> expectedEventRanking =
         Arrays.asList(EVENT_CONSERVATION_FOOD_MUSIC, EVENT_FOOD_MUSIC, EVENT_CONSERVATION_MUSIC, EVENT_FOOD, EVENT_SEWING);
 
-    List<Event> actualEventRanking = EventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, eventsToRank);
+    List<Event> actualEventRanking =
+        EventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, eventsToRank);
 
     Assert.assertEquals(expectedEventRanking, actualEventRanking);
   }
