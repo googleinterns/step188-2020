@@ -169,6 +169,9 @@ public final class Event {
       if (!other.getAttendees().isEmpty()) {
         this.attendees = other.getAttendees();
       }
+      if (!other.getImageUrl().isEmpty()) {
+        this.imageUrl = other.getImageUrl();
+      }
       return this;
     }
   }
@@ -184,6 +187,7 @@ public final class Event {
     this.opportunities = builder.opportunities;
     this.attendees = builder.attendees;
     this.host = builder.host;
+    this.imageUrl = builder.imageUrl;
   }
 
   public String getId() {
