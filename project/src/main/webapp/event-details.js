@@ -32,7 +32,7 @@ async function populateVolunteeringOpportunitiesUI(eventHost, loginStatus) {
  */
 async function showVolunteeringOpportunities(
     opportunities, eventHost, loginStatus) {
-  for (const key in opportunities) {
+  for (const key of opportunities) {
     if (opportunities.hasOwnProperty(key)) {
       const volunteers =
           await getVolunteersByOpportunityId(opportunities[key].opportunityId);
