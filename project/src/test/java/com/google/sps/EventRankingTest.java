@@ -91,10 +91,21 @@ public final class EventRankingTest {
 
   @Test
   public void testRankingTiedEvents() throws IOException {
-    Set<Event> eventsToRank = new HashSet<>(
-        Arrays.asList(EVENT_CONSERVATION_MUSIC, EVENT_FOOD, EVENT_SEWING, EVENT_CONSERVATION_FOOD_MUSIC, EVENT_FOOD_MUSIC));
+    Set<Event> eventsToRank =
+        new HashSet<>(
+            Arrays.asList(
+                EVENT_CONSERVATION_MUSIC,
+                EVENT_FOOD,
+                EVENT_SEWING,
+                EVENT_CONSERVATION_FOOD_MUSIC,
+                EVENT_FOOD_MUSIC));
     List<Event> expectedEventRanking =
-        Arrays.asList(EVENT_CONSERVATION_FOOD_MUSIC, EVENT_FOOD_MUSIC, EVENT_CONSERVATION_MUSIC, EVENT_FOOD, EVENT_SEWING);
+        Arrays.asList(
+            EVENT_CONSERVATION_FOOD_MUSIC,
+            EVENT_FOOD_MUSIC,
+            EVENT_CONSERVATION_MUSIC,
+            EVENT_FOOD,
+            EVENT_SEWING);
 
     List<Event> actualEventRanking =
         EventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, eventsToRank);

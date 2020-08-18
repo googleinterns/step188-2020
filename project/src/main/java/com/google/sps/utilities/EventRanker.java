@@ -13,7 +13,7 @@ public class EventRanker {
   /**
    * Sorts events based on each event's score. Breaks ties with the event's date; the more recent
    * event will be ranked higher. Makes the assumption that all events are NOT in the past.
-   * 
+   *
    * @param user The user for whom the events are ranked
    * @param unrankedEvents A {@link Set} of events that need to be ranked
    * @return A {@link List} of events that is ranked according to each element's score
