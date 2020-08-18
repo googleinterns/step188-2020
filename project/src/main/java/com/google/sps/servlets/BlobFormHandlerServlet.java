@@ -82,12 +82,6 @@ public class BlobFormHandlerServlet extends HttpServlet {
   private static String getUrlFromBlobKey(BlobKey blobKey) {
     ImagesService imagesService = ImagesServiceFactory.getImagesService();
     ServingUrlOptions options = ServingUrlOptions.Builder.withBlobKey(blobKey);
-    String servingUrl = imagesService.getServingUrl(options);
-    try {
-      URL url = new URL(servingUrl);
-      return url.getPath();
-    } catch (MalformedURLException e) {
-      return servingUrl;
-    }
+    return imagesService.getServingUrl(options);
   }
 }
