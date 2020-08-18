@@ -27,10 +27,13 @@ public class EventRanker {
     List<Event> rankedEvents = new ArrayList<>(unrankedEvents);
     Collections.sort(rankedEvents,
         (Event event1, Event event2) -> {
-          return getEventScore(user, event1).compareTo(getEventScore(user, event2));
-        (Event event1, Event event2) -> {
-          return event1.getDate().compareTo(event2.getDate());
-    });
+          int comparison = getEventScore(user, event1).compareTo(getEventScore(user, event2));
+          if (comparison == 0) {
+            comparison = event2.getDate().compareTo(event1.getDate());
+          }
+          return comparison;
+        }
+    );
     Collections.reverse(rankedEvents);
     return rankedEvents;
   }
