@@ -9,7 +9,6 @@ import java.io.StringWriter;
 import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletContextEvent;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,9 +37,9 @@ public class SearchDataServletTest {
   private static final String CAKE = "cake";
   private static final String MUSIC = "music";
   private static final String DESCRIPTION_WITH_MUSIC_KEYWORD =
-    "This is an annual event held at the State Capitol to celebrate agricultures."
-    + "The event will include food, live music and educational booths with public speakers."
-    + "Event hours is 9 am- 1 pm. 2550 attendees anticipated.";
+      "This is an annual event held at the State Capitol to celebrate agricultures."
+          + "The event will include food, live music and educational booths with public speakers."
+          + "Event hours is 9 am- 1 pm. 2550 attendees anticipated.";
   private static final String DESCRIPTION_WITH_WALKING_KEYWORD =
     "Sutter Middle School will be walking to McKinley Park. 7th grade class and teachers"
     + " will have a picnic, play games and eat lunch at the park and Clunie Pool.";
@@ -103,7 +102,7 @@ public class SearchDataServletTest {
     Mockito.when(postRequest.getParameter(PARAMETER_DESCRIPTION))
         .thenReturn(DESCRIPTION_WITH_MUSIC_KEYWORD);
     Mockito.when(secondPostRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(EVENT_ID_2);
-     Mockito.when(secondPostRequest.getParameter(PARAMETER_DESCRIPTION))
+    Mockito.when(secondPostRequest.getParameter(PARAMETER_DESCRIPTION))
         .thenReturn(DESCRIPTION_WITH_MUSIC_KEYWORD);
     Mockito.when(getRequest.getParameter(PARAMETER_KEYWORD)).thenReturn(MUSIC);
 
@@ -119,22 +118,20 @@ public class SearchDataServletTest {
   @Test
   public void retrieveResultsKeywordNotSpecified_errorResponse() throws IOException {
     Mockito.when(getRequest.getParameter(PARAMETER_KEYWORD)).thenReturn(null);
- 
+
     searchDataServlet.doGet(getRequest, getResponse);
- 
+
     Mockito.verify(getResponse)
-        .sendError(
-            HttpServletResponse.SC_BAD_REQUEST, String.format("No keyword specified."));
+        .sendError(HttpServletResponse.SC_BAD_REQUEST, String.format("No keyword specified."));
   }
 
   @Test
   public void addEvent_keywordNotSpecified_errorResponse() throws IOException {
     Mockito.when(postRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(null);
- 
+
     searchDataServlet.doPost(postRequest, postResponse);
- 
+
     Mockito.verify(postResponse)
-        .sendError(
-            HttpServletResponse.SC_BAD_REQUEST, String.format("No event ID specified."));
+        .sendError(HttpServletResponse.SC_BAD_REQUEST, String.format("No event ID specified."));
   }
 }
