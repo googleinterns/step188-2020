@@ -19,7 +19,11 @@ public class EventRanker {
    * @return A {@link List} of events that is ranked according to
    * each element's score
    */
-  public List<Event> rankEvents(User user, Set<Event> unrankedEvents) {
+  public static List<Event> rankEvents(User user, Set<Event> unrankedEvents) {
     return new ArrayList<>();
+  }
+
+  private static int getEventScore(User user, Event event) {
+
   }
 }

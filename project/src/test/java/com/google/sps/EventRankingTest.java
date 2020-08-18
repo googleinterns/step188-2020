@@ -20,7 +20,6 @@ import org.junit.runners.JUnit4;
 /** Tests the ranking algorithm for event discovery */
 @RunWith(JUnit4.class)
 public final class EventRankingTest {
-  private static final EventRanker eventRanker = new EventRanker();
   private static final String CONSERVATION = "conservation";
   private static final String FOOD = "food";
   private static final String MUSIC = "music";
@@ -77,7 +76,7 @@ public final class EventRankingTest {
   @Test
   public void testRankingEmptyEvents() throws IOException {
     Assert.assertEquals(
-        new ArrayList<Event>(), eventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, new HashSet<Event>()));
+        new ArrayList<Event>(), EventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, new HashSet<Event>()));
   }
 
   @Test
@@ -87,7 +86,7 @@ public final class EventRankingTest {
     List<Event> expectedEventRanking =
         Arrays.asList(EVENT_CONSERVATION_FOOD_MUSIC, EVENT_FOOD_MUSIC, EVENT_FOOD, EVENT_SEWING);
 
-    List<Event> actualEventRanking = eventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, eventsToRank);
+    List<Event> actualEventRanking = EventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, eventsToRank);
 
     Assert.assertEquals(expectedEventRanking, actualEventRanking);
   }
@@ -99,7 +98,7 @@ public final class EventRankingTest {
     List<Event> expectedEventRanking =
         Arrays.asList(EVENT_CONSERVATION_FOOD_MUSIC, EVENT_FOOD_MUSIC, EVENT_CONSERVATION_MUSIC, EVENT_FOOD, EVENT_SEWING);
 
-    List<Event> actualEventRanking = eventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, eventsToRank);
+    List<Event> actualEventRanking = EventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, eventsToRank);
 
     Assert.assertEquals(expectedEventRanking, actualEventRanking);
   }
