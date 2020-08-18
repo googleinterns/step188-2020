@@ -5,17 +5,27 @@ import com.google.gson.Gson;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
 import com.google.sps.utilities.CommonUtils;
+import com.google.sps.utilities.PrefilledInformationConstants;
 import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
+import java.lang.StringBuilder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.cloud.language.v1.Document;
+import com.google.cloud.language.v1.LanguageServiceClient;
+import com.google.cloud.language.v1.ClassifyTextRequest;
+import com.google.cloud.language.v1.ClassifyTextResponse;
+import com.google.cloud.language.v1.ClassificationCategory;
+import com.google.cloud.language.v1.Document.Type;
 
 @WebServlet("/create-event")
 public class EventCreationServlet extends HttpServlet {
@@ -50,16 +60,44 @@ public class EventCreationServlet extends HttpServlet {
     String time = request.getParameter("time");
     String description = request.getParameter("description");
     String location = request.getParameter("location");
-    Set<String> labels = Collections.unmodifiableSet(new HashSet<>(
-        Arrays.asList("None"))); // hardcoded for now, we need to create label pool first
+
+    String text = new StringBuilder().append(name).append(" ").append(description).toString();
+    ArrayList<String> categoryNames = new ArrayList<String>();;
+
+    if (text.trim().split("\\s+").length > 20) {
+    // Use Gcloud NLP API to predict labels based on user inputted event name and description
+        try (LanguageServiceClient language = LanguageServiceClient.create()) {
+        Document doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
+        ClassifyTextRequest req = ClassifyTextRequest.newBuilder().setDocument(doc).build();
+        // Detect categories in the given text
+        ClassifyTextResponse res = language.classifyText(req);
+            for (ClassificationCategory category : res.getCategoriesList()) {
+                String categoryName = category.getName().split("/")[1];
+
+                if (category.getConfidence() >= 0.5 && PrefilledInformationConstants.INTERESTS.contains(categoryName) ) {
+                    categoryNames.add(categoryName);
+                }
+            }
+        }
+    }
+
+    // Add user inputted and NLP suggested labels together
+    Set<String> labels = new HashSet<>();
+    labels.addAll(new HashSet<>(categoryNames));
+    labels.addAll(new HashSet<>(splitAsList(request.getParameter("interests"))));
 
     User host = SpannerTasks.getLoggedInUser().get();
     Event event = new Event.Builder(name, description, labels, location, date, time, host).build();
+
     SpannerTasks.insertorUpdateEvent(event);
 
     String redirectUrl = "/event-details.html?eventId=" + event.getId();
     response.sendRedirect(redirectUrl);
     // Event in database
     response.getWriter().println(CommonUtils.convertToJson(SpannerTasks.getEventById(event.getId()).get().toBuilder().build()));
+  }
+
+  private static List<String> splitAsList(String values) {
+    return Arrays.asList(values.split("\\s*,\\s*"));
   }
 }
