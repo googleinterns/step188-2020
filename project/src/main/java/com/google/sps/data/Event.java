@@ -24,6 +24,7 @@ public final class Event {
   private Set<VolunteeringOpportunity> opportunities;
   private Set<User> attendees;
   private User host;
+  private String imageUrl;
 
   @Override
   public String toString() {
@@ -45,6 +46,7 @@ public final class Event {
     for (User attendee : this.attendees) {
       str.append(attendee.toString() + "\n");
     }
+    str.append("Image URL: " + imageUrl + "\n");
     return str.toString();
   }
 
@@ -62,6 +64,7 @@ public final class Event {
     private String eventId = UUID.randomUUID().toString();
     private Set<VolunteeringOpportunity> opportunities = new HashSet<>();
     private Set<User> attendees = new HashSet<>();
+    private String imageUrl = "";
 
     public Builder(
         String name,
@@ -147,6 +150,11 @@ public final class Event {
 
     public Builder removeAttendee(User attendee) {
       this.attendees.remove(attendee);
+      return this;
+    }
+
+    public Builder setImageUrl(String imageUrl) {
+      this.imageUrl = imageUrl;
       return this;
     }
 
@@ -246,6 +254,10 @@ public final class Event {
 
   public User getHost() {
     return this.host;
+  }
+
+  public String getImageUrl() {
+    return this.imageUrl;
   }
 
   public Builder toBuilder() {
