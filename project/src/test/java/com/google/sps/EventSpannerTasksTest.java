@@ -78,8 +78,8 @@ public class EventSpannerTasksTest {
 
   @AfterClass
   public static void tearDown() throws Exception {
-    //SpannerTestTasks.cleanup();
-    //authenticationHelper.tearDown();
+    SpannerTestTasks.cleanup();
+    authenticationHelper.tearDown();
   }
 
   /** Verify insertion of event in db and retrieval by id 
