@@ -63,16 +63,9 @@ public class EventCreationServlet extends HttpServlet {
     String location = request.getParameter("location");
     String text = new StringBuilder().append(name).append(" ").append(description).toString();
 
-    ArrayList<String> categoryNames = new ArrayList<String>();
-
-    // Call NLP API (only works if more than 20 words in text)
-    if (text.trim().split("\\s+").length > 20) {
-        categoryNames = NlpProcessing.getNlp(text);
-    }
-
     // Add user inputted and NLP suggested labels together
     Set<String> labels = new HashSet<>();
-    labels.addAll(new HashSet<>(categoryNames));
+    labels.addAll(new HashSet<>(getNlpSuggestedFilters(text, new ArrayList<String>())));
     labels.addAll(new HashSet<>(splitAsList(request.getParameter("interests"))));
 
     User host = SpannerTasks.getLoggedInUser().get();
@@ -85,28 +78,17 @@ public class EventCreationServlet extends HttpServlet {
     response.getWriter().println(CommonUtils.convertToJson(SpannerTasks.getEventById(event.getId()).get().toBuilder().build()));
   }
 
-// /*
-//  * @param text: String of text that includes event name and description
-//  * @return categoryNames: returns selected names of labels that NLP API suggests for text
-// */
-//   public ArrayList<String> getNlp(String text) throws IOException {
-//     ArrayList<String> categoryNames = new ArrayList<String>();
-
-//     // Use Gcloud NLP API to predict labels based on user inputted event name and description
-//     try (LanguageServiceClient language = LanguageServiceClient.create()) {     
-//     Document doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
-//     ClassifyTextRequest req = ClassifyTextRequest.newBuilder().setDocument(doc).build();
-//     // Detect categories in the given text
-//     ClassifyTextResponse res = language.classifyText(req);
-//         for (ClassificationCategory category : res.getCategoriesList()) {
-//             String categoryName = category.getName().split("/")[1];
-//             if (category.getConfidence() >= 0.5 && PrefilledInformationConstants.INTERESTS.contains(categoryName) ) {
-//                 categoryNames.add(categoryName);
-//             }
-//         }
-//     } 
-//     return categoryNames;
-//   }
+  /* Calls to get NLP Suggested filters if applicable (20 words or more)
+   * @param text: String of text that includes event name and description
+   * @return categoryNames: returns selected names of labels that NLP API suggests for text if available, else empty list
+   */
+  public ArrayList<String> getNlpSuggestedFilters(String text, ArrayList<String> categoryNames) throws IOException{
+  if (text.trim().split("\\s+").length > 20) {
+    NlpProcessing nlp = new NlpProcessing();
+    categoryNames = nlp.getNlp(text);
+  }
+    return categoryNames;
+  }
 
   private static List<String> splitAsList(String values) {
     return Arrays.asList(values.split("\\s*,\\s*"));
