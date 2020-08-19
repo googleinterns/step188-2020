@@ -1,14 +1,19 @@
-$(document).ready(function() {
-  $('#add_row').click(function() {
-    $('#skills').append(getInputFieldForSkill());
-  });
+$(function() {
+  populatePrefilled('interests');
+  populatePrefilled('skills');
+  setActionToCorrectRedirectURL();
 });
 
 /**
- * Return input string for skill input field.
- * @return {string}
+ * Set the opportunity form action to include query parameter for eventId.
  */
-function getInputFieldForSkill() {
-  return `<input type="text" name="required-skill" placeholder="Enter a skill" \
-  class="form-control" ></tr>`;
+async function setActionToCorrectRedirectURL() {
+  const params = (new URL(document.location)).searchParams;
+  const eventId = params.get('event-id');
+
+  const opportunityForm =
+      document.getElementById('volunteering-opportunity-form');
+  opportunityForm.action =
+      `/volunteering-form-handler?event-id=${eventId}`;
 }
+
