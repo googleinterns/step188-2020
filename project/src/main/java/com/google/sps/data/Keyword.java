@@ -4,6 +4,7 @@ package com.google.sps.data;
 public class Keyword {
   private String name;
   private float relevance;
+
   public Keyword(String name, float relevance) {
     this.name = name;
     this.relevance = relevance;

@@ -218,7 +218,8 @@ public class SearchStoreTest {
   }
 
   @Test
-  public void addTwoEvents_firstRelevanceInDescription_secondSameRelevanceInTitle_returnsSecondEventBeforeFirst()
+  public void
+    addTwoEvents_firstRelevanceInDescription_secondSameRelevanceInTitle_returnsSecondEventBeforeFirst()
       throws IOException {
     // ID         |   Title Has Games                    |   Description Has Games
     // 1          |        No                            |     Yes - HIGH relevance

@@ -2,22 +2,15 @@ package com.google.sps.store;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import com.google.sps.data.EventResult;
 import com.google.sps.data.Keyword;
-import com.google.sps.store.SearchStore;
-import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.KeywordHelper;
 import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /** Store class that uses in-memory map to hold search results. */
 public class SearchStore {
@@ -43,9 +36,7 @@ public class SearchStore {
     addKeywordsToIndex(eventId, description, WEIGHT_IN_DESCRIPTION);
   }
 
-  /**
-   * Adds results for keywords in text to the index with relevance.
-   */
+  /** Adds results for keywords in text to the index with relevance. */
   private void addKeywordsToIndex(String eventId, String text, float weight) {
     keywordHelper.setContent(text);
     ArrayList<Keyword> keywords = new ArrayList<Keyword>();
