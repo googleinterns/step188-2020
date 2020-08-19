@@ -151,10 +151,33 @@ function togglePrefilledInterests() {
   $('#prefilled-interests').toggle();
 }
 
+async function getRankedEvents() {
+  const response = await fetch('/event-ranker');
+  return response.json();
+}
+
+/** Take ranked events and assign them levels of detail */
+function getLodsFromEvents(rankedEvents) {
+  const levelOneCutoff = Math.floor(rankedEvents.length / 3);
+  const levelTwoCutoff = levelOneCutoff * 2;
+  let lodArrayOfMaps = [];
+  for (let i = 0; i < rankedEvents.length; i++) {
+    const event = rankedEvents[i];
+    let lodMap = {'event': event};
+    if (i <= levelOneCutoff) {
+      lodMap['lod'] = 3;
+    } else if (i <= levelTwoCutoff) {
+      lodMap['lod'] = 2;
+    } else {
+      lodMap['lod'] = 1;
+    }
+    lodArrayOfMaps.push(lodMap);
+  }
+  return lodArrayOfMaps;
+}
+
 /** Writes out relevant details to an event card with the appropriate lod (level of detail) */
-async function populateEventContainer(event, containerId, lod = 3) {
-  // TODO: lod will be calculated from the ranked events in the backend
-  lod = Math.floor(Math.random() * 3) + 1
+async function populateEventContainer(event, containerId, lod) {
   const eventCardAll = await $.get('event-card.html');
   const eventCard = $(eventCardAll).filter(`#event-card-level-${lod}`).get(0);
   const eventCardId = `event-${event.eventId}`;
