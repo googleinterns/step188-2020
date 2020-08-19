@@ -16,3 +16,16 @@ h3 {
 #prefilled-skills {
   display: none;
 }
+
+input {
+  margin-left: 1rem;
+}
+
+img {
+  height: 240px;
+  width: 240px;
+}
+
+#image-form {
+  margin-left: 5rem;
+}

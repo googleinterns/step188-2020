@@ -16,7 +16,8 @@ public class SpannerTestTasks {
                 + "  Skills               ARRAY<STRING(MAX)>,"
                 + "  EventsHosting        ARRAY<STRING(MAX)>,"
                 + "  EventsParticipating  ARRAY<STRING(MAX)>,"
-                + "  EventsVolunteering   ARRAY<STRING(MAX)>"
+                + "  EventsVolunteering   ARRAY<STRING(MAX)>,"
+                + "  Image                STRING(MAX)"
                 + ") PRIMARY KEY (Email)",
             "CREATE TABLE Events ("
                 + "  EventID        STRING(MAX) NOT NULL,"
