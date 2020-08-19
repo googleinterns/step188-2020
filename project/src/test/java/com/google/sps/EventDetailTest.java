@@ -9,6 +9,7 @@ import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.SpannerClient;
 import com.google.sps.utilities.SpannerTasks;
 import com.google.sps.utilities.SpannerTestTasks;
+import com.google.sps.utilities.TestUtils;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -47,8 +48,7 @@ public final class EventDetailTest {
   private static final String EVENT_ID2 = "4fdcd5e9-52b5-4a43-a1f3-2b697c3d5244";
   private static final User USER =
       new User.Builder(NAME, EMAIL).setInterests(INTERESTS).setSkills(SKILLS).build();
-  private static final String LABEL_PARAMETER = "labelParams";
-  private static final Event EVENT1 =
+  private static final Event EVENT1 = 
       new Event.Builder(
               "Weekly Meal Prep: Angel Food Cake",
               "In this Meal Prep Seminar, we will be teaching you how to make a delicious cake!",
@@ -106,34 +106,6 @@ public final class EventDetailTest {
 
     Assert.assertEquals(
         CommonUtils.convertToJson(expectedEvents).trim(), stringWriter.toString().trim());
-  }
-
-  @Test
-  public void verifyGetFilteredEvents() throws IOException {
-    Set<Event> expectedEvents = new HashSet(Arrays.asList(EVENT1, EVENT2));
-    Mockito.when(request.getParameter(LABEL_PARAMETER)).thenReturn( "Work-Chess");
-
-    new FilteredEventServlet().doGet(request, response);
-
-    try {
-      JSONAssert.assertEquals(CommonUtils.convertToJson(expectedEvents).trim(),stringWriter.toString().trim(), /*ordered=*/ false);
-    } catch (JSONException e) {
-      System.out.println("JSON conversion failed.");
-    }
-  }
-
-  @Test
-  public void verifyGetOneFilteredEvent() throws IOException {
-    Set<Event> expectedEvents = new HashSet(Arrays.asList(EVENT1));
-    Mockito.when(request.getParameter(LABEL_PARAMETER)).thenReturn( "Work");
-
-    new FilteredEventServlet().doGet(request, response);
-
-    try {
-      JSONAssert.assertEquals(CommonUtils.convertToJson(expectedEvents).trim(),stringWriter.toString().trim(), /*ordered=*/ false);
-    } catch (JSONException e) {
-      System.out.println("JSON conversion failed.");
-    }
   }
 
   private static void insertRequiredRows() {
