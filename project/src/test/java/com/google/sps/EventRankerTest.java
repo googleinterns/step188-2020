@@ -194,7 +194,7 @@ public final class EventRankerTest {
             .setLabels(new HashSet<>(Arrays.asList(SEWING)))
             .build();
     OPPORTUNITY_MUSIC =
-        new VolunteeringOpportunity.Builder(EVENT_FOOD_MUSIC.getId(), "", 1).build();
+        TestUtils.newVolunteeringOpportunityWithEventId(EVENT_FOOD_MUSIC.getId());
     EVENT_FOOD_MUSIC = EVENT_FOOD_MUSIC.toBuilder().addOpportunity(OPPORTUNITY_MUSIC).build();
   }
 
