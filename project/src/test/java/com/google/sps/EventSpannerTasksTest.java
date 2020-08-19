@@ -180,6 +180,7 @@ public class EventSpannerTasksTest {
         .setEnvAuthDomain("example.com");
 
     EventCreationServlet servlet = Mockito.spy(EventCreationServlet.class);
+    //Mock NLP API response with real category response
     Mockito.doReturn(new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink"))).when(servlet).getNlp(text);
     servlet.doPost(request, response);
 
