@@ -116,8 +116,34 @@ public final class EventRankerTest {
     Assert.assertEquals(expectedEventRanking, actualEventRanking);
   }
 
-  // @Test
-  // public void testRankingNoInterestsOrSkillsRankByDate() throws IOException {
-  //   Event EVENT_EARLIEST = TestUtils.newEvent().toBuilder().mergeFrom(EVENT_FOOD)
-  // }
+  @Test
+  public void testRankingNoInterestsOrSkillsRankByDate() throws IOException {
+    Set<Event> eventsToRank =
+        new HashSet<>(
+            Arrays.asList(
+                TestUtils.newEvent().advanceEventByYears(1);
+                TestUtils.newEvent().advanceEventByYears(2);
+                TestUtils.newEvent().advanceEventByYears(3)));
+    List<Event> expectedEventRanking =
+        Arrays.asList(
+            EVENT_ONE_YEAR_FUTURE,
+            EVENT_TWO_YEARS_FUTURE,
+            EVENT_THREE_YEARS_FUTURE);
+    
+    List<Event> actualEventRanking =
+        EventRanker.rankEvents(USER_NO_INTERESTS_OR_SKILLS, eventsToRank);
+    
+    Assert.assertEquals(expectedEventRanking, actualEventRanking);
+  }
+
+  private static advanceEventByYears(Event event, int years) {
+    Date date = event.getDate();
+    return event
+        .toBuilder()
+        .setDate(
+            Date.fromYearMonthDay(
+                date.getYear() + years,
+                date.getMonth(),
+                date.getDay()));
+  }
 }
