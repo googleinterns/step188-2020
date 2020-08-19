@@ -27,8 +27,7 @@ public class UserProfileUpdateServlet extends HttpServlet {
   private static final String EVENTS_PARTICIPATING = "eventsParticipating";
   private static final String EVENTS_VOLUNTEERING = "eventsVolunteering";
   private static final String IMAGE_URL = "imageUrl";
-  private static final String email =
-      UserServiceFactory.getUserService().getCurrentUser().getEmail();
+  private static String email;
 
   /** Writes out information for the user corresponding to the logged-in email */
   @Override
@@ -78,6 +77,9 @@ public class UserProfileUpdateServlet extends HttpServlet {
             .add(EMAIL, email)
             .add(INTERESTS, CommonUtils.createJsonArray(user.getInterests()))
             .add(SKILLS, CommonUtils.createJsonArray(user.getSkills()))
+            .add(EVENTS_HOSTING, CommonUtils.createJsonArray(new HashSet<>()))
+            .add(EVENTS_PARTICIPATING, CommonUtils.createJsonArray(new HashSet<>()))
+            .add(EVENTS_VOLUNTEERING, CommonUtils.createJsonArray(new HashSet<>()))
             .build()
             .toString();
     response.setContentType("application/json;charset=UTF-8");
