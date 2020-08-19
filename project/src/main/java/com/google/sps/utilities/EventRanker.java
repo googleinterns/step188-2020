@@ -6,6 +6,7 @@ import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,9 +35,9 @@ public class EventRanker {
   }
 
   private static Integer getEventScore(User user, Event event) {
-    Set<String> interestsAndSkills = user.getInterests();
+    Set<String> interestsAndSkills = new HashSet<>(user.getInterests());
     interestsAndSkills.addAll(user.getSkills());
-    Set<String> labelsAndSkills = event.getLabels();
+    Set<String> labelsAndSkills = new HashSet<>(event.getLabels());
     for (VolunteeringOpportunity opportunity : event.getOpportunities()) {
       labelsAndSkills.addAll(opportunity.getRequiredSkills());
     }
