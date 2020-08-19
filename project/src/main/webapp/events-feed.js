@@ -1,20 +1,21 @@
 const filters = {}
 
 $(async function() {
+  toggleDropdown();
   // If want all events on discovery page 
   if (!(window.location.href).includes('filtered=true')) {
     const allEvents = await getAllEvents();
-    populateAllEvents(allEvents);}
-  else { 
+    populateAllEvents(allEvents); 
+  } else { 
     // Get filtered events only
     const filteredEvents = await getFilteredEventsOnly(window.location.href.split("labelParams=")[1]);
     populateAllEvents(filteredEvents);
   }
 });
 
-$(document).ready(function(){
+function toggleDropdown() {
   $(".dropdown-toggle").dropdown();
-});
+}
 
 async function getAllEvents() {
   const allEvents = await fetch('discovery-event-details');
