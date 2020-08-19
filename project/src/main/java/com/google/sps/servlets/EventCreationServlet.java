@@ -92,8 +92,7 @@ public class EventCreationServlet extends HttpServlet {
     ArrayList<String> categoryNames = new ArrayList<String>();
 
     // Use Gcloud NLP API to predict labels based on user inputted event name and description
-    try (LanguageServiceClient language = LanguageServiceClient.create()) {
-        
+    try (LanguageServiceClient language = LanguageServiceClient.create()) {     
     Document doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
     ClassifyTextRequest req = ClassifyTextRequest.newBuilder().setDocument(doc).build();
     // Detect categories in the given text
