@@ -100,11 +100,11 @@ public final class FilteredEventServletTest {
       System.out.println("JSON conversion failed.");
     }
   }
-  
+
   @Test
   public void verifyGetNoFilteredEvent() throws IOException {
     Set<Event> expectedEvents = new HashSet(Arrays.asList(EVENT1));
-    Mockito.when(request.getParameter(LABEL_PARAMETER)).thenReturn( "None");
+    Mockito.when(request.getParameter(LABEL_PARAMETER)).thenReturn("None");
 
     new FilteredEventServlet().doGet(request, response);
 
@@ -117,5 +117,4 @@ public final class FilteredEventServletTest {
     SpannerTasks.insertorUpdateEvent(EVENT1);
     SpannerTasks.insertorUpdateEvent(EVENT2);
   }
-
 }
