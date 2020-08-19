@@ -7,9 +7,12 @@ import com.google.sps.data.Event;
 import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
 import com.google.sps.servlets.EventCreationServlet;
+import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.SpannerClient;
 import com.google.sps.utilities.SpannerTasks;
 import com.google.sps.utilities.SpannerTestTasks;
+import java.io.StringWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,9 +31,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.json.JSONException;
+import org.mockito.Mockito;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.skyscreamer.jsonassert.JSONAssert;
 import java.util.stream.Collectors;
 import java.util.stream.Stream; 
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
@@ -50,10 +56,13 @@ public class EventSpannerTasksTest {
   private static final Date DATE = Date.fromYearMonthDay(2016, 9, 15);
   private static final String DATE_STRING = "09/15/2016";
   private static final String TIME = "3:00PM-5:00PM";
-  private MockHttpServletRequest request;
-  private MockHttpServletResponse response;
+  private HttpServletRequest request;
+  private HttpServletResponse response;
+  private StringWriter stringWriter;
+  private  PrintWriter printWriter;
   private static final LocalServiceTestHelper authenticationHelper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig());
+
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -65,9 +74,12 @@ public class EventSpannerTasksTest {
 
   @Before 
   public void testSetUp() throws Exception {
-    request = new MockHttpServletRequest();
-    response = new MockHttpServletResponse();
+    request = Mockito.mock(HttpServletRequest.class);
+    response = Mockito.mock(HttpServletResponse.class);
+    stringWriter = new StringWriter();
+    printWriter = new PrintWriter(stringWriter);
     authenticationHelper.setUp();
+    Mockito.when(response.getWriter()).thenReturn(printWriter);
   } 
 
   @AfterClass
@@ -116,36 +128,74 @@ public class EventSpannerTasksTest {
 
   /**
    * Verify putting event in database through /create-event doPost with correct params and
-   * getting back correct event out of db
+   * getting back correct event out of db without going through NLP API
    */
   @Test
-  public void testEventCreationDoPost() throws Exception {
+  public void testEventCreationDoPost_noNlp() throws Exception {
     SpannerTasks.insertOrUpdateUser(HOST);
-    request.addParameter("name", EVENT_NAME);
-    request.addParameter("date", DATE_STRING);
-    request.addParameter("time", TIME);
-    request.addParameter("description", DESCRIPTION);
-    request.addParameter("location", LOCATION);
+    Mockito.when(request.getParameter("name")).thenReturn(EVENT_NAME);
+    Mockito.when(request.getParameter("date")).thenReturn(DATE_STRING);
+    Mockito.when(request.getParameter("time")).thenReturn(TIME);
+    Mockito.when(request.getParameter("description")).thenReturn(DESCRIPTION);
+    Mockito.when(request.getParameter("location")).thenReturn(LOCATION);
+    Mockito.when(request.getParameter("interests")).thenReturn("Tech, Work");
     authenticationHelper
         .setEnvIsLoggedIn(true)
         .setEnvEmail(EMAIL)
         .setEnvAuthDomain("example.com");
 
     new EventCreationServlet().doPost(request, response);
+    Event event =
+        new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).setId(stringWriter.toString().trim().split("\"")[3]).build();
 
-    // Get back Event posted in db
-    Event returnedEvent = new Gson().fromJson(response.getContentAsString(), Event.class);
-
-    // Check that event inserted into doPost is same as event returned from doPost db
-    Assert.assertEquals(returnedEvent.getName(), EVENT_NAME);
-    Assert.assertEquals(returnedEvent.getDescription(), DESCRIPTION);
-    Assert.assertEquals(returnedEvent.getLocation(), LOCATION);
-    Assert.assertEquals(returnedEvent.getDate(), DATE);
-    Assert.assertEquals(returnedEvent.getTime(), TIME);
-    Assert.assertEquals(returnedEvent.getHost().getName(), HOST_NAME);
-    Assert.assertEquals(returnedEvent.getHost().getEmail(), EMAIL);
+    try {
+    JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(), stringWriter.toString().trim(), /*assert order= */ false);
+    } catch (JSONException e) {
+        System.out.println("JSON conversion failed.");
+    }
   }
 
+  /**
+   * Verify putting event in database through /create-event doPost with correct params and
+   * getting back correct event out of db with NLP API labeling suggestions
+   */
+  @Test
+  public void testEventCreationDoPost_Nlp() throws Exception {
+    SpannerTasks.insertOrUpdateUser(HOST);
+    Mockito.when(request.getParameter("name")).thenReturn(EVENT_NAME);
+    Mockito.when(request.getParameter("date")).thenReturn(DATE_STRING);
+    Mockito.when(request.getParameter("time")).thenReturn(TIME);
+    String DESCRIPTION_COOKING_CLASS =
+    "Come learn to meal prep with us. This class will include prepping foods beyond sandwiches or salads."
+    + " We will learn to bake desserts as well. Bring a friend!";
+
+    Mockito.when(request.getParameter("description")).thenReturn(DESCRIPTION_COOKING_CLASS);
+    Mockito.when(request.getParameter("location")).thenReturn(LOCATION);
+    Mockito.when(request.getParameter("interests")).thenReturn("Cooking");
+    String text = new StringBuilder().append(EVENT_NAME).append(" ").append(DESCRIPTION_COOKING_CLASS).toString();
+
+    authenticationHelper
+        .setEnvIsLoggedIn(true)
+        .setEnvEmail(EMAIL)
+        .setEnvAuthDomain("example.com");
+
+    EventCreationServlet servlet = Mockito.spy(EventCreationServlet.class);
+    Mockito.doReturn(new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink"))).when(servlet).getNlp(text);
+    servlet.doPost(request, response);
+
+    Event event =
+        new Event.Builder(EVENT_NAME, DESCRIPTION_COOKING_CLASS, LABELS, LOCATION, DATE, TIME, HOST)
+          .setLabels(new HashSet<>(Arrays.asList("Cooking", "Jobs and Education", "Food and Drink")))
+          .setId(stringWriter.toString().trim().split("\"")[3])
+          .build();
+
+    try {
+        JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(), stringWriter.toString().trim(), /*assert order= */ false);
+    } catch (JSONException e) {
+        System.out.println("JSON conversion failed.");
+    }
+  }
+  
   /**
    * Verify getting event from valid id in /create-event doGet()
    */
@@ -155,18 +205,15 @@ public class EventSpannerTasksTest {
         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
     SpannerTasks.insertOrUpdateUser(HOST);
     SpannerTasks.insertorUpdateEvent(event);
+    Mockito.when(request.getParameter("eventId")).thenReturn(event.getId());
 
-    request.addParameter("eventId", event.getId());
     new EventCreationServlet().doGet(request, response);
-    Event returnedEvent = new Gson().fromJson(response.getContentAsString(), Event.class);
 
-    Assert.assertEquals(returnedEvent.getName(), EVENT_NAME);
-    Assert.assertEquals(returnedEvent.getDescription(), DESCRIPTION);
-    Assert.assertEquals(returnedEvent.getLocation(), LOCATION);
-    Assert.assertEquals(returnedEvent.getDate(), DATE);
-    Assert.assertEquals(returnedEvent.getTime(), TIME);
-    Assert.assertEquals(returnedEvent.getHost().getName(), HOST_NAME);
-    Assert.assertEquals(returnedEvent.getHost().getEmail(), EMAIL);
+    try {
+    JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(), stringWriter.toString().trim(), /*assert order= */ false);
+    } catch (JSONException e) {
+        System.out.println("JSON conversion failed.");
+    }
   }
 
   /**
@@ -174,10 +221,12 @@ public class EventSpannerTasksTest {
    */
   @Test
   public void testEventCreationDoGetInvalid() throws Exception {
-    request.addParameter("eventId", /*invalid id= */ "1");
+    Mockito.when(request.getParameter("eventId")).thenReturn(/*invalid id= */ "1");
+
     new EventCreationServlet().doGet(request, response);
 
-    Assert.assertEquals(response.getStatus(), HttpServletResponse.SC_NOT_FOUND);
+    Mockito.verify(response)
+        .sendError(HttpServletResponse.SC_NOT_FOUND, "No events found with event ID 1");
   }
 }
 
