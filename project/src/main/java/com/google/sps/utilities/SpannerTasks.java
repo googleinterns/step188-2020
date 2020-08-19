@@ -466,6 +466,7 @@ public class SpannerTasks {
               String.format(
                   "SELECT EventID, Name, Description, Labels, Location, Date, Time, Host, Attendees"
                       + " FROM %s WHERE \"%s\" IN UNNEST(Labels)",
+                      EVENT_TABLE, label ));
       try (ResultSet resultSet =
           SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
         while (resultSet.next()) {
