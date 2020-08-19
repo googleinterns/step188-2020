@@ -46,12 +46,12 @@ public class SearchDataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String eventId = request.getParameter(EVENT_ID);
-    String description = CommonUtils.getParameter(request, DESCRIPTION, "");
     if (eventId == null) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, String.format("No event ID specified."));
       return;
     }
 
+    String description = CommonUtils.getParameter(request, DESCRIPTION, /* defaultValue= */ "");
     String[] keywordsInDescription = description.split("[^a-zA-Z0-9']+");
     addKeywordsToIndex(eventId, keywordsInDescription);
 

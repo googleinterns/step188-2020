@@ -80,22 +80,6 @@ public class SearchDataServletTest {
   }
 
   @Test
-  public void addEventAndRetrieveResultsForKeywordInEventDescription_oneResultReturned()
-      throws IOException {
-    Mockito.when(postRequest.getParameter(PARAMETER_DESCRIPTION))
-        .thenReturn(DESCRIPTION_WITH_WALKING_KEYWORD);
-    Mockito.when(postRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(EVENT_ID_1);
-    Mockito.when(getRequest.getParameter(PARAMETER_KEYWORD)).thenReturn(WALKING);
-
-    searchDataServlet.doPost(postRequest, postResponse);
-    searchDataServlet.doGet(getRequest, getResponse);
-
-    Assert.assertEquals(
-        CommonUtils.convertToJson(Arrays.asList(EVENT_ID_1)).trim(),
-        stringWriter.toString().trim());
-  }
-
-  @Test
   public void addTwoEventsAndRetrieveResultsForKeywordInDescriptionOfTwoEvents_twoResultsReturned()
       throws IOException {
     Mockito.when(postRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(EVENT_ID_1);
