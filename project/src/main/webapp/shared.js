@@ -1,7 +1,7 @@
 $('.grid').masonry({
   itemSelector: '.grid-item',
   columnWidth: '.grid-sizer',
-  percentPosition: true
+  percentPosition: true,
 });
 
 async function isLoggedIn() {
