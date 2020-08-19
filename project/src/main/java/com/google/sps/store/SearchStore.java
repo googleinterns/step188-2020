@@ -22,14 +22,20 @@ import java.util.List;
 /** Store class that uses in-memory map to hold search results. */
 public class SearchStore {
   private ListMultimap<String, EventResult> keywordToEventResults = ArrayListMultimap.create();
-  private KeywordHelper keywordHelper;
   private static final float WEIGHT_IN_TITLE = 0.7f;
   private static final float WEIGHT_IN_DESCRIPTION = 0.3f;
+  private KeywordHelper keywordHelper;
 
   public SearchStore(KeywordHelper keywordHelper) {
     this.keywordHelper = keywordHelper;
   }
 
+  /**
+   * Add keywords for event ID and title to index with mapping to event ID.
+   * @param eventId event ID
+   * @param title title of the event
+   * @param description description of the event
+   */
   public void addEventToIndex(String eventId, String title, String description) {
     addKeywordsToIndex(eventId, title.toLowerCase(), WEIGHT_IN_TITLE);
     addKeywordsToIndex(eventId, description, WEIGHT_IN_DESCRIPTION);
@@ -59,6 +65,11 @@ public class SearchStore {
     }
   }
 
+  /**
+   * Get search results for the given keyword.
+   * @param keyword
+   * @return list of event IDs in decreasing order of ranking as search result
+   */
   public List<String> getSearchResults(String keyword) {
     List<EventResult> results = keywordToEventResults.get(keyword);
     Collections.sort(results, EventResult.ORDER_BY_RANKING_DESC);
