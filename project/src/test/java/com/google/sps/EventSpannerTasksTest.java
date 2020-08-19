@@ -8,6 +8,7 @@ import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
 import com.google.sps.servlets.EventCreationServlet;
 import com.google.sps.utilities.CommonUtils;
+import com.google.sps.utilities.NlpProcessing;
 import com.google.sps.utilities.SpannerClient;
 import com.google.sps.utilities.SpannerTasks;
 import com.google.sps.utilities.SpannerTestTasks;
@@ -62,7 +63,6 @@ public class EventSpannerTasksTest {
   private  PrintWriter printWriter;
   private static final LocalServiceTestHelper authenticationHelper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig());
-
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -179,10 +179,16 @@ public class EventSpannerTasksTest {
         .setEnvEmail(EMAIL)
         .setEnvAuthDomain("example.com");
 
-    EventCreationServlet servlet = Mockito.spy(EventCreationServlet.class);
+
     //Mock NLP API response with real category response
-    Mockito.doReturn(new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink"))).when(servlet).getNlp(text);
-    servlet.doPost(request, response);
+
+    NlpProcessing nlpProcessing = Mockito.mock(NlpProcessing.class);
+    //PROBLEM HERE: executes line 187 when not even called in line 191
+    Mockito.when(nlpProcessing.getNlp(text)).thenReturn(new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink")));
+
+    EventCreationServlet servlet = Mockito.mock(EventCreationServlet.class);
+
+    //servlet.doPost(request, response);
 
     Event event =
         new Event.Builder(EVENT_NAME, DESCRIPTION_COOKING_CLASS, LABELS, LOCATION, DATE, TIME, HOST)
