@@ -151,7 +151,7 @@ function togglePrefilledInterests() {
   $('#prefilled-interests').toggle();
 }
 
-/** Writes out relevant details to an event card */
+/** Writes out relevant details to an event card with the appropriate lod (level of detail) */
 async function populateEventContainer(event, containerId, lod = 3) {
   // TODO: lod will be calculated from the ranked events in the backend
   lod = Math.floor(Math.random() * 3) + 1
