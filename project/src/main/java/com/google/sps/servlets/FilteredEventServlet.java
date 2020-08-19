@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/get-filtered-events")
+@WebServlet("/filtered-events")
 public class FilteredEventServlet extends HttpServlet {
   /** Returns events as specified by interest filters */
   @Override
