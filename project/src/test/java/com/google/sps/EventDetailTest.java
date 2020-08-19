@@ -47,6 +47,7 @@ public final class EventDetailTest {
   private static final String EVENT_ID2 = "4fdcd5e9-52b5-4a43-a1f3-2b697c3d5244";
   private static final User USER =
       new User.Builder(NAME, EMAIL).setInterests(INTERESTS).setSkills(SKILLS).build();
+  private static final String LABEL_PARAMETER = "labelParams";
   private static final Event EVENT1 =
       new Event.Builder(
               "Weekly Meal Prep: Angel Food Cake",
@@ -110,7 +111,7 @@ public final class EventDetailTest {
   @Test
   public void verifyGetFilteredEvents() throws IOException {
     Set<Event> expectedEvents = new HashSet(Arrays.asList(EVENT1, EVENT2));
-    Mockito.when(request.getParameter("labelParams")).thenReturn( "Work-Chess");
+    Mockito.when(request.getParameter(LABEL_PARAMETER)).thenReturn( "Work-Chess");
 
     new FilteredEventServlet().doGet(request, response);
 
@@ -124,7 +125,7 @@ public final class EventDetailTest {
   @Test
   public void verifyGetOneFilteredEvent() throws IOException {
     Set<Event> expectedEvents = new HashSet(Arrays.asList(EVENT1));
-    Mockito.when(request.getParameter("labelParams")).thenReturn( "Work");
+    Mockito.when(request.getParameter(LABEL_PARAMETER)).thenReturn( "Work");
 
     new FilteredEventServlet().doGet(request, response);
 
