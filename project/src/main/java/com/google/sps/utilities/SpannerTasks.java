@@ -455,7 +455,7 @@ public class SpannerTasks {
   /**
    * Given filters for events, return events whose labels match those filters
    *
-   * @param email of loggedIn user email
+   * @param labelParams Labels selected by user in frontend
    * @return events that match labels
   */
   public static Set<Event> getFilteredEvents(String[] labelParams) {
