@@ -31,7 +31,9 @@ public class SearchStore {
   }
 
   /**
-   * Add keywords for event ID and title to index with mapping to event ID.
+   * Adds keywords for title and description to index. Relevance of each keyword is the weighted
+   * sum of the relevance in the title and the relevance in the description.
+   *
    * @param eventId event ID
    * @param title title of the event
    * @param description description of the event
@@ -41,7 +43,9 @@ public class SearchStore {
     addKeywordsToIndex(eventId, description, WEIGHT_IN_DESCRIPTION);
   }
 
-  /** Add keywords to the index with mapping to given event ID. */
+  /**
+   * Adds results for keywords in text to the index with relevance.
+   */
   private void addKeywordsToIndex(String eventId, String text, float weight) {
     keywordHelper.setContent(text);
     ArrayList<Keyword> keywords = new ArrayList<Keyword>();
@@ -50,6 +54,7 @@ public class SearchStore {
     } catch (IOException e) {
       System.err.println("IO Exception due to NLP library.");
     }
+
     for (Keyword keyword : keywords) {
       float keywordRank = 0;
       Optional<EventResult> existingResult =
@@ -66,14 +71,13 @@ public class SearchStore {
   }
 
   /**
-   * Get search results for the given keyword.
-   * @param keyword
+   * Gets search results for the given keyword.
+   * @param keyword keyword in search
    * @return list of event IDs in decreasing order of ranking as search result
    */
   public List<String> getSearchResults(String keyword) {
     List<EventResult> results = keywordToEventResults.get(keyword);
     Collections.sort(results, EventResult.ORDER_BY_RANKING_DESC);
-    List<String> eventIdResults = results.stream().map(EventResult::getEventId).collect(Collectors.toList());
-    return eventIdResults;
+    return results.stream().map(EventResult::getEventId).collect(Collectors.toList());
   }
 }
