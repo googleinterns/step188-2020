@@ -3,7 +3,8 @@ package com.google.sps;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.sps.data.User;
-import com.google.sps.servlets.UserProfileUpdateServlet;
+import com.google.sps.servlets.BlobFormHandlerServlet;
+import com.google.sps.servlets.BlobUrlServlet;
 import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.SpannerClient;
 import com.google.sps.utilities.SpannerTasks;
@@ -16,7 +17,6 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -29,14 +29,14 @@ import org.springframework.mock.web.MockServletContext;
 
 /** Unit tests for DatabaseWrapper functionality related to Event class. */
 @RunWith(JUnit4.class)
-public class UserProfileUpdateTest {
+public class BlobFormHandlerTest {
   private static final String EMAIL = "test@example.com";
+  private static final String INVALID_EMAIL = "invalid@example.com";
   private static final String DOMAIN = "example.com";
+  private static final String IMAGE_URL = "image-url.com";
   private static final User USER = TestUtils.newUserWithEmail(EMAIL);
-
   private static final LocalServiceTestHelper authenticationHelper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig());
-
   private static final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
   private static final HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
   private static final StringWriter stringWriter = new StringWriter();
@@ -58,40 +58,42 @@ public class UserProfileUpdateTest {
     authenticationHelper.tearDown();
   }
 
-  @After
-  public void flushWriter() {
-    Mockito.reset(request);
-    stringWriter.getBuffer().setLength(0);
-  }
-
   @Test
-  public void testGetUpdatedUser() throws Exception {
-    SpannerTasks.insertOrUpdateUser(USER);
-    setAuthenticationHelper();
+  public void testGetImageUrl() throws Exception {
+    SpannerTasks.insertOrUpdateUser(
+        USER.toBuilder().setImageUrl(IMAGE_URL).build());
+    setAuthenticationHelper(EMAIL);
 
-    new UserProfileUpdateServlet().doGet(request, response);
+    new BlobFormHandlerServlet().doGet(request, response);
  
-    Assert.assertEquals(
-        CommonUtils.convertToJson(USER), stringWriter.toString().trim());
+    Assert.assertFalse(IMAGE_URL.isEmpty());
   }
 
   @Test
-  public void testPostUpdatedUser() throws Exception {
-    Mockito.when(request.getParameter("name")).thenReturn(USER.getName());
-    Mockito.doReturn(USER.getInterests().toString()).when(request).getParameter("interests");
-    Mockito.doReturn(USER.getSkills().toString()).when(request).getParameter("skills");
-    setAuthenticationHelper();
+  public void testGetUploadUrl() throws Exception {
+    SpannerTasks.insertOrUpdateUser(
+        USER.toBuilder().setImageUrl(IMAGE_URL).build());
+    setAuthenticationHelper(EMAIL);
 
-    new UserProfileUpdateServlet().doPost(request, response);
+    new BlobUrlServlet().doGet(request, response);
 
-    Mockito.verify(response).sendRedirect("/profile.html");
+    Assert.assertFalse(IMAGE_URL.isEmpty());
   }
 
-  private static void setAuthenticationHelper() {
+  @Test
+  public void testBlobstoreInvalidUser() throws Exception {
+    setAuthenticationHelper(INVALID_EMAIL);
+
+    new BlobUrlServlet().doGet(request, response);
+
+    Mockito.verify(response)
+        .sendError(HttpServletResponse.SC_BAD_REQUEST, "Error with getting current user: does not exist");
+  }
+
+  private static void setAuthenticationHelper(String email) {
     authenticationHelper
         .setEnvIsLoggedIn(true)
-        .setEnvEmail(EMAIL)
+        .setEnvEmail(email)
         .setEnvAuthDomain(DOMAIN);
   }
 }
-

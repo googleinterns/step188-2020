@@ -20,6 +20,7 @@ function updateProfileBasics(userData) {
   $('#email').text(userData['email']);
   buildAsLabels(`#interests`, userData['interests'], 'interests');
   buildAsLabels(`#skills`, userData['skills'], 'skills');
+  populateExistingProfileImage();
 }
 
 /** Populate the user profile with all associated events */
