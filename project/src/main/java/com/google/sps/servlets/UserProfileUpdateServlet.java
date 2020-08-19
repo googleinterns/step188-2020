@@ -34,6 +34,7 @@ public class UserProfileUpdateServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     email = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     Optional<User> userOptional = SpannerTasks.shallowReadUserFromEmail(email);
+    User user;
     String userJson;
     if (!userOptional.isPresent()) {
       userJson =
@@ -50,7 +51,7 @@ public class UserProfileUpdateServlet extends HttpServlet {
               .toString();
     } else {
       // TODO: When PRs for user profile events are merged, update the events here
-      User user = userOptional.get();
+      user = userOptional.get();
       userJson =
           Json.createObjectBuilder()
               .add(NAME, user.getName())
@@ -63,25 +64,8 @@ public class UserProfileUpdateServlet extends HttpServlet {
               .add(IMAGE_URL, user.getImageUrl())
               .build()
               .toString();
-    User user;
-    if (userOptional.isPresent()) {
-      user = userOptional.get();
-    } else {
-      user = new User.Builder("anonymous", email).build();
-      SpannerTasks.insertOrUpdateUser(user);
-
     }
-    String userJson =
-        Json.createObjectBuilder()
-            .add(NAME, user.getName())
-            .add(EMAIL, email)
-            .add(INTERESTS, CommonUtils.createJsonArray(user.getInterests()))
-            .add(SKILLS, CommonUtils.createJsonArray(user.getSkills()))
-            .add(EVENTS_HOSTING, CommonUtils.createJsonArray(new HashSet<>()))
-            .add(EVENTS_PARTICIPATING, CommonUtils.createJsonArray(new HashSet<>()))
-            .add(EVENTS_VOLUNTEERING, CommonUtils.createJsonArray(new HashSet<>()))
-            .build()
-            .toString();
+
     response.setContentType("application/json;charset=UTF-8");
     response.getWriter().println(userJson);
   }

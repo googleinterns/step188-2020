@@ -463,7 +463,7 @@ public class SpannerTasks {
               String.format(
                   "SELECT EventID, Name, Description, Labels, Location, Date, Time, Host, Attendees"
                       + " FROM %s WHERE \"%s\" IN UNNEST(Labels)",
-                      EVENT_TABLE, label ));
+                      EVENT_TABLE, label));
       try (ResultSet resultSet =
           SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
         while (resultSet.next()) {
@@ -486,7 +486,10 @@ public class SpannerTasks {
           }
         }
       }
+      return results;
+    } 
 
+   /*
    * Given an email, retrieve all events for which the user with the email is
    * hosting.
    *
