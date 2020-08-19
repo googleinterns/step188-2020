@@ -41,8 +41,8 @@
 
 .card {
   float: left !important;
-  padding-left: 0px !important;
-  padding-right: 0px !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 .grid {
@@ -50,7 +50,8 @@
   margin-right: 5% !important;
 }
 
-.grid-sizer, .grid-item {
+.grid-sizer,
+.grid-item {
   width: 15% !important;
 }
 
