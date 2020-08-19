@@ -118,12 +118,15 @@ public final class EventRankerTest {
 
   @Test
   public void testRankingNoInterestsOrSkillsRankByDate() throws IOException {
+    Event EVENT_ONE_YEAR_FUTURE = advanceEventByYears(TestUtils.newEvent(), 1);
+    Event EVENT_TWO_YEARS_FUTURE = advanceEventByYears(TestUtils.newEvent(), 2);
+    Event EVENT_THREE_YEARS_FUTURE = advanceEventByYears(TestUtils.newEvent(), 3);
     Set<Event> eventsToRank =
         new HashSet<>(
             Arrays.asList(
-                TestUtils.newEvent().advanceEventByYears(1);
-                TestUtils.newEvent().advanceEventByYears(2);
-                TestUtils.newEvent().advanceEventByYears(3)));
+                EVENT_TWO_YEARS_FUTURE,
+                EVENT_THREE_YEARS_FUTURE,
+                EVENT_ONE_YEAR_FUTURE));
     List<Event> expectedEventRanking =
         Arrays.asList(
             EVENT_ONE_YEAR_FUTURE,
@@ -136,14 +139,15 @@ public final class EventRankerTest {
     Assert.assertEquals(expectedEventRanking, actualEventRanking);
   }
 
-  private static advanceEventByYears(Event event, int years) {
+  private static Event advanceEventByYears(Event event, int years) {
     Date date = event.getDate();
     return event
         .toBuilder()
         .setDate(
             Date.fromYearMonthDay(
                 date.getYear() + years,
-                date.getMonth(),
-                date.getDay()));
+                date.getMonth() + 1,
+                date.getDayOfMonth()))
+        .build();
   }
 }
