@@ -36,7 +36,6 @@ import org.springframework.mock.web.MockServletContext;
 public final class FilteredEventServletTest {
   private static final String NAME = "Bob Smith";
   private static final String EMAIL = "bobsmith@example.com";
-  private static final String LABEL_PARAMETER = "labelParams";
   private static final User USER =
       new User.Builder(NAME, EMAIL).build();
   private static final Event EVENT1 = TestUtils.newEvent().toBuilder()
@@ -45,6 +44,7 @@ public final class FilteredEventServletTest {
   private static final Event EVENT2 = TestUtils.newEvent().toBuilder()
       .setLabels(new HashSet<>(Arrays.asList("Chess", "Tournament")))
       .build();
+  private static final String LABEL_PARAMETER = "labelParams";
   private static final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
   private static final HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
   private static final StringWriter stringWriter = new StringWriter();
