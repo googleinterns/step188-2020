@@ -1,6 +1,6 @@
 package com.google.sps.data;
 
-/** Class that represents a keyword using in search ranking. */
+/** Class that represents a keyword used in search result ranking. */
 public class Keyword {
   private String name;
   private float relevance;

@@ -24,9 +24,10 @@ public class SearchStore {
   }
 
   /**
-   * Adds keywords for title and description with mapping to eventId to index. Relevance of 
-   * each keyword is the weighted sum of the relevance in the title and the relevance in the description
-   * where the title is weighted by value WEIGHT_IN_TITLE and description is weighted by WEIGHT_IN_DESCRIPTION.
+   * Adds keywords for title and description with mapping to eventId to index. Relevance of each
+   * keyword is the weighted sum of the relevance in the title and the relevance in the description
+   * where the title is weighted by value WEIGHT_IN_TITLE and description is weighted by
+   * WEIGHT_IN_DESCRIPTION.
    *
    * @param eventId event ID
    * @param title title of the event
@@ -37,15 +38,15 @@ public class SearchStore {
     addKeywordsInTextToIndex(eventId, description, WEIGHT_IN_DESCRIPTION);
   }
 
-  /** 
-   * Adds result for keywords in the given text with a ranking equal to the 
-   * sum of the ranking of any existing event results for the eventId and the
-   * relevance of the keyword in the text multiplied by the given weight.
+  /**
+   * Adds result for keywords in the given text with a ranking equal to the sum of the ranking of
+   * any existing event results for the eventId and the relevance of the keyword in the text
+   * multiplied by the given weight.
    *
    * @param eventId event ID
    * @param text text to search keywords for
-   * @param weight weight multiply relevance of keyword by which is proportional
-            to the significance of the selected piece of text.
+   * @param weight weight multiply relevance of keyword by which is proportional to the significance
+   *     of the selected piece of text.
    */
   private void addKeywordsInTextToIndex(String eventId, String text, float weight) {
     keywordHelper.setContent(text);

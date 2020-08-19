@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -104,9 +105,10 @@ public class SearchStoreTest {
 
   @Test
   public void oneEvent_KeywordNotRelevantInEventTitleOrDescription_noResultsReturned()
-      // ID         |   Title Has Games  |   Description Has Games
-      // 1                    No                  No
-      throws IOException {    
+      throws IOException {
+    // ID         |   Title Has Games  |   Description Has Games
+    // 1                    No                  No    
+
     // On the first call the getKeywords for title, return empty list
     // On the second call the getKeyords for description, return empty list
     Mockito.when(mockKeywordHelper.getKeywords())
@@ -116,21 +118,6 @@ public class SearchStoreTest {
     List<String> actualResults = searchStore.getSearchResults(GAMES);
 
     Assert.assertEquals(Arrays.asList(), actualResults);
-  }
-
-
-  @Test
-  public void oneEvent_keywordRelevantInDescription_oneResultReturned()
-      throws IOException {
-    // ID         |   Title Has Games  |   Description Has Games
-    // 1                  No                  Yes
-    Mockito.when(mockKeywordHelper.getKeywords())
-        .thenReturn(KEYWORDS_TITLE_WITHOUT_GAMES, KEYWORDS_DESCRIPTION_WITH_GAMES);
-
-    searchStore.addEventToIndex(EVENT_ID_1, DESCRIPTION_WITH_GAMES, TITLE_WITHOUT_GAMES);
-    List<String> actualResults = searchStore.getSearchResults(GAMES);
-
-    Assert.assertEquals(Arrays.asList(EVENT_ID_1), actualResults);
   }
 
   @Test
@@ -165,7 +152,7 @@ public class SearchStoreTest {
     searchStore.addEventToIndex(EVENT_ID_2, TITLE_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES);
     List<String> actualResults = searchStore.getSearchResults(GAMES);
 
-    Assert.assertEquals(Arrays.asList(EVENT_ID_1, EVENT_ID_2), actualResults);
+    Assert.assertTrue(CollectionUtils.isEqualCollection(Arrays.asList(EVENT_ID_1, EVENT_ID_2), actualResults));
   }
 
   @Test
@@ -173,20 +160,21 @@ public class SearchStoreTest {
       twoEvents_firstWithKeywordLowRelevanceInDesc_secondWithKeywordHighRelevanceInDesc_returnsSecondEventBeforeFirst()
           throws IOException {
     // ID         |   Title Has Games    |   Description Has Games
-    // 1          |        No            |       Yes - HIGH relevance
-    // 2          |        No            |       Yes - LOW relevance
-   Mockito.when(mockKeywordHelper.getKeywords())
+    // 1          |        No            |       Yes - LOW relevance
+    // 2          |        No            |       Yes - HIGH relevance
+    Mockito.when(mockKeywordHelper.getKeywords())
         .thenReturn(
             // Keywords for Event with ID 1
             KEYWORDS_TITLE_WITHOUT_GAMES,
             KEYWORDS_DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE,
             // Keywords for Event with ID 2
             KEYWORDS_TITLE_WITHOUT_GAMES,
-            KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE
-    );
+            KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
 
-    searchStore.addEventToIndex(EVENT_ID_1, TITLE_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE);
-    searchStore.addEventToIndex(EVENT_ID_2, TITLE_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
+    searchStore.addEventToIndex(
+        EVENT_ID_1, TITLE_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE);
+    searchStore.addEventToIndex(
+        EVENT_ID_2, TITLE_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
     List<String> actualResults = searchStore.getSearchResults(GAMES);
 
     Assert.assertEquals(Arrays.asList(EVENT_ID_2, EVENT_ID_1), actualResults);
@@ -194,7 +182,7 @@ public class SearchStoreTest {
 
   @Test
   public void
-      twoEvents_firstRelevanceInTitle_secondHighRelevanceInDescriptionAndRelevanceInTitle_returnsSecondEventBeforeFirst()
+      twoEvents_tieInRelevanceInDescription_secondHasRelevanceInTitle_returnsSecondEventBeforeFirst()
           throws IOException {
     // ID         |   Title Has Games    |   Description Has Games
     // 1          |        No            |     Yes - HIGH relevance
@@ -219,8 +207,33 @@ public class SearchStoreTest {
 
   @Test
   public void
-    addTwoEvents_firstRelevanceInDescription_secondSameRelevanceInTitle_returnsSecondEventBeforeFirst()
-      throws IOException {
+      twoEvents_tieInRelevanceInTitle_secondHasRelevanceInDescription_returnsSecondEventBeforeFirst()
+          throws IOException {
+    // ID         |   Title Has Games                      |   Description Has Games
+    // 1          |        YES - HIGH relevance            |     No
+    // 2          |        Yes - HIGH relevance            |    Yes
+    Mockito.when(mockKeywordHelper.getKeywords())
+        .thenReturn(
+            // Keywords for Event with ID 1
+            KEYWORDS_TITLE_WITH_GAMES_IN_HIGH_RELEVANCE,
+            KEYWORDS_DESCRIPTION_WITHOUT_GAMES,
+            // Keywords for Event with ID 2
+            KEYWORDS_TITLE_WITH_GAMES_IN_HIGH_RELEVANCE,
+            KEYWORDS_DESCRIPTION_WITH_GAMES);
+
+    searchStore.addEventToIndex(
+        EVENT_ID_1, TITLE_WITH_GAMES_IN_HIGH_RELEVANCE, DESCRIPTION_WITHOUT_GAMES);
+    searchStore.addEventToIndex(
+        EVENT_ID_2, TITLE_WITH_GAMES_IN_HIGH_RELEVANCE, DESCRIPTION_WITH_GAMES);
+    List<String> actualResults = searchStore.getSearchResults(GAMES);
+
+    Assert.assertEquals(Arrays.asList(EVENT_ID_2, EVENT_ID_1), actualResults);
+  }
+
+  @Test
+  public void
+      addTwoEvents_firstRelevanceInDescription_secondSameRelevanceInTitle_returnsSecondEventBeforeFirst()
+          throws IOException {
     // ID         |   Title Has Games                    |   Description Has Games
     // 1          |        No                            |     Yes - HIGH relevance
     // 2          |        Yes - HIGH relevance          |     No
