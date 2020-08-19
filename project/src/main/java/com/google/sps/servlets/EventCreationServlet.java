@@ -47,7 +47,7 @@ public class EventCreationServlet extends HttpServlet {
     }
   }
 
-  /** Posts new created event to database and redirects to page with created event details*/
+  /** Posts newly created event to database with NLP suggested labels and redirects to page with created event details*/
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String name = request.getParameter("name");
@@ -60,25 +60,13 @@ public class EventCreationServlet extends HttpServlet {
     String time = request.getParameter("time");
     String description = request.getParameter("description");
     String location = request.getParameter("location");
-
     String text = new StringBuilder().append(name).append(" ").append(description).toString();
-    ArrayList<String> categoryNames = new ArrayList<String>();;
 
+    ArrayList<String> categoryNames = new ArrayList<String>();
+
+    // Call NLP API (only works if more than 20 words in text)
     if (text.trim().split("\\s+").length > 20) {
-    // Use Gcloud NLP API to predict labels based on user inputted event name and description
-        try (LanguageServiceClient language = LanguageServiceClient.create()) {
-        Document doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
-        ClassifyTextRequest req = ClassifyTextRequest.newBuilder().setDocument(doc).build();
-        // Detect categories in the given text
-        ClassifyTextResponse res = language.classifyText(req);
-            for (ClassificationCategory category : res.getCategoriesList()) {
-                String categoryName = category.getName().split("/")[1];
-
-                if (category.getConfidence() >= 0.5 && PrefilledInformationConstants.INTERESTS.contains(categoryName) ) {
-                    categoryNames.add(categoryName);
-                }
-            }
-        }
+        categoryNames = getNlp(text);
     }
 
     // Add user inputted and NLP suggested labels together
@@ -88,13 +76,36 @@ public class EventCreationServlet extends HttpServlet {
 
     User host = SpannerTasks.getLoggedInUser().get();
     Event event = new Event.Builder(name, description, labels, location, date, time, host).build();
-
     SpannerTasks.insertorUpdateEvent(event);
 
     String redirectUrl = "/event-details.html?eventId=" + event.getId();
     response.sendRedirect(redirectUrl);
     // Event in database
     response.getWriter().println(CommonUtils.convertToJson(SpannerTasks.getEventById(event.getId()).get().toBuilder().build()));
+  }
+
+/*
+ * @param text: String of text that includes event name and description
+ * @return categoryNames: returns selected names of labels that NLP API suggests for text
+*/
+  public ArrayList<String> getNlp(String text) throws IOException {
+    ArrayList<String> categoryNames = new ArrayList<String>();
+
+    // Use Gcloud NLP API to predict labels based on user inputted event name and description
+    try (LanguageServiceClient language = LanguageServiceClient.create()) {
+        
+    Document doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
+    ClassifyTextRequest req = ClassifyTextRequest.newBuilder().setDocument(doc).build();
+    // Detect categories in the given text
+    ClassifyTextResponse res = language.classifyText(req);
+        for (ClassificationCategory category : res.getCategoriesList()) {
+            String categoryName = category.getName().split("/")[1];
+            if (category.getConfidence() >= 0.5 && PrefilledInformationConstants.INTERESTS.contains(categoryName) ) {
+                categoryNames.add(categoryName);
+            }
+        }
+    } 
+    return categoryNames;
   }
 
   private static List<String> splitAsList(String values) {
