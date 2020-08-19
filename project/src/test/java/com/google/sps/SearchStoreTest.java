@@ -1,19 +1,13 @@
 package com.google.sps;
 
-import com.google.sps.data.EventResult;
 import com.google.sps.data.Keyword;
 import com.google.sps.store.SearchStore;
-import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.KeywordHelper;
 import com.google.sps.utilities.TestUtils;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -181,13 +175,14 @@ public class SearchStoreTest {
     // ID         |   Title Has Games    |   Description Has Games
     // 1          |        No            |       Yes - HIGH relevance
     // 2          |        No            |       Yes - LOW relevance
-    Mockito.when(mockKeywordHelper.getKeywords()).thenReturn(
-      // Keywords for Event with ID 1
-      KEYWORDS_TITLE_WITHOUT_GAMES,
-      KEYWORDS_DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE,
-      // Keywords for Event with ID 2
-      KEYWORDS_TITLE_WITHOUT_GAMES,
-      KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE
+   Mockito.when(mockKeywordHelper.getKeywords())
+        .thenReturn(
+            // Keywords for Event with ID 1
+            KEYWORDS_TITLE_WITHOUT_GAMES,
+            KEYWORDS_DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE,
+            // Keywords for Event with ID 2
+            KEYWORDS_TITLE_WITHOUT_GAMES,
+            KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE
     );
 
     searchStore.addEventToIndex(EVENT_ID_1, TITLE_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE);
@@ -204,17 +199,19 @@ public class SearchStoreTest {
     // ID         |   Title Has Games    |   Description Has Games
     // 1          |        No            |     Yes - HIGH relevance
     // 2          |        Yes           |    Yes - HIGH relevance
-    Mockito.when(mockKeywordHelper.getKeywords()).thenReturn(
-      // Keywords for Event with ID 1
-      KEYWORDS_TITLE_WITHOUT_GAMES,
-      KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE,
-      // Keywords for Event with ID 2
-      KEYWORDS_TITLE_WITH_GAMES,
-      KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE
-    );
+    Mockito.when(mockKeywordHelper.getKeywords())
+        .thenReturn(
+            // Keywords for Event with ID 1
+            KEYWORDS_TITLE_WITHOUT_GAMES,
+            KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE,
+            // Keywords for Event with ID 2
+            KEYWORDS_TITLE_WITH_GAMES,
+            KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
 
-    searchStore.addEventToIndex(EVENT_ID_1, TITLE_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
-    searchStore.addEventToIndex(EVENT_ID_2, TITLE_WITH_GAMES, DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
+    searchStore.addEventToIndex(
+        EVENT_ID_1, TITLE_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
+    searchStore.addEventToIndex(
+        EVENT_ID_2, TITLE_WITH_GAMES, DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
     List<String> actualResults = searchStore.getSearchResults(GAMES);
 
     Assert.assertEquals(Arrays.asList(EVENT_ID_2, EVENT_ID_1), actualResults);
@@ -226,17 +223,19 @@ public class SearchStoreTest {
     // ID         |   Title Has Games                    |   Description Has Games
     // 1          |        No                            |     Yes - HIGH relevance
     // 2          |        Yes - HIGH relevance          |     No
-    Mockito.when(mockKeywordHelper.getKeywords()).thenReturn(
-      // Keywords for Event with ID 1
-      KEYWORDS_TITLE_WITHOUT_GAMES,
-      KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE,
-      // Keywords for Event with ID 2
-      KEYWORDS_TITLE_WITH_GAMES_IN_HIGH_RELEVANCE,
-      KEYWORDS_DESCRIPTION_WITHOUT_GAMES
-    );
+    Mockito.when(mockKeywordHelper.getKeywords())
+        .thenReturn(
+            // Keywords for Event with ID 1
+            KEYWORDS_TITLE_WITHOUT_GAMES,
+            KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE,
+            // Keywords for Event with ID 2
+            KEYWORDS_TITLE_WITH_GAMES_IN_HIGH_RELEVANCE,
+            KEYWORDS_DESCRIPTION_WITHOUT_GAMES);
 
-    searchStore.addEventToIndex(EVENT_ID_1, TITLE_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
-    searchStore.addEventToIndex(EVENT_ID_2, TITLE_WITH_GAMES_IN_HIGH_RELEVANCE, DESCRIPTION_WITHOUT_GAMES);
+    searchStore.addEventToIndex(
+        EVENT_ID_1, TITLE_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
+    searchStore.addEventToIndex(
+        EVENT_ID_2, TITLE_WITH_GAMES_IN_HIGH_RELEVANCE, DESCRIPTION_WITHOUT_GAMES);
     List<String> actualResults = searchStore.getSearchResults(GAMES);
 
     Assert.assertEquals(Arrays.asList(EVENT_ID_2, EVENT_ID_1), actualResults);

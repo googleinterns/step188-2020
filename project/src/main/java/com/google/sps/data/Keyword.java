@@ -12,7 +12,7 @@ public class Keyword {
   public String getName() {
     return name;
   }
-  
+
   public float getRelevance() {
     return relevance;
   }

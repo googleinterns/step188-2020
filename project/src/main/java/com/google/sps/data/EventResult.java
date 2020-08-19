@@ -1,7 +1,6 @@
 package com.google.sps.data;
 
 import java.util.Comparator;
-import java.lang.Float;
 
 /* Class that represent an event result in search. */
 public class EventResult {
