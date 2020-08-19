@@ -31,7 +31,11 @@ public class KeywordHelper {
     this.content = content;
   }
 
-  /** Add keywords to the index with mapping to given event ID. */
+  /**
+    * Finds the keywords in the current instance's content.
+    * @return list of Keyword objects representing the keywords and their relevances
+    *       for the current instances's content.
+    */
   public ArrayList<Keyword> getKeywords() throws IOException {
     ArrayList<Keyword> keywords = new ArrayList<Keyword>();
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
@@ -45,7 +49,7 @@ public class KeywordHelper {
       AnalyzeEntitiesResponse response = language.analyzeEntities(request);
       for (Entity entity : response.getEntitiesList()) {
         keywords.add(
-            new Keyword(/* name= */ entity.getName(), /* ranking= */ entity.getSalience()));
+            new Keyword(entity.getName(), entity.getSalience()));
       }
     }
     return keywords;
