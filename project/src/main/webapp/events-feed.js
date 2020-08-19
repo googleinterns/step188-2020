@@ -1,3 +1,5 @@
+const filters = {}
+
 $(async function() {
   // If want all events on discovery page 
   if (!(window.location.href).includes('filtered=true')) {
@@ -37,8 +39,6 @@ function populateAllEvents(allEvents) {
   populateFilters(filters)
 }
 
-const filters = {}
-
 // Fill filter dict with {labelName: count}
 function getInterestFilters(event) {
   for (interest in event.labels) {
@@ -52,17 +52,17 @@ function getInterestFilters(event) {
 
 // Populate filter tab with label checkboxes
 function populateFilters(filters) {
-    for (const key in filters) {
-      $('#filterCheckBoxes')
-        .append(getCheckboxes(key, filters[key]))
+  for (const key in filters) {
+    $('#filterCheckBoxes')
+      .append(getCheckboxes(key, filters[key]))
     }
-    $('#filterCheckBoxes').append(`<br>`)
+  $('#filterCheckBoxes').append(`<br>`)
 }
 
 // Gives HTML for checkboxes
 function getCheckboxes(key, value) {
-    return `<input type="checkbox" id=${key} name=${key} value=${key}>
-  <label for=${key}> ${key} (${value})</label><br>`
+  return `<input type="checkbox" id=${key} name=${key} value=${key}>
+    <label for=${key}> ${key} (${value})</label><br>`
 }
 
 // Gets checked checkboxes and refreshes page
