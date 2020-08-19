@@ -169,7 +169,7 @@ async function populateEventContainer(event, containerId, lod = 3) {
                 event.date.year, event.date.month, event.date.dayOfMonth));
     $(`#${eventCardId} #event-card-time`).html(event.time);
     $(`#${eventCardId} #event-card-location`).html(event.location);
-    if (event.opportunities.length > 0 ) {
+    if (event.opportunities.length) {
       $(`#${eventCardId} #event-card-volunteers`)
         .html(buildVolunteers(event.opportunities));
     } else {
