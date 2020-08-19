@@ -133,16 +133,13 @@ public class EventSpannerTasksTest {
   @Test
   public void testEventCreationDoPost_noNlp() throws Exception {
     SpannerTasks.insertOrUpdateUser(HOST);
+    setAuthenticationHelper();
     Mockito.when(request.getParameter("name")).thenReturn(EVENT_NAME);
     Mockito.when(request.getParameter("date")).thenReturn(DATE_STRING);
     Mockito.when(request.getParameter("time")).thenReturn(TIME);
     Mockito.when(request.getParameter("description")).thenReturn(DESCRIPTION);
     Mockito.when(request.getParameter("location")).thenReturn(LOCATION);
     Mockito.when(request.getParameter("interests")).thenReturn("Tech, Work");
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail(EMAIL)
-        .setEnvAuthDomain("example.com");
 
     new EventCreationServlet().doPost(request, response);
     Event event =
@@ -162,6 +159,7 @@ public class EventSpannerTasksTest {
   @Test
   public void testEventCreationDoPost_Nlp() throws Exception {
     SpannerTasks.insertOrUpdateUser(HOST);
+    setAuthenticationHelper();
     Mockito.when(request.getParameter("name")).thenReturn(EVENT_NAME);
     Mockito.when(request.getParameter("date")).thenReturn(DATE_STRING);
     Mockito.when(request.getParameter("time")).thenReturn(TIME);
@@ -174,21 +172,10 @@ public class EventSpannerTasksTest {
     Mockito.when(request.getParameter("interests")).thenReturn("Cooking");
     String text = new StringBuilder().append(EVENT_NAME).append(" ").append(DESCRIPTION_COOKING_CLASS).toString();
 
-    authenticationHelper
-        .setEnvIsLoggedIn(true)
-        .setEnvEmail(EMAIL)
-        .setEnvAuthDomain("example.com");
-
-
     //Mock NLP API response with real category response
-
-    NlpProcessing nlpProcessing = Mockito.mock(NlpProcessing.class);
-    //PROBLEM HERE: executes line 187 when not even called in line 191
-    Mockito.when(nlpProcessing.getNlp(text)).thenReturn(new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink")));
-
-    EventCreationServlet servlet = Mockito.mock(EventCreationServlet.class);
-
-    //servlet.doPost(request, response);
+    EventCreationServlet servlet = Mockito.spy(EventCreationServlet.class);
+    Mockito.doReturn(new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink"))).when(servlet).getNlpSuggestedFilters(text, new ArrayList<String>());
+    servlet.doPost(request, response);
 
     Event event =
         new Event.Builder(EVENT_NAME, DESCRIPTION_COOKING_CLASS, LABELS, LOCATION, DATE, TIME, HOST)
@@ -197,9 +184,9 @@ public class EventSpannerTasksTest {
           .build();
 
     try {
-        JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(), stringWriter.toString().trim(), /*assert order= */ false);
+      JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(), stringWriter.toString().trim(), /*assert order= */ false);
     } catch (JSONException e) {
-        System.out.println("JSON conversion failed.");
+      System.out.println("JSON conversion failed.");
     }
   }
   
@@ -217,9 +204,9 @@ public class EventSpannerTasksTest {
     new EventCreationServlet().doGet(request, response);
 
     try {
-    JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(), stringWriter.toString().trim(), /*assert order= */ false);
+      JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(), stringWriter.toString().trim(), /*assert order= */ false);
     } catch (JSONException e) {
-        System.out.println("JSON conversion failed.");
+      System.out.println("JSON conversion failed.");
     }
   }
 
@@ -234,6 +221,10 @@ public class EventSpannerTasksTest {
 
     Mockito.verify(response)
         .sendError(HttpServletResponse.SC_NOT_FOUND, "No events found with event ID 1");
+  }
+
+  private void setAuthenticationHelper() {
+    authenticationHelper.setEnvIsLoggedIn(true).setEnvEmail(EMAIL).setEnvAuthDomain("example.com");
   }
 }
 
