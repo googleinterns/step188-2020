@@ -34,6 +34,7 @@ public final class EventRankerTest {
   private static Event EVENT_FOOD;
   private static Event EVENT_SEWING;
   private static User USER_CONSERVATION_FOOD_MUSIC;
+  private static User USER_NO_INTERESTS_OR_SKILLS;
   private static VolunteeringOpportunity OPPORTUNITY_MUSIC;
 
   @BeforeClass
@@ -62,6 +63,8 @@ public final class EventRankerTest {
             .setInterests(INTERESTS_CONSERVATION_FOOD)
             .setSkills(SKILLS_MUSIC)
             .build();
+    USER_NO_INTERESTS_OR_SKILLS =
+        TestUtils.newUser().toBuilder().setInterests(new HashSet<>()).setSkills(new HashSet<>()).build();
     OPPORTUNITY_MUSIC =
         new VolunteeringOpportunity.Builder(EVENT_FOOD_MUSIC.getId(), "", 1).build();
     EVENT_FOOD_MUSIC = EVENT_FOOD_MUSIC.toBuilder().addOpportunity(OPPORTUNITY_MUSIC).build();
@@ -112,4 +115,9 @@ public final class EventRankerTest {
 
     Assert.assertEquals(expectedEventRanking, actualEventRanking);
   }
+
+  // @Test
+  // public void testRankingNoInterestsOrSkillsRankByDate() throws IOException {
+  //   Event EVENT_EARLIEST = TestUtils.newEvent().toBuilder().mergeFrom(EVENT_FOOD)
+  // }
 }
