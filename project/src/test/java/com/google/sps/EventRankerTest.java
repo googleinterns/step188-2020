@@ -47,12 +47,10 @@ public final class EventRankerTest {
     EVENT_FOOD_MUSIC =
         TestUtils.newEvent().toBuilder()
             .setLabels(new HashSet<>(Arrays.asList(FOOD, MUSIC)))
-            .setDate(Date.fromYearMonthDay(currentYear + 1, 1, 1))
             .build();
     EVENT_CONSERVATION_MUSIC =
         TestUtils.newEvent().toBuilder()
             .setLabels(new HashSet<>(Arrays.asList(CONSERVATION, MUSIC)))
-            .setDate(Date.fromYearMonthDay(currentYear + 2, 1, 1))
             .build();
     EVENT_FOOD =
         TestUtils.newEvent().toBuilder().setLabels(new HashSet<>(Arrays.asList(FOOD))).build();
@@ -94,19 +92,27 @@ public final class EventRankerTest {
 
   @Test
   public void testRankingTiedEvents() throws IOException {
+    Event EVENT_TIED_EARLIER =
+        advanceEventByYears(
+            TestUtils.newEvent().toBuilder().mergeFrom(EVENT_FOOD_MUSIC).build(),
+            1);
+    Event EVENT_TIED_LATER =
+        advanceEventByYears(
+            TestUtils.newEvent().toBuilder().mergeFrom(EVENT_CONSERVATION_MUSIC).build(),
+            2);
     Set<Event> eventsToRank =
         new HashSet<>(
             Arrays.asList(
-                EVENT_CONSERVATION_MUSIC,
+                EVENT_TIED_LATER,
                 EVENT_FOOD,
                 EVENT_SEWING,
                 EVENT_CONSERVATION_FOOD_MUSIC,
-                EVENT_FOOD_MUSIC));
+                EVENT_TIED_EARLIER));
     List<Event> expectedEventRanking =
         Arrays.asList(
             EVENT_CONSERVATION_FOOD_MUSIC,
-            EVENT_FOOD_MUSIC,
-            EVENT_CONSERVATION_MUSIC,
+            EVENT_TIED_EARLIER,
+            EVENT_TIED_LATER,
             EVENT_FOOD,
             EVENT_SEWING);
 
