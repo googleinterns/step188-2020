@@ -21,6 +21,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
+import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -104,8 +105,10 @@ public final class EventDetailTest {
 
     new EventDetailServlet().doGet(request, response);
 
-    Assert.assertEquals(
-        CommonUtils.convertToJson(expectedEvents).trim(), stringWriter.toString().trim());
+    String actualEvents = stringWriter.toString().trim();
+    for (Event event : expectedEvents) {
+      Assert.assertThat(actualEvents, CoreMatchers.containsString(CommonUtils.convertToJson(event).trim()));
+    }
   }
 
   private static void insertRequiredRows() {

@@ -31,7 +31,7 @@
     <br />
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h3 class="panel-title">Profile</h3>
+        <h3 class="panel-title">User Profile for <span class="name"></span></h3>
       </div>
     </div>
     <button type="button" class="btn btn-primary">
@@ -40,24 +40,32 @@
     <br />
     <br />
     <div class="panel-body">
-      <ul class="list-group">
-        <div class="justify">
-          <li class="list-group-item no-border">
-            <strong>Name:</strong><span id="name"></span>
-          </li>
-          <li class="list-group-item no-border">
-            <strong>E-mail: </strong><span id="email"></span>
-          </li>
-          <li class="list-group-item no-border">
-            <strong>Interests: </strong>
-            <div id="interests"></div>
-          </li>
-          <li class="list-group-item no-border">
-            <strong>Skills: </strong>
-            <div id="skills"></div>
-          </li>
+      <div class="row">
+        <div class="col-sm-3">
+          <img id="profile-picture" />
         </div>
-      </ul>
+        <div class="col-sm-9">
+          <ul class="list-group">
+            <div class="justify">
+              <li class="list-group-item no-border">
+                <strong>Name:</strong><span id="name"></span>
+              </li>
+              <li class="list-group-item no-border">
+                <strong>E-mail: </strong><span id="email"></span>
+              </li>
+              <li class="list-group-item no-border">
+                <strong>Interests: </strong>
+                <div id="interests"></div>
+              </li>
+              <li class="list-group-item no-border">
+                <strong>Skills: </strong>
+                <div id="skills"></div>
+              </li>
+            </div>
+          </ul>
+        </div>
+      </div>
+      <br /><br />
       <div id="accordion">
         <div class="card">
           <div class="card-header" id="headingOne">

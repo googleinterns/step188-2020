@@ -4,6 +4,15 @@ async function isLoggedIn() {
   return loginStatus.loginState === 'LOGGED_IN';
 }
 
+/**
+ * Returns the current login status.
+ */
+async function getLoginStatus() {
+  const response = await fetch('/login-status');
+  const loginStatus = await response.json();
+  return loginStatus;
+}
+
 /** Get label pool */
 async function getPrefilledInformation(informationCategory) {
   const response =
@@ -137,30 +146,29 @@ function togglePrefilledInterests() {
 }
 
 /** Writes out relevant details to an event card */
-function populateEventContainer(event, containerId) {
+async function populateEventContainer(event, containerId) {
   const indexOfEventCard = 25;
-  $.get('event-card.html', function(eventCardTotal) {
-    const eventCardId = `event-${event.eventId}`;
-    const eventCard = $(eventCardTotal).get(indexOfEventCard);
-    $(eventCard).attr('id', eventCardId);
-    $(`#${containerId}`).append(eventCard);
-    $(`#${eventCardId} #event-card-title`).html(event.name);
-    $(`#${eventCardId} #event-card-description`).html(event.description);
-    $(`#${eventCardId} #event-card-date`)
-        .html(
-            buildDate(
-                event.date.year, event.date.month, event.date.dayOfMonth));
-    $(`#${eventCardId} #event-card-time`).html(event.time);
-    $(`#${eventCardId} #event-card-location`).html(event.location);
-    $(`#${eventCardId} #event-card-volunteers`)
-        .html(buildVolunteers(event.opportunities));
-    buildAsLabels(
-        `#${eventCardId} #event-card-labels`, event.labels, 'interests');
-    buildSkillsAsLabels(
-        `#${eventCardId} #event-card-labels`, event.opportunities);
-    addLinkToRegister(eventCardId);
-    addLinkToDetails(eventCardId);
-  });
+  const eventCardTotal = await $.get('event-card.html');
+  const eventCardId = `event-${event.eventId}`;
+  const eventCard = $(eventCardTotal).get(indexOfEventCard);
+  $(eventCard).attr('id', eventCardId);
+  $(`#${containerId}`).append(eventCard);
+  $(`#${eventCardId} #event-card-title`).html(event.name);
+  $(`#${eventCardId} #event-card-description`).html(event.description);
+  $(`#${eventCardId} #event-card-date`)
+      .html(
+          buildDate(
+              event.date.year, event.date.month, event.date.dayOfMonth));
+  $(`#${eventCardId} #event-card-time`).html(event.time);
+  $(`#${eventCardId} #event-card-location`).html(event.location);
+  $(`#${eventCardId} #event-card-volunteers`)
+      .html(buildVolunteers(event.opportunities));
+  buildAsLabels(
+      `#${eventCardId} #event-card-labels`, event.labels, 'interests');
+  buildSkillsAsLabels(
+      `#${eventCardId} #event-card-labels`, event.opportunities);
+  addLinkToRegister(eventCardId);
+  addLinkToDetails(eventCardId);
 }
 
 /** Adds a hyperlink to the registration button of event card */
@@ -212,4 +220,15 @@ function buildSkillsAsLabels(querySelector, opportunities) {
   for (const opportunity of opportunities) {
     buildAsLabels(querySelector, opportunity.requiredSkills, 'skills');
   }
+}
+
+/**
+ * Adds currently-attributed profile image to logged-in user
+ * If the user has no profile image, add the default one
+ */
+async function populateExistingProfileImage() {
+  const response = await fetch('/blob-handler');
+  const imageUrl = await response.text();
+  const realImageUrl = imageUrl ? imageUrl : 'assets/default_profile.jpg';
+  $('#profile-picture').attr('src', realImageUrl);
 }

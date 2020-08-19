@@ -16,7 +16,8 @@ public class SpannerTestTasks {
                 + "  Skills               ARRAY<STRING(MAX)>,"
                 + "  EventsHosting        ARRAY<STRING(MAX)>,"
                 + "  EventsParticipating  ARRAY<STRING(MAX)>,"
-                + "  EventsVolunteering   ARRAY<STRING(MAX)>"
+                + "  EventsVolunteering   ARRAY<STRING(MAX)>,"
+                + "  Image                STRING(MAX)"
                 + ") PRIMARY KEY (Email)",
             "CREATE TABLE Events ("
                 + "  EventID        STRING(MAX) NOT NULL,"
@@ -26,6 +27,7 @@ public class SpannerTestTasks {
                 + "  Location       STRING(MAX),"
                 + "  Attendees      ARRAY<STRING(MAX)>,"
                 + "  Host           STRING(MAX),"
+                + "  Time           STRING(MAX),"
                 + "  Labels         ARRAY<STRING(MAX)>,"
                 + "  Opportunities  ARRAY<STRING(MAX)>,"
                 + ") PRIMARY KEY (EventID)",
@@ -38,8 +40,8 @@ public class SpannerTestTasks {
                 + "  Volunteers                 ARRAY<STRING(MAX)>"
                 + ") PRIMARY KEY (VolunteeringOpportunityID)",
             "CREATE TABLE OpportunitySignup ("
-	            + "  VolunteeringOpportunityID  STRING(MAX) NOT NULL,"
-	            + "  Email                      STRING(MAX) NOT NULL,"
+	          + "  VolunteeringOpportunityID  STRING(MAX) NOT NULL,"
+	          + "  Email                      STRING(MAX) NOT NULL,"
                 + ") PRIMARY KEY (VolunteeringOpportunityID, Email)");
     Database db =
         SpannerClient.getDatabaseAdminClient()

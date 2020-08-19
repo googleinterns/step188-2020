@@ -25,12 +25,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockServletContext;
- 
+
 /** Test that tests getting the signups for a volunteering opportunity. */
 @RunWith(JUnit4.class)
 public final class OpportunitySignupDataTest {
   private static final String PARAMETER_OPPORTUNITY_ID = "opportunity-id";
-  private VolunteeringOpportunity opportunity;
   private HttpServletRequest request;
   private HttpServletResponse response;
   private StringWriter stringWriter;
@@ -102,7 +101,7 @@ public final class OpportunitySignupDataTest {
     VolunteeringOpportunity opportunity = TestUtils.newVolunteeringOpportunity();
     SpannerTasks.insertVolunteeringOpportunity(opportunity);
     String opportunityId = opportunity.getOpportunityId();
-    OpportunitySignup signup = TestUtils.newOpportunitySignup(opportunityId);
+    OpportunitySignup signup = TestUtils.newOpportunitySignupWithOpportunityId(opportunityId);
     SpannerTasks.insertOpportunitySignup(signup);
  
     Mockito.when(request.getParameter(PARAMETER_OPPORTUNITY_ID)).thenReturn(opportunityId);
