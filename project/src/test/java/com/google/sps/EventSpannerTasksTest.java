@@ -52,7 +52,7 @@ public class EventSpannerTasksTest {
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Tech", "Work")));
   private static final String LOCATION = "Remote";
   private static final Date DATE = Date.fromYearMonthDay(2016, 9, 15);
-  private static final String DATE_STRING = "09/15/2016";
+  private static final String DATE_STRING = "2016-09-15";
   private static final String TIME = "3:00PM-5:00PM";
   private MockHttpServletRequest request;
   private MockHttpServletResponse response;
@@ -133,7 +133,11 @@ public class EventSpannerTasksTest {
     request.addParameter("time", TIME);
     request.addParameter("description", DESCRIPTION);
     request.addParameter("location", LOCATION);
-    authenticationHelper.setEnvIsLoggedIn(true).setEnvEmail(EMAIL).setEnvAuthDomain("example.com");
+    request.addParameter("interests", "Tech");
+    authenticationHelper
+        .setEnvIsLoggedIn(true)
+        .setEnvEmail(EMAIL)
+        .setEnvAuthDomain("example.com");
 
     new EventCreationServlet().doPost(request, response);
     // Get back Event posted in db
@@ -145,6 +149,7 @@ public class EventSpannerTasksTest {
     Assert.assertEquals(returnedEvent.getLocation(), LOCATION);
     Assert.assertEquals(returnedEvent.getDate(), DATE);
     Assert.assertEquals(returnedEvent.getTime(), TIME);
+    Assert.assertEquals(returnedEvent.getLabels(), new HashSet<>(Arrays.asList("Tech")));
     Assert.assertEquals(returnedEvent.getHost().getName(), HOST_NAME);
     Assert.assertEquals(returnedEvent.getHost().getEmail(), EMAIL);
   }

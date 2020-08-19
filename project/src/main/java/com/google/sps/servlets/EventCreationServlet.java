@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javax.servlet.annotation.WebServlet;
@@ -41,17 +42,16 @@ public class EventCreationServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String name = request.getParameter("name");
-    String[] parsedDate = request.getParameter("date").split("/");
+    String[] parsedDate = request.getParameter("date").split("-");
     Date date =
          Date.fromYearMonthDay(
-            /*Year=*/ Integer.parseInt(parsedDate[2]),
-            /*Month=*/ Integer.parseInt(parsedDate[0]),
-            /*Day=*/ Integer.parseInt(parsedDate[1]));
+            /*Year=*/ Integer.parseInt(parsedDate[0]),
+            /*Month=*/ Integer.parseInt(parsedDate[1]),
+            /*Day=*/ Integer.parseInt(parsedDate[2]));
     String time = request.getParameter("time");
     String description = request.getParameter("description");
     String location = request.getParameter("location");
-    Set<String> labels = Collections.unmodifiableSet(new HashSet<>(
-        Arrays.asList("None"))); // hardcoded for now, we need to create label pool first
+    Set<String> labels = new HashSet<>(CommonUtils.splitAsList(request.getParameter("interests")));
 
     User host = SpannerTasks.getLoggedInUser().get();
     Event event = new Event.Builder(name, description, labels, location, date, time, host).build();
