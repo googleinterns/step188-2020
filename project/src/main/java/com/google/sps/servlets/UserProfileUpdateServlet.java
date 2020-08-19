@@ -48,6 +48,9 @@ public class UserProfileUpdateServlet extends HttpServlet {
             .add(EMAIL, email)
             .add(INTERESTS, CommonUtils.createJsonArray(user.getInterests()))
             .add(SKILLS, CommonUtils.createJsonArray(user.getSkills()))
+            .add(EVENTS_HOSTING, CommonUtils.createJsonArray(new HashSet<>()))
+            .add(EVENTS_PARTICIPATING, CommonUtils.createJsonArray(new HashSet<>()))
+            .add(EVENTS_VOLUNTEERING, CommonUtils.createJsonArray(new HashSet<>()))
             .build()
             .toString();
     response.setContentType("application/json;charset=UTF-8");
