@@ -13,6 +13,11 @@ public class CommonUtils {
     return new Gson().toJson(object);
   }
 
+  /** Splits string into list based on delimitors */
+  public static List<String> splitAsList(String values) {
+    return Arrays.asList(values.split("\\s*,\\s*"));
+  }
+
   /** Returns a JsonArray containing each element provided */
   public static JsonArray createJsonArray(Set<String> elements) {
     JsonArrayBuilder builder = Json.createArrayBuilder();

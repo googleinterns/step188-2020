@@ -51,7 +51,7 @@ public class EventCreationServlet extends HttpServlet {
     String time = request.getParameter("time");
     String description = request.getParameter("description");
     String location = request.getParameter("location");
-    Set<String> labels = new HashSet<>(splitAsList(request.getParameter("interests")));
+    Set<String> labels = new HashSet<>(CommonUtils.splitAsList(request.getParameter("interests")));
 
     User host = SpannerTasks.getLoggedInUser().get();
     Event event = new Event.Builder(name, description, labels, location, date, time, host).build();
@@ -61,8 +61,5 @@ public class EventCreationServlet extends HttpServlet {
     response.sendRedirect(redirectUrl);
     // Event in database
     response.getWriter().println(CommonUtils.convertToJson(SpannerTasks.getEventById(event.getId()).get().toBuilder().build()));
-  }
-  private static List<String> splitAsList(String values) {
-    return Arrays.asList(values.split("\\s*,\\s*"));
   }
 }
