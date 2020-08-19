@@ -3,13 +3,13 @@ $('.grid').masonry({
   columnWidth: '.grid-sizer',
   percentPosition: true,
 });
- 
+
 async function isLoggedIn() {
   const response = await fetch('/login-status');
   const loginStatus = await response.json();
   return loginStatus.loginState === 'LOGGED_IN';
 }
- 
+
 /**
  * Returns the current login status.
  */
@@ -18,7 +18,7 @@ async function getLoginStatus() {
   const loginStatus = await response.json();
   return loginStatus;
 }
- 
+
 /** Get label pool */
 async function getPrefilledInformation(informationCategory) {
   const response =
@@ -26,7 +26,7 @@ async function getPrefilledInformation(informationCategory) {
           `/prefilled-information?${new URLSearchParams({'category': informationCategory})}`);
   return response.json();
 }
- 
+
 /** Create a label tag with the add button next to it */
 function buildTagWithAdder(tagClass, text) {
   let group = buildGroup();
@@ -38,17 +38,17 @@ function buildTagWithAdder(tagClass, text) {
   group = setText(group, tagClass, text);
   return group;
 }
- 
+
 /** Create a label tag without the add button next to it */
 function buildTagWithoutAdder(tagClass, text) {
   let group = buildGroup();
   const tag = buildTag(tagClass);
- 
+
   group.appendChild(tag);
   group = setText(group, tagClass, text);
   return group;
 }
- 
+
 /** Create a group for buttons */
 function buildGroup() {
   const group = document.createElement('div');
@@ -56,7 +56,7 @@ function buildGroup() {
   group.setAttribute('role', 'group');
   return group;
 }
- 
+
 /** Create an add button */
 function buildAdder(tagClass) {
   const addButton = document.createElement('button');
@@ -65,12 +65,12 @@ function buildAdder(tagClass) {
   addButton.textContent = '+';
   return addButton;
 }
- 
+
 function setText(group, tagClass, text) {
   group.querySelector('.btn-' + tagClass).textContent = text;
   return group;
 }
- 
+
 function buildTag(tagClass) {
   const tag = document.createElement('button');
   tag.setAttribute('type', 'button');
@@ -79,7 +79,7 @@ function buildTag(tagClass) {
   tag.classList.add(tagClass);
   return tag;
 }
- 
+
 /** Adds relevant tags to input box when corresponding option is clicked */
 function populatePrefilled(elementId) {
   $('#prefilled-' + elementId).hide();
@@ -94,12 +94,12 @@ function populatePrefilled(elementId) {
     }
   })
 }
- 
+
 async function moveTagsFromPoolToInput(clickedAdder, tagId) {
   addTagsToInput(clickedAdder, tagId);
   removeTagsFromPool(clickedAdder);
 }
- 
+
 /** Add tag to user input box once it is chosen */
 function addTagsToInput(clickedAdder, tagId) {
   $(tagId).on('itemAdded', function() {
@@ -113,7 +113,7 @@ function addTagsToInput(clickedAdder, tagId) {
     $(tagId).tagsinput('add', $(clickedAdder).next().html());
   });
 }
- 
+
 /** Removes any extra inputs initialized by scripts */
 function removeExtraInputs(className) {
   if ($(className).prevAll().length > 2) {
@@ -122,13 +122,13 @@ function removeExtraInputs(className) {
     $(className).prev().prev().remove();
   }
 }
- 
+
 function getTagsScriptWithCallback(callback) {
   $.getScript(
       'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js',
       callback);
 }
- 
+
 /** Puts item back into pool if it was a preset */
 async function addTagBackToPool(item, tagId) {
   const prefilledItems = await getPrefilledInformation(tagId);
@@ -137,20 +137,20 @@ async function addTagBackToPool(item, tagId) {
         .show();
   }
 }
- 
+
 /** Remove tag from pool of options once it is chosen */
 function removeTagsFromPool(clickedAdder) {
   $(clickedAdder).parent().hide();
 }
- 
+
 function togglePrefilledSkills() {
   $('#prefilled-skills').toggle();
 }
- 
+
 function togglePrefilledInterests() {
   $('#prefilled-interests').toggle();
 }
- 
+
 /** Writes out relevant details to an event card with the appropriate lod (level of detail) */
 async function populateEventContainer(event, containerId, lod = 3) {
   // TODO: lod will be calculated from the ranked events in the backend
@@ -198,7 +198,7 @@ function addEventImage(imageUrl, eventCardId) {
     $(`#${eventCardId} #event-card-image`).height('200px');
   }
 }
- 
+
 /** Pick random color from Bootstrap defaults */
 function pickRandomColorClass() {
   const colorClasses =
@@ -212,25 +212,25 @@ function pickRandomColorClass() {
        'bg-light']
   return colorClasses[Math.floor(Math.random() * colorClasses.length)]
 }
- 
+
 /** Adds a hyperlink to the registration button of event card */
 function addLinkToRegister(eventCardId) {
   const eventId = eventCardId.substring(6);
   $('#' + eventCardId + ' .btn-primary #event-register')
       .attr('href', `/event-details.html?eventId=${eventId}&register=true`);
 }
- 
+
 /** Adds a hyperlink to the details button of event card */
 function addLinkToDetails(eventCardId) {
   const eventId = eventCardId.substring(6);
   $('#' + eventCardId + ' .btn #event-details')
       .attr('href', `/event-details.html?eventId=${eventId}&register=false`);
 }
- 
+
 function buildDate(year, month, dayOfMonth) {
   return month + '/' + dayOfMonth + '/' + year;
 }
- 
+
 /** Creates a properly-formatted volunteering opportunity string */
 function buildVolunteers(opportunities) {
   let opportunityString = '';
@@ -239,7 +239,7 @@ function buildVolunteers(opportunities) {
   }
   return opportunityString.slice(0, -2);
 }
- 
+
 /** Creates a button label for each provided interest or skill */
 function buildAsLabels(querySelector, labels, className) {
   for (const label of labels) {
@@ -253,7 +253,7 @@ function buildAsLabels(querySelector, labels, className) {
         .appendChild(newLabelButton);
   }
 }
- 
+
 /**
  * Creates the corresponding skill button labels for each volunteering
  * opportunity
@@ -263,7 +263,7 @@ function buildSkillsAsLabels(querySelector, opportunities) {
     buildAsLabels(querySelector, opportunity.requiredSkills, 'skills');
   }
 }
- 
+
 /**
  * Adds currently-attributed profile image to logged-in user
  * If the user has no profile image, add the default one
