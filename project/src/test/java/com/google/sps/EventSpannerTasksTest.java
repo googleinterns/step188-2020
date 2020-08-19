@@ -143,6 +143,7 @@ public class EventSpannerTasksTest {
     Assert.assertEquals(returnedEvent.getLocation(), LOCATION);
     Assert.assertEquals(returnedEvent.getDate(), DATE);
     Assert.assertEquals(returnedEvent.getTime(), TIME);
+    Assert.assertEquals(returnedEvent.getLabels(), new HashSet<>(Arrays.asList("Tech")));
     Assert.assertEquals(returnedEvent.getHost().getName(), HOST_NAME);
     Assert.assertEquals(returnedEvent.getHost().getEmail(), EMAIL);
   }
