@@ -27,7 +27,8 @@
     <script src="script.js"></script>
   </head>
   <body>
-    <div class="card col-sm-4" id="event-card">
+    <div class="card rounded-lg grid-item grid-item--level-3" id="event-card-level-3">
+      <img class="card-img-top" id="event-card-image" alt="Event main picture" />
       <div class="card-body">
         <h5 class="card-title" id="event-card-title">
         </h5>
@@ -35,13 +36,54 @@
         </p>
         <div class="display-inline-block" id="event-card-labels">
         </div>
-        <br />
         <ul class="list-group list-group-flush" id="details">
           <li class="list-group-item">Date: <span id="event-card-date"></span>, <span id="event-card-time"></span></li>
           <li class="list-group-item">Location: <span id="event-card-location"></span></li>
           <li class="list-group-item">
-            <p class="card-text">Volunteers Needed: <span id="event-card-volunteers"></span></p>
+            <p class="card-text" id="vols-needed">Volunteers Needed: <span id="event-card-volunteers"></span></p>
           </li>
+          <button class="btn">
+            <a href="event-details.html" id="event-details">See more details</a>
+          </button>
+          <button type="button" class="btn btn-primary">
+            <a href="event-details.html" id="event-register">Register</a>
+          </button>
+        </ul>
+      </div>
+    </div>
+    <div class="card rounded-lg grid-item grid-item--level-2" id="event-card-level-2">
+      <img class="card-img-top" id="event-card-image" alt="Event main picture" />
+      <div class="card-body">
+        <h5 class="card-title" id="event-card-title">
+        </h5>
+        <p class="card-text" id="event-card-description">
+        </p>
+        <div class="display-inline-block" id="event-card-labels">
+        </div>
+        <ul class="list-group list-group-flush" id="details">
+          <li class="list-group-item">Date: <span id="event-card-date"></span>, <span id="event-card-time"></span></li>
+          <li class="list-group-item">Location: <span id="event-card-location"></span></li>
+          <li class="list-group-item">
+            <p class="card-text" id="vols-needed">Volunteers Needed: <span id="event-card-volunteers"></span></p>
+          </li>
+          <button class="btn">
+            <a href="event-details.html" id="event-details">See more details</a>
+          </button>
+          <button type="button" class="btn btn-primary">
+            <a href="event-details.html" id="event-register">Register</a>
+          </button>
+        </ul>
+      </div>
+    </div>
+    <div class="card rounded-lg grid-item grid-item--level-1" id="event-card-level-1">
+      <div class="card-body">
+        <h5 class="card-title" id="event-card-title">
+        </h5>
+        <p class="card-text" id="event-card-description">
+        </p>
+        <div class="display-inline-block" id="event-card-labels">
+        </div>
+        <ul class="list-group list-group-flush" id="details">
           <button class="btn">
             <a href="event-details.html" id="event-details">See more details</a>
           </button>
