@@ -27,7 +27,7 @@ public class FilteredEventServlet extends HttpServlet {
     String[] labelParamsArr = labelParams.split("-");
     Set<Event> events = SpannerTasks.getFilteredEvents(labelParamsArr);
 
-    if (!events.isPresent()) {
+    if (events.isEmpty()) {
       response.sendError(
           HttpServletResponse.SC_NOT_FOUND,
           String.format("No events found with labels %s", labelParams));
