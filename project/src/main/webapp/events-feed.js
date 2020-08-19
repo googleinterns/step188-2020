@@ -1,15 +1,20 @@
-$(async function() {
-  const allEvents = await getAllEvents();
-  populateAllEvents(allEvents);
+$(function() {
+  populateEvents();
 });
+
+async function populateEvents() {
+  const rankedEvents = await getRankedEvents();
+  const lodMap = getLodsFromEvents(rankedEvents);
+  populateRankedEvents(lodMap);
+}
 
 async function getAllEvents() {
   const allEvents = await fetch('discovery-event-details');
   return allEvents.json();
 }
 
-function populateAllEvents(allEvents) {
-  for (const event of allEvents) {
-    populateEventContainer(event, 'event-container');
+function populateRankedEvents(lodMap) {
+  for (const eventMap of lodMap) {
+    populateEventContainer(eventMap['event'], 'event-container', eventMap['lod']);
   }
 }
