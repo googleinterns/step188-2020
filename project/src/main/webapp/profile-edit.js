@@ -3,6 +3,7 @@ $(document).ready(function() {
   setImageFormAction();
   populatePrefilled('interests');
   populatePrefilled('skills');
+  removeAllExtraInputs();
 });
 
 /** Set profile picture form action */
@@ -30,10 +31,16 @@ async function showCurrentUserInfo() {
  * Populates inputs with labels that already exist
  */
 function populateExisting(className, userData) {
+  $(className).on('itemAdded', function() {
+    removeExtraInputs(className);
+  });
+
   const existingLabels = userData[className];
-  for (const label of existingLabels) {
-    $(`#${className}`).tagsinput('add', label);
-  }
+  getTagsScriptWithCallback(function() {
+    for (const label of existingLabels) {
+      $(`#${className}`).tagsinput('add', label);
+    }
+  });
 }
 
 function removeAllExtraInputs() {
