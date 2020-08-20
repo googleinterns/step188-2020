@@ -16,8 +16,7 @@ import java.util.Scanner;
 import java.util.Map; 
 import java.util.HashMap;
 import org.javatuples.Pair; 
-
-
+import java.util.Optional;
 
 /**
 take in Set<Event> relevantEvents = SpannerTasks.getAllEvents() and user
@@ -37,32 +36,16 @@ public class GetLabelCategories {
 
   public static final String LABEL_TEXT = "src/main/java/com/google/sps/utilities/LabelCategories.txt";
   public static final HashMap<String, String> subcategoryToCategoryMapping = createSubcategoryToCategoryLabelMapping();
-  public static final Map<String, HashSet<String>> categorytoSubcategoryMapping = createCategorytoSubcategoryLabelMapping();
+  public static final HashMap<String, HashSet<String>> categorytoSubcategoryMapping = createCategorytoSubcategoryLabelMapping();
 
 //hold all of User event interests-> /Sports, /Birds --> all events under sports and /birds
 //iterate events and get interests. for interest in interests, see if in User interests()
 
 
-//add to directMatchEvents -> want to return all events with exact match (just compare strings)
-//see if in big category , and return elements in small category
-
 // all events under pets 'the big category of /birds'
 //add to similarLabels -> if in userlabel in categorytoSubcategoryMapping, add event to similar labels if label is 
 //value of categorytoSubcategoryMapping
 //
-
-
-
-    // String email = UserServiceFactory.getUserService().getCurrentUser().getEmail();
-    // Optional<User> userOptional = SpannerTasks.shallowReadUserFromEmail(email);
-    // User user;
-    // if (userOptional.isPresent()) {
-    //   user = userOptional.get();
-    //   // TODO: Replace getAllEvents() with the appropriate method to get all results to display
-    //   Set<Event> relevantEvents = SpannerTasks.getAllEvents();
-    //   List<Event> rankedRelevantEvents = EventRanker.rankEvents(user, relevantEvents);
-    //   response.setContentType("application/json;");
-    //   response.getWriter().println(CommonUtils.convertToJson(rankedRelevantEvents));
 
   /** 
    * @param relevantEvents All events on discovery page (in spanner)
@@ -70,7 +53,7 @@ public class GetLabelCategories {
    * @return List<Set<String>> where Set directMatchEvents = List[0], Set similarLabels = List[1]
    * Set<Pair<Event, int>> = event, int = how many filters matched
    */
-  public List<Set<Pair<Event, Integer>>> getEventRelevancy(Set<Event> relevantEvents, User user) {
+  public ArrayList<Set<Pair<Event, Integer>>> getEventRelevancy(Set<Event> relevantEvents, User user) {
     Set<Pair<Event, Integer>> directMatchEvents = new HashSet<Pair<Event, Integer>>();
     Set<Pair<Event, Integer>> similarLabelEvents = new HashSet<Pair<Event, Integer>>(); 
     Set<String> interestsAndSkills = user.getInterests();
@@ -81,8 +64,13 @@ public class GetLabelCategories {
       for (VolunteeringOpportunity opportunity : event.getOpportunities()) {
         labelsAndSkills.addAll(opportunity.getRequiredSkills());
       }
-      directMatchEvents.add(getDirectMatchEvents(event, interestsAndSkills, labelsAndSkills ));
-    //  similarLabelEvents.addAll(getsimilarLabelEvents(event, interestsAndSkills, labelsAndSkills));
+
+    Optional<Pair<Event, Integer>> directMatchEventsOptional = getDirectMatchEvents(event, interestsAndSkills, labelsAndSkills );
+    if (directMatchEventsOptional.isPresent()) {
+        directMatchEvents.add(directMatchEventsOptional.get());
+    }
+
+    //similarLabelEvents.add(getsimilarLabelEvents(event, interestsAndSkills, labelsAndSkills));
     }
     ArrayList<Set<Pair<Event, Integer>>> list = new ArrayList<Set<Pair<Event, Integer>>>();
     list.add(directMatchEvents);
@@ -90,20 +78,42 @@ public class GetLabelCategories {
     return list;
   }
 
-  // Returns 
-  private Pair<Event, Integer> getDirectMatchEvents(Event event, Set<String> UserInterestsAndSkills, Set<String> EventInterestsAndSkills) {
-      HashSet<String> directMatchEvents = new HashSet<String>(UserInterestsAndSkills);
-      directMatchEvents.retainAll(EventInterestsAndSkills);
+  // MAKE AN OPTIONAL
+  private Optional<Pair<Event, Integer>> getDirectMatchEvents(Event event, Set<String> userLabels, Set<String> eventLabels) {
+      HashSet<String> directMatchEvents = new HashSet<String>(userLabels);
+      directMatchEvents.retainAll(eventLabels);
 
       if (!directMatchEvents.isEmpty()) {
-          return new Pair<Event, Integer>(event, directMatchEvents.size());
+          return  Optional.of(new Pair<Event, Integer>(event, directMatchEvents.size()));
       }
-      return new Pair<Event, Integer>(null, null);
+      return Optional.empty();
   }
 
-//   private Pair<Event, int> getsimilarLabelEvents(Set<String> UserInterestsAndSkills, Set<String> EventInterestsAndSkills) {
-      
-//   }
+// all events under pets 'the big category of /birds'
+//add to similarLabels -> if in userlabel in categorytoSubcategoryMapping, add event to similar labels if label is 
+//value of categorytoSubcategoryMapping
+  private Pair<Event, Integer> getsimilarLabelEvents(Event event, Set<String> userLabels, Set<String> eventLabels) {
+      Pair<Event, Integer> result = new Pair<Event, Integer>(null, 0);
+      for (String label: userLabels) {
+          if (categorytoSubcategoryMapping.containsKey(label)) {
+               HashSet<String> sameCategoryLabels = new HashSet<String>(categorytoSubcategoryMapping.get(label));
+                sameCategoryLabels.retainAll(eventLabels);
+                      if (!sameCategoryLabels.isEmpty()) {
+                result = new Pair<Event, Integer>(event, result.getValue1() + sameCategoryLabels.size());
+                      }
+                //result is pair[1] + 1
+          }
+          else if(subcategoryToCategoryMapping.containsKey(label)) {
+              String category = subcategoryToCategoryMapping.get(label);
+            if(eventLabels.contains(category) ) {
+                result = new Pair<Event, Integer>(event, result.getValue1() + 1);
+            }
+          }
+
+      }
+
+    return result;  
+  }
 
   /** Creates Map<String, String> with Key: Subcategory, Value: Category */
   private static HashMap<String, String> createSubcategoryToCategoryLabelMapping()  {
@@ -124,8 +134,8 @@ public class GetLabelCategories {
   }
 
   /** Creates Map<String, HashSet<String>>  with Key: Category, Value: Set(Subcategories) */
-  private static Map<String, HashSet<String>> createCategorytoSubcategoryLabelMapping()  {
-    Map<String, HashSet<String>> valueToKeyMap = new HashMap<String, HashSet<String>>();
+  private static HashMap<String, HashSet<String>> createCategorytoSubcategoryLabelMapping()  {
+    HashMap<String, HashSet<String>> valueToKeyMap = new HashMap<String, HashSet<String>>();
     try {
     Scanner textFile = new Scanner(new File(LABEL_TEXT));
 
