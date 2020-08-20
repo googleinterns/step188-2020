@@ -28,7 +28,7 @@ async function getAllEvents() {
  * @param {string} labelParams - label params as selected by user
  */
 async function getFilteredEventsOnly(labelParams) {
-  const response = await fetch('/get-filtered-events?' + new URLSearchParams({'labelParams': labelParams}));
+  const response = await fetch('/filtered-events?' + new URLSearchParams({'labelParams': labelParams}));
   return response.json();
 }
 
