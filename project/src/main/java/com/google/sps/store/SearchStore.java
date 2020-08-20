@@ -1,7 +1,5 @@
 package com.google.sps.store;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
 import com.google.sps.data.Event;
 import com.google.sps.data.EventResult;
 import com.google.sps.data.Keyword;
@@ -9,11 +7,9 @@ import com.google.sps.utilities.KeywordHelper;
 import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /** Store class that uses in-memory map to hold search results. */
@@ -40,8 +36,10 @@ public class SearchStore {
     Map<String, Float> keywordToRanking = new HashMap<String, Float>();
     addKeywordsInTextToIndex(eventId, name.toLowerCase(), WEIGHT_IN_NAME, keywordToRanking);
     addKeywordsInTextToIndex(eventId, description, WEIGHT_IN_DESCRIPTION, keywordToRanking);
-    List<EventResult> entries = keywordToRanking.entrySet().stream()
-		.map(entry -> new EventResult(eventId, entry.getKey(), entry.getValue())).collect(Collectors.toList()); 
+    List<EventResult> entries =
+        keywordToRanking.entrySet().stream()
+            .map(entry -> new EventResult(eventId, entry.getKey(), entry.getValue()))
+            .collect(Collectors.toList());
     SpannerTasks.addResultsToPersistentStorageIndex(entries);
   }
 
@@ -56,7 +54,8 @@ public class SearchStore {
    *     of the selected piece of text.
    * @param keywordToRanking the index to update
    */
-  private void addKeywordsInTextToIndex(String eventId, String text, float weight, Map<String, Float> keywordToRanking) {
+  private void addKeywordsInTextToIndex(
+      String eventId, String text, float weight, Map<String, Float> keywordToRanking) {
     keywordHelper.setContent(text);
     ArrayList<Keyword> keywords = new ArrayList<Keyword>();
     try {
@@ -78,6 +77,7 @@ public class SearchStore {
 
   /**
    * Gets event searchResults for the given keyword search.
+   *
    * @param keyword keyword to search
    * @return list of events in descending order of ranking as search result
    */

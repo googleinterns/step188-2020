@@ -48,9 +48,9 @@ public class SpannerTestTasks {
                 + "  Name                        STRING(MAX)"
                 + ") PRIMARY KEY (KeywordID)",
             "CREATE TABLE Results ("
-	            + "  KeywordID                    STRING(MAX),"
-	            + "  EventID                    STRING(MAX),"
-	            + "  Ranking                    FLOAT64,"
+                + "  KeywordID                    STRING(MAX),"
+                + "  EventID                    STRING(MAX),"
+                + "  Ranking                    FLOAT64,"
                 + ") PRIMARY KEY (KeywordID, EventID),"
                 + "INTERLEAVE IN PARENT Keywords ON DELETE CASCADE");
     Database db =

@@ -1,19 +1,18 @@
 package com.google.sps;
 
+import com.google.sps.data.Event;
 import com.google.sps.data.Keyword;
 import com.google.sps.store.SearchStore;
-import com.google.sps.data.Event;
 import com.google.sps.utilities.KeywordHelper;
 import com.google.sps.utilities.SpannerClient;
 import com.google.sps.utilities.SpannerTasks;
 import com.google.sps.utilities.SpannerTestTasks;
 import com.google.sps.utilities.TestUtils;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.servlet.ServletContextEvent;
-import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.After;
@@ -121,8 +120,9 @@ public class SearchStoreTest {
   public void oneEvent_KeywordNotRelevantInEventNameOrDescription_noResultsReturned()
       throws IOException {
     // ID         |   Name Has Games  |   Description Has Games
-    // 1                    No                  No    
-    SpannerTasks.insertorUpdateEvent(TestUtils.newEvent(EVENT_ID_1, NAME_WITHOUT_GAMES, DESCRIPTION_WITHOUT_GAMES));
+    // 1                    No                  No
+    SpannerTasks.insertorUpdateEvent(
+        TestUtils.newEvent(EVENT_ID_1, NAME_WITHOUT_GAMES, DESCRIPTION_WITHOUT_GAMES));
     // On the first call the getKeywords for name, return empty list
     // On the second call the getKeyords for description, return empty list
     Mockito.when(mockKeywordHelper.getKeywords())
@@ -135,12 +135,13 @@ public class SearchStoreTest {
   }
 
   @Test
-  public void oneEvent_keywordRelevantInName_oneResultReturned()
-      throws IOException {
+  public void oneEvent_keywordRelevantInName_oneResultReturned() throws IOException {
     // ID         |   Name Has Games  |   Description Has Games
     // 1                     Yes                    No
-    SpannerTasks.insertorUpdateEvent(TestUtils.newEvent(EVENT_ID_1, NAME_WITH_GAMES, DESCRIPTION_WITHOUT_GAMES));
-    Mockito.when(mockKeywordHelper.getKeywords()).thenReturn(KEYWORDS_NAME_WITH_GAMES, KEYWORDS_DESCRIPTION_WITHOUT_GAMES);
+    SpannerTasks.insertorUpdateEvent(
+        TestUtils.newEvent(EVENT_ID_1, NAME_WITH_GAMES, DESCRIPTION_WITHOUT_GAMES));
+    Mockito.when(mockKeywordHelper.getKeywords())
+        .thenReturn(KEYWORDS_NAME_WITH_GAMES, KEYWORDS_DESCRIPTION_WITHOUT_GAMES);
 
     searchStore.addEventToIndex(EVENT_ID_1, NAME_WITH_GAMES, DESCRIPTION_WITHOUT_GAMES);
     List<Event> actualResults = searchStore.getSearchResults(GAMES);
@@ -156,8 +157,10 @@ public class SearchStoreTest {
     // ID         |   Name Has Games  |   Description Has Games
     // 1                   No                    Yes
     // 2                   No                    Yes
-    SpannerTasks.insertorUpdateEvent(TestUtils.newEvent(EVENT_ID_1, NAME_WITH_GAMES, DESCRIPTION_WITHOUT_GAMES));
-    SpannerTasks.insertorUpdateEvent(TestUtils.newEvent(EVENT_ID_2, NAME_WITH_GAMES, DESCRIPTION_WITHOUT_GAMES));
+    SpannerTasks.insertorUpdateEvent(
+        TestUtils.newEvent(EVENT_ID_1, NAME_WITH_GAMES, DESCRIPTION_WITHOUT_GAMES));
+    SpannerTasks.insertorUpdateEvent(
+        TestUtils.newEvent(EVENT_ID_2, NAME_WITH_GAMES, DESCRIPTION_WITHOUT_GAMES));
     Mockito.when(mockKeywordHelper.getKeywords())
         .thenReturn(
             // Keywords for Event with ID 1
@@ -171,21 +174,30 @@ public class SearchStoreTest {
     searchStore.addEventToIndex(EVENT_ID_2, NAME_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES);
     List<Event> actualResults = searchStore.getSearchResults(GAMES);
 
-    Assert.assertTrue(((EVENT_ID_1.equals(actualResults.get(0).getId()) && EVENT_ID_2.equals(actualResults.get(1).getId())) ||
-    (EVENT_ID_2.equals(actualResults.get(0).getId()) && EVENT_ID_1.equals(actualResults.get(1).getId()))) &&
-     NAME_WITH_GAMES.equals(actualResults.get(0).getName()) && NAME_WITH_GAMES.equals(actualResults.get(1).getName()) 
-     && DESCRIPTION_WITHOUT_GAMES.equals(actualResults.get(0).getDescription()) &&  DESCRIPTION_WITHOUT_GAMES.equals(actualResults.get(1).getDescription()));
+    Assert.assertTrue(
+        ((EVENT_ID_1.equals(actualResults.get(0).getId())
+                    && EVENT_ID_2.equals(actualResults.get(1).getId()))
+                || (EVENT_ID_2.equals(actualResults.get(0).getId())
+                    && EVENT_ID_1.equals(actualResults.get(1).getId())))
+            && NAME_WITH_GAMES.equals(actualResults.get(0).getName())
+            && NAME_WITH_GAMES.equals(actualResults.get(1).getName())
+            && DESCRIPTION_WITHOUT_GAMES.equals(actualResults.get(0).getDescription())
+            && DESCRIPTION_WITHOUT_GAMES.equals(actualResults.get(1).getDescription()));
   }
 
   @Test
-  public void 
+  public void
       twoEvents_firstWithKeywordLowRelevanceInDesc_secondWithKeywordHighRelevanceInDesc_returnsSecondEventBeforeFirst()
           throws IOException {
     // ID             |   Name Has Games    |   Description Has Games
     // 1              |        No            |       Yes - LOW relevance
     // 2              |        No            |       Yes - HIGH relevance
-    SpannerTasks.insertorUpdateEvent(TestUtils.newEvent(EVENT_ID_1, NAME_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE));
-    SpannerTasks.insertorUpdateEvent(TestUtils.newEvent(EVENT_ID_2, NAME_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE));
+    SpannerTasks.insertorUpdateEvent(
+        TestUtils.newEvent(
+            EVENT_ID_1, NAME_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE));
+    SpannerTasks.insertorUpdateEvent(
+        TestUtils.newEvent(
+            EVENT_ID_2, NAME_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE));
     Mockito.when(mockKeywordHelper.getKeywords())
         .thenReturn(
             // Keywords for Event with ID 1
@@ -216,8 +228,12 @@ public class SearchStoreTest {
     // ID             |   Name Has Games    |   Description Has Games
     // 1              |        No            |     Yes - HIGH relevance
     // 2              |        Yes           |    Yes - HIGH relevance
-    SpannerTasks.insertorUpdateEvent(TestUtils.newEvent(EVENT_ID_1, NAME_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE));
-    SpannerTasks.insertorUpdateEvent(TestUtils.newEvent(EVENT_ID_2, NAME_WITH_GAMES, DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE));
+    SpannerTasks.insertorUpdateEvent(
+        TestUtils.newEvent(
+            EVENT_ID_1, NAME_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE));
+    SpannerTasks.insertorUpdateEvent(
+        TestUtils.newEvent(
+            EVENT_ID_2, NAME_WITH_GAMES, DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE));
     Mockito.when(mockKeywordHelper.getKeywords())
         .thenReturn(
             // Keywords for Event with ID 1
@@ -248,8 +264,11 @@ public class SearchStoreTest {
     // ID         |   Name Has Games                       |   Description Has Games
     // 1          |        YES - HIGH relevance            |     No
     // 2          |        Yes - HIGH relevance            |    Yes
-    SpannerTasks.insertorUpdateEvent(TestUtils.newEvent(EVENT_ID_1, NAME_WITH_GAMES_IN_HIGH_RELEVANCE, DESCRIPTION_WITHOUT_GAMES));
-    SpannerTasks.insertorUpdateEvent(TestUtils.newEvent(EVENT_ID_2, NAME_WITH_GAMES_IN_HIGH_RELEVANCE, DESCRIPTION_WITH_GAMES));
+    SpannerTasks.insertorUpdateEvent(
+        TestUtils.newEvent(
+            EVENT_ID_1, NAME_WITH_GAMES_IN_HIGH_RELEVANCE, DESCRIPTION_WITHOUT_GAMES));
+    SpannerTasks.insertorUpdateEvent(
+        TestUtils.newEvent(EVENT_ID_2, NAME_WITH_GAMES_IN_HIGH_RELEVANCE, DESCRIPTION_WITH_GAMES));
     Mockito.when(mockKeywordHelper.getKeywords())
         .thenReturn(
             // Keywords for Event with ID 1
@@ -280,8 +299,12 @@ public class SearchStoreTest {
     // ID         |    Name Has Games                    |   Description Has Games
     // 1          |        No                            |     Yes - HIGH relevance
     // 2          |        Yes - HIGH relevance          |     No
-    SpannerTasks.insertorUpdateEvent(TestUtils.newEvent(EVENT_ID_1, NAME_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE));
-    SpannerTasks.insertorUpdateEvent(TestUtils.newEvent(EVENT_ID_2, NAME_WITH_GAMES_IN_HIGH_RELEVANCE, DESCRIPTION_WITHOUT_GAMES));
+    SpannerTasks.insertorUpdateEvent(
+        TestUtils.newEvent(
+            EVENT_ID_1, NAME_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE));
+    SpannerTasks.insertorUpdateEvent(
+        TestUtils.newEvent(
+            EVENT_ID_2, NAME_WITH_GAMES_IN_HIGH_RELEVANCE, DESCRIPTION_WITHOUT_GAMES));
     Mockito.when(mockKeywordHelper.getKeywords())
         .thenReturn(
             // Keywords for Event with ID 1

@@ -3,7 +3,6 @@ package com.google.sps.utilities;
 import static com.google.cloud.spanner.TransactionRunner.TransactionCallable;
 
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.cloud.Date;
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.ResultSet;
@@ -11,19 +10,19 @@ import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.sps.data.Event;
-import com.google.sps.data.EventVolunteering;
 import com.google.sps.data.EventResult;
+import com.google.sps.data.EventVolunteering;
 import com.google.sps.data.OpportunitySignup;
 import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.Collections;
 import java.util.stream.Collectors;
 
 /** Class containing methods for interaction with database. */
@@ -607,35 +606,37 @@ public class SpannerTasks {
     }
     return results;
   }
-  
-  /** 
-   * Add event results to persistent storage index by inserting the keyword into
-   * the keywords table if it dose not exist and adding a corresponding row in the
-   * results table.
+ 
+  /**
+   * Add event results to persistent storage index by inserting the keyword into the keywords table
+   * if it dose not exist and adding a corresponding row in the results table.
+   *
    * @param results the event results to add to the index
    */
   public static void addResultsToPersistentStorageIndex(List<EventResult> results) {
-    for (EventResult result: results) {
-    SpannerClient.getDatabaseClient()
-    .readWriteTransaction()
-    .run(
-        new TransactionCallable<Void>() {
-            @Override
-            public Void run(TransactionContext transaction) throws Exception {
-                String eventId = result.getEventId();
-                String keyword = result.getKeyword();
-                float ranking = result.getRanking();
-                Struct row = transaction.readRow(KEYWORDS_TABLE, Key.of(keyword), Collections.singleton(NAME));
-                String keywordId = row == null ? UUID.randomUUID().toString() : row.getString(0);
-                transaction.buffer(
-                    Mutation.newInsertBuilder(KEYWORDS_TABLE)
+    for (EventResult result : results) {
+      SpannerClient.getDatabaseClient()
+          .readWriteTransaction()
+          .run(
+              new TransactionCallable<Void>() {
+                @Override
+                public Void run(TransactionContext transaction) throws Exception {
+                  String eventId = result.getEventId();
+                  String keyword = result.getKeyword();
+                  float ranking = result.getRanking();
+                  Struct row =
+                      transaction.readRow(
+                          KEYWORDS_TABLE, Key.of(keyword), Collections.singleton(NAME));
+                  String keywordId = row == null ? UUID.randomUUID().toString() : row.getString(0);
+                  transaction.buffer(
+                      Mutation.newInsertBuilder(KEYWORDS_TABLE)
                           .set(KEYWORD_ID)
                           .to(keywordId)
                           .set(NAME)
                           .to(keyword)
                           .build());
-                transaction.buffer(
-                    Mutation.newInsertBuilder(RESULTS_TABLE)
+                  transaction.buffer(
+                      Mutation.newInsertBuilder(RESULTS_TABLE)
                           .set(KEYWORD_ID)
                           .to(keywordId)
                           .set(EVENT_ID)
@@ -643,14 +644,15 @@ public class SpannerTasks {
                           .set(RANKING)
                           .to(ranking)
                           .build());
-                return null;
-            }
-        });
+                  return null;
+                }
+            });
     }
   }
 
   /**
    * Returns events by keyword in descending order of ranking.
+   *
    * @param keyword keyword to fetch event results for
    * @return list of events in descending order of ranking
    */
@@ -659,12 +661,12 @@ public class SpannerTasks {
     Statement statement =
         Statement.of(
             String.format(
-               "SELECT Events.EventID, Events.Name, Events.Description, Events.Labels, Events.Location, Events.Date, Events.Time, Events.Host "
-               + "FROM Results INNER JOIN Keywords ON Results.KeywordID = Keywords.KeywordID "
-               + "INNER JOIN Events ON Events.EventID = Results.EventID "
-               + "WHERE Keywords.Name=\"%s\" "
-               + "ORDER BY Results.Ranking DESC "
-               + "LIMIT 20;", keyword));
+                "SELECT Events.EventID, Events.Name, Events.Description, Events.Labels,"
+                    + " Events.Location, Events.Date, Events.Time, Events.Host FROM Results INNER"
+                    + " JOIN Keywords ON Results.KeywordID = Keywords.KeywordID INNER JOIN Events"
+                    + " ON Events.EventID = Results.EventID WHERE Keywords.Name=\"%s\" ORDER BY"
+                    + " Results.Ranking DESC LIMIT 20;",
+                keyword));
     try (ResultSet resultSet =
         SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
       while (resultSet.next()) {
