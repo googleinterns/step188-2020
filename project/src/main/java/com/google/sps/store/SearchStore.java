@@ -68,8 +68,8 @@ public class SearchStore {
   }
 
   /**
-   * Returns ranking equal to the sum of the ranking of any existing event results for the eventId
-   * and the relevance of the keyword in the text multiplied by the given weight.
+   * Returns ranking equal to the sum of the existing ranking and the relevance of the keyword 
+   * in the text multiplied by the given weight.
    */
   private float getRanking(Keyword keyword, float weight, Map<String, Float> keywordToRanking) {
     float keywordRank = 0;
