@@ -38,7 +38,7 @@ public class VolunteeringFormHandlerServlet extends HttpServlet {
     String name = request.getParameter(NAME);
     long numSpotsLeft =
         Long.parseLong(CommonUtils.getParameter(request, NUM_SPOTS_LEFT, /* DefaultValue= */ "0"));
-    Set<String> requiredSkills = split(request.getParameter(REQUIRED_SKILL));
+    Set<String> requiredSkills = split(CommonUtils.getParameter(request, REQUIRED_SKILL, /* DefaultValue= */ ""));
     String eventId = request.getParameter(EVENT_ID);
 
     if (name == null) {

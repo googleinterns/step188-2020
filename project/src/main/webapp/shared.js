@@ -1,3 +1,9 @@
+$('.grid').masonry({
+  itemSelector: '.grid-item',
+  columnWidth: '.grid-sizer',
+  percentPosition: true,
+});
+
 async function isLoggedIn() {
   const response = await fetch('/login-status');
   const loginStatus = await response.json();
@@ -26,7 +32,7 @@ function buildTagWithAdder(tagClass, text) {
   let group = buildGroup();
   const addButton = buildAdder(tagClass);
   const tag = buildTag(tagClass);
-
+ 
   group.appendChild(addButton);
   group.appendChild(tag);
   group = setText(group, tagClass, text);
@@ -145,30 +151,63 @@ function togglePrefilledInterests() {
   $('#prefilled-interests').toggle();
 }
 
-/** Writes out relevant details to an event card */
-async function populateEventContainer(event, containerId) {
-  const indexOfEventCard = 25;
-  const eventCardTotal = await $.get('event-card.html');
+/** Writes out relevant details to an event card with the appropriate lod (level of detail) */
+async function populateEventContainer(event, containerId, lod = 3) {
+  // TODO: lod will be calculated from the ranked events in the backend
+  lod = Math.floor(Math.random() * 3) + 1
+  const eventCardAll = await $.get('event-card.html');
+  const eventCard = $(eventCardAll).filter(`#event-card-level-${lod}`).get(0);
   const eventCardId = `event-${event.eventId}`;
-  const eventCard = $(eventCardTotal).get(indexOfEventCard);
   $(eventCard).attr('id', eventCardId);
   $(`#${containerId}`).append(eventCard);
   $(`#${eventCardId} #event-card-title`).html(event.name);
   $(`#${eventCardId} #event-card-description`).html(event.description);
-  $(`#${eventCardId} #event-card-date`)
-      .html(
-          buildDate(
-              event.date.year, event.date.month, event.date.dayOfMonth));
-  $(`#${eventCardId} #event-card-time`).html(event.time);
-  $(`#${eventCardId} #event-card-location`).html(event.location);
-  $(`#${eventCardId} #event-card-volunteers`)
-      .html(buildVolunteers(event.opportunities));
+  if (lod > 1) {
+    $(`#${eventCardId} #event-card-date`)
+        .html(
+            buildDate(
+                event.date.year, event.date.month, event.date.dayOfMonth));
+    $(`#${eventCardId} #event-card-time`).html(event.time);
+    $(`#${eventCardId} #event-card-location`).html(event.location);
+    if (event.opportunities.length) {
+      $(`#${eventCardId} #event-card-volunteers`)
+        .html(buildVolunteers(event.opportunities));
+    } else {
+      $(`#${eventCardId} #vols-needed`).parent().hide();
+    }
+  }
   buildAsLabels(
       `#${eventCardId} #event-card-labels`, event.labels, 'interests');
   buildSkillsAsLabels(
       `#${eventCardId} #event-card-labels`, event.opportunities);
   addLinkToRegister(eventCardId);
   addLinkToDetails(eventCardId);
+  if (lod >= 2) {
+    addEventImage(event.imageUrl, eventCardId);
+  }
+}
+
+/** Prepends either a background image or Bootstrap-colored div */
+function addEventImage(imageUrl, eventCardId) {
+  if (imageUrl) {
+    $(`#${eventCardId} #event-card-image`).attr('src', imageUrl);
+  }
+  else {
+    $(`#${eventCardId} #event-card-image`).replaceWith('<div class="card-img-top" id="event-card-image" />')
+    $(`#${eventCardId} #event-card-image`).addClass(pickRandomColorClass());
+    $(`#${eventCardId} #event-card-image`).height('200px');
+  }
+}
+
+/** Pick random color from Bootstrap defaults */
+function pickRandomColorClass() {
+  const colorClasses =
+      ['bg-primary',
+       'bg-success',
+       'bg-info',
+       'bg-warning',
+       'bg-danger']
+  return colorClasses[Math.floor(Math.random() * colorClasses.length)]
 }
 
 /** Adds a hyperlink to the registration button of event card */
