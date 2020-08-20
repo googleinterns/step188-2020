@@ -14,6 +14,7 @@ import com.google.sps.utilities.SpannerTestTasks;
 import com.google.sps.utilities.TestUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -54,7 +55,7 @@ public class EventSpannerTasksTest {
   private static final String LOCATION = "Remote";
   private static final Date DATE_PAST = Date.fromYearMonthDay(2016, 9, 15);
   private static final Date DATE_FUTURE =
-      Date.fromYearMonthDay(new java.util.Date().getYear() + 1, 9, 15);
+      Date.fromYearMonthDay(Calendar.getInstance().get(Calendar.YEAR) + 1, 9, 15);
   private static final String DATE_FUTURE_STRING = DATE_FUTURE.getYear() + "-09-15";
   private static final String TIME = "3:00PM-5:00PM";
   private MockHttpServletRequest request;
