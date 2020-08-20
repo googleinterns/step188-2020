@@ -68,3 +68,20 @@
 .grid-item--level-3 {
   width: 20% !important;
 }
+
+i {
+  margin: 5px;
+}
+
+.fa-clock {
+  float: right;
+}
+
+#event-card-time {
+  float: right;
+}
+
+.btn-outline-primary:hover {
+  background-color: #fcfcfc !important;
+  color: #007bff !important;
+}
