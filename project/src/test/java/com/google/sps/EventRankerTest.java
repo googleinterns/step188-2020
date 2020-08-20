@@ -56,6 +56,8 @@ public final class EventRankerTest {
   private static Event EVENT_FOOD;
   private static Event EVENT_SEWING;
   private static User USER_CONSERVATION_FOOD_MUSIC;
+  private static User USER_NO_INTERESTS_OR_SKILLS;
+  private static User USER;
   private static VolunteeringOpportunity OPPORTUNITY_MUSIC;
   private static String NAME = "Bob Smith";
   private static String EMAIL = "test@example.com";
@@ -67,8 +69,35 @@ public final class EventRankerTest {
     authenticationHelper.setUp();
     setUpEventsAndUsers();
     Mockito.when(response.getWriter()).thenReturn(writer);
+    EVENT_CONSERVATION_FOOD_MUSIC =
+        TestUtils.newEvent().toBuilder()
+            .setLabels(new HashSet<>(Arrays.asList(CONSERVATION, FOOD, MUSIC)))
+            .build();
+    EVENT_FOOD_MUSIC =
+        TestUtils.newEvent().toBuilder()
+            .setLabels(new HashSet<>(Arrays.asList(FOOD, MUSIC)))
+            .build();
+    EVENT_CONSERVATION_MUSIC =
+        TestUtils.newEvent().toBuilder()
+            .setLabels(new HashSet<>(Arrays.asList(CONSERVATION, MUSIC)))
+            .build();
+    EVENT_FOOD =
+        TestUtils.newEvent().toBuilder().setLabels(new HashSet<>(Arrays.asList(FOOD))).build();
+    EVENT_SEWING =
+        TestUtils.newEvent().toBuilder().setLabels(new HashSet<>(Arrays.asList(SEWING))).build();
+    USER_CONSERVATION_FOOD_MUSIC =
+        TestUtils.newUser().toBuilder()
+            .setInterests(INTERESTS_CONSERVATION_FOOD)
+            .setSkills(SKILLS_MUSIC)
+            .build();
+    USER_NO_INTERESTS_OR_SKILLS =
+        TestUtils.newUser().toBuilder().setInterests(new HashSet<>()).setSkills(new HashSet<>()).build();
+    USER = TestUtils.newUser();
+    OPPORTUNITY_MUSIC =
+        TestUtils.newVolunteeringOpportunityWithEventId(EVENT_FOOD_MUSIC.getId());
+    EVENT_FOOD_MUSIC = EVENT_FOOD_MUSIC.toBuilder().addOpportunity(OPPORTUNITY_MUSIC).build();
   }
-
+  
   @AfterClass
   public static void tearDown() throws Exception {
     SpannerTestTasks.cleanup();
@@ -85,7 +114,7 @@ public final class EventRankerTest {
   public void testRankingEmptyEvents() throws IOException {
     Assert.assertEquals(
         new ArrayList<Event>(),
-        EventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, new HashSet<Event>()));
+        EventRanker.rankEvents(USER, new HashSet<Event>()));
   }
 
   @Test
@@ -105,19 +134,27 @@ public final class EventRankerTest {
 
   @Test
   public void testRankingTiedEvents() throws IOException {
+    Event EVENT_TIED_EARLIER =
+        advanceEventByYears(
+            TestUtils.newEvent().toBuilder().mergeFrom(EVENT_FOOD_MUSIC).build(),
+            1);
+    Event EVENT_TIED_LATER =
+        advanceEventByYears(
+            TestUtils.newEvent().toBuilder().mergeFrom(EVENT_CONSERVATION_MUSIC).build(),
+            2);
     Set<Event> eventsToRank =
         new HashSet<>(
             Arrays.asList(
-                EVENT_CONSERVATION_MUSIC,
+                EVENT_TIED_LATER,
                 EVENT_FOOD,
                 EVENT_SEWING,
                 EVENT_CONSERVATION_FOOD_MUSIC,
-                EVENT_FOOD_MUSIC));
+                EVENT_TIED_EARLIER));
     List<Event> expectedEventRanking =
         Arrays.asList(
             EVENT_CONSERVATION_FOOD_MUSIC,
-            EVENT_FOOD_MUSIC,
-            EVENT_CONSERVATION_MUSIC,
+            EVENT_TIED_EARLIER,
+            EVENT_TIED_LATER,
             EVENT_FOOD,
             EVENT_SEWING);
 
@@ -150,6 +187,41 @@ public final class EventRankerTest {
     new EventRankerServlet().doGet(request, response);
 
     Mockito.verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "User not found.");
+  }
+
+  @Test
+  public void testRankingNoInterestsOrSkillsRankByDate() throws IOException {
+    Event EVENT_ONE_YEAR_FUTURE = advanceEventByYears(TestUtils.newEvent(), 1);
+    Event EVENT_TWO_YEARS_FUTURE = advanceEventByYears(TestUtils.newEvent(), 2);
+    Event EVENT_THREE_YEARS_FUTURE = advanceEventByYears(TestUtils.newEvent(), 3);
+    Set<Event> eventsToRank =
+        new HashSet<>(
+            Arrays.asList(
+                EVENT_TWO_YEARS_FUTURE,
+                EVENT_THREE_YEARS_FUTURE,
+                EVENT_ONE_YEAR_FUTURE));
+    List<Event> expectedEventRanking =
+        Arrays.asList(
+            EVENT_ONE_YEAR_FUTURE,
+            EVENT_TWO_YEARS_FUTURE,
+            EVENT_THREE_YEARS_FUTURE);
+    
+    List<Event> actualEventRanking =
+        EventRanker.rankEvents(USER_NO_INTERESTS_OR_SKILLS, eventsToRank);
+    
+    Assert.assertEquals(expectedEventRanking, actualEventRanking);
+  }
+
+  private static Event advanceEventByYears(Event event, int years) {
+    Date date = event.getDate();
+    return event
+        .toBuilder()
+        .setDate(
+            Date.fromYearMonthDay(
+                date.getYear() + years,
+                date.getMonth() + 1,
+                date.getDayOfMonth()))
+        .build();
   }
 
   private static void setUpDatabase() throws Exception {

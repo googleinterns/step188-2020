@@ -85,7 +85,7 @@ public class TestUtils {
     return new User.Builder(NAME, EMAIL).setInterests(INTERESTS).setSkills(SKILLS).build();
   }
 
-  /** Returns a new User object with a given email and arbitrary attributes. */
+  /** Returns a new User object with arbitrary attributes and given email. */
   public static User newUserWithEmail(String email) {
     return new User.Builder(NAME, email).setInterests(INTERESTS).setSkills(SKILLS).build();
   }
