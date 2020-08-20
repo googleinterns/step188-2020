@@ -1,4 +1,4 @@
-package com.google.sps.utilities;
+package com.google.sps.store;
 
 import com.google.sps.data.Event;
 import com.google.sps.data.EventResult;
@@ -13,12 +13,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /** Store class that uses in-memory map to hold search results. */
-public class SearchHelper {
+public class SearchStore {
   private static final float WEIGHT_IN_NAME = 0.7f;
   private static final float WEIGHT_IN_DESCRIPTION = 0.3f;
   private KeywordHelper keywordHelper;
 
-  public SearchHelper(KeywordHelper keywordHelper) {
+  public SearchStore(KeywordHelper keywordHelper) {
     this.keywordHelper = keywordHelper;
   }
 
