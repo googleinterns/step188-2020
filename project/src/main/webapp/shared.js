@@ -239,14 +239,14 @@ function pickRandomColorClass() {
 /** Adds a hyperlink to the registration button of event card */
 function addLinkToRegister(eventCardId) {
   const eventId = eventCardId.substring(6);
-  $('#' + eventCardId + ' .btn-primary #event-register')
+  $('#' + eventCardId + ' div #event-register')
       .attr('href', `/event-details.html?eventId=${eventId}&register=true`);
 }
 
 /** Adds a hyperlink to the details button of event card */
 function addLinkToDetails(eventCardId) {
   const eventId = eventCardId.substring(6);
-  $('#' + eventCardId + ' .btn #event-details')
+  $('#' + eventCardId + ' div #event-details')
       .attr('href', `/event-details.html?eventId=${eventId}&register=false`);
 }
 
