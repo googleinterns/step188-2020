@@ -2,7 +2,7 @@ package com.google.sps;
 
 import com.google.sps.data.Event;
 import com.google.sps.data.Keyword;
-import com.google.sps.store.SearchStore;
+import com.google.sps.utilities.SearchHelper;
 import com.google.sps.utilities.KeywordHelper;
 import com.google.sps.utilities.SpannerClient;
 import com.google.sps.utilities.SpannerTasks;
@@ -25,7 +25,7 @@ import org.springframework.mock.web.MockServletContext;
 /** Unit tests for adding new events to search index and retrieving search results. */
 @RunWith(JUnit4.class)
 public class SearchStoreTest {
-  private SearchStore searchStore;
+  private SearchHelper searchHelper;
   private KeywordHelper mockKeywordHelper;
   private static final String EVENT_ID_1 = TestUtils.newRandomId();
   private static final String EVENT_ID_2 = TestUtils.newRandomId();
@@ -107,7 +107,7 @@ public class SearchStoreTest {
     SpannerTestTasks.setup();
 
     mockKeywordHelper = Mockito.mock(KeywordHelper.class);
-    searchStore = new SearchStore(mockKeywordHelper);
+    searchHelper = new SearchHelper(mockKeywordHelper);
   }
 
   @After
@@ -128,8 +128,8 @@ public class SearchStoreTest {
     Mockito.when(mockKeywordHelper.getKeywords())
         .thenReturn(KEYWORDS_NAME_WITHOUT_GAMES, KEYWORDS_DESCRIPTION_WITHOUT_GAMES);
     
-    searchStore.addEventToIndex(EVENT_ID_1, NAME_WITHOUT_GAMES, DESCRIPTION_WITHOUT_GAMES);
-    List<Event> actualResults = searchStore.getSearchResults(GAMES);
+    searchHelper.addEventToIndex(EVENT_ID_1, NAME_WITHOUT_GAMES, DESCRIPTION_WITHOUT_GAMES);
+    List<Event> actualResults = searchHelper.getSearchResults(GAMES);
 
     Assert.assertEquals(Arrays.asList(), actualResults);
   }
@@ -143,8 +143,8 @@ public class SearchStoreTest {
     Mockito.when(mockKeywordHelper.getKeywords())
         .thenReturn(KEYWORDS_NAME_WITH_GAMES, KEYWORDS_DESCRIPTION_WITHOUT_GAMES);
 
-    searchStore.addEventToIndex(EVENT_ID_1, NAME_WITH_GAMES, DESCRIPTION_WITHOUT_GAMES);
-    List<Event> actualResults = searchStore.getSearchResults(GAMES);
+    searchHelper.addEventToIndex(EVENT_ID_1, NAME_WITH_GAMES, DESCRIPTION_WITHOUT_GAMES);
+    List<Event> actualResults = searchHelper.getSearchResults(GAMES);
 
     Assert.assertEquals(EVENT_ID_1, actualResults.get(0).getId());
     Assert.assertEquals(NAME_WITH_GAMES, actualResults.get(0).getName());
@@ -170,9 +170,9 @@ public class SearchStoreTest {
             KEYWORDS_NAME_WITHOUT_GAMES,
             KEYWORDS_DESCRIPTION_WITH_GAMES);
 
-    searchStore.addEventToIndex(EVENT_ID_1, NAME_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES);
-    searchStore.addEventToIndex(EVENT_ID_2, NAME_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES);
-    List<Event> actualResults = searchStore.getSearchResults(GAMES);
+    searchHelper.addEventToIndex(EVENT_ID_1, NAME_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES);
+    searchHelper.addEventToIndex(EVENT_ID_2, NAME_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES);
+    List<Event> actualResults = searchHelper.getSearchResults(GAMES);
 
     Assert.assertTrue(
         ((EVENT_ID_1.equals(actualResults.get(0).getId())
@@ -207,11 +207,11 @@ public class SearchStoreTest {
             KEYWORDS_NAME_WITHOUT_GAMES,
             KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
 
-    searchStore.addEventToIndex(
+    searchHelper.addEventToIndex(
         EVENT_ID_1, NAME_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE);
-    searchStore.addEventToIndex(
+    searchHelper.addEventToIndex(
         EVENT_ID_2, NAME_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
-    List<Event> actualResults = searchStore.getSearchResults(GAMES);
+    List<Event> actualResults = searchHelper.getSearchResults(GAMES);
 
     Assert.assertEquals(EVENT_ID_2, actualResults.get(0).getId());
     Assert.assertEquals(NAME_WITHOUT_GAMES, actualResults.get(0).getName());
@@ -243,11 +243,11 @@ public class SearchStoreTest {
             KEYWORDS_NAME_WITH_GAMES,
             KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
 
-    searchStore.addEventToIndex(
+    searchHelper.addEventToIndex(
         EVENT_ID_1, NAME_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
-    searchStore.addEventToIndex(
+    searchHelper.addEventToIndex(
         EVENT_ID_2, NAME_WITH_GAMES, DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
-    List<Event> actualResults = searchStore.getSearchResults(GAMES);
+    List<Event> actualResults = searchHelper.getSearchResults(GAMES);
 
     Assert.assertEquals(EVENT_ID_2, actualResults.get(0).getId());
     Assert.assertEquals(NAME_WITH_GAMES, actualResults.get(0).getName());
@@ -278,11 +278,11 @@ public class SearchStoreTest {
             KEYWORDS_NAME_WITH_GAMES_IN_HIGH_RELEVANCE,
             KEYWORDS_DESCRIPTION_WITH_GAMES);
 
-    searchStore.addEventToIndex(
+    searchHelper.addEventToIndex(
         EVENT_ID_1, NAME_WITH_GAMES_IN_HIGH_RELEVANCE, DESCRIPTION_WITHOUT_GAMES);
-    searchStore.addEventToIndex(
+    searchHelper.addEventToIndex(
         EVENT_ID_2, NAME_WITH_GAMES_IN_HIGH_RELEVANCE, DESCRIPTION_WITH_GAMES);
-    List<Event> actualResults = searchStore.getSearchResults(GAMES);
+    List<Event> actualResults = searchHelper.getSearchResults(GAMES);
 
     Assert.assertEquals(EVENT_ID_2, actualResults.get(0).getId());
     Assert.assertEquals(NAME_WITH_GAMES_IN_HIGH_RELEVANCE, actualResults.get(0).getName());
@@ -314,11 +314,11 @@ public class SearchStoreTest {
             KEYWORDS_NAME_WITH_GAMES_IN_HIGH_RELEVANCE,
             KEYWORDS_DESCRIPTION_WITHOUT_GAMES);
 
-    searchStore.addEventToIndex(
+    searchHelper.addEventToIndex(
         EVENT_ID_1, NAME_WITHOUT_GAMES, DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
-    searchStore.addEventToIndex(
+    searchHelper.addEventToIndex(
         EVENT_ID_2, NAME_WITH_GAMES_IN_HIGH_RELEVANCE, DESCRIPTION_WITHOUT_GAMES);
-    List<Event> actualResults = searchStore.getSearchResults(GAMES);
+    List<Event> actualResults = searchHelper.getSearchResults(GAMES);
 
     Assert.assertEquals(EVENT_ID_2, actualResults.get(0).getId());
     Assert.assertEquals(NAME_WITH_GAMES_IN_HIGH_RELEVANCE, actualResults.get(0).getName());
