@@ -140,8 +140,15 @@ async function getEventHost() {
 /** Call doPost to register logged in user for event */
 async function registerEvent(eventId) {
   const response = await fetch('/register-event?' + new URLSearchParams({'eventId': eventId}), {method: 'POST'} );
-  document.getElementById('signup-link').setAttribute('href', '');
-  document.getElementById('signup-link').innerHTML = 'You are signed up for this event.';
+  let isHost = window.location.href.split('?|&|=')[-1];
+  console.log(isHost);
+  if (isHost === 'true') {
+    $('.alert').show().delay(5000).fadeOut();
+  }
+  else {
+    document.getElementById('signup-link').setAttribute('href', '');
+    document.getElementById('signup-link').innerHTML = 'You are signed up for this event.';
+  }
 }
 
 /**
