@@ -2,6 +2,8 @@ package com.google.sps.utilities;
 
 import com.google.gson.Gson;
 import java.util.HashSet;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -11,6 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 public class CommonUtils {
   public static String convertToJson(Object object) {
     return new Gson().toJson(object);
+  }
+
+  /** Splits string into list based on delimitors */
+  public static List<String> splitAsList(String values) {
+    return Arrays.asList(values.split("\\s*,\\s*"));
   }
 
   /** Returns a JsonArray containing each element provided */

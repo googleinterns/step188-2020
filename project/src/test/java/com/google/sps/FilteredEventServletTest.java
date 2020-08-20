@@ -21,7 +21,6 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
-import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -33,47 +32,19 @@ import org.mockito.Mockito;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.mock.web.MockServletContext;
 
-
 @RunWith(JUnit4.class)
-public final class EventDetailTest {
+public final class FilteredEventServletTest {
   private static final String NAME = "Bob Smith";
   private static final String EMAIL = "bobsmith@example.com";
-  private static final Set<String> INTERESTS =
-      Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Conservation", "Food")));
-  private static final Set<String> SKILLS =
-      Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Cooking")));
-  private static final Date DATE = Date.fromYearMonthDay(2016, 9, 15);
-  private static final String LOCATION = "Online";
-  private static final String TIME = "3:00PM-5:00PM";
-  private static final String IMAGE_URL = "image-url.com";
-  private static final String EVENT_ID1 = "0883de79-17d7-49a3-a866-dbd5135062a8";
-  private static final String EVENT_ID2 = "4fdcd5e9-52b5-4a43-a1f3-2b697c3d5244";
   private static final User USER =
-      new User.Builder(NAME, EMAIL).setInterests(INTERESTS).setSkills(SKILLS).build();
-  private static final Event EVENT1 = 
-      new Event.Builder(
-              "Weekly Meal Prep: Angel Food Cake",
-              "In this Meal Prep Seminar, we will be teaching you how to make a delicious cake!",
-              new HashSet<>(Arrays.asList("Tech", "Work")),
-              LOCATION,
-              DATE,
-              TIME,
-              USER)
-          .setId(EVENT_ID1)
-          .setImageUrl(IMAGE_URL)
-          .build();
-  private static final Event EVENT2 =
-      new Event.Builder(
-              "Chess tournaments",
-              "Gather all the nerds in your life for the checkmate of a lifetime.",
-              new HashSet<>(Arrays.asList("Chess", "Tournaments")),
-              LOCATION,
-              DATE,
-              TIME,
-              USER)
-          .setId(EVENT_ID2)
-          .setImageUrl(IMAGE_URL)
-          .build();
+      new User.Builder(NAME, EMAIL).build();
+  private static final Event EVENT1 = TestUtils.newEvent().toBuilder()
+      .setLabels(new HashSet<>(Arrays.asList("Tech", "Work")))
+      .build();
+  private static final Event EVENT2 = TestUtils.newEvent().toBuilder()
+      .setLabels(new HashSet<>(Arrays.asList("Chess", "Tournament")))
+      .build();
+  private static final String LABEL_PARAMETER = "labelParams";
   private static final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
   private static final HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
   private static final StringWriter stringWriter = new StringWriter();
@@ -103,15 +74,42 @@ public final class EventDetailTest {
   }
 
   @Test
-  public void verifyGetAllEvents() throws IOException {
+  public void verifyGetFilteredEvents() throws IOException {
     Set<Event> expectedEvents = new HashSet(Arrays.asList(EVENT1, EVENT2));
+    Mockito.when(request.getParameter(LABEL_PARAMETER)).thenReturn("Work-Chess");
 
-    new EventDetailServlet().doGet(request, response);
+    new FilteredEventServlet().doGet(request, response);
 
-    String actualEvents = stringWriter.toString().trim();
-    for (Event event : expectedEvents) {
-      Assert.assertThat(actualEvents, CoreMatchers.containsString(CommonUtils.convertToJson(event).trim()));
+    try {
+      JSONAssert.assertEquals(CommonUtils.convertToJson(expectedEvents).trim(),stringWriter.toString().trim(), /*ordered=*/ false);
+    } catch (JSONException e) {
+      System.out.println("JSON conversion failed.");
     }
+  }
+
+  @Test
+  public void verifyGetOneFilteredEvent() throws IOException {
+    Set<Event> expectedEvents = new HashSet(Arrays.asList(EVENT1));
+    Mockito.when(request.getParameter(LABEL_PARAMETER)).thenReturn( "Work");
+
+    new FilteredEventServlet().doGet(request, response);
+
+    try {
+      JSONAssert.assertEquals(CommonUtils.convertToJson(expectedEvents).trim(),stringWriter.toString().trim(), /*ordered=*/ false);
+    } catch (JSONException e) {
+      System.out.println("JSON conversion failed.");
+    }
+  }
+
+  @Test
+  public void verifyGetNoFilteredEvent() throws IOException {
+    Set<Event> expectedEvents = new HashSet(Arrays.asList(EVENT1));
+    Mockito.when(request.getParameter(LABEL_PARAMETER)).thenReturn("None");
+
+    new FilteredEventServlet().doGet(request, response);
+
+    Mockito.verify(response)
+        .sendError(HttpServletResponse.SC_NOT_FOUND, "No events found with labels None");
   }
 
   private static void insertRequiredRows() {
