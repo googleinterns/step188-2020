@@ -35,11 +35,11 @@ public final class EventRankerTest {
   private static Event EVENT_SEWING;
   private static User USER_CONSERVATION_FOOD_MUSIC;
   private static User USER_NO_INTERESTS_OR_SKILLS;
+  private static User USER;
   private static VolunteeringOpportunity OPPORTUNITY_MUSIC;
 
   @BeforeClass
   public static void setUp() throws Exception {
-    int currentYear = new java.util.Date().getYear();
     EVENT_CONSERVATION_FOOD_MUSIC =
         TestUtils.newEvent().toBuilder()
             .setLabels(new HashSet<>(Arrays.asList(CONSERVATION, FOOD, MUSIC)))
@@ -63,6 +63,7 @@ public final class EventRankerTest {
             .build();
     USER_NO_INTERESTS_OR_SKILLS =
         TestUtils.newUser().toBuilder().setInterests(new HashSet<>()).setSkills(new HashSet<>()).build();
+    USER = TestUtils.newUser();
     OPPORTUNITY_MUSIC =
         TestUtils.newVolunteeringOpportunityWithEventId(EVENT_FOOD_MUSIC.getId());
     EVENT_FOOD_MUSIC = EVENT_FOOD_MUSIC.toBuilder().addOpportunity(OPPORTUNITY_MUSIC).build();
@@ -72,7 +73,7 @@ public final class EventRankerTest {
   public void testRankingEmptyEvents() throws IOException {
     Assert.assertEquals(
         new ArrayList<Event>(),
-        EventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, new HashSet<Event>()));
+        EventRanker.rankEvents(USER, new HashSet<Event>()));
   }
 
   @Test
