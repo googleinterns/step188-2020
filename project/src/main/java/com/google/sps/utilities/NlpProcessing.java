@@ -18,6 +18,7 @@ public class NlpProcessing {
  * @return categoryNames: returns selected names of labels that NLP API suggests for text
 */
   public ArrayList<String> getNlp(String text) throws IOException {
+      System.out.println("TRIES THIS");
     ArrayList<String> categoryNames = new ArrayList<String>();
 
     // Use Gcloud NLP API to predict labels based on user inputted event name and description

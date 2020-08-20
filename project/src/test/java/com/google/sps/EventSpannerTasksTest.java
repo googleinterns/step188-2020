@@ -143,12 +143,13 @@ public class EventSpannerTasksTest {
 
     new EventCreationServlet().doPost(request, response);
     Event event =
-        new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).setId(stringWriter.toString().trim().split("\"")[3]).build();
+        new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST)
+          .setId(stringWriter.toString().trim().split("\"")[3]).build();
 
     try {
-    JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(), stringWriter.toString().trim(), /*assert order= */ false);
+      JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(), stringWriter.toString().trim(), /*assert order= */ false);
     } catch (JSONException e) {
-        System.out.println("JSON conversion failed.");
+      System.out.println("JSON conversion failed.");
     }
   }
 
@@ -166,16 +167,18 @@ public class EventSpannerTasksTest {
     String DESCRIPTION_COOKING_CLASS =
     "Come learn to meal prep with us. This class will include prepping foods beyond sandwiches or salads."
     + " We will learn to bake desserts as well. Bring a friend!";
-
     Mockito.when(request.getParameter("description")).thenReturn(DESCRIPTION_COOKING_CLASS);
     Mockito.when(request.getParameter("location")).thenReturn(LOCATION);
     Mockito.when(request.getParameter("interests")).thenReturn("Cooking");
     String text = new StringBuilder().append(EVENT_NAME).append(" ").append(DESCRIPTION_COOKING_CLASS).toString();
 
     //Mock NLP API response with real category response
-    EventCreationServlet servlet = Mockito.spy(EventCreationServlet.class);
-    Mockito.doReturn(new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink"))).when(servlet).getNlpSuggestedFilters(text, new ArrayList<String>());
-    servlet.doPost(request, response);
+    //NlpProcessing nlpProcessor = Mockito.mock(NlpProcessing.class);
+   //Mockito.when(nlpProcessor.getNlp(text)).thenReturn(new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink")));
+    EventCreationServlet eventServlet = new EventCreationServlet();
+
+    Mockito.when(eventServlet.getNlpSuggestedFilters(text, new ArrayList<String>())).thenReturn(new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink")));
+    eventServlet.doPost(request, response);
 
     Event event =
         new Event.Builder(EVENT_NAME, DESCRIPTION_COOKING_CLASS, LABELS, LOCATION, DATE, TIME, HOST)
