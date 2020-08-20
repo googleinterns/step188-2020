@@ -206,10 +206,7 @@ function pickRandomColorClass() {
        'bg-success',
        'bg-info',
        'bg-warning',
-       'bg-danger',
-       'bg-secondary',
-       'bg-dark',
-       'bg-light']
+       'bg-danger']
   return colorClasses[Math.floor(Math.random() * colorClasses.length)]
 }
 
