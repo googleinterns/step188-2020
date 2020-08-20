@@ -11,4 +11,3 @@ target/
 
 .npmrc
 project/emulator-start.sh
-WEB-INF/
