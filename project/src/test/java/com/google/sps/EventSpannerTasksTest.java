@@ -182,19 +182,10 @@ public class EventSpannerTasksTest {
 
     //Mock NLP API response with real category response
     NlpProcessing nlpProcessor = PowerMock.createMock(NlpProcessing.class);
-    System.out.println("------------------------------------------------------- HERE 1");
-    // Mockito.when(nlpProcessor.getNlp(text)).thenReturn(new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink")));
-    EventCreationServlet eventServlet = new EventCreationServlet();
-
-		PowerMock.expectNew(NlpProcessing.class).andReturn(nlpProcessor);
-		expect(nlpProcessor.getNlp(text)).andReturn(new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink")));
+	PowerMock.expectNew(NlpProcessing.class).andReturn(nlpProcessor);
+	expect(nlpProcessor.getNlp(text)).andReturn(new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink")));
     PowerMock.replay(nlpProcessor, NlpProcessing.class);
-
-    // Mockito.when(eventServlet.getNlpSuggestedFilters(Mockito.any(String.class), Mockito.any(ArrayList.class))).thenReturn(new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink")));
-    System.out.println("------------------------------------------------------- HERE 2");
-    eventServlet.doPost(request, response);
-    System.out.println("------------------------------------------------------- HERE 3");
-
+    new EventCreationServlet().doPost(request, response);
     Event event =
         new Event.Builder(EVENT_NAME, DESCRIPTION_COOKING_CLASS, LABELS, LOCATION, DATE, TIME, HOST)
           .setLabels(new HashSet<>(Arrays.asList("Cooking", "Jobs and Education", "Food and Drink")))

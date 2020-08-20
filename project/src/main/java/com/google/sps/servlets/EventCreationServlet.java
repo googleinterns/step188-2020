@@ -82,8 +82,7 @@ public class EventCreationServlet extends HttpServlet {
    * @param text: String of text that includes event name and description
    * @return categoryNames: returns selected names of labels that NLP API suggests for text if available, else empty list
    */
-  public ArrayList<String> getNlpSuggestedFilters(String text, ArrayList<String> categoryNames) throws IOException{
-    System.out.println("------------------------------------------------------- getNlpSuggestedFilters");
+  private ArrayList<String> getNlpSuggestedFilters(String text, ArrayList<String> categoryNames) throws IOException{
     if (text.trim().split("\\s+").length > 20) {
       NlpProcessing nlp = new NlpProcessing();
       categoryNames = nlp.getNlp(text);
