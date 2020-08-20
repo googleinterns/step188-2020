@@ -118,7 +118,7 @@ public class SearchStoreTest {
 
 
   @Test
-  public void oneEvent_KeywordNotRelevantInEventTitleOrDescription_noResultsReturned()
+  public void oneEvent_KeywordNotRelevantInEventNameOrDescription_noResultsReturned()
       throws IOException {
     // ID         |   Name Has Games  |   Description Has Games
     // 1                    No                  No    
@@ -135,7 +135,7 @@ public class SearchStoreTest {
   }
 
   @Test
-  public void oneEvent_keywordRelevantInTitle_oneResultReturned()
+  public void oneEvent_keywordRelevantInName_oneResultReturned()
       throws IOException {
     // ID         |   Name Has Games  |   Description Has Games
     // 1                     Yes                    No
@@ -211,7 +211,7 @@ public class SearchStoreTest {
 
   @Test
   public void
-      twoEvents_tieInRelevanceInDescription_secondHasRelevanceInTitle_returnsSecondEventBeforeFirst()
+      twoEvents_tieInRelevanceInDescription_secondHasRelevanceInName_returnsSecondEventBeforeFirst()
           throws IOException {
     // ID             |   Name Has Games    |   Description Has Games
     // 1              |        No            |     Yes - HIGH relevance
@@ -243,7 +243,7 @@ public class SearchStoreTest {
 
   @Test
   public void
-      twoEvents_tieInRelevanceInTitle_secondHasRelevanceInDescription_returnsSecondEventBeforeFirst()
+      twoEvents_tieInRelevanceInName_secondHasRelevanceInDescription_returnsSecondEventBeforeFirst()
           throws IOException {
     // ID         |   Name Has Games                       |   Description Has Games
     // 1          |        YES - HIGH relevance            |     No
@@ -275,7 +275,7 @@ public class SearchStoreTest {
 
   @Test
   public void
-      addTwoEvents_firstRelevanceInDescription_secondSameRelevanceInTitle_returnsSecondEventBeforeFirst()
+      addTwoEvents_firstRelevanceInDescription_secondSameRelevanceInName_returnsSecondEventBeforeFirst()
           throws IOException {
     // ID         |    Name Has Games                    |   Description Has Games
     // 1          |        No                            |     Yes - HIGH relevance

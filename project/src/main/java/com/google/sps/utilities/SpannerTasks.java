@@ -12,6 +12,7 @@ import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.sps.data.Event;
 import com.google.sps.data.EventVolunteering;
+import com.google.sps.data.EventResult;
 import com.google.sps.data.OpportunitySignup;
 import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
@@ -21,6 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 /** Class containing methods for interaction with database. */
@@ -30,11 +33,15 @@ public class SpannerTasks {
   private static final String EVENT_TABLE = "Events";
   private static final String OPPORTUNITY_SIGNUP_TABLE = "OpportunitySignup";
   private static final String OPPORTUNITY_ID = "VolunteeringOpportunityID";
+  private static final String KEYWORDS_TABLE = "Keywords";
+  private static final String RESULTS_TABLE = "Results";
   private static final String EVENT_ID = "EventID";
   private static final String NAME = "Name";
   private static final String EMAIL = "Email";
   private static final String NUM_SPOTS_LEFT = "NumSpotsLeft";
   private static final String REQUIRED_SKILLS = "RequiredSkills";
+  private static final String KEYWORD_ID = "KeywordID";
+  private static final String RANKING = "Ranking";
 
   /**
    * Get current loggedin User Optional
@@ -486,7 +493,10 @@ public class SpannerTasks {
           }
         }
       }
+      return results;
+    }
 
+  /**
    * Given an email, retrieve all events for which the user with the email is
    * hosting.
    *
@@ -597,8 +607,14 @@ public class SpannerTasks {
     }
     return results;
   }
-
-    public static void addIndexEntriesToPersistentStorage(List<EventResult> results) {
+  
+  /** 
+   * Add event results to persistent storage index by inserting the keyword into
+   * the keywords table if it dose not exist and adding a corresponding row in the
+   * results table.
+   * @param results the event results to add to the index
+   */
+  public static void addResultsToPersistentStorageIndex(List<EventResult> results) {
     for (EventResult result: results) {
     SpannerClient.getDatabaseClient()
     .readWriteTransaction()
@@ -609,25 +625,22 @@ public class SpannerTasks {
                 String eventId = result.getEventId();
                 String keyword = result.getKeyword();
                 float ranking = result.getRanking();
-                Struct row = transaction.readRow("Keywords", Key.of(keyword), Collections.singleton("Name"));
-                String keywordId = UUID.randomUUID().toString();
-                if (row != null) {
-                    keywordId = row.getString(0);
-                }
+                Struct row = transaction.readRow(KEYWORDS_TABLE, Key.of(keyword), Collections.singleton(NAME));
+                String keywordId = row == null ? UUID.randomUUID().toString() : row.getString(0);
                 transaction.buffer(
-                    Mutation.newInsertOrUpdateBuilder(KEYWORDS_TABLE)
-                          .set("KeywordID")
+                    Mutation.newInsertBuilder(KEYWORDS_TABLE)
+                          .set(KEYWORD_ID)
                           .to(keywordId)
-                          .set("Name")
+                          .set(NAME)
                           .to(keyword)
                           .build());
                 transaction.buffer(
                     Mutation.newInsertBuilder(RESULTS_TABLE)
-                          .set("KeywordID")
+                          .set(KEYWORD_ID)
                           .to(keywordId)
-                          .set("EventID")
+                          .set(EVENT_ID)
                           .to(eventId)
-                          .set("Ranking")
+                          .set(RANKING)
                           .to(ranking)
                           .build());
                 return null;
@@ -636,7 +649,12 @@ public class SpannerTasks {
     }
   }
 
-  public static List<Event> getEventResultsByKeyword(String keyword) {
+  /**
+   * Returns events by keyword in descending order of ranking.
+   * @param keyword keyword to fetch event results for
+   * @return list of events in descending order of ranking
+   */
+  public static List<Event> getEventResultsByKeywordWithDescendingRanking(String keyword) {
     List<Event> results = new ArrayList<Event>();
     Statement statement =
         Statement.of(
