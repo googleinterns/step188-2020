@@ -597,4 +597,73 @@ public class SpannerTasks {
     }
     return results;
   }
+
+    public static void addIndexEntriesToPersistentStorage(List<EventResult> results) {
+    for (EventResult result: results) {
+    SpannerClient.getDatabaseClient()
+    .readWriteTransaction()
+    .run(
+        new TransactionCallable<Void>() {
+            @Override
+            public Void run(TransactionContext transaction) throws Exception {
+                String eventId = result.getEventId();
+                String keyword = result.getKeyword();
+                float ranking = result.getRanking();
+                Struct row = transaction.readRow("Keywords", Key.of(keyword), Collections.singleton("Name"));
+                String keywordId = UUID.randomUUID().toString();
+                if (row != null) {
+                    keywordId = row.getString(0);
+                }
+                transaction.buffer(
+                    Mutation.newInsertOrUpdateBuilder(KEYWORDS_TABLE)
+                          .set("KeywordID")
+                          .to(keywordId)
+                          .set("Name")
+                          .to(keyword)
+                          .build());
+                transaction.buffer(
+                    Mutation.newInsertBuilder(RESULTS_TABLE)
+                          .set("KeywordID")
+                          .to(keywordId)
+                          .set("EventID")
+                          .to(eventId)
+                          .set("Ranking")
+                          .to(ranking)
+                          .build());
+                return null;
+            }
+        });
+    }
+  }
+
+  public static List<Event> getEventResultsByKeyword(String keyword) {
+    List<Event> results = new ArrayList<Event>();
+    Statement statement =
+        Statement.of(
+            String.format(
+               "SELECT Events.EventID, Events.Name, Events.Description, Events.Labels, Events.Location, Events.Date, Events.Time, Events.Host "
+               + "FROM Results INNER JOIN Keywords ON Results.KeywordID = Keywords.KeywordID "
+               + "INNER JOIN Events ON Events.EventID = Results.EventID "
+               + "WHERE Keywords.Name=\"%s\" "
+               + "ORDER BY Results.Ranking DESC "
+               + "LIMIT 20;", keyword));
+    try (ResultSet resultSet =
+        SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
+      while (resultSet.next()) {
+        Event event =
+            new Event.Builder(
+                    /* name = */ resultSet.getString(1),
+                    /* description = */ resultSet.getString(2),
+                    /* labels = */ new HashSet<String>(resultSet.getStringList(3)),
+                    /* location = */ resultSet.getString(4),
+                    /* date = */ resultSet.getDate(5),
+                    /* time = */ resultSet.getString(6),
+                    /* host = */ shallowReadUserFromEmail(resultSet.getString(7)).get())
+                .setId(resultSet.getString(0))
+                .build();
+        results.add(event);
+      }
+    }
+    return results;
+  }
 }
