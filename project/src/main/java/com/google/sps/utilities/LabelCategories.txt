@@ -1,4 +1,3 @@
-/Adult
 /Arts & Entertainment
 /Arts & Entertainment/Celebrities & Entertainment News
 /Arts & Entertainment/Comics & Animation
@@ -40,8 +39,6 @@
 /Arts & Entertainment/Music & Audio/Soundtracks
 /Arts & Entertainment/Music & Audio/Urban & Hip-Hop
 /Arts & Entertainment/Music & Audio/World Music
-/Arts & Entertainment/Offbeat
-/Arts & Entertainment/Offbeat/Occult & Paranormal
 /Arts & Entertainment/Online Media
 /Arts & Entertainment/Online Media/Online Image Galleries
 /Arts & Entertainment/Performing Arts
@@ -76,7 +73,6 @@
 /Autos & Vehicles/Vehicle Codes & Driving Laws
 /Autos & Vehicles/Vehicle Codes & Driving Laws/Vehicle Licensing & Registration
 /Autos & Vehicles/Vehicle Parts & Services
-/Autos & Vehicles/Vehicle Parts & Services/Gas Prices & Vehicle Fueling
 /Autos & Vehicles/Vehicle Parts & Services/Vehicle Parts & Accessories
 /Autos & Vehicles/Vehicle Parts & Services/Vehicle Repair & Maintenance
 /Autos & Vehicles/Vehicle Shopping
@@ -131,9 +127,6 @@
 /Business & Industrial/Business Services/Office Services
 /Business & Industrial/Business Services/Office Supplies
 /Business & Industrial/Business Services/Writing & Editing Services
-/Business & Industrial/Chemicals Industry
-/Business & Industrial/Chemicals Industry/Cleaning Agents
-/Business & Industrial/Chemicals Industry/Plastics & Polymers
 /Business & Industrial/Construction & Maintenance
 /Business & Industrial/Construction & Maintenance/Building Materials & Supplies
 /Business & Industrial/Energy & Utilities
@@ -153,16 +146,6 @@
 /Business & Industrial/Retail Trade
 /Business & Industrial/Retail Trade/Retail Equipment & Technology
 /Business & Industrial/Small Business/MLM & Business Opportunities
-/Business & Industrial/Textiles & Nonwovens
-/Business & Industrial/Transportation & Logistics
-/Business & Industrial/Transportation & Logistics/Freight & Trucking
-/Business & Industrial/Transportation & Logistics/Mail & Package Delivery
-/Business & Industrial/Transportation & Logistics/Maritime Transport
-/Business & Industrial/Transportation & Logistics/Moving & Relocation
-/Business & Industrial/Transportation & Logistics/Packaging
-/Business & Industrial/Transportation & Logistics/Parking
-/Business & Industrial/Transportation & Logistics/Rail Transport
-/Business & Industrial/Transportation & Logistics/Urban Transport
 /Computers & Electronics
 /Computers & Electronics/CAD & CAM
 /Computers & Electronics/Computer Hardware
@@ -220,25 +203,10 @@
 /Finance/Investing/Stocks & Bonds
 /Food & Drink
 /Food & Drink/Beverages
-/Food & Drink/Beverages/Alcoholic Beverages
-/Food & Drink/Beverages/Coffee & Tea
-/Food & Drink/Beverages/Juice
-/Food & Drink/Beverages/Soft Drinks
 /Food & Drink/Cooking & Recipes
 /Food & Drink/Cooking & Recipes/BBQ & Grilling
-/Food & Drink/Cooking & Recipes/Desserts
-/Food & Drink/Cooking & Recipes/Soups & Stews
 /Food & Drink/Food
-/Food & Drink/Food & Grocery Retailers
-/Food & Drink/Food/Baked Goods
-/Food & Drink/Food/Breakfast Foods
-/Food & Drink/Food/Candy & Sweets
-/Food & Drink/Food/Grains & Pasta
-/Food & Drink/Food/Meat & Seafood
-/Food & Drink/Food/Snack Foods
 /Food & Drink/Restaurants
-/Food & Drink/Restaurants/Fast Food
-/Food & Drink/Restaurants/Pizzerias
 /Food & Drink/Restaurants/Restaurant Reviews & Reservations
 /Games
 /Games/Arcade & Coin-Op Games
@@ -273,23 +241,6 @@
 /Health
 /Health/Aging & Geriatrics
 /Health/Health Conditions
-/Health/Health Conditions/AIDS & HIV
-/Health/Health Conditions/Allergies
-/Health/Health Conditions/Arthritis
-/Health/Health Conditions/Cancer
-/Health/Health Conditions/Diabetes
-/Health/Health Conditions/Ear Nose & Throat
-/Health/Health Conditions/Eating Disorders
-/Health/Health Conditions/Endocrine Conditions
-/Health/Health Conditions/Genetic Disorders
-/Health/Health Conditions/Heart & Hypertension
-/Health/Health Conditions/Infectious Diseases
-/Health/Health Conditions/Neurological Conditions
-/Health/Health Conditions/Obesity
-/Health/Health Conditions/Pain Management
-/Health/Health Conditions/Respiratory Conditions
-/Health/Health Conditions/Skin Conditions
-/Health/Health Conditions/Sleep Disorders
 /Health/Health Education & Medical Training
 /Health/Health Foundations & Medical Research
 /Health/Medical Devices & Equipment
@@ -348,11 +299,6 @@
 /Home & Garden/Home & Interior Decor
 /Home & Garden/Home Appliances
 /Home & Garden/Home Furnishings
-/Home & Garden/Home Furnishings/Curtains & Window Treatments
-/Home & Garden/Home Furnishings/Kitchen & Dining Furniture
-/Home & Garden/Home Furnishings/Lamps & Lighting
-/Home & Garden/Home Furnishings/Living Room Furniture
-/Home & Garden/Home Furnishings/Rugs & Carpets
 /Home & Garden/Home Improvement
 /Home & Garden/Home Improvement/Construction & Power Tools
 /Home & Garden/Home Improvement/Doors & Windows
@@ -434,10 +380,6 @@
 /Online Communities/Dating & Personals/Personals
 /Online Communities/Dating & Personals/Photo Rating Sites
 /Online Communities/File Sharing & Hosting
-/Online Communities/Online Goodies
-/Online Communities/Online Goodies/Clip Art & Animated GIFs
-/Online Communities/Online Goodies/Skins, Themes & Wallpapers
-/Online Communities/Online Goodies/Social Network Apps & Add-Ons
 /Online Communities/Photo & Video Sharing
 /Online Communities/Photo & Video Sharing/Photo & Image Sharing
 /Online Communities/Social Networks
@@ -527,19 +469,6 @@
 /Shopping
 /Shopping/Antiques & Collectibles
 /Shopping/Apparel
-/Shopping/Apparel/Athletic Apparel
-/Shopping/Apparel/Casual Apparel
-/Shopping/Apparel/Children's Clothing
-/Shopping/Apparel/Clothing Accessories
-/Shopping/Apparel/Costumes
-/Shopping/Apparel/Eyewear
-/Shopping/Apparel/Footwear
-/Shopping/Apparel/Formal Wear
-/Shopping/Apparel/Headwear
-/Shopping/Apparel/Men's Clothing
-/Shopping/Apparel/Swimwear
-/Shopping/Apparel/Undergarments
-/Shopping/Apparel/Women's Clothing
 /Shopping/Auctions
 /Shopping/Classifieds
 /Shopping/Consumer Resources
