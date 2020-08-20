@@ -41,9 +41,17 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import java.util.stream.Collectors;
 import java.util.stream.Stream; 
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+// import org.easymock.EasyMock;
+import static org.easymock.EasyMock.expect;
+
 
 /** Unit tests for DatabaseWrapper functionality related to Event class. */
-@RunWith(JUnit4.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(EventCreationServlet.class)
 public class EventSpannerTasksTest {
   private static final String HOST_NAME = "Bob Smith";
   private static final String EMAIL = "bobsmith@example.com";
@@ -173,12 +181,19 @@ public class EventSpannerTasksTest {
     String text = new StringBuilder().append(EVENT_NAME).append(" ").append(DESCRIPTION_COOKING_CLASS).toString();
 
     //Mock NLP API response with real category response
-    NlpProcessing nlpProcessor = Mockito.mock(NlpProcessing.class);
-    Mockito.when(nlpProcessor.getNlp(text)).thenReturn(new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink")));
+    NlpProcessing nlpProcessor = PowerMock.createMock(NlpProcessing.class);
+    System.out.println("------------------------------------------------------- HERE 1");
+    // Mockito.when(nlpProcessor.getNlp(text)).thenReturn(new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink")));
+    EventCreationServlet eventServlet = new EventCreationServlet();
 
-    EventCreationServlet eventCreationServlet = Mockito.spy(EventCreationServlet.class);
-    eventCreationServlet.doPost(request, response);
+		PowerMock.expectNew(NlpProcessing.class).andReturn(nlpProcessor);
+		expect(nlpProcessor.getNlp(text)).andReturn(new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink")));
+    PowerMock.replay(nlpProcessor, NlpProcessing.class);
 
+    // Mockito.when(eventServlet.getNlpSuggestedFilters(Mockito.any(String.class), Mockito.any(ArrayList.class))).thenReturn(new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink")));
+    System.out.println("------------------------------------------------------- HERE 2");
+    eventServlet.doPost(request, response);
+    System.out.println("------------------------------------------------------- HERE 3");
 
     Event event =
         new Event.Builder(EVENT_NAME, DESCRIPTION_COOKING_CLASS, LABELS, LOCATION, DATE, TIME, HOST)
