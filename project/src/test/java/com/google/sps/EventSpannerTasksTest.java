@@ -173,12 +173,10 @@ public class EventSpannerTasksTest {
     String text = new StringBuilder().append(EVENT_NAME).append(" ").append(DESCRIPTION_COOKING_CLASS).toString();
 
     //Mock NLP API response with real category response
-    //NlpProcessing nlpProcessor = Mockito.mock(NlpProcessing.class);
-   //Mockito.when(nlpProcessor.getNlp(text)).thenReturn(new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink")));
-    EventCreationServlet eventServlet = new EventCreationServlet();
-
-    Mockito.when(eventServlet.getNlpSuggestedFilters(text, new ArrayList<String>())).thenReturn(new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink")));
-    eventServlet.doPost(request, response);
+    NlpProcessing nlpProcessor = Mockito.mock(NlpProcessing.class);
+    Mockito.when(nlpProcessor.getNlp(text)).thenReturn(new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink")));
+    EventCreationServlet e = Mockito.spy(EventCreationServlet.class);
+    e.doPost(request, response);
 
     Event event =
         new Event.Builder(EVENT_NAME, DESCRIPTION_COOKING_CLASS, LABELS, LOCATION, DATE, TIME, HOST)
