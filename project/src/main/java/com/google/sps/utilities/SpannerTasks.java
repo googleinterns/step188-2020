@@ -651,7 +651,8 @@ public class SpannerTasks {
   }
 
   /**
-   * Returns events by keyword in descending order of ranking.
+   * Returns events by keyword in descending order of ranking and includes
+   * only events that are in the future.
    *
    * @param keyword keyword to fetch event results for
    * @return list of events in descending order of ranking
@@ -664,7 +665,8 @@ public class SpannerTasks {
                 "SELECT Events.EventID, Events.Name, Events.Description, Events.Labels,"
                     + " Events.Location, Events.Date, Events.Time, Events.Host FROM Results INNER"
                     + " JOIN Keywords ON Results.KeywordID = Keywords.KeywordID INNER JOIN Events"
-                    + " ON Events.EventID = Results.EventID WHERE Keywords.Name=\"%s\" ORDER BY"
+                    + " ON Events.EventID = Results.EventID WHERE Keywords.Name=\"%s\""
+                    + " AND DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0 ORDER BY"
                     + " Results.Ranking DESC LIMIT 20;",
                 keyword));
     try (ResultSet resultSet =
