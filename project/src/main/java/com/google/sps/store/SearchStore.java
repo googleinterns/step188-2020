@@ -66,11 +66,11 @@ public class SearchStore {
 
     for (Keyword keyword : keywords) {
       float keywordRank = 0;
-      Float existingRanking = keywordToRanking.get(keyword.getName());
-      if (existingRanking != null) {
-        keywordRank += existingRanking;
+      String name = keyword.getName();
+      if (keywordToRanking.containsKey(name)) {
+        keywordRank += keywordToRanking.get(name);
       }
-      keywordRank = Float.sum(keywordRank, weight * keyword.getRelevance());
+      keywordRank += weight * keyword.getRelevance();
       keywordToRanking.put(keyword.getName(), keywordRank);
     }
   }

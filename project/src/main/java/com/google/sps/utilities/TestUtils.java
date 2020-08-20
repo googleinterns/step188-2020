@@ -19,7 +19,9 @@ public class TestUtils {
   private static final String DESCRIPTION = "Daily Team Sync";
   private static final Set<String> LABELS =
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Tech", "Work")));
+  private static final Date PAST_DATE = Date.fromYearMonthDay(1999, 9, 15);
   private static final String LOCATION = "Remote";
+  private static final Date FUTURE_DATE = Date.fromYearMonthDay(2021, 9, 15);
   private static final Date DATE = Date.fromYearMonthDay(2016, 9, 15);
   private static final String DATE_STRING = "09/15/2016";
   private static final String TIME = "3:00PM-5:00PM";
@@ -49,17 +51,32 @@ public class TestUtils {
   }
 
   /*
-   * Returns a new Event object with given parameters and performs the required
-   * setup for the event host.
+   * Returns a new Event object with arbitrary parameters and with date in the past.
+   */
+  public static Event newEventWithPastDate() {
+    return new Event.Builder(
+            EVENT_NAME,
+            DESCRIPTION,
+            LABELS,
+            LOCATION,
+            PAST_DATE,
+            TIME,
+            new User.Builder(NAME, EMAIL).build())
+        .build();
+  }
+
+  /*
+   * Returns a new Event object with given parameters for which date is in the future
+   * and performs the required setup for the event host.
    * @param eventId eventId to be used to create Event object
    * @param name name to be used to create Event object
    * @param description description to be used to create Event object
    * @return an event with given attributes and host inserted into database
    */
-  public static Event newEvent(String eventId, String name, String description) {
+  public static Event newEventWithFutureDate(String eventId, String name, String description) {
     User host = newUser();
     SpannerTasks.insertOrUpdateUser(host);
-    return new Event.Builder(name, description, LABELS, LOCATION, DATE, TIME, host)
+    return new Event.Builder(name, description, LABELS, LOCATION, FUTURE_DATE, TIME, host)
         .setId(eventId)
             .build();
   }
