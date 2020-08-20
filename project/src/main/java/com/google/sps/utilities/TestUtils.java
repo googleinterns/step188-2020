@@ -5,6 +5,7 @@ import com.google.sps.data.Event;
 import com.google.sps.data.OpportunitySignup;
 import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
+import com.google.sps.utilities.SpannerTasks;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -46,6 +47,29 @@ public class TestUtils {
             TIME,
             new User.Builder(NAME, EMAIL).build())
         .build();
+  }
+
+  /*
+   * Returns a new Event object with given parameters and performs the required
+   * setup for the event host.
+   * @param eventId eventId to be used to create Event object
+   * @param name name to be used to create Event object
+   * @param description description to be used to create Event object
+   * @return an event with given attributes and host inserted into database
+   */
+  public static Event newEvent(String eventId, String name, String description) {
+    User host = newUser();
+    SpannerTasks.insertOrUpdateUser(host);
+    return new Event.Builder(
+        name,
+        description,
+        LABELS,
+        LOCATION,
+        DATE,
+        TIME,
+        host)
+        .setId(eventId)
+    .build();
   }
 
   /*
