@@ -33,19 +33,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.json.JSONException;
+import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.skyscreamer.jsonassert.JSONAssert;
 import java.util.stream.Collectors;
 import java.util.stream.Stream; 
-import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-// import org.easymock.EasyMock;
 import static org.easymock.EasyMock.expect;
 
 
@@ -96,8 +95,7 @@ public class EventSpannerTasksTest {
     authenticationHelper.tearDown();
   }
 
-  /** Verify insertion of event in db and retrieval by id 
-   * Also tests behavior of EventCreationServlet doGet() where doGet request.getParameter("eventId") == event.getId() */
+  /** Verify insertion of event in db and retrieval by id */
   @Test
   public void eventInsertAndRetrieval() {
     Event event =
@@ -155,7 +153,8 @@ public class EventSpannerTasksTest {
           .setId(stringWriter.toString().trim().split("\"")[3]).build();
 
     try {
-      JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(), stringWriter.toString().trim(), /*assert order= */ false);
+      JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(),
+        stringWriter.toString().trim(), /*assert order= */ false);
     } catch (JSONException e) {
       System.out.println("JSON conversion failed.");
     }
@@ -183,17 +182,19 @@ public class EventSpannerTasksTest {
     //Mock NLP API response with real category response
     NlpProcessing nlpProcessor = PowerMock.createMock(NlpProcessing.class);
 	PowerMock.expectNew(NlpProcessing.class).andReturn(nlpProcessor);
-	expect(nlpProcessor.getNlp(text)).andReturn(new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink")));
+	expect(nlpProcessor.getNlp(text)).andReturn(
+      new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink")));
     PowerMock.replay(nlpProcessor, NlpProcessing.class);
     new EventCreationServlet().doPost(request, response);
     Event event =
-        new Event.Builder(EVENT_NAME, DESCRIPTION_COOKING_CLASS, LABELS, LOCATION, DATE, TIME, HOST)
-          .setLabels(new HashSet<>(Arrays.asList("Cooking", "Jobs and Education", "Food and Drink")))
-          .setId(stringWriter.toString().trim().split("\"")[3])
-          .build();
+      new Event.Builder(EVENT_NAME, DESCRIPTION_COOKING_CLASS, LABELS, LOCATION, DATE, TIME, HOST)
+        .setLabels(new HashSet<>(Arrays.asList("Cooking", "Jobs and Education", "Food and Drink")))
+        .setId(stringWriter.toString().trim().split("\"")[3])
+        .build();
 
     try {
-      JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(), stringWriter.toString().trim(), /*assert order= */ false);
+      JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(),
+        stringWriter.toString().trim(), /*assert order= */ false);
     } catch (JSONException e) {
       System.out.println("JSON conversion failed.");
     }
@@ -213,7 +214,8 @@ public class EventSpannerTasksTest {
     new EventCreationServlet().doGet(request, response);
 
     try {
-      JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(), stringWriter.toString().trim(), /*assert order= */ false);
+      JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(),
+        stringWriter.toString().trim(), /*assert order= */ false);
     } catch (JSONException e) {
       System.out.println("JSON conversion failed.");
     }

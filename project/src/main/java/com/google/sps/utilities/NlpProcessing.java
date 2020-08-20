@@ -1,18 +1,17 @@
 package com.google.sps.utilities;
 
-import java.util.ArrayList;
-import java.io.IOException;
-import com.google.sps.utilities.PrefilledInformationConstants;
-import com.google.cloud.language.v1.Document;
-import com.google.cloud.language.v1.LanguageServiceClient;
-import com.google.cloud.language.v1.ClassifyTextRequest;
-import com.google.cloud.language.v1.ClassifyTextResponse;
 import com.google.cloud.language.v1.ClassificationCategory;
+import com.google.cloud.language.v1.ClassifyTextResponse;
+import com.google.cloud.language.v1.ClassifyTextRequest;
+import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.Document.Type;
+import com.google.cloud.language.v1.LanguageServiceClient;
+import com.google.sps.utilities.PrefilledInformationConstants;
+import java.io.IOException;
+import java.util.ArrayList;
 
 /* Class containing NLP API Processing Results */
 public class NlpProcessing {
-
 /*
  * @param text: String of text that includes event name and description
  * @return categoryNames: returns selected names of labels that NLP API suggests for text
