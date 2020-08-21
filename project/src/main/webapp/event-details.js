@@ -1,11 +1,26 @@
 window.onload = async function onLoad() {
   getEventDetails();
   const eventHost = await getEventHost();
+  configureRegisterAndEditButtons(eventHost);
   const loginStatus = await getLoginStatus();
   populateVolunteeringOpportunitiesUI(eventHost, loginStatus);
   showCreateOpportunityLink(eventHost, loginStatus);
   setSignupAction();
 };
+
+/** 
+ * Adds the edit button for the host and removes the register button
+ * @param {Object} eventHost email of the host of the event
+ * @param {Object} loginStatus status of current user
+ */
+async function configureRegisterAndEditButtons(eventHost) {
+  const loggedInUserIsHost = await getLoggedInUserIsHost(eventHost);
+  if (loggedInUserIsHost) {
+    $('#signup-link').hide();
+  } else {
+    $('#edit-link').hide();
+  }
+}
 
 /**
  * Adds the volunteering opportunities to the event card and the dropdown
@@ -126,7 +141,7 @@ async function getEventDetails() {
   document.getElementById('location').innerHTML =
     `Location: ${data['location']}`;
   document.getElementById('time').innerHTML = `Time: ${data['time']}`;
-  document.getElementById('editLink').setAttribute('href', `/event-edit.html?eventId=${eventId}`);
+  document.getElementById('edit-link').setAttribute('href', `/event-edit.html?eventId=${eventId}`);
 }
 
 async function getEventHost() {
@@ -143,7 +158,7 @@ async function registerEvent(eventId, host) {
   const isHost = await getLoggedInUserIsHost(host);
   if (isHost) {
     $('.alert').slideDown();
-    document.getElementById('signup-link').hide();
+    $('#signup-link').hide();
   } else {
     document.getElementById('signup-link').setAttribute('href', '');
     document.getElementById('signup-link').innerHTML = 'You are signed up for this event.';
@@ -215,7 +230,7 @@ function showCreateOpportunityLink(eventHost, loginStatus) {
     $('#add-opportunity')
         .append(`<a href=
             /create-volunteering-opportunity.html?event-id=${eventId}>\
-                Add an volunteering opportunity</a>`);
+                Add a volunteering opportunity</a>`);
   }
 }
 
