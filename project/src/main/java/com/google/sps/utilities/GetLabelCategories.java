@@ -96,21 +96,38 @@ public class GetLabelCategories {
     Event event, Set<String> userLabels, Set<String> eventLabels) {
     Pair<Event, Integer> similarEvents = new Pair<Event, Integer>(null, 0);
     for (String label: userLabels) {
+        System.out.println("LABEL IS" + label);
       // If label is Category type, add event if it is in same Category
       // Eg. If label = Sports, add basketball, soccer, baseball events also
       if (categorytoSubcategoryMapping.containsKey(label)) {
+          System.out.println("SHOULDNT GO HERE");
         HashSet<String> sameCategoryLabels = new HashSet<String>(categorytoSubcategoryMapping.get(label));
         sameCategoryLabels.retainAll(eventLabels);
         if (!sameCategoryLabels.isEmpty()) {
+                          System.out.println("ChANGES SIMILAR 107");
           similarEvents = new Pair<Event, Integer>(event, similarEvents.getValue1() + sameCategoryLabels.size());
         }
       }
       // If label is subcategory type, add event if it is in larger category type
-      // Eg. If label = basketball, add Sports events also
       else if(subcategoryToCategoryMapping.containsKey(label)) {
+         System.out.println("SHOULD GO HERE");
         String category = subcategoryToCategoryMapping.get(label);
+        //add event if it is larger category type
+        // Eg. If label = basketball, add Sports events also
         if(eventLabels.contains(category)) {
+                          System.out.println("ChANGES SIMILAR 118");
           similarEvents = new Pair<Event, Integer>(event, similarEvents.getValue1() + 1);
+        }
+        //add event if in same larger category
+        // Eg. If label = basketball, also add baseball 
+        for (String eventLabel: eventLabels) {
+            System.out.println(eventLabel);
+            if (subcategoryToCategoryMapping.containsKey(eventLabel) ) {
+          if (subcategoryToCategoryMapping.get(eventLabel).equals(category)) {
+              System.out.println("ChANGES SIMILAR 125");
+            similarEvents = new Pair<Event, Integer>(event, similarEvents.getValue1() + 1);
+          }
+            }
         }
       }
     }
