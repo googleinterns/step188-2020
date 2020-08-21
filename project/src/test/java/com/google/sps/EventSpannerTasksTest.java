@@ -149,7 +149,7 @@ public class EventSpannerTasksTest {
     SpannerTasks.insertOrUpdateUser(HOST);
     setAuthenticationHelper();
     Mockito.when(request.getParameter("name")).thenReturn(EVENT_NAME);
-    Mockito.when(request.getParameter("date")).thenReturn(DATE_STRING);
+    Mockito.when(request.getParameter("date")).thenReturn(DATE_FUTURE_STRING);
     Mockito.when(request.getParameter("time")).thenReturn(TIME);
     Mockito.when(request.getParameter("description")).thenReturn(DESCRIPTION);
     Mockito.when(request.getParameter("location")).thenReturn(LOCATION);
@@ -157,7 +157,7 @@ public class EventSpannerTasksTest {
 
     new EventCreationServlet().doPost(request, response);
     Event event =
-        new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST)
+        new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE_FUTURE, TIME, HOST)
           .setId(stringWriter.toString().trim().split("\"")[3]).build();
 
     JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(),
@@ -173,7 +173,7 @@ public class EventSpannerTasksTest {
     SpannerTasks.insertOrUpdateUser(HOST);
     setAuthenticationHelper();
     Mockito.when(request.getParameter("name")).thenReturn(EVENT_NAME);
-    Mockito.when(request.getParameter("date")).thenReturn(DATE_STRING);
+    Mockito.when(request.getParameter("date")).thenReturn(DATE_FUTURE_STRING);
     Mockito.when(request.getParameter("time")).thenReturn(TIME);
     String DESCRIPTION_COOKING_CLASS =
     "Come learn to meal prep with us. This class will include prepping foods beyond sandwiches or salads."
@@ -190,13 +190,13 @@ public class EventSpannerTasksTest {
       new ArrayList<>(Arrays.asList("Jobs and Education", "Food and Drink")));
     PowerMock.replay(nlpProcessor, NlpProcessing.class);
     new EventCreationServlet().doPost(request, response);
-    Event event =
-      new Event.Builder(EVENT_NAME, DESCRIPTION_COOKING_CLASS, LABELS, LOCATION, DATE, TIME, HOST)
+    Event expectedEvent =
+      new Event.Builder(EVENT_NAME, DESCRIPTION_COOKING_CLASS, LABELS, LOCATION, DATE_FUTURE, TIME, HOST)
         .setLabels(new HashSet<>(Arrays.asList("Cooking", "Jobs and Education", "Food and Drink")))
         .setId(stringWriter.toString().trim().split("\"")[3])
         .build();
 
-    JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(),
+    JSONAssert.assertEquals(CommonUtils.convertToJson(expectedEvent).trim(),
       stringWriter.toString().trim(), /*assert order= */ false);
   }
   
@@ -205,15 +205,15 @@ public class EventSpannerTasksTest {
    */
   @Test
   public void testEventCreationDoGet() throws Exception, JSONException {
-    Event event =
+    Event expectedEvent =
         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE_FUTURE, TIME, HOST).build();
     SpannerTasks.insertOrUpdateUser(HOST);
-    SpannerTasks.insertorUpdateEvent(event);
-    Mockito.when(request.getParameter("eventId")).thenReturn(event.getId());
+    SpannerTasks.insertorUpdateEvent(expectedEvent);
+    Mockito.when(request.getParameter("eventId")).thenReturn(expectedEvent.getId());
 
     new EventCreationServlet().doGet(request, response);
 
-    JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(),
+    JSONAssert.assertEquals(CommonUtils.convertToJson(expectedEvent).trim(),
       stringWriter.toString().trim(), /*assert order= */ false);
   }
 
@@ -249,7 +249,7 @@ public class EventSpannerTasksTest {
     // User that is registering
     authenticationHelper.setEnvIsLoggedIn(true).setEnvEmail(EMAIL).setEnvAuthDomain("example.com");
     Event expectedEvent = 
-      new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST)
+      new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE_FUTURE, TIME, HOST)
         .setId(event.getId())
         .setAttendees(new HashSet<User>(Arrays.asList(ATTENDEE, HOST)))
         .build();
