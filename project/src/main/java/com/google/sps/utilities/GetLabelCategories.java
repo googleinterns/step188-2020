@@ -30,6 +30,9 @@ public class GetLabelCategories {
     createSubcategoryToCategoryLabelMapping();
   private static final HashMap<String, HashSet<String>> categorytoSubcategoryMapping =
     createCategorytoSubcategoryLabelMapping();
+  //indexes based on format of category nesting in LABEL_TEXT file
+  private static final int CATEGORY_INDEX = 1;
+  private static final int FIRST_SUBCATEGORY_INDEX = 2;
 
   /** 
    * Gets a list of two sets that hold how events are related based on labels
@@ -154,18 +157,20 @@ public class GetLabelCategories {
     }
     return similarEvents;
   }
-  
-  /** Creates Map<String, String> with Key: Subcategory, Value: Category 
+
+  /** 
+    * Creates Map<String, String> with Key: Subcategory, Value: Category 
     * based on text file
     */
   private static HashMap<String, String> createSubcategoryToCategoryLabelMapping()  {
     HashMap<String, String> valueToKeyMap = new HashMap<String, String>();
+
     try {
       Scanner textFile = new Scanner(new File(LABEL_TEXT));
       while(textFile.hasNextLine()) {
         String[] tokens = textFile.nextLine().split("/");
-	      for (int i = 2; i < tokens.length; i++) {
-	        valueToKeyMap.put(tokens[i], tokens[1]);
+	      for (int i = FIRST_SUBCATEGORY_INDEX; i < tokens.length; i++) {
+	        valueToKeyMap.put(tokens[i], tokens[CATEGORY_INDEX]);
 	      }
       }
     }
@@ -184,18 +189,18 @@ public class GetLabelCategories {
       Scanner textFile = new Scanner(new File(LABEL_TEXT));
       while(textFile.hasNextLine()) {
         String[] tokens = textFile.nextLine().split("/");
-        if (valueToKeyMap.get(tokens[1]) !=  null) {
+        if (valueToKeyMap.get(tokens[CATEGORY_INDEX]) !=  null) {
           HashSet<String> arraylist = valueToKeyMap.get(tokens[1]);
-          for (int i = 2; i < tokens.length; i++) {
+          for (int i = FIRST_SUBCATEGORY_INDEX; i < tokens.length; i++) {
             arraylist.add(tokens[i]);  
-	        }
-        valueToKeyMap.put(tokens[1], arraylist);
+	      }
+        valueToKeyMap.put(tokens[CATEGORY_INDEX], arraylist);
         } else {
           HashSet<String> arraylist = new HashSet<String>();
-	        for (int i = 2; i < tokens.length; i++) {
+	      for (int i = FIRST_SUBCATEGORY_INDEX; i < tokens.length; i++) {
             arraylist.add(tokens[i]);   
-	        }
-        valueToKeyMap.put(tokens[1], arraylist);
+	      }
+        valueToKeyMap.put(tokens[CATEGORY_INDEX], arraylist);
         }
       }
     } catch (FileNotFoundException e) {
