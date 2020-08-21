@@ -4,6 +4,7 @@ import com.google.cloud.Date;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
+import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.EventRanker;
 import com.google.sps.utilities.TestUtils;
 import java.io.IOException;
@@ -37,36 +38,13 @@ public final class EventRankerTest {
   private static User USER_NO_INTERESTS_OR_SKILLS;
   private static User USER;
   private static VolunteeringOpportunity OPPORTUNITY_MUSIC;
+  private static String NAME = "Bob Smith";
+  private static String EMAIL = "test@example.com";
+  private static String INVALID_EMAIL = "invalid@example.com";
 
   @BeforeClass
   public static void setUp() throws Exception {
-    EVENT_CONSERVATION_FOOD_MUSIC =
-        TestUtils.newEvent().toBuilder()
-            .setLabels(new HashSet<>(Arrays.asList(CONSERVATION, FOOD, MUSIC)))
-            .build();
-    EVENT_FOOD_MUSIC =
-        TestUtils.newEvent().toBuilder()
-            .setLabels(new HashSet<>(Arrays.asList(FOOD, MUSIC)))
-            .build();
-    EVENT_CONSERVATION_MUSIC =
-        TestUtils.newEvent().toBuilder()
-            .setLabels(new HashSet<>(Arrays.asList(CONSERVATION, MUSIC)))
-            .build();
-    EVENT_FOOD =
-        TestUtils.newEvent().toBuilder().setLabels(new HashSet<>(Arrays.asList(FOOD))).build();
-    EVENT_SEWING =
-        TestUtils.newEvent().toBuilder().setLabels(new HashSet<>(Arrays.asList(SEWING))).build();
-    USER_CONSERVATION_FOOD_MUSIC =
-        TestUtils.newUser().toBuilder()
-            .setInterests(INTERESTS_CONSERVATION_FOOD)
-            .setSkills(SKILLS_MUSIC)
-            .build();
-    USER_NO_INTERESTS_OR_SKILLS =
-        TestUtils.newUser().toBuilder().setInterests(new HashSet<>()).setSkills(new HashSet<>()).build();
-    USER = TestUtils.newUser();
-    OPPORTUNITY_MUSIC =
-        TestUtils.newVolunteeringOpportunityWithEventId(EVENT_FOOD_MUSIC.getId());
-    EVENT_FOOD_MUSIC = EVENT_FOOD_MUSIC.toBuilder().addOpportunity(OPPORTUNITY_MUSIC).build();
+    setUpEventsAndUsers();
   }
 
   @Test
@@ -156,5 +134,44 @@ public final class EventRankerTest {
                 date.getMonth() + 1,
                 date.getDayOfMonth()))
         .build();
+  }
+
+  private static void setUpEventsAndUsers() {
+    int currentYear = new java.util.Date().getYear();
+    USER_CONSERVATION_FOOD_MUSIC =
+        new User.Builder(NAME, EMAIL)
+            .setInterests(INTERESTS_CONSERVATION_FOOD)
+            .setSkills(SKILLS_MUSIC)
+            .build();
+    EVENT_CONSERVATION_FOOD_MUSIC =
+        TestUtils.newEvent().toBuilder()
+            .setHost(USER_CONSERVATION_FOOD_MUSIC)
+            .setLabels(new HashSet<>(Arrays.asList(CONSERVATION, FOOD, MUSIC)))
+            .build();
+    EVENT_FOOD_MUSIC =
+        TestUtils.newEvent().toBuilder()
+            .setHost(USER_CONSERVATION_FOOD_MUSIC)
+            .setLabels(new HashSet<>(Arrays.asList(FOOD, MUSIC)))
+            .setDate(Date.fromYearMonthDay(currentYear + 1, 1, 1))
+            .build();
+    EVENT_CONSERVATION_MUSIC =
+        TestUtils.newEvent().toBuilder()
+            .setHost(USER_CONSERVATION_FOOD_MUSIC)
+            .setLabels(new HashSet<>(Arrays.asList(CONSERVATION, MUSIC)))
+            .setDate(Date.fromYearMonthDay(currentYear + 2, 1, 1))
+            .build();
+    EVENT_FOOD =
+        TestUtils.newEvent().toBuilder()
+            .setHost(USER_CONSERVATION_FOOD_MUSIC)
+            .setLabels(new HashSet<>(Arrays.asList(FOOD)))
+            .build();
+    EVENT_SEWING =
+        TestUtils.newEvent().toBuilder()
+            .setHost(USER_CONSERVATION_FOOD_MUSIC)
+            .setLabels(new HashSet<>(Arrays.asList(SEWING)))
+            .build();
+    OPPORTUNITY_MUSIC =
+        TestUtils.newVolunteeringOpportunityWithEventId(EVENT_FOOD_MUSIC.getId());
+    EVENT_FOOD_MUSIC = EVENT_FOOD_MUSIC.toBuilder().addOpportunity(OPPORTUNITY_MUSIC).build();
   }
 }
