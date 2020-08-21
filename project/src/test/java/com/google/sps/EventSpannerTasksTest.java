@@ -47,7 +47,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream; 
 import static org.easymock.EasyMock.expect;
 
-
 /** Unit tests for DatabaseWrapper functionality related to Event class. */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(EventCreationServlet.class)
@@ -137,7 +136,7 @@ public class EventSpannerTasksTest {
    * getting back correct event out of db without going through NLP API
    */
   @Test
-  public void testEventCreationDoPost_noNlp() throws Exception {
+  public void testEventCreationDoPost_noNlp() throws Exception, JSONException {
     SpannerTasks.insertOrUpdateUser(HOST);
     setAuthenticationHelper();
     Mockito.when(request.getParameter("name")).thenReturn(EVENT_NAME);
@@ -152,12 +151,8 @@ public class EventSpannerTasksTest {
         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST)
           .setId(stringWriter.toString().trim().split("\"")[3]).build();
 
-    try {
-      JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(),
-        stringWriter.toString().trim(), /*assert order= */ false);
-    } catch (JSONException e) {
-      System.out.println("JSON conversion failed.");
-    }
+    JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(),
+      stringWriter.toString().trim(), /*assert order= */ false);
   }
 
   /**
@@ -165,7 +160,7 @@ public class EventSpannerTasksTest {
    * getting back correct event out of db with NLP API labeling suggestions
    */
   @Test
-  public void testEventCreationDoPost_Nlp() throws Exception {
+  public void testEventCreationDoPost_Nlp() throws Exception, JSONException {
     SpannerTasks.insertOrUpdateUser(HOST);
     setAuthenticationHelper();
     Mockito.when(request.getParameter("name")).thenReturn(EVENT_NAME);
@@ -192,19 +187,15 @@ public class EventSpannerTasksTest {
         .setId(stringWriter.toString().trim().split("\"")[3])
         .build();
 
-    try {
-      JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(),
-        stringWriter.toString().trim(), /*assert order= */ false);
-    } catch (JSONException e) {
-      System.out.println("JSON conversion failed.");
-    }
+    JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(),
+      stringWriter.toString().trim(), /*assert order= */ false);
   }
   
   /**
    * Verify getting event from valid id in /create-event doGet()
    */
   @Test
-  public void testEventCreationDoGet() throws Exception {
+  public void testEventCreationDoGet() throws Exception, JSONException {
     Event event =
         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
     SpannerTasks.insertOrUpdateUser(HOST);
@@ -213,12 +204,8 @@ public class EventSpannerTasksTest {
 
     new EventCreationServlet().doGet(request, response);
 
-    try {
-      JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(),
-        stringWriter.toString().trim(), /*assert order= */ false);
-    } catch (JSONException e) {
-      System.out.println("JSON conversion failed.");
-    }
+    JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(),
+      stringWriter.toString().trim(), /*assert order= */ false);
   }
 
   /**
