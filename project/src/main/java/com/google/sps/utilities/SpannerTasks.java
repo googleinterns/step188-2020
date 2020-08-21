@@ -627,7 +627,7 @@ public class SpannerTasks {
                   Struct row =
                       transaction.readRow(
                           KEYWORDS_TABLE, Key.of(keyword), Collections.singleton(NAME));
-                  String keywordId = row == null ? UUID.randomUUID().toString() : row.getString(0);
+                  String keywordId = UUID.randomUUID().toString();
                   if (row == null) {
                     transaction.buffer(
                         Mutation.newInsertBuilder(KEYWORDS_TABLE)
@@ -636,6 +636,8 @@ public class SpannerTasks {
                             .set(NAME)
                             .to(keyword)
                             .build());
+                  } else {
+                    keywordId = row.getString(0);
                   }
                   transaction.buffer(
                       Mutation.newInsertBuilder(RESULTS_TABLE)

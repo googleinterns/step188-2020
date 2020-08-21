@@ -115,6 +115,10 @@ public class SearchStoreTest {
     SpannerTestTasks.cleanup();
   }
 
+  /*
+   * Add event to the index and check that search for keyword not relevant
+   * in the event name or description does not appear in the index.
+   */
   @Test
   public void oneEvent_KeywordNotRelevantInEventNameOrDescription_noResultsReturned()
       throws IOException {

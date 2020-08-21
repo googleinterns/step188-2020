@@ -6,6 +6,7 @@ import com.google.sps.data.OpportunitySignup;
 import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,7 +22,7 @@ public class TestUtils {
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Tech", "Work")));
   private static final Date PAST_DATE = Date.fromYearMonthDay(1999, 9, 15);
   private static final String LOCATION = "Remote";
-  private static final Date FUTURE_DATE = Date.fromYearMonthDay(2021, 9, 15);
+  private static final Date FUTURE_DATE = Date.fromYearMonthDay(Calendar.getInstance().get(Calendar.YEAR) + 1, 9, 15);
   private static final Date DATE = Date.fromYearMonthDay(2016, 9, 15);
   private static final String DATE_STRING = "09/15/2016";
   private static final String TIME = "3:00PM-5:00PM";
