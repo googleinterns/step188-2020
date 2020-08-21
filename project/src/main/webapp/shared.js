@@ -151,10 +151,33 @@ function togglePrefilledInterests() {
   $('#prefilled-interests').toggle();
 }
 
+async function getRankedEvents() {
+  const response = await fetch('/event-ranker');
+  return response.json();
+}
+
+/** Take ranked events and assign them levels of detail */
+function getLodsFromEvents(rankedEvents) {
+  const levelOneCutoff = Math.floor(rankedEvents.length / 3);
+  const levelTwoCutoff = levelOneCutoff * 2;
+  let lodArrayOfMaps = [];
+  for (let i = 0; i < rankedEvents.length; i++) {
+    const event = rankedEvents[i];
+    let lodMap = {'event': event};
+    if (i <= levelOneCutoff) {
+      lodMap['lod'] = 3;
+    } else if (i <= levelTwoCutoff) {
+      lodMap['lod'] = 2;
+    } else {
+      lodMap['lod'] = 1;
+    }
+    lodArrayOfMaps.push(lodMap);
+  }
+  return lodArrayOfMaps;
+}
+
 /** Writes out relevant details to an event card with the appropriate lod (level of detail) */
-async function populateEventContainer(event, containerId, lod = 3) {
-  // TODO: lod will be calculated from the ranked events in the backend
-  lod = Math.floor(Math.random() * 3) + 1
+async function populateEventContainer(event, containerId, lod) {
   const eventCardAll = await $.get('event-card.html');
   const eventCard = $(eventCardAll).filter(`#event-card-level-${lod}`).get(0);
   const eventCardId = `event-${event.eventId}`;
@@ -213,14 +236,14 @@ function pickRandomColorClass() {
 /** Adds a hyperlink to the registration button of event card */
 function addLinkToRegister(eventCardId) {
   const eventId = eventCardId.substring(6);
-  $('#' + eventCardId + ' .btn-primary #event-register')
+  $('#' + eventCardId + ' div #event-register')
       .attr('href', `/event-details.html?eventId=${eventId}&register=true`);
 }
 
 /** Adds a hyperlink to the details button of event card */
 function addLinkToDetails(eventCardId) {
   const eventId = eventCardId.substring(6);
-  $('#' + eventCardId + ' .btn #event-details')
+  $('#' + eventCardId + ' div #event-details')
       .attr('href', `/event-details.html?eventId=${eventId}&register=false`);
 }
 
