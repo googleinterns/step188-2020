@@ -143,9 +143,9 @@ public class GetLabelCategories {
       Scanner textFile = new Scanner(new File(LABEL_TEXT));
       while(textFile.hasNextLine()) {
         String[] tokens = textFile.nextLine().split("/");
-		for (int i = 2; i < tokens.length; i++) {
-		  valueToKeyMap.put(tokens[i], tokens[1]);
-		}
+	for (int i = 2; i < tokens.length; i++) {
+	  valueToKeyMap.put(tokens[i], tokens[1]);
+	}
       }
     }
     catch (FileNotFoundException e) {
@@ -167,13 +167,13 @@ public class GetLabelCategories {
           HashSet<String> arraylist = valueToKeyMap.get(tokens[1]);
           for (int i = 2; i < tokens.length; i++) {
             arraylist.add(tokens[i]);  
-		  }
+	  }
         valueToKeyMap.put(tokens[1], arraylist);
         } else {
           HashSet<String> arraylist = new HashSet<String>();
-		  for (int i = 2; i < tokens.length; i++) {
+	  for (int i = 2; i < tokens.length; i++) {
             arraylist.add(tokens[i]);   
-		  }
+	  }
         valueToKeyMap.put(tokens[1], arraylist);
         }
       }
