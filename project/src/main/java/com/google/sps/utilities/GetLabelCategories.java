@@ -183,7 +183,7 @@ public class GetLabelCategories {
   /** Creates Map<String, HashSet<String>>  with Key: Category, Value: Set(Subcategories) 
     * based on text file
     */
-  private static HashMap<String, HashSet<String>> createCategorytoSubcategoryLabelMapping()  {
+  private static HashMap<String, HashSet<String>> createCategorytoSubcategoryLabelMapping() {
     HashMap<String, HashSet<String>> valueToKeyMap = new HashMap<String, HashSet<String>>();
     try {
       Scanner textFile = new Scanner(new File(LABEL_TEXT));
@@ -193,13 +193,13 @@ public class GetLabelCategories {
           HashSet<String> arraylist = valueToKeyMap.get(tokens[1]);
           for (int i = FIRST_SUBCATEGORY_INDEX; i < tokens.length; i++) {
             arraylist.add(tokens[i]);  
-	      }
+	        }
         valueToKeyMap.put(tokens[CATEGORY_INDEX], arraylist);
         } else {
           HashSet<String> arraylist = new HashSet<String>();
-	      for (int i = FIRST_SUBCATEGORY_INDEX; i < tokens.length; i++) {
+	        for (int i = FIRST_SUBCATEGORY_INDEX; i < tokens.length; i++) {
             arraylist.add(tokens[i]);   
-	      }
+	        }
         valueToKeyMap.put(tokens[CATEGORY_INDEX], arraylist);
         }
       }
