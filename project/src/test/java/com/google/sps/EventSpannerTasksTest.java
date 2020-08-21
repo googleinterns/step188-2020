@@ -148,7 +148,6 @@ public class EventSpannerTasksTest {
         .setEnvEmail(EMAIL)
         .setEnvAuthDomain("example.com");
 
-
     eventCreationServlet.doPost(request, response);
     // Get back Event posted in db
     Event returnedEvent = new Gson().fromJson(response.getContentAsString(), Event.class);
