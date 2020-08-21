@@ -15,8 +15,10 @@ import com.google.sps.utilities.SpannerTasks;
 import com.google.sps.utilities.SpannerTestTasks;
 import java.io.StringWriter;
 import java.io.PrintWriter;
+import com.google.sps.utilities.TestUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -64,8 +66,10 @@ public class EventSpannerTasksTest {
   private static final Set<String> LABELS =
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Tech", "Work")));
   private static final String LOCATION = "Remote";
-  private static final Date DATE = Date.fromYearMonthDay(2016, 9, 15);
-  private static final String DATE_STRING = "2016-09-15";
+  private static final Date DATE_PAST = Date.fromYearMonthDay(2016, 9, 15);
+  private static final Date DATE_FUTURE =
+      Date.fromYearMonthDay(Calendar.getInstance().get(Calendar.YEAR) + 1, 9, 15);
+  private static final String DATE_FUTURE_STRING = DATE_FUTURE.getYear() + "-09-15";
   private static final String TIME = "3:00PM-5:00PM";
   private HttpServletRequest request;
   private HttpServletResponse response;
@@ -102,7 +106,7 @@ public class EventSpannerTasksTest {
   @Test
   public void eventInsertAndRetrieval() {
     Event event =
-        new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
+        new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE_FUTURE, TIME, HOST).build();
     SpannerTasks.insertorUpdateEvent(event);
     Event dbEvent = SpannerTasks.getEventById(event.getId()).get();
 
@@ -110,7 +114,7 @@ public class EventSpannerTasksTest {
     Assert.assertEquals(dbEvent.getDescription(), DESCRIPTION);
     Assert.assertEquals(dbEvent.getLabels(), LABELS);
     Assert.assertEquals(dbEvent.getLocation(), LOCATION);
-    Assert.assertEquals(dbEvent.getDate(), DATE);
+    Assert.assertEquals(dbEvent.getDate(), DATE_FUTURE);
     Assert.assertEquals(dbEvent.getTime(), TIME);
     Assert.assertEquals(dbEvent.getHost().getName(), HOST_NAME);
     Assert.assertEquals(dbEvent.getHost().getEmail(), EMAIL);
@@ -120,9 +124,9 @@ public class EventSpannerTasksTest {
   @Test
   public void getEventsByIdTest() {
     Event event =
-        new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
+        new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE_FUTURE, TIME, HOST).build();
     Event otherEvent =
-        new Event.Builder(NEW_EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
+        new Event.Builder(NEW_EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE_FUTURE, TIME, HOST).build();
     SpannerTasks.insertorUpdateEvent(event);
     SpannerTasks.insertorUpdateEvent(otherEvent);
     Set<Event> actualEvents = new HashSet<>(Arrays.asList(event, otherEvent));
@@ -202,7 +206,7 @@ public class EventSpannerTasksTest {
   @Test
   public void testEventCreationDoGet() throws Exception, JSONException {
     Event event =
-        new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
+        new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE_FUTURE, TIME, HOST).build();
     SpannerTasks.insertOrUpdateUser(HOST);
     SpannerTasks.insertorUpdateEvent(event);
     Mockito.when(request.getParameter("eventId")).thenReturn(event.getId());
@@ -237,7 +241,7 @@ public class EventSpannerTasksTest {
     SpannerTasks.insertOrUpdateUser(HOST);
     SpannerTasks.insertOrUpdateUser(ATTENDEE);
     Event event =
-        new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST)
+        new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE_FUTURE, TIME, HOST)
             .setAttendees(new HashSet<User>(Arrays.asList(ATTENDEE)))
             .build();
     SpannerTasks.insertorUpdateEvent(event);
@@ -255,5 +259,23 @@ public class EventSpannerTasksTest {
     JSONAssert.assertEquals(CommonUtils.convertToJson(expectedEvent).trim(),
       stringWriter.toString().trim(), /*assert order= */ false);
   }
-}
 
+  /**
+   * Verify that events in the past are NOT retrieved
+   */
+  @Test
+  public void addFutureEventsOnly_noResultsReturned() throws Exception {
+    Event eventFuture = TestUtils.newEvent().toBuilder().setDate(DATE_FUTURE).build();
+    Event eventPast = TestUtils.newEvent().toBuilder().setDate(DATE_PAST).build();
+    SpannerTasks.insertorUpdateEvent(eventFuture);
+    SpannerTasks.insertorUpdateEvent(eventPast);
+
+    Set<Event> returnedEvents =
+        SpannerTasks.getEventsFromIds(Arrays.asList(eventFuture.getId(), eventPast.getId()));
+    
+    // Only the ID is compared because this unit test is not meant to check that all params were
+    // returned appropriately (previous unit tests do that)
+    Assert.assertEquals(1, returnedEvents.size());
+    Assert.assertEquals(eventFuture.getId(), returnedEvents.iterator().next().getId());
+  }
+}

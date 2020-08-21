@@ -1,3 +1,13 @@
+$(function() {
+  populateEvents();
+});
+
+async function populateEvents() {
+  const rankedEvents = await getRankedEvents();
+  const eventLevels = getLodsFromEvents(rankedEvents);
+  populateRankedEvents(eventLevels);
+}
+
 const filters = {}
 
 $(async function() {
@@ -22,13 +32,19 @@ async function getAllEvents() {
   return allEvents.json();
 }
 
+function populateRankedEvents(eventLevels) {
+  for (const eventMap of eventLevels) {
+    populateEventContainer(eventMap['event'], 'event-container', eventMap['lod']);
+  }
+}
+
 /**
  * Gets events by specified filter
  * @constructor
  * @param {string} labelParams - label params as selected by user
  */
 async function getFilteredEventsOnly(labelParams) {
-  const response = await fetch('/get-filtered-events?' + new URLSearchParams({'labelParams': labelParams}));
+  const response = await fetch('/filtered-events?' + new URLSearchParams({'labelParams': labelParams}));
   return response.json();
 }
 
