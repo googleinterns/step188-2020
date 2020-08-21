@@ -4,8 +4,8 @@ $(function() {
 
 async function populateEvents() {
   const rankedEvents = await getRankedEvents();
-  const lodMap = getLodsFromEvents(rankedEvents);
-  populateRankedEvents(lodMap);
+  const eventLevels = getLodsFromEvents(rankedEvents);
+  populateRankedEvents(eventLevels);
 }
 
 async function getAllEvents() {
@@ -13,8 +13,8 @@ async function getAllEvents() {
   return allEvents.json();
 }
 
-function populateRankedEvents(lodMap) {
-  for (const eventMap of lodMap) {
+function populateRankedEvents(eventLevels) {
+  for (const eventMap of eventLevels) {
     populateEventContainer(eventMap['event'], 'event-container', eventMap['lod']);
   }
 }
