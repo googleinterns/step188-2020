@@ -52,6 +52,7 @@ public class EventCreationServlet extends HttpServlet {
     String description = request.getParameter("description");
     String location = request.getParameter("location");
     Set<String> labels = new HashSet<>(CommonUtils.splitAsList(request.getParameter("interests")));
+    //TO DO: Add label category if the label is a subcategory
 
     User host = SpannerTasks.getLoggedInUser().get();
     Event event = new Event.Builder(name, description, labels, location, date, time, host).build();
