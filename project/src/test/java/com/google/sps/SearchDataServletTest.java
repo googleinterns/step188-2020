@@ -164,6 +164,10 @@ public class SearchDataServletTest {
     authenticationHelper.tearDown();
   }
 
+  /**
+   * Add event using eventCreationServlet and check that search for keyword using searchDataServlet
+   * not relevant in the event name or description does not appear in the results.
+   */
   @Test
   public void oneEvent_KeywordNotRelevantInEventTitleOrDescription_noResultsReturned()
       // ID         |   Title Has Games  |   Description Has Games
@@ -182,6 +186,10 @@ public class SearchDataServletTest {
         .thenReturn(KEYWORDS_NAME_WITHOUT_GAMES, KEYWORDS_DESCRIPTION_WITHOUT_GAMES);
 
     eventCreationServlet.doPost(postRequest, postResponse);
+    Event returnedEvent = new Gson().fromJson(postStringWriter.toString().trim(), Event.class);
+    Assert.assertEquals(returnedEvent.getName(), NAME_WITHOUT_GAMES);
+    Assert.assertEquals(returnedEvent.getDescription(), DESCRIPTION_WITHOUT_GAMES);
+
     searchDataServlet.doGet(getRequest, getResponse);
 
     Assert.assertEquals(CommonUtils.convertToJson(Arrays.asList()), getStringWriter.toString().trim());
@@ -215,7 +223,15 @@ public class SearchDataServletTest {
             KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
 
     eventCreationServlet.doPost(postRequest, postResponse);
+    Event returnedEvent = new Gson().fromJson(postStringWriter.toString().trim(), Event.class);
+    Assert.assertEquals(returnedEvent.getName(), NAME_WITHOUT_GAMES);
+    Assert.assertEquals(returnedEvent.getDescription(), DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE);
+
     eventCreationServlet.doPost(secondPostRequest, secondPostResponse);
+    Event secondReturnedEvent = new Gson().fromJson(secondPostStringWriter.toString().trim(), Event.class);
+    Assert.assertEquals(secondReturnedEvent.getName(), NAME_WITHOUT_GAMES);
+    Assert.assertEquals(secondReturnedEvent.getDescription(), DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
+
     searchDataServlet.doGet(getRequest, getResponse);
     Event[] actualResults = new Gson().fromJson(getStringWriter.toString().trim(), Event[].class);
     
