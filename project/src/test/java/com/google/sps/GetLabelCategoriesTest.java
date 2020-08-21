@@ -61,7 +61,7 @@ public final class GetLabelCategoriesTest {
     User user = TestUtils.newUserNoInterestSkills().toBuilder()
       .setInterests(USER_INTERESTS).setSkills(SKILLS).build();
     Set<Pair<Event, Integer>> expectedDirectMatches = 
-      new HashSet<>(Arrays.asList(new Pair<Event, Integer>(event, 2)));
+      new HashSet<>(Arrays.asList(new Pair<Event, Integer>(event, /*common labels=*/ 2)));
 
     ArrayList<Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
       new HashSet<>(Arrays.asList(event)), user);
@@ -83,7 +83,7 @@ public final class GetLabelCategoriesTest {
     User user = TestUtils.newUserNoInterestSkills().toBuilder()
       .setInterests(USER_INTERESTS).build();
     Set<Pair<Event, Integer>> expectedSimilarMatches = 
-      new HashSet<>(Arrays.asList(new Pair<Event, Integer>(event, 1)));
+      new HashSet<>(Arrays.asList(new Pair<Event, Integer>(event, /*common labels=*/ 1)));
 
     ArrayList<Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
       new HashSet<>(Arrays.asList(event, event2)), user);
@@ -105,7 +105,7 @@ public final class GetLabelCategoriesTest {
     User user = TestUtils.newUserNoInterestSkills().toBuilder()
       .setInterests(USER_INTERESTS).build();
     Set<Pair<Event, Integer>> expectedSimilarMatches = 
-      new HashSet<>(Arrays.asList(new Pair<Event, Integer>(event, 1)));
+      new HashSet<>(Arrays.asList(new Pair<Event, Integer>(event, /*common labels=*/ 1)));
 
     ArrayList<Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
       new HashSet<>(Arrays.asList(event, event2)), user);
@@ -127,7 +127,7 @@ public final class GetLabelCategoriesTest {
     User user = TestUtils.newUserNoInterestSkills().toBuilder()
       .setInterests(USER_INTERESTS).build();
     Set<Pair<Event, Integer>> expectedSimilarMatches = 
-      new HashSet<>(Arrays.asList(new Pair<Event, Integer>(event, 1)));
+      new HashSet<>(Arrays.asList(new Pair<Event, Integer>(event, /*common labels=*/ 1)));
 
     ArrayList<Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
       new HashSet<>(Arrays.asList(event, event2)), user);
@@ -154,9 +154,10 @@ public final class GetLabelCategoriesTest {
     User user = TestUtils.newUserNoInterestSkills().toBuilder()
       .setInterests(USER_INTERESTS).build();
     Set<Pair<Event, Integer>> expectedDirectMatches = 
-      new HashSet<>(Arrays.asList(new Pair<Event, Integer>(event, 1)));
+      new HashSet<>(Arrays.asList(new Pair<Event, Integer>(event, /*common labels=*/ 1)));
     Set<Pair<Event, Integer>> expectedSimilarMatches = 
-      new HashSet<>(Arrays.asList(new Pair<Event, Integer>(event, 1), new Pair<Event, Integer>(event2, 2), new Pair<Event, Integer>(event3, 1)));
+      new HashSet<>(Arrays.asList(new Pair<Event, Integer>(event, /*common labels=*/ 1),
+      new Pair<Event, Integer>(event2, /*common labels=*/ 2), new Pair<Event, Integer>(event3, /*common labels=*/ 1)));
 
     ArrayList<Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
       new HashSet<>(Arrays.asList(event, event2, event3, event4)), user);
