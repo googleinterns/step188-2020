@@ -115,7 +115,7 @@ public class SearchStoreTest {
     SpannerTestTasks.cleanup();
   }
 
-  /*
+  /**
    * Add event to the index and check that search for keyword not relevant
    * in the event name or description does not appear in the index.
    */
@@ -165,7 +165,8 @@ public class SearchStoreTest {
 
     Assert.assertEquals(EVENT_ID_1, actualResults.get(0).getId());
     Assert.assertEquals(NAME_WITH_GAMES, actualResults.get(0).getName());
-    Assert.assertEquals(DESCRIPTION_WITHOUT_GAMES, actualResults.get(0).getDescription());
+    Assert.assertEquals(
+        DESCRIPTION_WITHOUT_GAMES, actualResults.get(0).getDescription());
   }
 
   @Test
@@ -232,10 +233,12 @@ public class SearchStoreTest {
 
     Assert.assertEquals(EVENT_ID_2, actualResults.get(0).getId());
     Assert.assertEquals(NAME_WITHOUT_GAMES, actualResults.get(0).getName());
-    Assert.assertEquals(DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE, actualResults.get(0).getDescription());
+    Assert.assertEquals(
+        DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE, actualResults.get(0).getDescription());
     Assert.assertEquals(EVENT_ID_1, actualResults.get(1).getId());
     Assert.assertEquals(NAME_WITHOUT_GAMES, actualResults.get(1).getName());
-    Assert.assertEquals(DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE, actualResults.get(1).getDescription());
+    Assert.assertEquals(
+        DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE, actualResults.get(1).getDescription());
   }
 
   @Test
@@ -268,10 +271,12 @@ public class SearchStoreTest {
 
     Assert.assertEquals(EVENT_ID_2, actualResults.get(0).getId());
     Assert.assertEquals(NAME_WITH_GAMES, actualResults.get(0).getName());
-    Assert.assertEquals(DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE, actualResults.get(0).getDescription());
+    Assert.assertEquals(
+        DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE, actualResults.get(0).getDescription());
     Assert.assertEquals(EVENT_ID_1, actualResults.get(1).getId());
     Assert.assertEquals(NAME_WITHOUT_GAMES, actualResults.get(1).getName());
-    Assert.assertEquals(DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE, actualResults.get(1).getDescription());
+    Assert.assertEquals(
+        DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE, actualResults.get(1).getDescription());
   }
 
   @Test
@@ -303,10 +308,12 @@ public class SearchStoreTest {
 
     Assert.assertEquals(EVENT_ID_2, actualResults.get(0).getId());
     Assert.assertEquals(NAME_WITH_GAMES_IN_HIGH_RELEVANCE, actualResults.get(0).getName());
-    Assert.assertEquals(DESCRIPTION_WITH_GAMES, actualResults.get(0).getDescription());
+    Assert.assertEquals(
+        DESCRIPTION_WITH_GAMES, actualResults.get(0).getDescription());
     Assert.assertEquals(EVENT_ID_1, actualResults.get(1).getId());
     Assert.assertEquals(NAME_WITH_GAMES_IN_HIGH_RELEVANCE, actualResults.get(1).getName());
-    Assert.assertEquals(DESCRIPTION_WITHOUT_GAMES, actualResults.get(1).getDescription());
+    Assert.assertEquals(
+        DESCRIPTION_WITHOUT_GAMES, actualResults.get(1).getDescription());
   }
 
   @Test
@@ -339,9 +346,11 @@ public class SearchStoreTest {
 
     Assert.assertEquals(EVENT_ID_2, actualResults.get(0).getId());
     Assert.assertEquals(NAME_WITH_GAMES_IN_HIGH_RELEVANCE, actualResults.get(0).getName());
-    Assert.assertEquals(DESCRIPTION_WITHOUT_GAMES, actualResults.get(0).getDescription());
+    Assert.assertEquals(
+        DESCRIPTION_WITHOUT_GAMES, actualResults.get(0).getDescription());
     Assert.assertEquals(EVENT_ID_1, actualResults.get(1).getId());
     Assert.assertEquals(NAME_WITHOUT_GAMES, actualResults.get(1).getName());
-    Assert.assertEquals(DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE, actualResults.get(1).getDescription());
+    Assert.assertEquals(
+        DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE, actualResults.get(1).getDescription());
   }
 }
