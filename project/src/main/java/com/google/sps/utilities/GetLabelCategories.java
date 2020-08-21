@@ -51,27 +51,27 @@ public class GetLabelCategories {
       for (VolunteeringOpportunity opportunity : event.getOpportunities()) {
         labelsAndSkills.addAll(opportunity.getRequiredSkills());
       }
-
-      // Check direct matches
-      Optional<Pair<Event, Integer>> directMatchEventsOptional = 
-        getDirectMatchEvents(event, interestsAndSkills, labelsAndSkills );
-      if (directMatchEventsOptional.isPresent()) {
-        directMatchEvents.add(directMatchEventsOptional.get());
-      }
-
-      // Check similar events
-      Optional<Pair<Event, Integer>> similarLabelEventsOptional = 
-        getsimilarLabelEvents(event, interestsAndSkills, labelsAndSkills);
-      if (similarLabelEventsOptional.isPresent()) {
-        similarLabelEvents.add(similarLabelEventsOptional.get());
-      }
+      checkDirectMatches(directMatchEvents, event, interestsAndSkills, labelsAndSkills );
+      checkSimilarMatches(similarLabelEvents, event, interestsAndSkills, labelsAndSkills );
     }
-    ArrayList<Set<Pair<Event, Integer>>> list = new ArrayList<Set<Pair<Event, Integer>>>();
-    list.add(directMatchEvents);
-    list.add(similarLabelEvents);
-    return list;
+
+    ArrayList<Set<Pair<Event, Integer>>> directAndSimilarMatches = new ArrayList<Set<Pair<Event, Integer>>>();
+    directAndSimilarMatches.add(directMatchEvents);
+    directAndSimilarMatches.add(similarLabelEvents);
+    return directAndSimilarMatches;
   }
-  
+
+  // Checks to see if direct matches exist, if so, add to directMatchEvents
+  private void checkDirectMatches(
+      Set<Pair<Event, Integer>> directMatchEvents, Event event,
+      Set<String>  interestsAndSkills, Set<String>  labelsAndSkills) {
+    Optional<Pair<Event, Integer>> directMatchEventsOptional = 
+    getDirectMatchEvents(event, interestsAndSkills, labelsAndSkills );
+    if (directMatchEventsOptional.isPresent()) {
+      directMatchEvents.add(directMatchEventsOptional.get());
+    }
+  }
+
 /** 
  * @return Optional<Pair<Event, Integer>>:
  * Event: if labels are direct String matches to user labels, Integer: number of matching labels
@@ -87,6 +87,17 @@ public class GetLabelCategories {
     return Optional.empty();
   }
 
+  // Checks to see if similar matches exist, if so, add to directMatchEvents
+  private void checkSimilarMatches(
+      Set<Pair<Event, Integer>> similarLabelEvents, Event event,
+      Set<String>  interestsAndSkills, Set<String>  labelsAndSkills) {
+    Optional<Pair<Event, Integer>> similarLabelEventsOptional = 
+      getsimilarLabelEvents(event, interestsAndSkills, labelsAndSkills);
+    if (similarLabelEventsOptional.isPresent()) {
+      similarLabelEvents.add(similarLabelEventsOptional.get());
+    }
+  }
+
 /** 
  * @return Optional<Pair<Event, Integer>>:
  * Event: if labels are similar to user labels, Integer: number of matching labels
@@ -96,36 +107,15 @@ public class GetLabelCategories {
     Event event, Set<String> userLabels, Set<String> eventLabels) {
     Pair<Event, Integer> similarEvents = new Pair<Event, Integer>(null, 0);
     for (String label: userLabels) {
-
-      // Skip if direct match
-      if (eventLabels.contains(label)) {
+      if (eventLabels.contains(label)) { // If direct match
         continue;
       }
-      // If label is category, add events if in label subcategory
-      else if (categorytoSubcategoryMapping.containsKey(label)) {
-        HashSet<String> sameCategoryLabels = new HashSet<String>(categorytoSubcategoryMapping.get(label));
-        sameCategoryLabels.retainAll(eventLabels);
-        if (!sameCategoryLabels.isEmpty()) {
-          similarEvents = new Pair<Event, Integer>(event, similarEvents.getValue1() + sameCategoryLabels.size());
-        }
+      else if (categorytoSubcategoryMapping.containsKey(label)) { // If label is category
+        similarEvents = addLabelInSubcategory(label, event,  similarEvents, eventLabels);
       }
-      // If label is subcategory type, add event if it is in larger category type
-      else if(subcategoryToCategoryMapping.containsKey(label)) {
+      else if (subcategoryToCategoryMapping.containsKey(label)) { // If label is subcategory type
         String category = subcategoryToCategoryMapping.get(label);
-        //add event if it is larger category type
-        // Eg. If label = basketball, add Sports events also
-       if(eventLabels.contains(category)) {
-          similarEvents = new Pair<Event, Integer>(event, similarEvents.getValue1() + 1);
-        }
-        //add event if in same larger category
-        // Eg. If label = basketball, also add baseball 
-        for (String eventLabel: eventLabels) {
-          if (subcategoryToCategoryMapping.containsKey(eventLabel)  ) {
-            if (subcategoryToCategoryMapping.get(eventLabel).equals(category)) {
-              similarEvents = new Pair<Event, Integer>(event, similarEvents.getValue1() + 1);
-            }
-          }
-        }
+        similarEvents = addLabelInCategory(category, event,  similarEvents, eventLabels);
       }
     }
     if (similarEvents.getValue1().equals(0)){
@@ -134,6 +124,37 @@ public class GetLabelCategories {
     return Optional.of(similarEvents);
   }
 
+  // Add event if it is in larger category type
+  private Pair<Event, Integer> addLabelInCategory(String category, Event event,
+    Pair<Event, Integer> similarEvents,Set<String> eventLabels){
+    // Add event if it is larger category type
+    // Eg. If label = basketball, add Sports events also
+    if (eventLabels.contains(category)) {
+      similarEvents = new Pair<Event, Integer>(event, similarEvents.getValue1() + 1);
+    }
+    // Add event if in same larger category
+    // Eg. If label = basketball, also add baseball 
+    for (String eventLabel: eventLabels) {
+      if (subcategoryToCategoryMapping.containsKey(eventLabel)  ) {
+        if (subcategoryToCategoryMapping.get(eventLabel).equals(category)) {
+          similarEvents = new Pair<Event, Integer>(event, similarEvents.getValue1() + 1);
+        }
+        }
+      }
+    return similarEvents;
+  }
+
+  // Add events if in label subcategory
+  private Pair<Event, Integer> addLabelInSubcategory(String label, Event event,
+    Pair<Event, Integer>  similarEvents,Set<String> eventLabels) {
+    HashSet<String> sameCategoryLabels = new HashSet<String>(categorytoSubcategoryMapping.get(label));
+    sameCategoryLabels.retainAll(eventLabels);
+    if (!sameCategoryLabels.isEmpty()) {
+      return new Pair<Event, Integer>(event, similarEvents.getValue1() + sameCategoryLabels.size());
+    }
+    return similarEvents;
+  }
+  
   /** Creates Map<String, String> with Key: Subcategory, Value: Category 
     * based on text file
     */
