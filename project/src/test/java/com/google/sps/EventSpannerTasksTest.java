@@ -8,9 +8,11 @@ import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
 import com.google.sps.servlets.EventCreationServlet;
 import com.google.sps.servlets.EventRegistrationServlet;
+import com.google.sps.store.SearchStore;
 import com.google.sps.utilities.SpannerClient;
 import com.google.sps.utilities.SpannerTasks;
 import com.google.sps.utilities.SpannerTestTasks;
+import com.google.sps.utilities.KeywordHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,6 +37,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import java.util.stream.Collectors;
 import java.util.stream.Stream; 
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
+import org.mockito.Mockito;
 
 /** Unit tests for DatabaseWrapper functionality related to Event class. */
 @RunWith(JUnit4.class)
@@ -58,6 +61,8 @@ public class EventSpannerTasksTest {
   private MockHttpServletResponse response;
   private static final LocalServiceTestHelper authenticationHelper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig());
+  private EventCreationServlet eventCreationServlet;
+  private KeywordHelper mockKeywordHelper;
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -74,6 +79,10 @@ public class EventSpannerTasksTest {
     request = new MockHttpServletRequest();
     response = new MockHttpServletResponse();
     authenticationHelper.setUp();
+
+    eventCreationServlet = new EventCreationServlet();
+    mockKeywordHelper = Mockito.mock(KeywordHelper.class);
+    eventCreationServlet.setSearchStore(new SearchStore(mockKeywordHelper));
   } 
 
   @AfterClass
@@ -139,7 +148,8 @@ public class EventSpannerTasksTest {
         .setEnvEmail(EMAIL)
         .setEnvAuthDomain("example.com");
 
-    new EventCreationServlet().doPost(request, response);
+
+    eventCreationServlet.doPost(request, response);
     // Get back Event posted in db
     Event returnedEvent = new Gson().fromJson(response.getContentAsString(), Event.class);
 
