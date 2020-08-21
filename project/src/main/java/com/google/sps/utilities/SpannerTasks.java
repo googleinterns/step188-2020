@@ -128,7 +128,8 @@ public class SpannerTasks {
                 Statement.of(
                     String.format(
                         "SELECT EventID, Name, Description, Labels, Location, Date, Time,"
-                            + " Host, Opportunities, Attendees, Image FROM %s WHERE EventID in (%s)",
+                            + " Host, Opportunities, Attendees FROM %s WHERE EventID in (%s)"
+                            + " AND DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0",
                         EVENT_TABLE, eventIdsFormatted)));
     while (resultSet.next()) {
       events.add(shallowCreateEventFromDatabaseResult(resultSet));
@@ -156,7 +157,8 @@ public class SpannerTasks {
                 Statement.of(
                     String.format(
                         "SELECT EventId, Name, Description, Labels, Location, Date, Time, Host,"
-                            + " Opportunities, Attendees, Image FROM %s WHERE EventID='%s'",
+                            + " Opportunities, Attendees FROM %s WHERE EventID='%s'"
+                            + " AND DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0",
                         EVENT_TABLE, eventId)));
 
     /** If ID does not exist */
@@ -181,7 +183,8 @@ public class SpannerTasks {
                 Statement.of(
                     String.format(
                         "SELECT EventID, Name, Description, Labels, Location, Date, Time,"
-                            + " Host, Opportunities, Attendees, Image FROM %s",
+                            + " Host, Opportunities, Attendees FROM %s WHERE"
+                            + " DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0",
                         EVENT_TABLE)));
     while (resultSet.next()) {
       Event event = shallowCreateEventFromDatabaseResult(resultSet);
@@ -465,7 +468,8 @@ public class SpannerTasks {
           Statement.of(
               String.format(
                   "SELECT EventID, Name, Description, Labels, Location, Date, Time, Host, Attendees"
-                      + " FROM %s WHERE \"%s\" IN UNNEST(Labels)",
+                      + " FROM %s WHERE \"%s\" IN UNNEST(Labels)"
+                      + " AND DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0",
                       EVENT_TABLE, label));
       try (ResultSet resultSet =
           SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
