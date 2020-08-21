@@ -8,7 +8,6 @@ import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
 import com.google.sps.servlets.EventRankerServlet;
 import com.google.sps.utilities.CommonUtils;
-import com.google.sps.utilities.EventRanker;
 import com.google.sps.utilities.SpannerClient;
 import com.google.sps.utilities.SpannerTasks;
 import com.google.sps.utilities.SpannerTestTasks;
@@ -79,7 +78,7 @@ public final class EventRankerServletTest {
     for (Event event : events) {
       SpannerTasks.insertorUpdateEvent(event);
     }
-    List<Event> expectedEvents = EventRanker.rankEvents(USER, events);
+    List<Event> expectedEvents = Arrays.asList(EVENT_FOOD, EVENT_SEWING);
 
     new EventRankerServlet().doGet(request, response);
 
