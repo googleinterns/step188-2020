@@ -40,14 +40,17 @@ public class UserProfileUpdateServlet extends HttpServlet {
     } else {
       user = new User.Builder("anonymous", email).build();
       SpannerTasks.insertOrUpdateUser(user);
-
     }
+
     String userJson =
         Json.createObjectBuilder()
             .add(NAME, user.getName())
             .add(EMAIL, email)
             .add(INTERESTS, CommonUtils.createJsonArray(user.getInterests()))
             .add(SKILLS, CommonUtils.createJsonArray(user.getSkills()))
+            .add(EVENTS_HOSTING, CommonUtils.createJsonArray(new HashSet<>()))
+            .add(EVENTS_PARTICIPATING, CommonUtils.createJsonArray(new HashSet<>()))
+            .add(EVENTS_VOLUNTEERING, CommonUtils.createJsonArray(new HashSet<>()))
             .build()
             .toString();
     response.setContentType("application/json;charset=UTF-8");

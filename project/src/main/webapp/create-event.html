@@ -40,16 +40,15 @@
             <div class="input-group-prepend">
               <span class="input-group-text" id="basic-addon1">Name</span>
             </div>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Event Name"
-              id="name"
-              name="name"
-              required="required"
-              aria-describedby="basic-addon1"
-            />
-          </div>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Event Name"
+            id="name"
+            name="name"
+            aria-describedby="basic-addon1"
+            oninvalid="alert('You must input event name');"
+          />
         </div>
       </div>
       <br />
@@ -59,16 +58,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text" id="basic-addon1">Date</span>
             </div>
-              <input
-                type="text"
-                class="form-control"
-                placeholder="dd/MM/yyyy"
-                id="date"
-                name="date"
-                required="required"
-                pattern="^(0[1-9]|1[012])[- /.] (0[1-9]|[12][0-9]|3[01])[- /.] (19|20)\d\d$"
-                aria-describedby="basic-addon1"
-              />
+            <input type="date" id="date" name="date">
             </div>
           </div>
           <div class="col-lg-3">
@@ -111,14 +101,14 @@
         <div class="col-lg-12">
           <div class="input-group" id="interests-div">
             <div class="input-group-prepend">
-              <label class="input-group-text" for="interests">Interests</label>
+              <label class="input-group-text" for="interests">Labels</label>
             </div>
-            <select
+            <input
               id="interests"
               name="interests"
               data-role="tagsinput"
               multiple
-            ></select>
+            ></input>
             <button 
               type="button"
               class="btn btn-light prefilled-pick"
