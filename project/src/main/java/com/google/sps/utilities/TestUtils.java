@@ -48,6 +48,24 @@ public class TestUtils {
         .build();
   }
 
+  /* Returns a new Event object with no labels */
+  public static Event newEventNoLabels() {
+    return new Event.Builder(
+      EVENT_NAME,
+      DESCRIPTION,
+      new HashSet<>(),
+      LOCATION,
+      DATE,
+      TIME,
+      new User.Builder(NAME, EMAIL).build())
+    .build();
+  }
+
+  /** Returns a new User object with no interests or skills. */
+  public static User newUserNoInterestSkills() {
+    return new User.Builder(NAME, EMAIL).build();
+  }
+
   /*
    * Returns a new Event object with the given user as host.
    * @param user host to be used to create a Event object
