@@ -48,7 +48,7 @@ public class TestUtils {
         .build();
   }
 
-  /* Returns a new Event object with no labels */
+  /* Returns a new Event object git with no labels */
   public static Event newEventNoLabels() {
     return new Event.Builder(
       EVENT_NAME,
