@@ -38,3 +38,9 @@ html {
 .dropdown-toggle {
   border: solid 1px;
 }
+
+.filter-btn {
+  bottom: 0;  
+  position: fixed;
+  text-align: center;
+}

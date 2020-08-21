@@ -52,12 +52,12 @@ public class EventCreationServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String name = request.getParameter("name");
-    String[] parsedDate = request.getParameter("date").split("/");
+    String[] parsedDate = request.getParameter("date").split("-");
     Date date =
-         Date.fromYearMonthDay(
-            /*Year=*/ Integer.parseInt(parsedDate[2]),
-            /*Month=*/ Integer.parseInt(parsedDate[0]),
-            /*Day=*/ Integer.parseInt(parsedDate[1]));
+        Date.fromYearMonthDay(
+            /*Year=*/ Integer.parseInt(parsedDate[0]),
+            /*Month=*/ Integer.parseInt(parsedDate[1]),
+            /*Day=*/ Integer.parseInt(parsedDate[2]));
     String time = request.getParameter("time");
     String description = request.getParameter("description");
     String location = request.getParameter("location");

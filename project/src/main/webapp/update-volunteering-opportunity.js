@@ -1,25 +1,8 @@
 $(document).ready(function() {
-  addOnClickListener();
+  populatePrefilled('interests');
+  populatePrefilled('skills');
   getVolunteeringOpportunityFormData();
 });
-
-/**
- * Add on click listener for add row button.
- */
-function addOnClickListener() {
-  $('#add-row').click(function() {
-    $('#skills').append(getInputFieldForSkill());
-  });
-}
-
-/**
- * Return input string for skill input field.
- * @return {string}
- */
-function getInputFieldForSkill() {
-  return `<input type="text" name="required-skill" placeholder="Enter a skill" \
-  class="form-control" ></tr>`;
-}
 
 /**
  * Get the data for the volunteering opportunity ID in the URL.
@@ -37,11 +20,30 @@ async function getVolunteeringOpportunityFormData() {
   const numSpotsLeftInput = document.getElementById('num-spots-left');
   numSpotsLeftInput.value = opportunityData.numSpotsLeft;
 
-  const requiredSkillInput = document.getElementById('required-skill');
-  requiredSkillInput.value = opportunityData.requiredSkills.length ?
-      opportunityData.requiredSkills[0] : '';
+  populateExistingSkills(opportunityData.requiredSkills);
+
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const eventId = urlParams.get('event-id');
 
   const opportunityForm = document.getElementById('opportunity-form');
   opportunityForm.action =
-      `/volunteering-form-handler?opportunity-id=${opportunityId}`;
+      `/volunteering-form-handler?opportunity-id=${opportunityId}`
+          + `&event-id=${eventId}`;
+}
+
+/**
+ * Populates inputs with skill labels that already exist.
+ * @param {string[]} existingSkills skill labels for the opportunity.
+ */
+function populateExistingSkills(existingSkills) {
+  $('#skills').on('itemAdded', function() {
+    removeExtraInputs('#skills');
+  });
+
+  getTagsScriptWithCallback(function() {
+    for (const skill of existingSkills) {
+      $('#skills').tagsinput('add', skill);
+    }
+  });
 }

@@ -9,6 +9,7 @@ import com.google.sps.data.VolunteeringOpportunity;
 import com.google.sps.servlets.EventCreationServlet;
 import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.NlpProcessing;
+import com.google.sps.servlets.EventRegistrationServlet;
 import com.google.sps.utilities.SpannerClient;
 import com.google.sps.utilities.SpannerTasks;
 import com.google.sps.utilities.SpannerTestTasks;
@@ -54,6 +55,9 @@ public class EventSpannerTasksTest {
   private static final String HOST_NAME = "Bob Smith";
   private static final String EMAIL = "bobsmith@example.com";
   private static final User HOST = new User.Builder(HOST_NAME, EMAIL).build();
+  private static final String ATTENDEE_NAME = "New attendee";
+  private static final String ATTENDEE_EMAIL = "attendee@example.com";
+  private static final User ATTENDEE = new User.Builder(ATTENDEE_NAME, ATTENDEE_EMAIL).build();
   private static final String EVENT_NAME = "Team Meeting";
   private static final String NEW_EVENT_NAME = "Daily Team Meeting";
   private static final String DESCRIPTION = "Daily Team Sync";
@@ -61,7 +65,7 @@ public class EventSpannerTasksTest {
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Tech", "Work")));
   private static final String LOCATION = "Remote";
   private static final Date DATE = Date.fromYearMonthDay(2016, 9, 15);
-  private static final String DATE_STRING = "09/15/2016";
+  private static final String DATE_STRING = "2016-09-15";
   private static final String TIME = "3:00PM-5:00PM";
   private HttpServletRequest request;
   private HttpServletResponse response;
@@ -99,7 +103,6 @@ public class EventSpannerTasksTest {
   public void eventInsertAndRetrieval() {
     Event event =
         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
-    SpannerTasks.insertOrUpdateUser(HOST);
     SpannerTasks.insertorUpdateEvent(event);
     Event dbEvent = SpannerTasks.getEventById(event.getId()).get();
 
@@ -120,13 +123,15 @@ public class EventSpannerTasksTest {
         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
     Event otherEvent =
         new Event.Builder(NEW_EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST).build();
-    SpannerTasks.insertOrUpdateUser(HOST);
     SpannerTasks.insertorUpdateEvent(event);
     SpannerTasks.insertorUpdateEvent(otherEvent);
     Set<Event> actualEvents = new HashSet<>(Arrays.asList(event, otherEvent));
-    Set<Event> insertedEvents = SpannerTasks.getEventsFromIds(Arrays.asList(event.getId(), otherEvent.getId()));
-    List<Event> insertedEventsList = insertedEvents.stream().collect(Collectors.toCollection(ArrayList::new));
-    List<Event> actualEventsList = actualEvents.stream().collect(Collectors.toCollection(ArrayList::new));
+    Set<Event> insertedEvents =
+        SpannerTasks.getEventsFromIds(Arrays.asList(event.getId(), otherEvent.getId()));
+    List<Event> insertedEventsList =
+        insertedEvents.stream().collect(Collectors.toCollection(ArrayList::new));
+    List<Event> actualEventsList =
+        actualEvents.stream().collect(Collectors.toCollection(ArrayList::new));
 
     Assert.assertTrue(new ReflectionEquals(insertedEventsList,/*excludeFields= */ null).matches(actualEventsList));
   }
@@ -208,9 +213,7 @@ public class EventSpannerTasksTest {
       stringWriter.toString().trim(), /*assert order= */ false);
   }
 
-  /**
-   * Verify getting event from invalid id in /create-event doGet()
-   */
+  /** Verify getting event from invalid id in /create-event doGet() */
   @Test
   public void testEventCreationDoGetInvalid() throws Exception {
     Mockito.when(request.getParameter("eventId")).thenReturn(/*invalid id= */ "1");
@@ -223,6 +226,34 @@ public class EventSpannerTasksTest {
 
   private void setAuthenticationHelper() {
     authenticationHelper.setEnvIsLoggedIn(true).setEnvEmail(EMAIL).setEnvAuthDomain("example.com");
+  }
+
+  /**
+   * Verify registering for event that already has attendee
+   */
+  @Test
+  public void testEventRegistrationDoGet() throws Exception,JSONException {
+    //Existing event to sign up for
+    SpannerTasks.insertOrUpdateUser(HOST);
+    SpannerTasks.insertOrUpdateUser(ATTENDEE);
+    Event event =
+        new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST)
+            .setAttendees(new HashSet<User>(Arrays.asList(ATTENDEE)))
+            .build();
+    SpannerTasks.insertorUpdateEvent(event);
+    Mockito.when(request.getParameter("eventId")).thenReturn(event.getId()); 
+    // User that is registering
+    authenticationHelper.setEnvIsLoggedIn(true).setEnvEmail(EMAIL).setEnvAuthDomain("example.com");
+    Event expectedEvent = 
+      new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE, TIME, HOST)
+        .setId(event.getId())
+        .setAttendees(new HashSet<User>(Arrays.asList(ATTENDEE, HOST)))
+        .build();
+
+    new EventRegistrationServlet().doPost(request, response);
+
+    JSONAssert.assertEquals(CommonUtils.convertToJson(expectedEvent).trim(),
+      stringWriter.toString().trim(), /*assert order= */ false);
   }
 }
 

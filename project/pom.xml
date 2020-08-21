@@ -64,6 +64,46 @@
       <version>4.4.8</version>
     </dependency>
     <dependency>
+        <groupId>org.skyscreamer</groupId>
+        <artifactId>jsonassert</artifactId>
+        <version>1.5.0</version>
+    <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>23.6-jre</version>
+    </dependency> 
+    <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
+        <version>4.4.8</version>
+    </dependency>
+    <dependency>
+        <groupId>com.google.appengine</groupId>
+        <artifactId>appengine-testing</artifactId>
+        <version>1.9.64</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.google.appengine</groupId>
+        <artifactId>appengine-api-stubs</artifactId>
+        <version>1.9.64</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.google.appengine</groupId>
+        <artifactId>appengine-tools-sdk</artifactId>
+        <version>1.9.64</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.google.api-client</groupId>
+        <artifactId>google-api-client-appengine</artifactId>
+        <version>1.23.0</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <version>3.1.0</version>
@@ -150,6 +190,11 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
+      <version>4.4</version>
     </dependency>
     <dependency>
     <groupId>org.mockito</groupId>
