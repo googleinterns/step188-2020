@@ -1,12 +1,17 @@
 package com.google.sps;
 
 import com.google.sps.servlets.SearchDataServlet;
+import com.google.sps.data.EventResult;
+import com.google.sps.data.Keyword;
+import com.google.sps.store.SearchStore;
 import com.google.sps.utilities.CommonUtils;
+import com.google.sps.utilities.KeywordHelper;
 import com.google.sps.utilities.TestUtils;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.Assert;
@@ -28,24 +33,84 @@ public class SearchDataServletTest {
   private StringWriter stringWriter;
   private PrintWriter printWriter;
   private SearchDataServlet searchDataServlet;
+  private KeywordHelper mockKeywordHelper;
   private static final String EVENT_ID_1 = TestUtils.newRandomId();
   private static final String EVENT_ID_2 = TestUtils.newRandomId();
   private static final String PARAMETER_KEYWORD = "keyword";
   private static final String PARAMETER_EVENT_ID = "event-id";
+  private static final String PARAMETER_TITLE = "title";
   private static final String PARAMETER_DESCRIPTION = "description";
-  private static final String WALKING = "walking";
+  private static final String GAMES = "games";
   private static final String CAKE = "cake";
   private static final String MUSIC = "music";
-  private static final String DESCRIPTION_WITH_MUSIC_KEYWORD =
-      "This is an annual event held at the State Capitol to celebrate agricultures."
-          + "The event will include food, live music and educational booths with public speakers."
-          + "Event hours is 9 am- 1 pm. 2550 attendees anticipated.";
-  private static final String DESCRIPTION_WITH_WALKING_KEYWORD =
-    "Sutter Middle School will be walking to McKinley Park. 7th grade class and teachers"
-    + " will have a picnic, play games and eat lunch at the park and Clunie Pool.";
-  private static final String DESCRIPTION_WITHOUT_CAKE_KEYWORD =
-    "Sutter Middle School will be walking to McKinley Park. 7th grade class and teachers"
-    + " will have a picnic, play games and eat lunch at the park and Clunie Pool.";
+  private static final String TITLE_WITHOUT_GAMES = "End of the Year Picnic";
+  private static final String DESCRIPTION_WITHOUT_GAMES =
+      "Sutter Middle School will be walking to McKinley Park. 7th grade class and teachers will"
+          + " have a picnic and eat lunch at the park and Clunie Pool.";
+  private static final String TITLE_WITH_GAMES = "End of the Year Picnic and Games";
+  private static final String DESCRIPTION_WITH_GAMES =
+      "Sutter Middle School will be walking to McKinley Park. 7th grade class and teachers will"
+          + " have a picnic, play games, and eat lunch at the park and Clunie Pool.";
+  private static final ArrayList<Keyword> KEYWORDS_TITLE_WITHOUT_GAMES =
+      new ArrayList<Keyword>(Arrays.asList(new Keyword("picnic", 1.00f)));
+  private static final ArrayList<Keyword> KEYWORDS_TITLE_WITH_GAMES =
+      new ArrayList<Keyword>(
+          Arrays.asList(new Keyword("picnic", 0.56f), new Keyword(GAMES, 0.44f)));
+  private static final ArrayList<Keyword> KEYWORDS_DESCRIPTION_WITHOUT_GAMES =
+      new ArrayList<Keyword>(
+          Arrays.asList(
+              new Keyword("Sutter Middle School", 0.43f),
+              new Keyword("McKinley Park", 0.14f),
+              new Keyword("teachers", 0.10f),
+              new Keyword("class", 0.10f),
+              new Keyword("picnic", 0.09f),
+              new Keyword("park", 0.08f),
+              new Keyword("lunch", 0.03f),
+              new Keyword("Clunie Pool", 0.03f)));
+  private static final ArrayList<Keyword> KEYWORDS_DESCRIPTION_WITH_GAMES =
+      new ArrayList<Keyword>(
+          Arrays.asList(
+              new Keyword("Sutter Middle School", 0.41f),
+              new Keyword("McKinley Park", 0.13f),
+              new Keyword("teachers", 0.09f),
+              new Keyword("class", 0.09f),
+              new Keyword("picnic", 0.09f),
+              new Keyword("park", 0.08f),
+              new Keyword("lunch", 0.07f),
+              new Keyword(GAMES, 0.01f),
+              new Keyword("Clunie Pool", 0.03f)));
+  private static final String DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE =
+      "Sutter Middle School will be walking to McKinley Park. 7th grade class and teachers will"
+          + " have a picnic, play games, and eat lunch at the park and Clunie Pool.";
+  private static final ArrayList<Keyword> KEYWORDS_DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE =
+      new ArrayList<Keyword>(
+          Arrays.asList(
+              new Keyword("Sutter Middle School", 0.41f),
+              new Keyword("McKinley Park", 0.13f),
+              new Keyword("teachers", 0.09f),
+              new Keyword("class", 0.09f),
+              new Keyword("picnic", 0.09f),
+              new Keyword("park", 0.08f),
+              new Keyword("lunch", 0.07f),
+               new Keyword(GAMES, 0.01f),
+              new Keyword("Clunie Pool", 0.03f)));
+  private static final String DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE =
+      "Community harvest festival with games, food, and candy. Event open to the public 5pm-9pm."
+          + "Complete full closure for 700 attendees.";
+  private static final ArrayList<Keyword> KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE =
+      new ArrayList<Keyword>(
+          Arrays.asList(
+              new Keyword("Community Harvest festival", 0.40f),
+              new Keyword(GAMES, 0.17f),
+              new Keyword("food", 0.17f),
+              new Keyword("candy", 0.12f),
+              new Keyword("Event", 0.06f),
+              new Keyword("closure", 0.04f),
+              new Keyword("attendees", 0.03f)));
+  private static final String TITLE_WITH_GAMES_IN_HIGH_RELEVANCE =  "End of the Year Games and Picnic";
+  private static final ArrayList<Keyword> KEYWORDS_TITLE_WITH_GAMES_IN_HIGH_RELEVANCE =
+      new ArrayList<Keyword>(
+          Arrays.asList(new Keyword("picnic", 0.56f), new Keyword(GAMES, 0.17f)));
 
   @Before
   public void setUp() throws Exception {
@@ -63,15 +128,26 @@ public class SearchDataServletTest {
     Mockito.when(getResponse.getWriter()).thenReturn(printWriter);
 
     searchDataServlet = new SearchDataServlet();
+    mockKeywordHelper = Mockito.mock(KeywordHelper.class);
+    searchDataServlet.setSearchStore(new SearchStore(mockKeywordHelper));
   }
 
   @Test
-  public void addEventAndRetrieveResultsForKeywordNotInEventDescription_noResultsReturned()
+  public void oneEvent_KeywordNotRelevantInEventTitleOrDescription_noResultsReturned()
+      // ID         |   Title Has Games  |   Description Has Games
+      // 1                    No                  No
       throws IOException {
+    Mockito.when(postRequest.getParameter(PARAMETER_TITLE))
+        .thenReturn(TITLE_WITHOUT_GAMES);
     Mockito.when(postRequest.getParameter(PARAMETER_DESCRIPTION))
-        .thenReturn(DESCRIPTION_WITHOUT_CAKE_KEYWORD);
+        .thenReturn(DESCRIPTION_WITHOUT_GAMES);
     Mockito.when(postRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(EVENT_ID_1);
     Mockito.when(getRequest.getParameter(PARAMETER_KEYWORD)).thenReturn(CAKE);
+    
+    // On the first call the getKeywords for title, return empty list
+    // On the second call the getKeyords for description, return empty list
+    Mockito.when(mockKeywordHelper.getKeywords())
+        .thenReturn(KEYWORDS_TITLE_WITHOUT_GAMES, KEYWORDS_DESCRIPTION_WITHOUT_GAMES);
 
     searchDataServlet.doPost(postRequest, postResponse);
     searchDataServlet.doGet(getRequest, getResponse);
@@ -79,16 +155,75 @@ public class SearchDataServletTest {
     Assert.assertEquals(CommonUtils.convertToJson(Arrays.asList()), stringWriter.toString().trim());
   }
 
+
   @Test
-  public void addTwoEventsAndRetrieveResultsForKeywordInDescriptionOfTwoEvents_twoResultsReturned()
+  public void oneEvent_keywordRelevantInDescription_oneResultReturned()
       throws IOException {
+    // ID         |   Title Has Games  |   Description Has Games
+    // 1                  No                  Yes
+    Mockito.when(postRequest.getParameter(PARAMETER_TITLE)).thenReturn(TITLE_WITHOUT_GAMES);
+    Mockito.when(postRequest.getParameter(PARAMETER_DESCRIPTION))
+        .thenReturn(DESCRIPTION_WITH_GAMES);
+    Mockito.when(postRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(EVENT_ID_1);
+    Mockito.when(getRequest.getParameter(PARAMETER_KEYWORD)).thenReturn(GAMES);
+    Mockito.when(mockKeywordHelper.getKeywords())
+        .thenReturn(KEYWORDS_TITLE_WITHOUT_GAMES, KEYWORDS_DESCRIPTION_WITH_GAMES);
+
+    searchDataServlet.doPost(postRequest, postResponse);
+    searchDataServlet.doGet(getRequest, getResponse);
+
+    Assert.assertEquals(
+        CommonUtils.convertToJson(Arrays.asList(EVENT_ID_1)).trim(),
+        stringWriter.toString().trim());
+  }
+
+  @Test
+  public void oneEvent_keywordRelevantInTitle_oneResultReturned()
+      throws IOException {
+    // ID         |   Title Has Games  |   Description Has Games
+    // EVENT_ID_1          Yes                    No
+    Mockito.when(postRequest.getParameter(PARAMETER_TITLE))
+        .thenReturn(TITLE_WITH_GAMES);
+    Mockito.when(postRequest.getParameter(PARAMETER_DESCRIPTION))
+        .thenReturn(DESCRIPTION_WITHOUT_GAMES);
+    Mockito.when(postRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(EVENT_ID_1);
+    Mockito.when(getRequest.getParameter(PARAMETER_KEYWORD)).thenReturn(GAMES);
+
+    Mockito.when(mockKeywordHelper.getKeywords()).thenReturn(KEYWORDS_TITLE_WITH_GAMES, KEYWORDS_DESCRIPTION_WITHOUT_GAMES);
+
+    searchDataServlet.doPost(postRequest, postResponse);
+    searchDataServlet.doGet(getRequest, getResponse);
+
+    Assert.assertEquals(
+        CommonUtils.convertToJson(Arrays.asList(EVENT_ID_1)).trim(),
+        stringWriter.toString().trim());
+  }
+
+  @Test
+  public void twoEvents_keywordRelevantInDescriptionOfBothEvents_twoResultsReturned()
+      throws IOException {
+    // ID         |   Title Has Games  |   Description Has Games
+    // 1                   No                    Yes
+    // 2                   No                    Yes
     Mockito.when(postRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(EVENT_ID_1);
     Mockito.when(postRequest.getParameter(PARAMETER_DESCRIPTION))
-        .thenReturn(DESCRIPTION_WITH_MUSIC_KEYWORD);
+        .thenReturn(TITLE_WITHOUT_GAMES);
+    Mockito.when(postRequest.getParameter(PARAMETER_DESCRIPTION))
+        .thenReturn(DESCRIPTION_WITH_GAMES);
     Mockito.when(secondPostRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(EVENT_ID_2);
     Mockito.when(secondPostRequest.getParameter(PARAMETER_DESCRIPTION))
-        .thenReturn(DESCRIPTION_WITH_MUSIC_KEYWORD);
-    Mockito.when(getRequest.getParameter(PARAMETER_KEYWORD)).thenReturn(MUSIC);
+        .thenReturn(TITLE_WITHOUT_GAMES);
+    Mockito.when(secondPostRequest.getParameter(PARAMETER_DESCRIPTION))
+        .thenReturn(DESCRIPTION_WITH_GAMES);
+    Mockito.when(getRequest.getParameter(PARAMETER_KEYWORD)).thenReturn(GAMES);
+    Mockito.when(mockKeywordHelper.getKeywords())
+        .thenReturn(
+            // Keywords for Event with ID 1
+            KEYWORDS_TITLE_WITHOUT_GAMES,
+            KEYWORDS_DESCRIPTION_WITH_GAMES,
+            // Keywords for Event with ID 2
+            KEYWORDS_TITLE_WITHOUT_GAMES,
+            KEYWORDS_DESCRIPTION_WITH_GAMES);
 
     searchDataServlet.doPost(postRequest, postResponse);
     searchDataServlet.doPost(secondPostRequest, secondPostResponse);
@@ -96,6 +231,114 @@ public class SearchDataServletTest {
 
     Assert.assertEquals(
         CommonUtils.convertToJson(Arrays.asList(EVENT_ID_1, EVENT_ID_2)),
+        stringWriter.toString().trim());
+  }
+
+  @Test
+  public void 
+      twoEvents_firstWithKeywordLowRelevanceInDesc_secondWithKeywordHighRelevanceInDesc_returnsSecondEventBeforeFirst()
+          throws IOException {
+    // ID         |   Title Has Games    |   Description Has Games
+    // 1          |        No            |       Yes - HIGH relevance
+    // 2          |        No            |       Yes - LOW relevance
+    Mockito.when(postRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(EVENT_ID_1);
+    Mockito.when(postRequest.getParameter(PARAMETER_DESCRIPTION))
+        .thenReturn(TITLE_WITHOUT_GAMES);
+    Mockito.when(postRequest.getParameter(PARAMETER_DESCRIPTION))
+        .thenReturn(DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE);
+    Mockito.when(secondPostRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(EVENT_ID_2);
+    Mockito.when(secondPostRequest.getParameter(PARAMETER_DESCRIPTION))
+        .thenReturn(TITLE_WITHOUT_GAMES);
+    Mockito.when(secondPostRequest.getParameter(PARAMETER_DESCRIPTION))
+        .thenReturn(DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
+    Mockito.when(getRequest.getParameter(PARAMETER_KEYWORD)).thenReturn(GAMES);
+    Mockito.when(mockKeywordHelper.getKeywords()).thenReturn(
+      // Keywords for Event with ID 1
+      KEYWORDS_TITLE_WITHOUT_GAMES,
+      KEYWORDS_DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE,
+      // Keywords for Event with ID 2
+      KEYWORDS_TITLE_WITHOUT_GAMES,
+      KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE
+    );
+
+    searchDataServlet.doPost(postRequest, postResponse);
+    searchDataServlet.doPost(secondPostRequest, secondPostResponse);
+    searchDataServlet.doGet(getRequest, getResponse);
+
+    Assert.assertEquals(
+        CommonUtils.convertToJson(Arrays.asList(EVENT_ID_2, EVENT_ID_1)),
+        stringWriter.toString().trim());
+  }
+
+  @Test
+  public void
+      twoEvents_firstRelevanceInTitle_secondHighRelevanceInDescriptionAndRelevanceInTitle_returnsSecondEventBeforeFirst()
+          throws IOException {
+    // ID         |   Title Has Games    |   Description Has Games
+    // 1          |        No            |     Yes - HIGH relevance
+    // 2          |        Yes           |    Yes - HIGH relevance
+    Mockito.when(postRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(EVENT_ID_1);
+    Mockito.when(postRequest.getParameter(PARAMETER_DESCRIPTION))
+        .thenReturn(TITLE_WITHOUT_GAMES);
+    Mockito.when(postRequest.getParameter(PARAMETER_DESCRIPTION))
+        .thenReturn(DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
+    Mockito.when(secondPostRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(EVENT_ID_2);
+    Mockito.when(secondPostRequest.getParameter(PARAMETER_DESCRIPTION))
+        .thenReturn(TITLE_WITH_GAMES);
+    Mockito.when(secondPostRequest.getParameter(PARAMETER_DESCRIPTION))
+        .thenReturn(DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
+    Mockito.when(getRequest.getParameter(PARAMETER_KEYWORD)).thenReturn(GAMES);
+
+    Mockito.when(mockKeywordHelper.getKeywords()).thenReturn(
+      // Keywords for Event with ID 1
+      KEYWORDS_TITLE_WITHOUT_GAMES,
+      KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE,
+      // Keywords for Event with ID 2
+      KEYWORDS_TITLE_WITH_GAMES,
+      KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE
+    );
+
+    searchDataServlet.doPost(postRequest, postResponse);
+    searchDataServlet.doPost(secondPostRequest, secondPostResponse);
+    searchDataServlet.doGet(getRequest, getResponse);
+
+    Assert.assertEquals(
+        CommonUtils.convertToJson(Arrays.asList(EVENT_ID_2, EVENT_ID_1)),
+        stringWriter.toString().trim());
+  }
+
+  @Test
+  public void addTwoEvents_firstRelevanceInDescription_secondSameRelevanceInTitle_returnsSecondEventBeforeFirst()
+      throws IOException {
+    // ID         |   Title Has Games                    |   Description Has Games
+    // 1          |        No                            |     Yes - HIGH relevance
+    // 2          |        Yes - HIGH relevance          |     No
+    Mockito.when(postRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(EVENT_ID_1);
+    Mockito.when(postRequest.getParameter(PARAMETER_DESCRIPTION))
+        .thenReturn(TITLE_WITHOUT_GAMES);
+    Mockito.when(postRequest.getParameter(PARAMETER_DESCRIPTION))
+        .thenReturn(DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
+    Mockito.when(secondPostRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(EVENT_ID_2);
+    Mockito.when(secondPostRequest.getParameter(PARAMETER_DESCRIPTION))
+        .thenReturn(TITLE_WITH_GAMES_IN_HIGH_RELEVANCE);
+    Mockito.when(secondPostRequest.getParameter(PARAMETER_DESCRIPTION))
+        .thenReturn(DESCRIPTION_WITHOUT_GAMES);
+    Mockito.when(getRequest.getParameter(PARAMETER_KEYWORD)).thenReturn(GAMES);
+    Mockito.when(mockKeywordHelper.getKeywords()).thenReturn(
+      // Keywords for Event with ID 1
+      KEYWORDS_TITLE_WITHOUT_GAMES,
+      KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE,
+      // Keywords for Event with ID 2
+      KEYWORDS_TITLE_WITH_GAMES_IN_HIGH_RELEVANCE,
+      KEYWORDS_DESCRIPTION_WITHOUT_GAMES
+    );
+
+    searchDataServlet.doPost(postRequest, postResponse);
+    searchDataServlet.doPost(secondPostRequest, secondPostResponse);
+    searchDataServlet.doGet(getRequest, getResponse);
+
+    Assert.assertEquals(
+        CommonUtils.convertToJson(Arrays.asList(EVENT_ID_2, EVENT_ID_1)),
         stringWriter.toString().trim());
   }
 
