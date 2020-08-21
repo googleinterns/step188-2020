@@ -119,28 +119,28 @@ public final class GetLabelCategoriesTest {
 //     Assert.assertEquals(expectedSimilarMatches, similarMatches);
 //   }
 
-//   @Test
-//   /* Test for similar matches via category relations, (basketball and soccer are both sports) */
-//   public void similarMatchOnly_SubcategoryToSubcategory() throws FileNotFoundException {
-//     Set<String> EVENT_LABELS = new HashSet<>(Arrays.asList("Soccer", "Robotics"));
-//     Set<String> USER_INTERESTS = new HashSet<>(Arrays.asList("Basketball"));
-//     Set<String> IRRELEVANT_LABELS = new HashSet<>(Arrays.asList("Cooking"));
-//     Event event = TestUtils.newEventNoLabels().toBuilder().setLabels(EVENT_LABELS).build();
-//     //Event event2 = TestUtils.newEventNoLabels().toBuilder().setLabels(IRRELEVANT_LABELS).build();
-//     Event event3 = TestUtils.newEventNoLabels();
-//     User user = TestUtils.newUserNoInterestSkills().toBuilder()
-//       .setInterests(USER_INTERESTS).build();
-//     Set<Pair<Event, Integer>> expectedSimilarMatches = 
-//       new HashSet<>(Arrays.asList(new Pair<Event, Integer>(event, 1)));
+  @Test
+  /* Test for similar matches via category relations, (basketball and soccer are both sports) */
+  public void similarMatchOnly_SubcategoryToSubcategory() throws FileNotFoundException {
+    Set<String> EVENT_LABELS = new HashSet<>(Arrays.asList("Soccer", "Robotics"));
+    Set<String> USER_INTERESTS = new HashSet<>(Arrays.asList("Basketball"));
+    Set<String> IRRELEVANT_LABELS = new HashSet<>(Arrays.asList("Cooking"));
+    Event event = TestUtils.newEventNoLabels().toBuilder().setLabels(EVENT_LABELS).build();
+    //Event event2 = TestUtils.newEventNoLabels().toBuilder().setLabels(IRRELEVANT_LABELS).build();
+    Event event3 = TestUtils.newEventNoLabels();
+    User user = TestUtils.newUserNoInterestSkills().toBuilder()
+      .setInterests(USER_INTERESTS).build();
+    Set<Pair<Event, Integer>> expectedSimilarMatches = 
+      new HashSet<>(Arrays.asList(new Pair<Event, Integer>(event, 1)));
 
-//     ArrayList<Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
-//       new HashSet<>(Arrays.asList(event, event3)), user);
-//     Set<Pair<Event, Integer>> directMatches = matches.get(0);
-//     Set<Pair<Event, Integer>> similarMatches = matches.get(1);
+    ArrayList<Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
+      new HashSet<>(Arrays.asList(event, event3)), user);
+    Set<Pair<Event, Integer>> directMatches = matches.get(0);
+    Set<Pair<Event, Integer>> similarMatches = matches.get(1);
 
-//     Assert.assertEquals(new HashSet<>(), directMatches);
-//     Assert.assertEquals(expectedSimilarMatches, similarMatches);
-//   }
+    Assert.assertEquals(new HashSet<>(), directMatches);
+    Assert.assertEquals(expectedSimilarMatches, similarMatches);
+  }
 
 //   @Test
 //   public void directAndSoftMatch() throws FileNotFoundException {

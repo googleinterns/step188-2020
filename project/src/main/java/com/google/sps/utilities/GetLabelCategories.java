@@ -122,9 +122,12 @@ public class GetLabelCategories {
         // Eg. If label = basketball, also add baseball 
         for (String eventLabel: eventLabels) {
             System.out.println(eventLabel);
-            if (subcategoryToCategoryMapping.containsKey(eventLabel) ) {
+            //category science, 
+            if (subcategoryToCategoryMapping.containsKey(eventLabel) &&  ) {
           if (subcategoryToCategoryMapping.get(eventLabel).equals(category)) {
-              System.out.println("ChANGES SIMILAR 125");
+              System.out.println("ChANGES SIMILAR 125, shouldnt go here should be ");
+              System.out.println(subcategoryToCategoryMapping.get(eventLabel));
+              System.out.println(category);
             similarEvents = new Pair<Event, Integer>(event, similarEvents.getValue1() + 1);
           }
             }
