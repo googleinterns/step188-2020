@@ -1,12 +1,22 @@
 package com.google.sps.servlets;
 
 import com.google.cloud.Date;
+import com.google.cloud.language.v1.ClassificationCategory;
+import com.google.cloud.language.v1.ClassifyTextResponse;
+import com.google.cloud.language.v1.ClassifyTextRequest;
+import com.google.cloud.language.v1.Document;
+import com.google.cloud.language.v1.Document.Type;
+import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.gson.Gson;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
 import com.google.sps.utilities.CommonUtils;
+import com.google.sps.utilities.NlpProcessing;
+import com.google.sps.utilities.PrefilledInformationConstants;
 import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
+import java.lang.StringBuilder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -38,7 +48,7 @@ public class EventCreationServlet extends HttpServlet {
     }
   }
 
-  /** Posts new created event to database and redirects to page with created event details */
+  /** Posts newly created event to database with NLP suggested labels and redirects to page with created event details*/
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String name = request.getParameter("name");
@@ -51,7 +61,12 @@ public class EventCreationServlet extends HttpServlet {
     String time = request.getParameter("time");
     String description = request.getParameter("description");
     String location = request.getParameter("location");
-    Set<String> labels = new HashSet<>(CommonUtils.splitAsList(request.getParameter("interests")));
+    String text = new StringBuilder().append(name).append(" ").append(description).toString();
+
+    // Add user inputted and NLP suggested labels together
+    Set<String> labels = new HashSet<>();
+    labels.addAll(new HashSet<>(getNlpSuggestedFilters(text, new ArrayList<String>())));
+    labels.addAll(new HashSet<>(splitAsList(request.getParameter("interests"))));
 
     User host = SpannerTasks.getLoggedInUser().get();
     Event event = new Event.Builder(name, description, labels, location, date, time, host).build();
@@ -61,5 +76,21 @@ public class EventCreationServlet extends HttpServlet {
     response.sendRedirect(redirectUrl);
     // Event in database
     response.getWriter().println(CommonUtils.convertToJson(SpannerTasks.getEventById(event.getId()).get().toBuilder().build()));
+  }
+
+  /* Calls to get NLP Suggested filters if applicable (20 words or more)
+   * @param text: String of text that includes event name and description
+   * @return categoryNames: returns selected names of labels that NLP API suggests for text if available, else empty list
+   */
+  private ArrayList<String> getNlpSuggestedFilters(String text, ArrayList<String> categoryNames) throws IOException{
+    if (text.trim().split("\\s+").length > 20) {
+      NlpProcessing nlp = new NlpProcessing();
+      categoryNames = nlp.getNlp(text);
+    }
+    return categoryNames;
+  }
+
+  private static List<String> splitAsList(String values) {
+    return Arrays.asList(values.split("\\s*,\\s*"));
   }
 }
