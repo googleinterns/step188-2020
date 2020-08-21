@@ -117,7 +117,7 @@ public class SearchStoreTest {
 
   /**
    * Add event to the index and check that search for keyword not relevant
-   * in the event name or description does not appear in the index.
+   * in the event name or description does not appear in the results.
    */
   @Test
   public void oneEvent_KeywordNotRelevantInEventNameOrDescription_noResultsReturned()
