@@ -4,7 +4,9 @@ import com.google.cloud.Date;
 import com.google.gson.Gson;
 import com.google.sps.data.Event;
 import com.google.sps.data.User;
+import com.google.sps.store.SearchStore;
 import com.google.sps.utilities.CommonUtils;
+import com.google.sps.utilities.KeywordHelper;
 import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
 import java.util.Arrays;
@@ -17,9 +19,30 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletException;
 
 @WebServlet("/create-event")
 public class EventCreationServlet extends HttpServlet {
+  private SearchStore searchStore;
+
+  /**
+   * Set up state for handling keyword helper requests. This method is only called when running in a
+   * server, not when running in a test.
+   */
+  @Override
+  public void init() throws ServletException {
+    super.init();
+    setSearchStore(new SearchStore(KeywordHelper.getInstance()));
+  }
+
+  /**
+   * Sets the KeywordHelper used by this servlet. This function provides a common setup method for
+   * use by the test framework or the servlet's init() function.
+   */
+  public void setSearchStore(SearchStore searchStore) {
+    this.searchStore = searchStore;
+  }
+
   /** Returns event details from database */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -56,6 +79,9 @@ public class EventCreationServlet extends HttpServlet {
     User host = SpannerTasks.getLoggedInUser().get();
     Event event = new Event.Builder(name, description, labels, location, date, time, host).build();
     SpannerTasks.insertorUpdateEvent(event);
+
+    // Add event to search index
+    searchStore.addEventToIndex(event.getId(), name, description);
 
     String redirectUrl = "/event-details.html?eventId=" + event.getId();
     response.sendRedirect(redirectUrl);
