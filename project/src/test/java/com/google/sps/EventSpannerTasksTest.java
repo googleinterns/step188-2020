@@ -220,7 +220,7 @@ public class EventSpannerTasksTest {
    * Verify that events in the past are NOT retrieved
    */
   @Test
-  public void testGetFutureEventsOnly() throws Exception {
+  public void addFutureEventsOnly_noResultsReturned() throws Exception {
     Event eventFuture = TestUtils.newEvent().toBuilder().setDate(DATE_FUTURE).build();
     Event eventPast = TestUtils.newEvent().toBuilder().setDate(DATE_PAST).build();
     SpannerTasks.insertorUpdateEvent(eventFuture);
