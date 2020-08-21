@@ -112,14 +112,13 @@ async function getEventDetails() {
   const urlParams = new URLSearchParams(queryString);
   const eventId = urlParams.get('eventId');
 
-  // Register for event
-  if ((urlParams.get('register')) === 'true') {
-    registerEvent(eventId);
-  }
-
-  // View event details
   const response = await fetch('/create-event?' + new URLSearchParams({'eventId': eventId}));
   const data = await response.json();
+  // Register for event
+  if ((urlParams.get('register')) === 'true') {
+    registerEvent(eventId, data.host.email);
+  }
+  // View event details
   document.getElementById('name').innerHTML = data['name'];
   document.getElementById('description').innerHTML = data['description'];
   document.getElementById('date').innerHTML = `Date: 
@@ -138,17 +137,22 @@ async function getEventHost() {
 }
 
 /** Call doPost to register logged in user for event */
-async function registerEvent(eventId) {
-  const response = await fetch('/register-event?' + new URLSearchParams({'eventId': eventId}), {method: 'POST'} );
-  let isHost = window.location.href.split('?|&|=')[-1];
-  console.log(isHost);
-  if (isHost === 'true') {
-    $('.alert').show().delay(5000).fadeOut();
-  }
-  else {
+async function registerEvent(eventId, host) {
+  const response =
+      await fetch('/register-event?' + new URLSearchParams({'eventId': eventId}), {method: 'POST'} );
+  const isHost = await getLoggedInUserIsHost(host);
+  if (isHost) {
+    $('.alert').slideDown();
+    document.getElementById('signup-link').hide();
+  } else {
     document.getElementById('signup-link').setAttribute('href', '');
     document.getElementById('signup-link').innerHTML = 'You are signed up for this event.';
   }
+}
+
+async function getLoggedInUserIsHost(eventHost) {
+  const loggedInUserEmail = await getLoggedInUserEmail();
+  return eventHost === loggedInUserEmail;
 }
 
 /**
