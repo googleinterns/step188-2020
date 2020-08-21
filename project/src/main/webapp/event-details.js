@@ -11,7 +11,6 @@ window.onload = async function onLoad() {
 /** 
  * Adds the edit button for the host and removes the register button
  * @param {Object} eventHost email of the host of the event
- * @param {Object} loginStatus status of current user
  */
 async function configureRegisterAndEditButtons(eventHost) {
   const loggedInUserIsHost = await getLoggedInUserIsHost(eventHost);
