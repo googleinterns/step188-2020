@@ -290,7 +290,7 @@ function buildSkillsAsLabels(querySelector, opportunities) {
  */
 async function populateExistingProfileImage() {
   const response = await fetch('/blob-handler');
-  const imageUrl = await response.text();
+  const imageUrl = await response.json().url;
   const realImageUrl = imageUrl ? imageUrl : 'assets/default_profile.jpg';
   $('#profile-picture').attr('src', realImageUrl);
 }
