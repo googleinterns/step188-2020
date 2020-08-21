@@ -12,6 +12,7 @@ public final class User {
   private Set<Event> eventsHosting;
   private Set<Event> eventsParticipating;
   private Set<Event> eventsVolunteering;
+  private String imageUrl;
 
   public static class Builder {
     // Required parameters
@@ -25,6 +26,7 @@ public final class User {
     private Set<Event> eventsHosting = new HashSet<>();
     private Set<Event> eventsParticipating = new HashSet<>();
     private Set<Event> eventsVolunteering = new HashSet<>();
+    private String imageUrl = "";
 
     public Builder(String name, String email) {
       this.name = name;
@@ -121,6 +123,11 @@ public final class User {
       return this;
     }
 
+    public Builder setImageUrl(String imageUrl) {
+      this.imageUrl = imageUrl;
+      return this;
+    }
+
     public User build() {
       return new User(this);
     }
@@ -144,6 +151,9 @@ public final class User {
       if (!other.getEventsVolunteering().isEmpty()) {
         this.eventsVolunteering = other.getEventsVolunteering();
       }
+      if (!other.getImageUrl().isEmpty()) {
+        this.imageUrl = other.getImageUrl();
+      }
       return this;
     }
   }
@@ -157,6 +167,7 @@ public final class User {
     this.eventsHosting = builder.eventsHosting;
     this.eventsParticipating = builder.eventsParticipating;
     this.eventsVolunteering = builder.eventsVolunteering;
+    this.imageUrl = builder.imageUrl;
   }
 
   public String getName() {
@@ -197,7 +208,10 @@ public final class User {
 
   public Set<String> getEventsVolunteeringIds() {
     return eventsVolunteering.stream().map(Event::getId).collect(Collectors.toSet());
+  }
 
+  public String getImageUrl() {
+    return this.imageUrl;
   }
 
   public Builder toBuilder() {
