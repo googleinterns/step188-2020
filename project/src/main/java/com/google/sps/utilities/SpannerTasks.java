@@ -628,13 +628,15 @@ public class SpannerTasks {
                       transaction.readRow(
                           KEYWORDS_TABLE, Key.of(keyword), Collections.singleton(NAME));
                   String keywordId = row == null ? UUID.randomUUID().toString() : row.getString(0);
-                  transaction.buffer(
-                      Mutation.newInsertBuilder(KEYWORDS_TABLE)
-                          .set(KEYWORD_ID)
-                          .to(keywordId)
-                          .set(NAME)
-                          .to(keyword)
-                          .build());
+                  if (row == null) {
+                    transaction.buffer(
+                        Mutation.newInsertBuilder(KEYWORDS_TABLE)
+                            .set(KEYWORD_ID)
+                            .to(keywordId)
+                            .set(NAME)
+                            .to(keyword)
+                            .build());
+                  }
                   transaction.buffer(
                       Mutation.newInsertBuilder(RESULTS_TABLE)
                           .set(KEYWORD_ID)
