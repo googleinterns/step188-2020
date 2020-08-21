@@ -8,7 +8,9 @@ $(document).ready(function() {
 /** Set profile picture form action */
 async function setImageFormAction() {
   const response = await fetch('/blob-url');
-  const blobUrl = await response.text();
+  console.log(response);
+  const blobUrl = response.url;
+  console.log(blobUrl);
   $('#image-form').attr('action', blobUrl);
 }
 
