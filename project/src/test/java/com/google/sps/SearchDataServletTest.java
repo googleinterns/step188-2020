@@ -64,9 +64,6 @@ public class SearchDataServletTest {
       "Sutter Middle School will be walking to McKinley Park. 7th grade class and teachers will"
           + " have a picnic and eat lunch at the park and Clunie Pool.";
   private static final String NAME_WITH_GAMES = "End of the Year Picnic and Games";
-  private static final String DESCRIPTION_WITH_GAMES =
-      "Sutter Middle School will be walking to McKinley Park. 7th grade class and teachers will"
-          + " have a picnic, play games, and eat lunch at the park and Clunie Pool.";
   private static final ArrayList<Keyword> KEYWORDS_NAME_WITHOUT_GAMES =
       new ArrayList<Keyword>(Arrays.asList(new Keyword("picnic", 1.00f)));
   private static final String DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE =
@@ -238,14 +235,14 @@ public class SearchDataServletTest {
         .sendError(HttpServletResponse.SC_BAD_REQUEST, String.format("No keyword specified."));
   }
 
-  private void loginHost() {
+  private static void loginHost() {
     authenticationHelper
         .setEnvIsLoggedIn(true)
         .setEnvEmail(EMAIL)
         .setEnvAuthDomain(DOMAIN);
   }
 
-  private void setRequiredRequestParameters(HttpServletRequest mockRequest) {
+  private static void setRequiredRequestParameters(HttpServletRequest mockRequest) {
     SpannerTasks.insertOrUpdateUser(TestUtils.newUserWithEmail(EMAIL));
     Mockito.when(mockRequest.getParameter(PARAMETER_DATE)).thenReturn(DATE_STRING);
     Mockito.when(mockRequest.getParameter(PARAMETER_TIME)).thenReturn(TIME);
