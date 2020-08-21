@@ -196,7 +196,7 @@ public class GetLabelCategories {
         valueToKeyMap.put(tokens[CATEGORY_INDEX], arraylist);
         } else {
           HashSet<String> arraylist = new HashSet<String>();
-					for (int i = FIRST_SUBCATEGORY_INDEX; i < tokens.length; i++) {
+          for (int i = FIRST_SUBCATEGORY_INDEX; i < tokens.length; i++) {
 						arraylist.add(tokens[i]);   
 					}
         valueToKeyMap.put(tokens[CATEGORY_INDEX], arraylist);
