@@ -5,6 +5,7 @@
     <title>STEP 188 Project</title>
     <link rel="stylesheet" href="events-feed.css" />
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://kit.fontawesome.com/0d580893be.js" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <link
@@ -25,9 +26,78 @@
     ></script>
     <script src="shared.js"></script>
     <script src="script.js"></script>
+    <script src="event-card.js"></script>
   </head>
   <body>
-    <div class="card col-sm-4" id="event-card">
+    <div class="card rounded-lg grid-item grid-item--level-3" id="event-card-level-3">
+      <img class="card-img-top" id="event-card-image" alt="Event main picture" />
+      <div class="card-body">
+        <h5 class="card-title" id="event-card-title">
+        </h5>
+        <p class="card-text" id="event-card-description">
+        </p>
+        <div class="display-inline-block" id="event-card-labels">
+        </div>
+        <ul class="list-group list-group-flush" id="details">
+          <li class="list-group-item">
+            <i class="far fa-calendar-alt"></i>
+            <span id="event-card-date"></span>
+            <span id="event-card-time"></span>
+            <i class="far fa-clock"></i>
+          </li>
+          <li class="list-group-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <span id="event-card-location"></span>
+          </li>
+          <li class="list-group-item">
+            <p class="card-text" id="vols-needed">
+              <i class="fas fa-hand-holding-medical"></i>
+              <span id="event-card-volunteers"></span>
+            </p>
+          </li>
+          <br />
+          <div class="btn-group" role="group">
+            <a class="btn btn-outline-primary" href="event-details.html" id="event-details">Details</a>
+            <a class="btn btn-primary" href="event-details.html" id="event-register">Register</a>
+          </div>
+        </ul>
+      </div>
+    </div>
+    <div class="card rounded-lg grid-item grid-item--level-2" id="event-card-level-2">
+      <img class="card-img-top" id="event-card-image" alt="Event main picture" />
+      <div class="card-body">
+        <h5 class="card-title" id="event-card-title">
+        </h5>
+        <p class="card-text" id="event-card-description">
+        </p>
+        <div class="display-inline-block" id="event-card-labels">
+        </div>
+        <ul class="list-group list-group-flush" id="details">
+          <li class="list-group-item">
+            <i class="far fa-calendar-alt"></i>
+            <span id="event-card-date"></span>
+            <span id="event-card-time"></span>
+            <i class="far fa-clock"></i>
+          </li>
+          <li class="list-group-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <span id="event-card-location"></span>
+          </li>
+          <li class="list-group-item">
+            <p class="card-text" id="vols-needed">
+              <i class="fas fa-hand-holding-medical"></i>
+              <span id="event-card-volunteers"></span>
+            </p>
+          </li>
+          <br />
+          <div class="btn-group" role="group">
+            <a class="btn btn-outline-primary" href="event-details.html" id="event-details">Details</a>
+            <a class="btn btn-primary" href="event-details.html" id="event-register">Register</a>
+          </div>
+        </ul>
+      </div>
+    </div>
+    <div class="card rounded-lg grid-item grid-item--level-1" id="event-card-level-1">
       <div class="card-body">
         <h5 class="card-title" id="event-card-title">
         </h5>
@@ -37,17 +107,10 @@
         </div>
         <br />
         <ul class="list-group list-group-flush" id="details">
-          <li class="list-group-item">Date: <span id="event-card-date"></span>, <span id="event-card-time"></span></li>
-          <li class="list-group-item">Location: <span id="event-card-location"></span></li>
-          <li class="list-group-item">
-            <p class="card-text">Volunteers Needed: <span id="event-card-volunteers"></span></p>
-          </li>
-          <button class="btn">
-            <a href="event-details.html" id="event-details">See more details</a>
-          </button>
-          <button type="button" class="btn btn-primary">
-            <a href="event-details.html" id="event-register">Register</a>
-          </button>
+          <div class="btn-group" role="group">
+            <a class="btn btn-outline-primary" href="event-details.html" id="event-details">Details</a>
+            <a class="btn btn-primary" href="event-details.html" id="event-register">Register</a>
+          </div>
         </ul>
       </div>
     </div>

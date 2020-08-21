@@ -34,7 +34,6 @@ public class UserProfileUpdateServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     email = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     Optional<User> userOptional = SpannerTasks.shallowReadUserFromEmail(email);
-
     User user;
     if (userOptional.isPresent()) {
       user = userOptional.get();
