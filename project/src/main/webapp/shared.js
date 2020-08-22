@@ -151,8 +151,8 @@ function togglePrefilledInterests() {
   $('#prefilled-interests').toggle();
 }
 
-async function getRankedEvents() {
-  const response = await fetch('/event-ranker');
+async function getRankedEvents(events) {
+  const response = await fetch('/event-ranker?' + new URLSearchParams({'events': JSON.stringify(events)}));
   return response.json();
 }
 
@@ -200,9 +200,9 @@ async function populateEventContainer(event, containerId, lod) {
     }
   }
   buildAsLabels(
-      `#${eventCardId} #event-card-labels`, event.labels, 'interests');
+      `#${eventCardId} .card-body #event-card-labels`, event.labels, 'interests');
   buildSkillsAsLabels(
-      `#${eventCardId} #event-card-labels`, event.opportunities);
+      `#${eventCardId} .card-body #event-card-labels`, event.opportunities);
   addLinkToRegister(eventCardId);
   addLinkToDetails(eventCardId);
   if (lod >= 2) {
