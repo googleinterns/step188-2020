@@ -8,6 +8,7 @@ import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
+import com.google.sps.data.Event;
 import com.google.sps.data.User;
 import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
@@ -30,31 +31,58 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/blob-handler")
 public class BlobFormHandlerServlet extends HttpServlet {
   private static final String PROFILE_PICTURE = "profile-picture";
+  private static final String EVENT_PICTURE = "event-picture";
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Optional<User> userOptional = SpannerTasks.getLoggedInUser();
-    if (userOptional.isPresent()) {
-      User user = userOptional.get();
-      response.getWriter().println(user.getImageUrl());
-    } else {
-      response.sendError(
-          HttpServletResponse.SC_BAD_REQUEST, "Error with getting current user: does not exist");
+    String pictureType = request.getParameter("picture-type").equals("profile") ? PROFILE_PICTURE : EVENT_PICTURE;
+    if (pictureType.equals(PROFILE_PICTURE)) {
+      Optional<User> userOptional = SpannerTasks.getLoggedInUser();
+      if (userOptional.isPresent()) {
+        User user = userOptional.get();
+        response.getWriter().println(user.getImageUrl());
+      } else {
+        response.sendError(
+            HttpServletResponse.SC_BAD_REQUEST, "Error with getting current user: does not exist");
+      }
+    } else if (pictureType.equals(EVENT_PICTURE)) {
+      Optional<Event> eventOptional = SpannerTasks.getEventById(request.getParameter("event-id"));
+      if (eventOptional.isPresent()) {
+        Event event = eventOptional.get();
+        response.getWriter().println(event.getImageUrl());
+      } else {
+        response.sendError(
+            HttpServletResponse.SC_BAD_REQUEST, "Error with getting event: does not exist");
+      }
     }
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Optional<User> userOptional = SpannerTasks.getLoggedInUser();
-    if (userOptional.isPresent()) {
-      User user = userOptional.get();
-      String blobKeyString = getUploadedBlobKeyString(request);
-      SpannerTasks.insertOrUpdateUser(user.toBuilder().setImageUrl(blobKeyString).build());
-    } else {
-      response.sendError(
-          HttpServletResponse.SC_BAD_REQUEST, "Error with getting current user: does not exist");
+    String pictureType = request.getParameter("picture-type").equals("profile") ? PROFILE_PICTURE : EVENT_PICTURE;
+    if (pictureType.equals(PROFILE_PICTURE)) {
+      Optional<User> userOptional = SpannerTasks.getLoggedInUser();
+      if (userOptional.isPresent()) {
+        User user = userOptional.get();
+        String blobKeyString = getUploadedBlobKeyString(request);
+        SpannerTasks.insertOrUpdateUser(user.toBuilder().setImageUrl(blobKeyString).build());
+      } else {
+        response.sendError(
+            HttpServletResponse.SC_BAD_REQUEST, "Error with getting current user: does not exist");
+      }
+      response.sendRedirect("/profile-edit.html");
+    } else if (pictureType.equals(EVENT_PICTURE)) {
+      Optional<Event> eventOptional = SpannerTasks.getEventById(request.getParameter("event-id"));
+      if (eventOptional.isPresent()) {
+        Event user = eventOptional.get();
+        String blobKeyString = getUploadedBlobKeyString(request);
+        SpannerTasks.insertorUpdateEvent(event.toBuilder().setImageUrl(blobKeyString).build());
+      } else {
+        response.sendError(
+            HttpServletResponse.SC_BAD_REQUEST, "Error with getting event: does not exist");
+      }
+      response.sendRedirect("/create-event.html");
     }
-    response.sendRedirect("/profile-edit.html");
   }
 
   /** Returns a URL that points to the uploaded file, or null if the user didn't upload a file. */
