@@ -1,11 +1,11 @@
-window.onload = async function onLoad() {
+$(async function() {
   getEventDetails();
   const eventHost = await getEventHost();
   const loginStatus = await getLoginStatus();
   populateVolunteeringOpportunitiesUI(eventHost, loginStatus);
   showCreateOpportunityLink(eventHost, loginStatus);
   setSignupAction();
-};
+});
 
 /**
  * Adds the volunteering opportunities to the event card and the dropdown
