@@ -48,8 +48,8 @@ public class BlobFormHandlerServlet extends HttpServlet {
     Optional<User> userOptional = SpannerTasks.getLoggedInUser();
     if (userOptional.isPresent()) {
       User user = userOptional.get();
-      String imageUrl = getUploadedFileUrl(request);
-      SpannerTasks.insertOrUpdateUser(user.toBuilder().setImageUrl(imageUrl).build());
+      String blobKeyString = getUploadedBlobKeyString(request);
+      SpannerTasks.insertOrUpdateUser(user.toBuilder().setImageUrl(blobKeyString).build());
     } else {
       response.sendError(
           HttpServletResponse.SC_BAD_REQUEST, "Error with getting current user: does not exist");
@@ -58,7 +58,7 @@ public class BlobFormHandlerServlet extends HttpServlet {
   }
 
   /** Returns a URL that points to the uploaded file, or null if the user didn't upload a file. */
-  private static String getUploadedFileUrl(HttpServletRequest request) {
+  private static String getUploadedBlobKeyString(HttpServletRequest request) {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
     List<BlobKey> blobKeys = blobs.get(PROFILE_PICTURE);
@@ -67,21 +67,13 @@ public class BlobFormHandlerServlet extends HttpServlet {
     if (blobKeys == null || blobKeys.isEmpty()) {
       return null;
     }
-
     BlobKey blobKey = blobKeys.get(0);
-
     // User submitted form without selecting a file, so we can't get a URL. (live server)
     BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
     if (blobInfo.getSize() == 0) {
       blobstoreService.delete(blobKey);
       return null;
     }
-    return getUrlFromBlobKey(blobKey);
-  }
-
-  private static String getUrlFromBlobKey(BlobKey blobKey) {
-    ImagesService imagesService = ImagesServiceFactory.getImagesService();
-    ServingUrlOptions options = ServingUrlOptions.Builder.withBlobKey(blobKey);
-    return imagesService.getServingUrl(options);
+    return blobKey.getKeyString();
   }
 }
