@@ -171,6 +171,9 @@ public final class Event {
       this.time = other.getTime();
       this.host = other.getHost();
 
+      if (!other.getId().isEmpty()) {
+        this.eventId = other.getId();
+      }
       if (!other.getOpportunities().isEmpty()) {
         this.opportunities = other.getOpportunities();
       }
