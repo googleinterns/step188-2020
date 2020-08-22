@@ -20,13 +20,9 @@ async function getLoggedInUserEmail() {
 }
 
 async function isLoggedIn() {
-  const loginStatus = await getLoginStatus();
-  return loginStatus.loginState === 'LOGGED_IN';
-}
-
-async function getLoginStatus() {
   const response = await fetch('/login-status');
-  return response.json();
+  const loginStatus = await response.json();
+  return loginStatus.loginState === 'LOGGED_IN';
 }
 
 /**
@@ -229,9 +225,9 @@ async function populateEventContainer(event, containerId, lod) {
     }
   }
   buildAsLabels(
-      `#${eventCardId} .card-body #event-card-labels`, event.labels, 'interests');
+      `#${eventCardId} #event-card-labels`, event.labels, 'interests');
   buildSkillsAsLabels(
-      `#${eventCardId} .card-body #event-card-labels`, event.opportunities);
+      `#${eventCardId} #event-card-labels`, event.opportunities);
   addLinkToRegister(eventCardId);
   addLinkToDetails(eventCardId);
   if (lod >= 2) {
