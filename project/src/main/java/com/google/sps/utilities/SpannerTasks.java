@@ -134,7 +134,8 @@ public class SpannerTasks {
                 Statement.of(
                     String.format(
                         "SELECT EventID, Name, Description, Labels, Location, Date, Time,"
-                            + " Host, Opportunities, Attendees FROM %s WHERE EventID in (%s)",
+                            + " Host, Opportunities, Attendees FROM %s WHERE EventID in (%s)"
+                            + " AND DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0",
                         EVENT_TABLE, eventIdsFormatted)));
     while (resultSet.next()) {
       events.add(shallowCreateEventFromDatabaseResult(resultSet));
@@ -162,7 +163,8 @@ public class SpannerTasks {
                 Statement.of(
                     String.format(
                         "SELECT EventId, Name, Description, Labels, Location, Date, Time, Host,"
-                            + " Opportunities, Attendees FROM %s WHERE EventID='%s'",
+                            + " Opportunities, Attendees FROM %s WHERE EventID='%s'"
+                            + " AND DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0",
                         EVENT_TABLE, eventId)));
 
     /** If ID does not exist */
@@ -187,7 +189,8 @@ public class SpannerTasks {
                 Statement.of(
                     String.format(
                         "SELECT EventID, Name, Description, Labels, Location, Date, Time,"
-                            + " Host, Opportunities, Attendees FROM %s",
+                            + " Host, Opportunities, Attendees FROM %s WHERE"
+                            + " DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0",
                         EVENT_TABLE)));
     while (resultSet.next()) {
       Event event = shallowCreateEventFromDatabaseResult(resultSet);
@@ -211,6 +214,7 @@ public class SpannerTasks {
         .setOpportunities(getVolunteeringOpportunitiesByEventId(eventId))
         .setAttendees(
             shallowReadMultipleUsersFromEmails(new HashSet<String>(resultSet.getStringList(9))))
+        .setImageUrl(resultSet.getString(10))
         .build();
   }
 
@@ -262,7 +266,9 @@ public class SpannerTasks {
         .set("Opportunities")
         .toStringArray(event.getOpportunitiesIds())
         .set("Attendees")
-        .toStringArray(event.getAttendeeIds());
+        .toStringArray(event.getAttendeeIds())
+        .set("Image")
+        .to(event.getImageUrl());
     mutations.add(builder.build());
     return mutations;
   }
@@ -468,7 +474,8 @@ public class SpannerTasks {
           Statement.of(
               String.format(
                   "SELECT EventID, Name, Description, Labels, Location, Date, Time, Host, Attendees"
-                      + " FROM %s WHERE \"%s\" IN UNNEST(Labels)",
+                      + " FROM %s WHERE \"%s\" IN UNNEST(Labels)"
+                      + " AND DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0",
                       EVENT_TABLE, label));
       try (ResultSet resultSet =
           SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
@@ -511,7 +518,7 @@ public class SpannerTasks {
                 Statement.of(
                     String.format(
                         "SELECT Events.EventID, Events.Name, Events.Description, Events.Labels,"
-                            + " Events.Location, Events.Date, Events.Time, Events.Host"
+                            + " Events.Location, Events.Date, Events.Time, Events.Host, Events.Image"
                             + " FROM Events INNER JOIN"
                             + " Users ON Events.EventID IN UNNEST(Users.EventsHosting) WHERE Email=\"%s\"",
                         email)));
@@ -526,6 +533,7 @@ public class SpannerTasks {
                   /* time = */ resultSet.getString(6),
                   /* host = */ shallowReadUserFromEmail(resultSet.getString(7)).get())
               .setId(resultSet.getString(0))
+              .setImageUrl(resultSet.getString(8))
               .build();
       results.add(event);
     }
@@ -583,7 +591,7 @@ public class SpannerTasks {
     Set<Event> results = new HashSet<Event>();
     Statement statement = Statement.of(
         String.format(
-            "SELECT EventID, Name, Description, Labels, Location, Date, Time, Host, Attendees"
+            "SELECT EventID, Name, Description, Labels, Location, Date, Time, Host, Attendees, Image"
             + " FROM %s WHERE \"%s\" IN UNNEST(Attendees)",
                 EVENT_TABLE, email ));
     try (ResultSet resultSet =
@@ -600,6 +608,7 @@ public class SpannerTasks {
                     /* host = */ shallowReadUserFromEmail(resultSet.getString(7)).get())
                 .setId(resultSet.getString(0))
                 .setAttendees(shallowReadMultipleUsersFromEmails(new HashSet<String>(resultSet.getStringList(8))))
+                .setImageUrl(resultSet.getString(9))
                 .build();
         results.add(event);
       }
@@ -627,14 +636,18 @@ public class SpannerTasks {
                   Struct row =
                       transaction.readRow(
                           KEYWORDS_TABLE, Key.of(keyword), Collections.singleton(NAME));
-                  String keywordId = row == null ? UUID.randomUUID().toString() : row.getString(0);
-                  transaction.buffer(
-                      Mutation.newInsertBuilder(KEYWORDS_TABLE)
-                          .set(KEYWORD_ID)
-                          .to(keywordId)
-                          .set(NAME)
-                          .to(keyword)
-                          .build());
+                  String keywordId = UUID.randomUUID().toString();
+                  if (row == null) {
+                    transaction.buffer(
+                        Mutation.newInsertBuilder(KEYWORDS_TABLE)
+                            .set(KEYWORD_ID)
+                            .to(keywordId)
+                            .set(NAME)
+                            .to(keyword)
+                            .build());
+                  } else {
+                    keywordId = row.getString(0);
+                  }
                   transaction.buffer(
                       Mutation.newInsertBuilder(RESULTS_TABLE)
                           .set(KEYWORD_ID)
@@ -651,7 +664,8 @@ public class SpannerTasks {
   }
 
   /**
-   * Returns events by keyword in descending order of ranking.
+   * Returns events by keyword in descending order of ranking and includes
+   * only events that are in the future.
    *
    * @param keyword keyword to fetch event results for
    * @return list of events in descending order of ranking
@@ -664,7 +678,8 @@ public class SpannerTasks {
                 "SELECT Events.EventID, Events.Name, Events.Description, Events.Labels,"
                     + " Events.Location, Events.Date, Events.Time, Events.Host FROM Results INNER"
                     + " JOIN Keywords ON Results.KeywordID = Keywords.KeywordID INNER JOIN Events"
-                    + " ON Events.EventID = Results.EventID WHERE Keywords.Name=\"%s\" ORDER BY"
+                    + " ON Events.EventID = Results.EventID WHERE Keywords.Name=\"%s\""
+                    + " AND DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0 ORDER BY"
                     + " Results.Ranking DESC LIMIT 20;",
                 keyword));
     try (ResultSet resultSet =
