@@ -1,6 +1,6 @@
 $(document).ready(function() {
   showCurrentUserInfo();
-  setImageFormAction();
+  setImageFormAction('profile');
   populatePrefilled('interests');
   populatePrefilled('skills');
 });
