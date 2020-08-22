@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html> 
   <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="create-event.css" />
@@ -40,25 +40,26 @@
             <div class="input-group-prepend">
               <span class="input-group-text" id="basic-addon1">Name</span>
             </div>
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Event Name"
-            id="name"
-            name="name"
-            aria-describedby="basic-addon1"
-            oninvalid="alert('You must input event name');"
-          />
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Event Name"
+              id="name"
+              name="name"
+              required="required"
+              aria-describedby="basic-addon1"
+            />
+          </div>
         </div>
       </div>
       <br />
       <div class="row">
-        <div class="col-lg-3">
+        <div class="col-lg-4">
           <div class="input-group">
             <div class="input-group-prepend">
               <span class="input-group-text" id="basic-addon1">Date</span>
             </div>
-            <input type="date" id="date" name="date">
+              <input type="date" id="date" name="date">
             </div>
           </div>
           <div class="col-lg-3">
@@ -78,7 +79,7 @@
               />
             </div>
           </div>
-          <div class="col-lg-6">
+          <div class="col-lg-5">
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text" id="basic-addon1">Location</span>
@@ -101,14 +102,14 @@
         <div class="col-lg-12">
           <div class="input-group" id="interests-div">
             <div class="input-group-prepend">
-              <label class="input-group-text" for="interests">Labels</label>
+              <label class="input-group-text" for="interests">Interests</label>
             </div>
-            <input
+            <select
               id="interests"
               name="interests"
               data-role="tagsinput"
               multiple
-            ></input>
+            ></select>
             <button 
               type="button"
               class="btn btn-light prefilled-pick"
