@@ -28,6 +28,26 @@
     <div class="container">
       <div class="card">
         <div class="card-body">
+        <form
+          id="image-form"
+          method="POST"
+          enctype="multipart/form-data"
+        >
+          <div class="col-sm-3">
+            <img id="event-picture" />
+            <br /><br />
+            <div class="form-group">
+              <label for="event-picture">Upload an image for your event: </label>
+              <br />
+              <div class="form-group">
+                <div class="input-group">
+                  <input type="file" name="event-picture" />
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Update event picture</button>
+          </div>
+        </form>
         <h5 class="card-title input" id="name"></h5>
           <p class="card-text input" id="description"></p>
           <br />

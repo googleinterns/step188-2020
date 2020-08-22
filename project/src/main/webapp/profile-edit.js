@@ -5,13 +5,6 @@ $(document).ready(function() {
   populatePrefilled('skills');
 });
 
-/** Set profile picture form action */
-async function setImageFormAction() {
-  const response = await fetch('/blob-url');
-  const blobUrl = await response.text();
-  $('#image-form').attr('action', blobUrl);
-}
-
 /**
  * Populates inputs with current user information.
  */
@@ -23,7 +16,7 @@ async function showCurrentUserInfo() {
   $('#name').val(userName);
   populateExisting('interests', userData);
   populateExisting('skills', userData);
-  populateExistingProfileImage();
+  populateExistingImage('profile', '#profile-picture');
 }
 
 /** 

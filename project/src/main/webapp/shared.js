@@ -285,10 +285,10 @@ function buildSkillsAsLabels(querySelector, opportunities) {
 }
 
 /**
- * Adds currently-attributed profile image to logged-in user
- * If the user has no profile image, add the default one
+ * Adds currently-attributed image
+ * If no profile image, add a default one
  */
-async function populateExistingProfileImage() {
+async function populateExistingImage(type, elementId) {
   const handlerResponse = await fetch('/blob-handler');
   const blobKey = await handlerResponse.text();
   let imageUrl = 'assets/default_profile.jpg';
@@ -297,5 +297,9 @@ async function populateExistingProfileImage() {
     const imageBlob = await serveResponse.blob();
     imageUrl = URL.createObjectURL(imageBlob);
   }
-  $('#profile-picture').attr('src', imageUrl);
+  if (type === 'profile') {
+    $(elementId).attr('src', imageUrl);
+  } else if (type === 'event') {
+    $(elementId).css('background-color', 'gray');
+  }
 }

@@ -5,6 +5,8 @@ window.onload = async function onLoad() {
   populateVolunteeringOpportunitiesUI(eventHost, loginStatus);
   showCreateOpportunityLink(eventHost, loginStatus);
   setSignupAction();
+  setImageFormAction();
+  populateExistingImage('event', '#event-picture');
 };
 
 /**
