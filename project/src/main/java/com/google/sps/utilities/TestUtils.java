@@ -6,6 +6,7 @@ import com.google.sps.data.OpportunitySignup;
 import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,11 +21,11 @@ public class TestUtils {
   private static final Set<String> LABELS =
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Tech", "Work")));
   private static final String LOCATION = "Remote";
-  private static final Date DATE = Date.fromYearMonthDay(2016, 9, 15);
-  private static final String DATE_STRING = "09/15/2016";
   private static final String TIME = "3:00PM-5:00PM";
   private static final User HOST = new User.Builder(NAME, EMAIL).build();
   private static final String EVENT_ID = "0883de79-17d7-49a3-a866-dbd5135062a8";
+  private static final Date DATE =
+      Date.fromYearMonthDay(Calendar.getInstance().get(Calendar.YEAR) + 1, 9, 15);
   private static final String OPPORTUNITY_NAME = "Performer";
   private static final int NUMBER_OF_SPOTS = 240;
   private static final String VOLUNTEER_EMAIL = "volunteer@gmail.com";
