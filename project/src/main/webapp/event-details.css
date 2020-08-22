@@ -16,11 +16,6 @@
   text-align: right;
 }
 
-.card-body {
-  margin: auto;
-  width: 80%;
-}
-
 .btn-primary a {
   color: white;
   text-align: center;
@@ -28,4 +23,8 @@
 
 .hidden {
   display: none;
+}
+
+.event-detail-size {
+  min-width: 100%;
 }

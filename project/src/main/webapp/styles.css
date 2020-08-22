@@ -94,3 +94,11 @@ h3 {
   color: white;
   text-align: center;
 }
+
+.event-detail-size {
+  min-width: 100% !important;
+}
+
+.card-title {
+  text-align: center;
+}
