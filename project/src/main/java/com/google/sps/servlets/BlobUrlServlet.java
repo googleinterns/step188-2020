@@ -14,7 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 public class BlobUrlServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String uploadUrl = BlobstoreServiceFactory.getBlobstoreService().createUploadUrl("/blob-handler");
+    String pictureType = request.getParameter("picture-type");
+    String servletUrl = String.format("/%s-blob-handler", pictureType);
+    if (pictureType.equals("event")) {
+      servletUrl += "?event-id=" + request.getParameter("event-id");
+    }
+    String uploadUrl = BlobstoreServiceFactory.getBlobstoreService().createUploadUrl(servletUrl);
     response.setContentType("text/html");
     response.getWriter().println(uploadUrl);
   }
