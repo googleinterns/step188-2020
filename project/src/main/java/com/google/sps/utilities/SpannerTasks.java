@@ -49,7 +49,7 @@ public class SpannerTasks {
     String email = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     return shallowReadUserFromEmail(email);
   }
-
+ 
   /**
    * Given a user, insert or update a row with all available fields into the DB
    *
@@ -57,12 +57,12 @@ public class SpannerTasks {
    */
   public static void insertOrUpdateUser(User user) {
     // Given a user, update its corresponding row's new fields in DB
-
+ 
     List<Mutation> mutations =
         getUserMutationsFromBuilder(Mutation.newInsertOrUpdateBuilder(USER_TABLE), user);
     SpannerClient.getDatabaseClient().write(mutations);
   }
-
+ 
   /**
    * Given an email, return the corresponding user from the DB WITHOUT attached events
    *
@@ -78,11 +78,11 @@ public class SpannerTasks {
                     String.format(
                         "SELECT Name, Interests, Skills, Image FROM %s WHERE Email='%s'",
                         USER_TABLE, email)));
-
+ 
     if (!resultSet.next()) {
       return Optional.empty();
     }
-
+ 
     return Optional.of(
         new User.Builder(/* name = */ resultSet.getString(0), /* email = */ email)
             .setInterests(new HashSet<String>(resultSet.getStringList(1)))
@@ -90,7 +90,7 @@ public class SpannerTasks {
             .setImageUrl(resultSet.getString(3))
             .build());
   }
-
+ 
   /**
    * Given a set of emails, return the corresponding users from the DB
    *
@@ -107,7 +107,7 @@ public class SpannerTasks {
     }
     return users;
   }
-
+ 
   /**
    * Given an event, insert or update a row with all available fields into the DB
    *
@@ -118,7 +118,7 @@ public class SpannerTasks {
         getEventMutationsFromBuilder(Mutation.newInsertOrUpdateBuilder(EVENT_TABLE), event);
     SpannerClient.getDatabaseClient().write(mutations);
   }
-
+ 
   /**
    * Returns from DB all available events that match with provided list of IDs
    *
@@ -134,21 +134,22 @@ public class SpannerTasks {
                 Statement.of(
                     String.format(
                         "SELECT EventID, Name, Description, Labels, Location, Date, Time,"
-                            + " Host, Opportunities, Attendees FROM %s WHERE EventID in (%s)",
+                            + " Host, Opportunities, Attendees, Image FROM %s WHERE EventID in (%s)"
+                            + " AND DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0",
                         EVENT_TABLE, eventIdsFormatted)));
     while (resultSet.next()) {
       events.add(shallowCreateEventFromDatabaseResult(resultSet));
     }
     return events;
   }
-
+ 
   private static String formatMultipleValuesForQuery(List<String> values) {
     return values
         .stream()
         .map(value -> String.format("'%s'", value))
         .collect(Collectors.joining( "," ));
   }
-
+ 
   /**
    * Returns Event by ID from DB
    *
@@ -162,16 +163,17 @@ public class SpannerTasks {
                 Statement.of(
                     String.format(
                         "SELECT EventId, Name, Description, Labels, Location, Date, Time, Host,"
-                            + " Opportunities, Attendees FROM %s WHERE EventID='%s'",
+                            + " Opportunities, Attendees, Image FROM %s WHERE EventID='%s'"
+                            + " AND DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0",
                         EVENT_TABLE, eventId)));
-
+ 
     /** If ID does not exist */
     if (!resultSet.next()) {
       return Optional.empty();
     }
     return Optional.of(shallowCreateEventFromDatabaseResult(resultSet));
   }
-
+ 
   /**
    * Returns all events stored in DB; events will be shallow copies, so corresponding users will not
    * have their events attached
@@ -187,7 +189,8 @@ public class SpannerTasks {
                 Statement.of(
                     String.format(
                         "SELECT EventID, Name, Description, Labels, Location, Date, Time,"
-                            + " Host, Opportunities, Attendees FROM %s",
+                            + " Host, Opportunities, Attendees, Image FROM %s WHERE"
+                            + " DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0",
                         EVENT_TABLE)));
     while (resultSet.next()) {
       Event event = shallowCreateEventFromDatabaseResult(resultSet);
@@ -195,7 +198,7 @@ public class SpannerTasks {
     }
     return events;
   }
-
+ 
   private static Event shallowCreateEventFromDatabaseResult(ResultSet resultSet) {
     String eventId = resultSet.getString(0);
     return new Event.Builder(
@@ -211,9 +214,10 @@ public class SpannerTasks {
         .setOpportunities(getVolunteeringOpportunitiesByEventId(eventId))
         .setAttendees(
             shallowReadMultipleUsersFromEmails(new HashSet<String>(resultSet.getStringList(9))))
+        .setImageUrl(resultSet.getString(10))
         .build();
   }
-
+ 
   private static List<Mutation> getUserMutationsFromBuilder(
       Mutation.WriteBuilder builder, User user) {
     List<Mutation> mutations = new ArrayList<>();
@@ -237,7 +241,7 @@ public class SpannerTasks {
     mutations.add(builder.build());
     return mutations;
   }
-
+ 
   /** TO DO: Attendee and Opportunity String Array based on UUID in other PRs */
   private static List<Mutation> getEventMutationsFromBuilder(
       Mutation.WriteBuilder builder, Event event) {
@@ -262,11 +266,13 @@ public class SpannerTasks {
         .set("Opportunities")
         .toStringArray(event.getOpportunitiesIds())
         .set("Attendees")
-        .toStringArray(event.getAttendeeIds());
+        .toStringArray(event.getAttendeeIds())
+        .set("Image")
+        .to(event.getImageUrl());
     mutations.add(builder.build());
     return mutations;
   }
-
+ 
   /**
    * Given a volunteering opportunity, insert a row with all available fields into the DB
    *
@@ -277,7 +283,7 @@ public class SpannerTasks {
         getMutationsFromBuilder(newInsertBuilderFromVolunteeringOpportunity(), opportunity);
     SpannerClient.getDatabaseClient().write(mutations);
   }
-
+ 
   /**
    * Given a volunteering opportunity, update a row with the same opportunityId in the DB
    *
@@ -288,15 +294,15 @@ public class SpannerTasks {
         getMutationsFromBuilder(newUpdateBuilderFromVolunteeringOpportunity(), opportunity);
     SpannerClient.getDatabaseClient().write(mutations);
   }
-
+ 
   private static Mutation.WriteBuilder newInsertBuilderFromVolunteeringOpportunity() {
     return Mutation.newInsertBuilder(VOLUNTEERING_OPPORTUNITY_TABLE);
   }
-
+ 
   private static Mutation.WriteBuilder newUpdateBuilderFromVolunteeringOpportunity() {
     return Mutation.newUpdateBuilder(VOLUNTEERING_OPPORTUNITY_TABLE);
   }
-
+ 
   private static List<Mutation> getMutationsFromBuilder(
       Mutation.WriteBuilder builder, VolunteeringOpportunity opportunity) {
     List<Mutation> mutations = new ArrayList<>();
@@ -314,7 +320,7 @@ public class SpannerTasks {
     mutations.add(builder.build());
     return mutations;
   }
-
+ 
   /**
    * Given an opportunityId, retrieve the corresponding volunteering opportunity
    *
@@ -348,7 +354,7 @@ public class SpannerTasks {
     }
     return result;
   }
-
+ 
   /**
    * Given an eventId, retrieve all volunteering opportunities for that eventId
    *
@@ -380,7 +386,7 @@ public class SpannerTasks {
     }
     return results;
   }
-
+ 
   private static List<Mutation> getMutationsFromBuilder(
       Mutation.WriteBuilder builder, OpportunitySignup signup) {
     List<Mutation> mutations = new ArrayList<>();
@@ -388,7 +394,7 @@ public class SpannerTasks {
     mutations.add(builder.build());
     return mutations;
   }
-
+ 
   /**
    * Given a signup, insert a row with all available fields into the database
    * and decrement the number of spots for the corresponding volunteering 
@@ -413,7 +419,7 @@ public class SpannerTasks {
                   List<Mutation> signupMutations =
                       getMutationsFromBuilder(newInsertBuilderFromOpportunitySignup(), signup);
                   transaction.buffer(signupMutations);
-
+ 
                   numSpotsLeft--;
                   transaction.buffer(
                       Mutation.newUpdateBuilder(VOLUNTEERING_OPPORTUNITY_TABLE)
@@ -427,7 +433,7 @@ public class SpannerTasks {
               }
             });
   }
-
+ 
   /**
    * Given an opportunityId, retrieve all signups for that opportunityId.
    *
@@ -450,11 +456,11 @@ public class SpannerTasks {
     }
     return results;
   }
-
+ 
   private static Mutation.WriteBuilder newInsertBuilderFromOpportunitySignup() {
     return Mutation.newInsertBuilder(OPPORTUNITY_SIGNUP_TABLE);
   }
-
+ 
   /**
    * Given filters for events, return events whose labels match those filters
    *
@@ -467,8 +473,9 @@ public class SpannerTasks {
       Statement statement =
           Statement.of(
               String.format(
-                  "SELECT EventID, Name, Description, Labels, Location, Date, Time, Host, Attendees"
-                      + " FROM %s WHERE \"%s\" IN UNNEST(Labels)",
+                  "SELECT EventID, Name, Description, Labels, Location, Date, Time, Host, Attendees, Image"
+                      + " FROM %s WHERE \"%s\" IN UNNEST(Labels)"
+                      + " AND DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0",
                       EVENT_TABLE, label));
       try (ResultSet resultSet =
           SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
@@ -487,6 +494,7 @@ public class SpannerTasks {
                   .setAttendees(
                       shallowReadMultipleUsersFromEmails(
                           new HashSet<String>(resultSet.getStringList(8))))
+                  .setImageUrl(resultSet.getString(9))
                   .build();
             results.add(event);
           }
@@ -494,7 +502,7 @@ public class SpannerTasks {
       }
       return results;
     } 
-
+ 
    /*
    * Given an email, retrieve all events for which the user with the email is
    * hosting.
@@ -511,7 +519,7 @@ public class SpannerTasks {
                 Statement.of(
                     String.format(
                         "SELECT Events.EventID, Events.Name, Events.Description, Events.Labels,"
-                            + " Events.Location, Events.Date, Events.Time, Events.Host"
+                            + " Events.Location, Events.Date, Events.Time, Events.Host, Events.Image"
                             + " FROM Events INNER JOIN"
                             + " Users ON Events.EventID IN UNNEST(Users.EventsHosting) WHERE Email=\"%s\"",
                         email)));
@@ -526,12 +534,13 @@ public class SpannerTasks {
                   /* time = */ resultSet.getString(6),
                   /* host = */ shallowReadUserFromEmail(resultSet.getString(7)).get())
               .setId(resultSet.getString(0))
+              .setImageUrl(resultSet.getString(8))
               .build();
       results.add(event);
     }
     return results;
   }
-
+ 
   /**
    * Given an email retrieve all events for which the user with the email is 
    * volunteering for.
@@ -545,7 +554,7 @@ public class SpannerTasks {
         Statement.of(
             String.format(
                 "SELECT Events.EventID, Events.Name, Events.Description, Events.Labels,"
-                    + " Events.Location, Events.Date, Events.Time, Events.Host,"
+                    + " Events.Location, Events.Date, Events.Time, Events.Host, Events.Image,"
                     + " VolunteeringOpportunity.Name FROM Events INNER JOIN"
                     + " VolunteeringOpportunity ON Events.EventID ="
                     + " VolunteeringOpportunity.EventID INNER JOIN OpportunitySignup ON"
@@ -565,13 +574,14 @@ public class SpannerTasks {
                     /* time = */ resultSet.getString(6),
                     /* host = */ shallowReadUserFromEmail(resultSet.getString(7)).get())
                 .setId(resultSet.getString(0))
+                .setImageUrl(resultSet.getString(8))
                 .build();
         results.add(new EventVolunteering(event, /* opportunityName = */ resultSet.getString(8)));
       }
     }
     return results;
   }
-
+ 
   /**
    * Given a user email retrieve all events that the user is 
    * participating in by querying events that the user is an attendee of.
@@ -583,7 +593,7 @@ public class SpannerTasks {
     Set<Event> results = new HashSet<Event>();
     Statement statement = Statement.of(
         String.format(
-            "SELECT EventID, Name, Description, Labels, Location, Date, Time, Host, Attendees"
+            "SELECT EventID, Name, Description, Labels, Location, Date, Time, Host, Attendees, Image"
             + " FROM %s WHERE \"%s\" IN UNNEST(Attendees)",
                 EVENT_TABLE, email ));
     try (ResultSet resultSet =
@@ -600,6 +610,7 @@ public class SpannerTasks {
                     /* host = */ shallowReadUserFromEmail(resultSet.getString(7)).get())
                 .setId(resultSet.getString(0))
                 .setAttendees(shallowReadMultipleUsersFromEmails(new HashSet<String>(resultSet.getStringList(8))))
+                .setImageUrl(resultSet.getString(9))
                 .build();
         results.add(event);
       }
@@ -627,14 +638,18 @@ public class SpannerTasks {
                   Struct row =
                       transaction.readRow(
                           KEYWORDS_TABLE, Key.of(keyword), Collections.singleton(NAME));
-                  String keywordId = row == null ? UUID.randomUUID().toString() : row.getString(0);
-                  transaction.buffer(
-                      Mutation.newInsertBuilder(KEYWORDS_TABLE)
-                          .set(KEYWORD_ID)
-                          .to(keywordId)
-                          .set(NAME)
-                          .to(keyword)
-                          .build());
+                  String keywordId = UUID.randomUUID().toString();
+                  if (row == null) {
+                    transaction.buffer(
+                        Mutation.newInsertBuilder(KEYWORDS_TABLE)
+                            .set(KEYWORD_ID)
+                            .to(keywordId)
+                            .set(NAME)
+                            .to(keyword)
+                            .build());
+                  } else {
+                    keywordId = row.getString(0);
+                  }
                   transaction.buffer(
                       Mutation.newInsertBuilder(RESULTS_TABLE)
                           .set(KEYWORD_ID)
@@ -651,7 +666,8 @@ public class SpannerTasks {
   }
 
   /**
-   * Returns events by keyword in descending order of ranking.
+   * Returns events by keyword in descending order of ranking and includes
+   * only events that are in the future.
    *
    * @param keyword keyword to fetch event results for
    * @return list of events in descending order of ranking
@@ -664,7 +680,8 @@ public class SpannerTasks {
                 "SELECT Events.EventID, Events.Name, Events.Description, Events.Labels,"
                     + " Events.Location, Events.Date, Events.Time, Events.Host FROM Results INNER"
                     + " JOIN Keywords ON Results.KeywordID = Keywords.KeywordID INNER JOIN Events"
-                    + " ON Events.EventID = Results.EventID WHERE Keywords.Name=\"%s\" ORDER BY"
+                    + " ON Events.EventID = Results.EventID WHERE Keywords.Name=\"%s\""
+                    + " AND DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0 ORDER BY"
                     + " Results.Ranking DESC LIMIT 20;",
                 keyword));
     try (ResultSet resultSet =

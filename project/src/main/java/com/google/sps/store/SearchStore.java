@@ -44,9 +44,7 @@ public class SearchStore {
   }
 
   /**
-   * Adds result for keywords in the given text with a ranking equal to the sum of the ranking of
-   * any existing event results for the eventId and the relevance of the keyword in the text
-   * multiplied by the given weight.
+   * Adds result for keywords in the given text.
    *
    * @param eventId event ID
    * @param text text to search keywords for
@@ -65,14 +63,22 @@ public class SearchStore {
     }
 
     for (Keyword keyword : keywords) {
-      float keywordRank = 0;
-      Float existingRanking = keywordToRanking.get(keyword.getName());
-      if (existingRanking != null) {
-        keywordRank += existingRanking;
-      }
-      keywordRank = Float.sum(keywordRank, weight * keyword.getRelevance());
-      keywordToRanking.put(keyword.getName(), keywordRank);
+      keywordToRanking.put(keyword.getName(), getRanking(keyword, weight, keywordToRanking));
     }
+  }
+
+  /**
+   * Returns ranking equal to the sum of the existing ranking and the relevance of the keyword 
+   * in the text multiplied by the given weight.
+   */
+  private float getRanking(Keyword keyword, float weight, Map<String, Float> keywordToRanking) {
+    float keywordRank = 0;
+    String name = keyword.getName();
+    if (keywordToRanking.containsKey(name)) {
+      keywordRank += keywordToRanking.get(name);
+    }
+    keywordRank += weight * keyword.getRelevance();
+    return keywordRank;
   }
 
   /**
