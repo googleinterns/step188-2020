@@ -2,6 +2,7 @@ package com.google.sps;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import com.google.cloud.Date;
 import com.google.sps.servlets.SearchDataServlet;
 import com.google.sps.servlets.EventCreationServlet;
 import com.google.sps.data.Event;
@@ -10,6 +11,7 @@ import com.google.sps.data.Keyword;
 import com.google.sps.data.User;
 import com.google.sps.store.SearchStore;
 import com.google.sps.utilities.CommonUtils;
+import com.google.sps.utilities.NlpProcessing;
 import com.google.sps.utilities.KeywordHelper;
 import com.google.sps.utilities.SpannerClient;
 import com.google.sps.utilities.SpannerTasks;
@@ -20,6 +22,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Calendar;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.Assert;
@@ -29,12 +32,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.Mockito;
+import org.mockito.ArgumentMatchers;
 import javax.servlet.ServletContextEvent;
 import org.springframework.mock.web.MockServletContext;
 import com.google.gson.Gson;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.anyObject;
 
 /** Unit tests for adding new events to search index and retrieving search results. */
-@RunWith(JUnit4.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(EventCreationServlet.class)
 public class SearchDataServletTest {
   private HttpServletRequest postRequest;
   private HttpServletResponse postResponse;
@@ -108,7 +120,7 @@ public class SearchDataServletTest {
   private static final LocalServiceTestHelper authenticationHelper =
     new LocalServiceTestHelper(new LocalUserServiceTestConfig());
   private static final String LOCATION = "Remote";
-  private static final String DATE_STRING = "2016-09-15";
+  private static final Date FUTURE_DATE = Date.fromYearMonthDay(Calendar.getInstance().get(Calendar.YEAR) + 1, 9, 15);
   private static final String TIME = "3:00PM-5:00PM";
   private static final String TECH = "Tech";
   private static final String EMAIL = "bobsmith@example.com";
@@ -153,6 +165,12 @@ public class SearchDataServletTest {
     new SpannerClient().contextInitialized(new ServletContextEvent(mockServletContext));
     SpannerTestTasks.setup();
     authenticationHelper.setUp();
+
+    // Mocking necessary for labels feature
+    NlpProcessing nlpProcessor = PowerMock.createMock(NlpProcessing.class);
+	PowerMock.expectNew(NlpProcessing.class).andStubReturn(nlpProcessor);
+	expect(nlpProcessor.getNlp(anyObject(String.class))).andStubReturn(new ArrayList());
+    PowerMock.replay(nlpProcessor, NlpProcessing.class);
 
     SpannerTasks.insertOrUpdateUser(HOST);
     loginHost();
@@ -260,7 +278,7 @@ public class SearchDataServletTest {
 
   private static void setRequiredRequestParameters(HttpServletRequest mockRequest) {
     SpannerTasks.insertOrUpdateUser(TestUtils.newUserWithEmail(EMAIL));
-    Mockito.when(mockRequest.getParameter(PARAMETER_DATE)).thenReturn(DATE_STRING);
+    Mockito.when(mockRequest.getParameter(PARAMETER_DATE)).thenReturn(FUTURE_DATE.toString());
     Mockito.when(mockRequest.getParameter(PARAMETER_TIME)).thenReturn(TIME);
     Mockito.when(mockRequest.getParameter(PARAMETER_LOCATION)).thenReturn(LOCATION);
     Mockito.when(mockRequest.getParameter(PARAMETER_INTERESTS)).thenReturn(TECH);

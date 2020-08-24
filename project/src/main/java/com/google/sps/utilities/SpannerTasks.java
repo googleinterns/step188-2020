@@ -134,7 +134,7 @@ public class SpannerTasks {
                 Statement.of(
                     String.format(
                         "SELECT EventID, Name, Description, Labels, Location, Date, Time,"
-                            + " Host, Opportunities, Attendees FROM %s WHERE EventID in (%s)"
+                            + " Host, Opportunities, Attendees, Image FROM %s WHERE EventID in (%s)"
                             + " AND DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0",
                         EVENT_TABLE, eventIdsFormatted)));
     while (resultSet.next()) {
@@ -163,7 +163,7 @@ public class SpannerTasks {
                 Statement.of(
                     String.format(
                         "SELECT EventId, Name, Description, Labels, Location, Date, Time, Host,"
-                            + " Opportunities, Attendees FROM %s WHERE EventID='%s'"
+                            + " Opportunities, Attendees, Image FROM %s WHERE EventID='%s'"
                             + " AND DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0",
                         EVENT_TABLE, eventId)));
 
@@ -189,7 +189,7 @@ public class SpannerTasks {
                 Statement.of(
                     String.format(
                         "SELECT EventID, Name, Description, Labels, Location, Date, Time,"
-                            + " Host, Opportunities, Attendees FROM %s WHERE"
+                            + " Host, Opportunities, Attendees, Image FROM %s WHERE"
                             + " DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0",
                         EVENT_TABLE)));
     while (resultSet.next()) {
@@ -473,7 +473,7 @@ public class SpannerTasks {
       Statement statement =
           Statement.of(
               String.format(
-                  "SELECT EventID, Name, Description, Labels, Location, Date, Time, Host, Attendees"
+                  "SELECT EventID, Name, Description, Labels, Location, Date, Time, Host, Attendees, Image"
                       + " FROM %s WHERE \"%s\" IN UNNEST(Labels)"
                       + " AND DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0",
                       EVENT_TABLE, label));
@@ -494,6 +494,7 @@ public class SpannerTasks {
                   .setAttendees(
                       shallowReadMultipleUsersFromEmails(
                           new HashSet<String>(resultSet.getStringList(8))))
+                  .setImageUrl(resultSet.getString(9))
                   .build();
             results.add(event);
           }
@@ -553,7 +554,7 @@ public class SpannerTasks {
         Statement.of(
             String.format(
                 "SELECT Events.EventID, Events.Name, Events.Description, Events.Labels,"
-                    + " Events.Location, Events.Date, Events.Time, Events.Host,"
+                    + " Events.Location, Events.Date, Events.Time, Events.Host, Events.Image,"
                     + " VolunteeringOpportunity.Name FROM Events INNER JOIN"
                     + " VolunteeringOpportunity ON Events.EventID ="
                     + " VolunteeringOpportunity.EventID INNER JOIN OpportunitySignup ON"
@@ -573,6 +574,7 @@ public class SpannerTasks {
                     /* time = */ resultSet.getString(6),
                     /* host = */ shallowReadUserFromEmail(resultSet.getString(7)).get())
                 .setId(resultSet.getString(0))
+                .setImageUrl(resultSet.getString(8))
                 .build();
         results.add(new EventVolunteering(event, /* opportunityName = */ resultSet.getString(8)));
       }

@@ -103,6 +103,7 @@ public class EventSpannerTasksTest {
     eventCreationServlet = new EventCreationServlet();
     mockKeywordHelper = Mockito.mock(KeywordHelper.class);
     eventCreationServlet.setSearchStore(new SearchStore(mockKeywordHelper));
+
     Mockito.when(response.getWriter()).thenReturn(printWriter);
   } 
 
@@ -165,21 +166,6 @@ public class EventSpannerTasksTest {
     Mockito.when(request.getParameter("location")).thenReturn(LOCATION);
     Mockito.when(request.getParameter("interests")).thenReturn("Tech, Work");
 
-<<<<<<< HEAD
-    eventCreationServlet.doPost(request, response);
-    // Get back Event posted in db
-    Event returnedEvent = new Gson().fromJson(response.getContentAsString(), Event.class);
-
-    // Check that event inserted into doPost is same as event returned from doPost db
-    Assert.assertEquals(returnedEvent.getName(), EVENT_NAME);
-    Assert.assertEquals(returnedEvent.getDescription(), DESCRIPTION);
-    Assert.assertEquals(returnedEvent.getLocation(), LOCATION);
-    Assert.assertEquals(returnedEvent.getDate(), DATE);
-    Assert.assertEquals(returnedEvent.getTime(), TIME);
-    Assert.assertEquals(returnedEvent.getLabels(), new HashSet<>(Arrays.asList("Tech")));
-    Assert.assertEquals(returnedEvent.getHost().getName(), HOST_NAME);
-    Assert.assertEquals(returnedEvent.getHost().getEmail(), EMAIL);
-=======
     new EventCreationServlet().doPost(request, response);
     Event event =
         new Event.Builder(EVENT_NAME, DESCRIPTION, LABELS, LOCATION, DATE_FUTURE, TIME, HOST)
@@ -187,7 +173,6 @@ public class EventSpannerTasksTest {
 
     JSONAssert.assertEquals(CommonUtils.convertToJson(event).trim(),
       stringWriter.toString().trim(), /*assert order= */ false);
->>>>>>> master
   }
 
   /**
