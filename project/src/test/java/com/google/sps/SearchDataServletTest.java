@@ -3,6 +3,7 @@ package com.google.sps;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.cloud.Date;
+import com.google.common.collect.ImmutableList;
 import com.google.sps.servlets.SearchDataServlet;
 import com.google.sps.servlets.EventCreationServlet;
 import com.google.sps.data.Event;
@@ -76,47 +77,44 @@ public class SearchDataServletTest {
       "Sutter Middle School will be walking to McKinley Park. 7th grade class and teachers will"
           + " have a picnic and eat lunch at the park and Clunie Pool.";
   private static final String NAME_WITH_GAMES = "End of the Year Picnic and Games";
-  private static final ArrayList<Keyword> KEYWORDS_NAME_WITHOUT_GAMES =
-      new ArrayList<Keyword>(Arrays.asList(new Keyword("picnic", 1.00f)));
+  private static final ImmutableList<Keyword> KEYWORDS_NAME_WITHOUT_GAMES =
+      ImmutableList.of(new Keyword("picnic", 1.00f));
   private static final String DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE =
       "Sutter Middle School will be walking to McKinley Park. 7th grade class and teachers will"
           + " have a picnic, play games, and eat lunch at the park and Clunie Pool.";
-  private static final ArrayList<Keyword> KEYWORDS_DESCRIPTION_WITHOUT_GAMES =
-      new ArrayList<Keyword>(
-          Arrays.asList(
-              new Keyword("Sutter Middle School", 0.43f),
-              new Keyword("McKinley Park", 0.14f),
-              new Keyword("teachers", 0.10f),
-              new Keyword("class", 0.10f),
-              new Keyword("picnic", 0.09f),
-              new Keyword("park", 0.08f),
-              new Keyword("lunch", 0.03f),
-              new Keyword("Clunie Pool", 0.03f)));
-  private static final ArrayList<Keyword> KEYWORDS_DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE =
-      new ArrayList<Keyword>(
-          Arrays.asList(
-              new Keyword("Sutter Middle School", 0.41f),
-              new Keyword("McKinley Park", 0.13f),
-              new Keyword("teachers", 0.09f),
-              new Keyword("class", 0.09f),
-              new Keyword("picnic", 0.09f),
-              new Keyword("park", 0.08f),
-              new Keyword("lunch", 0.07f),
-              new Keyword(GAMES, 0.01f),
-              new Keyword("Clunie Pool", 0.03f)));
+  private static final ImmutableList<Keyword> KEYWORDS_DESCRIPTION_WITHOUT_GAMES =
+      ImmutableList.of(
+        new Keyword("Sutter Middle School", 0.43f),
+        new Keyword("McKinley Park", 0.14f),
+        new Keyword("teachers", 0.10f),
+        new Keyword("class", 0.10f),
+        new Keyword("picnic", 0.09f),
+        new Keyword("park", 0.08f),
+        new Keyword("lunch", 0.03f),
+        new Keyword("Clunie Pool", 0.03f));
+  private static final ImmutableList<Keyword> KEYWORDS_DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE =
+    ImmutableList.of(
+        new Keyword("Sutter Middle School", 0.41f),
+        new Keyword("McKinley Park", 0.13f),
+        new Keyword("teachers", 0.09f),
+        new Keyword("class", 0.09f),
+        new Keyword("picnic", 0.09f),
+        new Keyword("park", 0.08f),
+        new Keyword("lunch", 0.07f),
+        new Keyword(GAMES, 0.01f),
+        new Keyword("Clunie Pool", 0.03f));
   private static final String DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE =
       "Community harvest festival with games, food, and candy. Event open to the public 5pm-9pm."
           + "Complete full closure for 700 attendees.";
-  private static final ArrayList<Keyword> KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE =
-      new ArrayList<Keyword>(
-          Arrays.asList(
-              new Keyword("Community Harvest festival", 0.40f),
-              new Keyword(GAMES, 0.17f),
-              new Keyword("food", 0.17f),
-              new Keyword("candy", 0.12f),
-              new Keyword("Event", 0.06f),
-              new Keyword("closure", 0.04f),
-              new Keyword("attendees", 0.03f)));
+  private static final ImmutableList<Keyword> KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE =
+    ImmutableList.of(
+        new Keyword("Community Harvest festival", 0.40f),
+        new Keyword(GAMES, 0.17f),
+        new Keyword("food", 0.17f),
+        new Keyword("candy", 0.12f),
+        new Keyword("Event", 0.06f),
+        new Keyword("closure", 0.04f),
+        new Keyword("attendees", 0.03f));
   private static final LocalServiceTestHelper authenticationHelper =
     new LocalServiceTestHelper(new LocalUserServiceTestConfig());
   private static final String LOCATION = "Remote";
@@ -168,8 +166,8 @@ public class SearchDataServletTest {
 
     // Mocking necessary for labels feature
     NlpProcessing nlpProcessor = PowerMock.createMock(NlpProcessing.class);
-	PowerMock.expectNew(NlpProcessing.class).andStubReturn(nlpProcessor);
-	expect(nlpProcessor.getNlp(anyObject(String.class))).andStubReturn(new ArrayList());
+    PowerMock.expectNew(NlpProcessing.class).andStubReturn(nlpProcessor);
+    expect(nlpProcessor.getNlp(anyObject(String.class))).andStubReturn(new ArrayList());
     PowerMock.replay(nlpProcessor, NlpProcessing.class);
 
     SpannerTasks.insertOrUpdateUser(HOST);
@@ -203,6 +201,8 @@ public class SearchDataServletTest {
     Mockito.when(mockKeywordHelper.getKeywords())
         .thenReturn(KEYWORDS_NAME_WITHOUT_GAMES, KEYWORDS_DESCRIPTION_WITHOUT_GAMES);
 
+    // Add an event using eventCreationServlet and assert that the returned event is the
+    // same as the inserted event.
     eventCreationServlet.doPost(postRequest, postResponse);
     Event returnedEvent = new Gson().fromJson(postStringWriter.toString().trim(), Event.class);
     Assert.assertEquals(returnedEvent.getName(), NAME_WITHOUT_GAMES);
@@ -240,11 +240,15 @@ public class SearchDataServletTest {
             KEYWORDS_NAME_WITHOUT_GAMES,
             KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
 
+    // Add an event using eventCreationServlet and assert that the returned event is the
+    // same as the inserted event.
     eventCreationServlet.doPost(postRequest, postResponse);
     Event returnedEvent = new Gson().fromJson(postStringWriter.toString().trim(), Event.class);
     Assert.assertEquals(returnedEvent.getName(), NAME_WITHOUT_GAMES);
     Assert.assertEquals(returnedEvent.getDescription(), DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE);
 
+    // Add a second event using eventCreationServlet and assert that the returned event is the
+    // same as the inserted event.
     eventCreationServlet.doPost(secondPostRequest, secondPostResponse);
     Event secondReturnedEvent = new Gson().fromJson(secondPostStringWriter.toString().trim(), Event.class);
     Assert.assertEquals(secondReturnedEvent.getName(), NAME_WITHOUT_GAMES);
