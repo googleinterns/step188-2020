@@ -76,7 +76,7 @@ public class TestUtils {
   public static Event newEventWithFutureDate(String eventId, String name, String description) {
     User host = newUser();
     SpannerTasks.insertOrUpdateUser(host);
-    return new Event.Builder(name, description, LABELS, LOCATION, FUTURE_DATE, TIME, host)
+    return new Event.Builder(name, description, LABELS, LOCATION, DATE, TIME, host)
         .setId(eventId)
             .build();
   }
