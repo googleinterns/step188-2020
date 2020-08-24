@@ -49,7 +49,7 @@ public class SpannerTasks {
     String email = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     return shallowReadUserFromEmail(email);
   }
- 
+
   /**
    * Given a user, insert or update a row with all available fields into the DB
    *
@@ -62,7 +62,7 @@ public class SpannerTasks {
         getUserMutationsFromBuilder(Mutation.newInsertOrUpdateBuilder(USER_TABLE), user);
     SpannerClient.getDatabaseClient().write(mutations);
   }
- 
+
   /**
    * Given an email, return the corresponding user from the DB WITHOUT attached events
    *
@@ -90,7 +90,7 @@ public class SpannerTasks {
             .setImageUrl(resultSet.getString(3))
             .build());
   }
- 
+
   /**
    * Given a set of emails, return the corresponding users from the DB
    *
@@ -107,7 +107,7 @@ public class SpannerTasks {
     }
     return users;
   }
- 
+
   /**
    * Given an event, insert or update a row with all available fields into the DB
    *
@@ -118,7 +118,7 @@ public class SpannerTasks {
         getEventMutationsFromBuilder(Mutation.newInsertOrUpdateBuilder(EVENT_TABLE), event);
     SpannerClient.getDatabaseClient().write(mutations);
   }
- 
+
   /**
    * Returns from DB all available events that match with provided list of IDs
    *
@@ -142,14 +142,14 @@ public class SpannerTasks {
     }
     return events;
   }
- 
+
   private static String formatMultipleValuesForQuery(List<String> values) {
     return values
         .stream()
         .map(value -> String.format("'%s'", value))
         .collect(Collectors.joining( "," ));
   }
- 
+
   /**
    * Returns Event by ID from DB
    *
@@ -173,7 +173,7 @@ public class SpannerTasks {
     }
     return Optional.of(shallowCreateEventFromDatabaseResult(resultSet));
   }
- 
+
   /**
    * Returns all events stored in DB; events will be shallow copies, so corresponding users will not
    * have their events attached
@@ -198,7 +198,7 @@ public class SpannerTasks {
     }
     return events;
   }
- 
+
   private static Event shallowCreateEventFromDatabaseResult(ResultSet resultSet) {
     String eventId = resultSet.getString(0);
     return new Event.Builder(
@@ -217,7 +217,7 @@ public class SpannerTasks {
         .setImageUrl(resultSet.getString(10))
         .build();
   }
- 
+
   private static List<Mutation> getUserMutationsFromBuilder(
       Mutation.WriteBuilder builder, User user) {
     List<Mutation> mutations = new ArrayList<>();
@@ -241,7 +241,7 @@ public class SpannerTasks {
     mutations.add(builder.build());
     return mutations;
   }
- 
+
   /** TO DO: Attendee and Opportunity String Array based on UUID in other PRs */
   private static List<Mutation> getEventMutationsFromBuilder(
       Mutation.WriteBuilder builder, Event event) {
@@ -272,7 +272,7 @@ public class SpannerTasks {
     mutations.add(builder.build());
     return mutations;
   }
- 
+
   /**
    * Given a volunteering opportunity, insert a row with all available fields into the DB
    *
@@ -283,7 +283,7 @@ public class SpannerTasks {
         getMutationsFromBuilder(newInsertBuilderFromVolunteeringOpportunity(), opportunity);
     SpannerClient.getDatabaseClient().write(mutations);
   }
- 
+
   /**
    * Given a volunteering opportunity, update a row with the same opportunityId in the DB
    *
@@ -294,15 +294,15 @@ public class SpannerTasks {
         getMutationsFromBuilder(newUpdateBuilderFromVolunteeringOpportunity(), opportunity);
     SpannerClient.getDatabaseClient().write(mutations);
   }
- 
+
   private static Mutation.WriteBuilder newInsertBuilderFromVolunteeringOpportunity() {
     return Mutation.newInsertBuilder(VOLUNTEERING_OPPORTUNITY_TABLE);
   }
- 
+
   private static Mutation.WriteBuilder newUpdateBuilderFromVolunteeringOpportunity() {
     return Mutation.newUpdateBuilder(VOLUNTEERING_OPPORTUNITY_TABLE);
   }
- 
+
   private static List<Mutation> getMutationsFromBuilder(
       Mutation.WriteBuilder builder, VolunteeringOpportunity opportunity) {
     List<Mutation> mutations = new ArrayList<>();
@@ -320,7 +320,7 @@ public class SpannerTasks {
     mutations.add(builder.build());
     return mutations;
   }
- 
+
   /**
    * Given an opportunityId, retrieve the corresponding volunteering opportunity
    *
@@ -354,7 +354,7 @@ public class SpannerTasks {
     }
     return result;
   }
- 
+
   /**
    * Given an eventId, retrieve all volunteering opportunities for that eventId
    *
@@ -386,7 +386,7 @@ public class SpannerTasks {
     }
     return results;
   }
- 
+
   private static List<Mutation> getMutationsFromBuilder(
       Mutation.WriteBuilder builder, OpportunitySignup signup) {
     List<Mutation> mutations = new ArrayList<>();
@@ -394,7 +394,7 @@ public class SpannerTasks {
     mutations.add(builder.build());
     return mutations;
   }
- 
+
   /**
    * Given a signup, insert a row with all available fields into the database
    * and decrement the number of spots for the corresponding volunteering 
@@ -433,7 +433,7 @@ public class SpannerTasks {
               }
             });
   }
- 
+
   /**
    * Given an opportunityId, retrieve all signups for that opportunityId.
    *
@@ -456,11 +456,11 @@ public class SpannerTasks {
     }
     return results;
   }
- 
+
   private static Mutation.WriteBuilder newInsertBuilderFromOpportunitySignup() {
     return Mutation.newInsertBuilder(OPPORTUNITY_SIGNUP_TABLE);
   }
- 
+
   /**
    * Given filters for events, return events whose labels match those filters
    *
@@ -502,7 +502,7 @@ public class SpannerTasks {
       }
       return results;
     } 
- 
+
    /*
    * Given an email, retrieve all events for which the user with the email is
    * hosting.
@@ -540,7 +540,7 @@ public class SpannerTasks {
     }
     return results;
   }
- 
+
   /**
    * Given an email retrieve all events for which the user with the email is 
    * volunteering for.
@@ -581,7 +581,7 @@ public class SpannerTasks {
     }
     return results;
   }
- 
+
   /**
    * Given a user email retrieve all events that the user is 
    * participating in by querying events that the user is an attendee of.
@@ -617,7 +617,7 @@ public class SpannerTasks {
     }
     return results;
   }
- 
+
   /**
    * Add event results to persistent storage index by inserting the keyword into the keywords table
    * if it dose not exist and adding a corresponding row in the results table.
