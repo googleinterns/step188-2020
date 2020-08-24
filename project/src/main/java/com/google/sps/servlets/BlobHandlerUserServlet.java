@@ -9,6 +9,7 @@ import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
 import com.google.sps.data.User;
+import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -48,32 +49,12 @@ public class BlobHandlerUserServlet extends HttpServlet {
     Optional<User> userOptional = SpannerTasks.getLoggedInUser();
     if (userOptional.isPresent()) {
       User user = userOptional.get();
-      String blobKeyString = getUploadedBlobKeyString(request);
+      String blobKeyString = CommonUtils.getUploadedBlobKeyString(request, PROFILE_PICTURE);
       SpannerTasks.insertOrUpdateUser(user.toBuilder().setImageUrl(blobKeyString).build());
     } else {
       response.sendError(
           HttpServletResponse.SC_BAD_REQUEST, "Error with getting current user: does not exist");
     }
     response.sendRedirect("/profile-edit.html");
-  }
-
-  /** Returns a URL that points to the uploaded file, or null if the user didn't upload a file. */
-  private static String getUploadedBlobKeyString(HttpServletRequest request) {
-    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-    Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
-    List<BlobKey> blobKeys = blobs.get(PROFILE_PICTURE);
-
-    // User submitted form without selecting a file, so we can't get a URL. (dev server)
-    if (blobKeys == null || blobKeys.isEmpty()) {
-      return null;
-    }
-    BlobKey blobKey = blobKeys.get(0);
-    // User submitted form without selecting a file, so we can't get a URL. (live server)
-    BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
-    if (blobInfo.getSize() == 0) {
-      blobstoreService.delete(blobKey);
-      return null;
-    }
-    return blobKey.getKeyString();
   }
 }

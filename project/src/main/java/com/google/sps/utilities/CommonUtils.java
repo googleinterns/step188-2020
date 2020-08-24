@@ -66,4 +66,25 @@ public class CommonUtils {
     }
     return nonEmptyValues;
   }
+
+
+  /** Returns a URL that points to the uploaded file, or null if the user didn't upload a file. */
+  public static String getUploadedBlobKeyString(HttpServletRequest request, String uploadType) {
+    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+    List<BlobKey> blobKeys = blobs.get(uploadType);
+
+    // User submitted form without selecting a file, so we can't get a URL. (dev server)
+    if (blobKeys == null || blobKeys.isEmpty()) {
+      return null;
+    }
+    BlobKey blobKey = blobKeys.get(0);
+    // User submitted form without selecting a file, so we can't get a URL. (live server)
+    BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
+    if (blobInfo.getSize() == 0) {
+      blobstoreService.delete(blobKey);
+      return null;
+    }
+    return blobKey.getKeyString();
+  }
 }
