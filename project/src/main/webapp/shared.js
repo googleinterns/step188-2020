@@ -251,7 +251,7 @@ function addEventImage(imageUrl, eventCardId) {
 
 /** Create a fixed-height color block for events with no image */
 function createRandomColorBlock(elementId) {
-  $(elementId).replaceWith(`<div class="card-img-top" id="event-card-image" />`)
+  $(elementId).replaceWith('<div class="card-img-top" id="event-card-image" />')
   $(elementId).addClass(pickRandomColorClass());
   $(elementId).height('200px');
 }
