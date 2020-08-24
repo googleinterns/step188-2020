@@ -6,8 +6,7 @@ html {
 }
 
 .hero-image {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-    url("https://as1.ftcdn.net/jpg/02/85/12/82/500_F_285128239_yUAIjW8lOpIeUaVfUFo3YerJN14fJaD7.jpg");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("https://as1.ftcdn.net/jpg/02/85/12/82/500_F_285128239_yUAIjW8lOpIeUaVfUFo3YerJN14fJaD7.jpg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -17,18 +16,13 @@ html {
 
 .hero-text {
   color: white;
-  left: 40%;
-  position: absolute;
-  top: 40%;
-  transform: translate(-50%, -50%);
+  padding-top: 180px;
+  text-align: center;
 }
 
 .hero-subtext {
   color: white;
-  left: 50%;
-  position: absolute;
-  top: 55%;
-  transform: translate(-50%, -50%);
+  text-align: center;
 }
 
 .hero-text button:hover {
@@ -36,17 +30,6 @@ html {
   color: white;
 }
 
-.button {
-  background-color: #91d4ed;
-  border: none;
-  color: white;
-  cursor: pointer;
-  font-size: 20px;
-  font-weight: bold;
-  margin: auto;
-  padding: 10px;
-  text-align: center;
-}
 .container {
   align-items: center;
   margin: auto;
@@ -57,6 +40,11 @@ h6 {
 }
 
 .about img {
-  height: 300px;
-  width: 300px;
+  height: 200px;
+  width: 200px;
+}
+
+.bottom-subtext {
+  color: gray;
+  text-align: right;
 }
