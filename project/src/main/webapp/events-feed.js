@@ -1,12 +1,17 @@
 const filters = {}
 
 $(async function() {
-  populateEvents();
+  console.log('1');
+  console.log('2');
   toggleDropdown();
+  console.log('3');
   // If want all events on discovery page 
   if (!(window.location.href).includes('filtered=true')) {
+    console.log('4');
     const allEvents = await getAllEvents();
+    console.log('5');
     populateAllEvents(allEvents); 
+    console.log('6');
   } else {
     // Get filtered events only
     const filteredEvents = await getFilteredEventsOnly(window.location.href.split("labelParams=")[1]);
@@ -19,7 +24,7 @@ function toggleDropdown() {
 }
 
 async function getAllEvents() {
-  const allEvents = await fetch('discovery-event-details');
+  const allEvents = await fetch('/discovery-event-details');
   return allEvents.json();
 }
 

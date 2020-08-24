@@ -251,7 +251,7 @@ function addEventImage(imageUrl, eventCardId) {
 
 /** Create a fixed-height color block for events with no image */
 function createRandomColorBlock(elementId) {
-  $(elementId).replaceWith('<div class="card-img-top" id="event-card-image" />')
+  $(elementId).replaceWith(`<div class="card-img-top" id="event-card-image" />`)
   $(elementId).addClass(pickRandomColorClass());
   $(elementId).height('200px');
 }
@@ -327,14 +327,17 @@ async function populateExistingImage(type, elementId, eventId='') {
     eventId = getEventId();
   }
   const blobKey = await getBlobKey(type, eventId);
-  let imageUrl = 'assets/default_profile.jpg';
   const blobResponse = await fetch(`/blob-serve?key=${blobKey}`);
-  if (blobResponse.status === 404) {
-    createRandomColorBlock(elementId);
+  let imageUrl = 'assets/default_profile.jpg';
+  if (blobResponse.status !== 200) {
+    if (type === 'event') {
+      createRandomColorBlock(elementId);
+    } else if (type === 'profile') {
+      $(elementId).attr('src', imageUrl);
+    }
   } else {
     const imageBlob = await blobResponse.blob();
-    imageUrl = URL.createObjectURL(imageBlob);
-    $(elementId).attr('src', imageUrl);
+    $(elementId).attr('src', URL.createObjectURL(imageBlob));
   }
 }
 
