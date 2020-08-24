@@ -39,7 +39,6 @@ async function getAllSearchEvents() {
   const keyword = document.getElementById('keyword').value;
   const response = await fetch(`search-data?keyword=${keyword}`);
   const searchEvents = await response.json();
-
   for (const key in searchEvents) {
     if (searchEvents.hasOwnProperty(key)) {
       populateEventContainer(searchEvents[key], 'search-container', 4);
