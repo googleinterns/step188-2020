@@ -28,15 +28,20 @@ $(async function() {
  * the events in the display.
  */
 async function getAllSearchEvents() {
-  let keyword = document.getElementById("keyword").value;
+  const keyword = document.getElementById('keyword').value;
   const searchData = await fetch(`search-data?keyword=${keyword}`);
   const searchEventsJSON = await searchData.json();
+
   const eventContainer = document.getElementById('event-container');
-  if (eventContainer != null)
+  if (eventContainer != null) {
     eventContainer.remove();
+  }
+
   const searchContainer = document.getElementById('search-container');
   searchContainer.innerHTML = '';
+
   for (const key in searchEventsJSON) {
+    if (searchEventsJSON.hasOwnProperty(key))
     populateEventContainer(searchEventsJSON[key], 'search-container', 4);
   }
 }
