@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /** Store class that uses in-memory map to hold search results. */
@@ -46,24 +47,46 @@ public class SearchStore {
   /**
    * Adds result for keywords in the given text.
    *
-   * @param eventId event ID
+   * @param eventId event ID where the text is found
    * @param text text to search keywords for
    * @param weight weight multiply relevance of keyword by which is proportional to the significance
-   *     of the selected piece of text.
+   *     of the selected piece of text
    * @param keywordToRanking the index to update
    */
   private void addKeywordsInTextToIndex(
       String eventId, String text, float weight, Map<String, Float> keywordToRanking) {
     keywordHelper.setContent(text);
-    List<Keyword> keywords = new ArrayList<Keyword>();
-    try {
-      keywords = keywordHelper.getKeywords();
-    } catch (IOException e) {
-      System.err.println("IO Exception due to NLP library.");
-    }
-
+    List<Keyword> keywords = keywordHelper.getKeywords();
+    Map<String, String> tokenToBasicForm = keywordHelper.getTokensWithBasicForm();
     for (Keyword keyword : keywords) {
-      keywordToRanking.put(keyword.getName(), getRanking(keyword, weight, keywordToRanking));
+      float ranking = getRanking(keyword, weight, keywordToRanking);
+      String[] wordsWithinKeyword = keyword.getName().split("[^a-zA-Z0-9']+");
+      if (wordsWithinKeyword.length > 1) {
+        for (String word : wordsWithinKeyword) {
+          addKeywordAndBasicFormIfDifferent(word, ranking, keywordToRanking, tokenToBasicForm);
+        }
+      }
+      addKeywordAndBasicFormIfDifferent(
+          keyword.getName(), ranking, keywordToRanking, tokenToBasicForm);
+    }
+  }
+
+  /**
+   * Adds keyword and basic form of the keyword if different than keyword to the index.
+   *
+   * @param keyword keyword to add to index
+   * @param ranking ranking of the keyword
+   * @param keywordToRanking the index to update
+   * @param tokenToBasicForm map of token to basic form of token for all tokens
+   *        in text where keyword was found
+   */
+  private void addKeywordAndBasicFormIfDifferent(String keyword, float ranking,
+      Map<String, Float> keywordToRanking, Map<String, String> tokenToBasicForm) {
+    keywordToRanking.put(keyword, ranking);
+
+    Optional<String> basicForm = Optional.ofNullable(tokenToBasicForm.get(keyword));
+    if (basicForm.isPresent()) {
+      keywordToRanking.put(tokenToBasicForm.get(keyword), ranking);
     }
   }
 

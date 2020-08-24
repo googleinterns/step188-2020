@@ -476,16 +476,16 @@ public class SearchStoreTest {
 
   /**
    * Ensures the ranking still holds when basic forms and words within keywords are involved.
-   * When description with the keyword food vendors is added to the index, a search
-   * for the word vendor should also return the event in result. The word
-   * vendor is the basic form of the word vendors within the keyword food vendors.
+   * When two events the first with food vendors in the name and second with food vendors in 
+   * name and description is added and the word vendor is searched, the second event is
+   * returned before the first.
    */
   @Test
   public void
-    addTwoEventsWithKeywordInDescription_secondWithWordInName_searchForWordWithinKeywordBasicForm_twoResultReturned()
-    // ID         |    Name Has Food Vendors             |   Description Has Food Vendors
-    // 1          |        Yes                           |     Yes
-    // 2          |        Yes                           |     No
+    addTwoEventsWithKeywordInDescription_secondWithWordInName_searchForWordWithinKeywordBasicForm_returnsSecondEventBeforeFirst()
+    // ID         |    Name Has food vendors             |   Description Has food vendors
+    // 1          |        Yes                           |     No
+    // 2          |        Yes                           |     Yes
           throws IOException {
     SpannerTasks.insertorUpdateEvent(
         TestUtils.newEventWithFutureDate(
