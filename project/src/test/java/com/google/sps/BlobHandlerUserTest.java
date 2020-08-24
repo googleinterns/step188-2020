@@ -31,6 +31,7 @@ import org.springframework.mock.web.MockServletContext;
 /** */
 @RunWith(JUnit4.class)
 public class BlobHandlerUserTest {
+  private static final String PICTURE_TYPE_PARAM = "picture-type";
   private static final String PROFILE_TYPE = "profile";
   private static final String EMAIL = "test@example.com";
   private static final String INVALID_EMAIL = "invalid@example.com";
@@ -82,7 +83,7 @@ public class BlobHandlerUserTest {
     SpannerTasks.insertOrUpdateUser(
         USER.toBuilder().setImageUrl(IMAGE_URL).build());
     setAuthenticationHelper(EMAIL);
-    Mockito.doReturn(PROFILE_TYPE).when(request).getParameter("picture-type");
+    Mockito.doReturn(PROFILE_TYPE).when(request).getParameter(PICTURE_TYPE_PARAM);
 
     new BlobUrlServlet().doGet(request, response);
 
@@ -92,7 +93,7 @@ public class BlobHandlerUserTest {
   @Test
   public void testBlobstoreInvalidUser() throws Exception {
     setAuthenticationHelper(INVALID_EMAIL);
-    Mockito.doReturn(PROFILE_TYPE).when(request).getParameter("picture-type");
+    Mockito.doReturn(PROFILE_TYPE).when(request).getParameter(PICTURE_TYPE_PARAM);
 
     new BlobUrlServlet().doGet(request, response);
 
