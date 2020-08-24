@@ -84,7 +84,7 @@ public class SearchStoreTest {
       ImmutableList.of(new Keyword("farmers' market", 0.36f), new Keyword("food vendors", 0.26f),
           new Keyword("growers", 0.26f), new Keyword("Event", 0.12f));
   private static final String FOOD = "food";
-  ImmutableMap<String, String> TOKENS_NAME_WITHOUT_FOOD_VENDORS =
+  private static final ImmutableMap<String, String> TOKENS_NAME_WITHOUT_FOOD_VENDORS =
       ImmutableMap.<String, String>builder()
           .put("wednesday", "wednesday")
           .put("cesar", "cesar")
@@ -93,7 +93,7 @@ public class SearchStoreTest {
           .put("'", "'")
           .put("market", "market")
           .build();
-  ImmutableMap<String, String> TOKENS_DESCRIPTION_WITH_FOOD_VENDORS =
+  private static final ImmutableMap<String, String> TOKENS_DESCRIPTION_WITH_FOOD_VENDORS =
       ImmutableMap.<String, String>builder()
           .put("Weekly", "Weekly")
           .put("farmers", "farmer")
@@ -119,7 +119,7 @@ public class SearchStoreTest {
       new ArrayList<Keyword>(
           Arrays.asList(new Keyword("farmers' market", 0.36f), new Keyword("food vendors", 0.26f),
               new Keyword("growers", 0.26f), new Keyword("Event", 0.12f)));
-  ImmutableMap<String, String> TOKENS_NAME_WITHOUT_GROWERS = ImmutableMap.<String, String>builder()
+  private static final ImmutableMap<String, String> TOKENS_NAME_WITHOUT_GROWERS = ImmutableMap.<String, String>builder()
                                                                  .put("wednesday", "wednesday")
                                                                  .put("cesar", "cesar")
                                                                  .put("chavez", "chavez")
@@ -127,7 +127,7 @@ public class SearchStoreTest {
                                                                  .put("'", "'")
                                                                  .put("market", "market")
                                                                  .build();
-  ImmutableMap<String, String> TOKENS_DESCRIPTION_WITH_GROWERS =
+  private static final ImmutableMap<String, String> TOKENS_DESCRIPTION_WITH_GROWERS =
       ImmutableMap.<String, String>builder()
           .put("Weekly", "Weekly")
           .put("farmers", "farmer")
@@ -141,6 +141,21 @@ public class SearchStoreTest {
           .put("food", "food")
           .put("vendors", "vendor")
           .put(".", ".")
+          .build();
+  private static final String NAME_WITH_FOOD_VENDORS = "Wednesday Cesar Chavez Farmers' Market with Food Vendors";
+  private static final ImmutableList<Keyword> KEYWORDS_NAME_WITH_FOOD_VENDORS =
+      ImmutableList.of(new Keyword("farmers' market", 0.40f), new Keyword("cesar chavez", 0.26f), new Keyword("cesar chavez", 0.22f));
+  private static final ImmutableMap<String, String> TOKENS_NAME_WITH_FOOD_VENDORS =
+      ImmutableMap.<String, String>builder()
+          .put("wednesday", "wednesday")
+          .put("cesar", "cesar")
+          .put("chavez", "chavez")
+          .put("farmers", "farmer")
+          .put("'", "'")
+          .put("market", "market")
+          .put("with", "with")
+          .put("food", "food")
+          .put("vendors", "vendor")
           .build();
   private static final String GROWER = "grower";
 
@@ -400,7 +415,7 @@ public class SearchStoreTest {
   }
 
   /**
-   * When an event with description with the entity food vendors is added to the index,
+   * When an event with description with the keyword food vendors is added to the index,
    * a search for the word food should also return the event in result.
    */
   @Test
@@ -427,13 +442,13 @@ public class SearchStoreTest {
   }
 
   /**
-   * When an event with description with the entity growers is added to the index,
+   * When an event with description with the keyword growers is added to the index,
    * a search for the word grower should also return the event in result as grower is the
-   * basic form of growers.
+   * basic form of growers. The basic form of growers is grower.
    */
   @Test
   public void
-      addEventWithEntity_searchForEntityBasicForm_oneResultReturned()
+      addEventWithKeyword_searchForKeywordBasicForm_oneResultReturned()
           throws IOException {
     SpannerTasks.insertorUpdateEvent(
         TestUtils.newEventWithFutureDate(
@@ -460,16 +475,24 @@ public class SearchStoreTest {
   }
 
   /**
-   * When description with the entity food vendors is added to the index, a search
-   * for the word vendor should also return the event in result.
+   * Ensures the ranking still holds when basic forms and words within keywords are involved.
+   * When description with the keyword food vendors is added to the index, a search
+   * for the word vendor should also return the event in result. The word
+   * vendor is the basic form of the word vendors within the keyword food vendors.
    */
   @Test
   public void
-    addEventWithEntity_searchForKeywordWithinEntityBasicForm_oneResultReturned()
+    addTwoEventsWithKeywordInDescription_secondWithWordInName_searchForWordWithinKeywordBasicForm_twoResultReturned()
+    // ID         |    Name Has Food Vendors             |   Description Has Food Vendors
+    // 1          |        Yes                           |     Yes
+    // 2          |        Yes                           |     No
           throws IOException {
     SpannerTasks.insertorUpdateEvent(
         TestUtils.newEventWithFutureDate(
             EVENT_ID_1, NAME_WITHOUT_FOOD_VENDORS, DESCRIPTION_WITH_FOOD_VENDORS));
+    SpannerTasks.insertorUpdateEvent(
+        TestUtils.newEventWithFutureDate(
+            EVENT_ID_2, NAME_WITH_FOOD_VENDORS, DESCRIPTION_WITH_FOOD_VENDORS));
     Mockito.when(mockKeywordHelper.getKeywords())
         .thenReturn(
             // Keywords for Event with ID 1
@@ -480,14 +503,25 @@ public class SearchStoreTest {
             // Keywords for Event with ID 1
             TOKENS_NAME_WITHOUT_FOOD_VENDORS,
             TOKENS_DESCRIPTION_WITH_FOOD_VENDORS);
+    Mockito.when(mockKeywordHelper.getTokensWithBasicForm())
+        .thenReturn(
+            // Keywords for Event with ID 1
+            TOKENS_NAME_WITH_FOOD_VENDORS,
+            TOKENS_DESCRIPTION_WITH_FOOD_VENDORS);
 
     searchStore.addEventToIndex(
         EVENT_ID_1, NAME_WITHOUT_FOOD_VENDORS, DESCRIPTION_WITH_FOOD_VENDORS);
+    searchStore.addEventToIndex(
+        EVENT_ID_2, NAME_WITH_FOOD_VENDORS, NAME_WITH_FOOD_VENDORS);
     List<Event> actualResults = searchStore.getSearchResults(VENDOR);
 
-    Assert.assertEquals(EVENT_ID_1, actualResults.get(0).getId());
-    Assert.assertEquals(NAME_WITHOUT_FOOD_VENDORS, actualResults.get(0).getName());
+    Assert.assertEquals(EVENT_ID_2, actualResults.get(0).getId());
+    Assert.assertEquals(NAME_WITH_FOOD_VENDORS, actualResults.get(0).getName());
     Assert.assertEquals(
         DESCRIPTION_WITH_FOOD_VENDORS, actualResults.get(0).getDescription());
+    Assert.assertEquals(EVENT_ID_1, actualResults.get(1).getId());
+    Assert.assertEquals(NAME_WITHOUT_FOOD_VENDORS, actualResults.get(1).getName());
+    Assert.assertEquals(
+        DESCRIPTION_WITH_FOOD_VENDORS, actualResults.get(1).getDescription());
   }
 }
