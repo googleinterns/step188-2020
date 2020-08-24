@@ -45,6 +45,6 @@ html {
   flex-wrap: wrap;
 }
 
-.row > div[class*='col-'] {
+.row > div[class*="col-"] {
   display: flex;
 }
