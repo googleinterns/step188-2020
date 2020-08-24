@@ -1,7 +1,5 @@
 package com.google.sps.servlets;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
 import com.google.sps.store.SearchStore;
 import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.KeywordHelper;
