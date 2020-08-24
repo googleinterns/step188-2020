@@ -6,6 +6,8 @@ $(async function() {
   populateVolunteeringOpportunitiesUI(eventHost, loginStatus);
   showCreateOpportunityLink(eventHost, loginStatus);
   setSignupAction();
+  setImageFormAction('event');
+  populateExistingImage('event', '#event-picture');
 });
 
 /** 
@@ -16,6 +18,7 @@ async function configureRegisterAndEditButtons(eventHost) {
   const loggedInUserIsHost = await getLoggedInUserIsHost(eventHost);
   if (loggedInUserIsHost) {
     $('#signup-link').hide();
+    $('#image-form').show();
   } else {
     $('#edit-link').hide();
   }
@@ -124,7 +127,7 @@ async function getEventDetails() {
   // make sign up link go to correct
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  const eventId = urlParams.get('eventId');
+  const eventId = getEventId();
 
   const response = await fetch('/create-event?' + new URLSearchParams({'eventId': eventId}));
   const data = await response.json();
@@ -243,14 +246,4 @@ function setSignupAction() {
   const opportunitySignupForm = document.getElementById('opportunity-signup-form');
   opportunitySignupForm.action =
       `/opportunity-signup-form-handler?event-id=${eventId}`;
-}
-
-/**
- * Get the event id from the query string.
- * @return {string} the event id in the query string
- */
-function getEventId() {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  return urlParams.get('eventId');
 }
