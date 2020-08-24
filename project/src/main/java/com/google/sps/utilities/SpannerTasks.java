@@ -57,7 +57,7 @@ public class SpannerTasks {
    */
   public static void insertOrUpdateUser(User user) {
     // Given a user, update its corresponding row's new fields in DB
- 
+
     List<Mutation> mutations =
         getUserMutationsFromBuilder(Mutation.newInsertOrUpdateBuilder(USER_TABLE), user);
     SpannerClient.getDatabaseClient().write(mutations);
@@ -78,11 +78,11 @@ public class SpannerTasks {
                     String.format(
                         "SELECT Name, Interests, Skills, Image FROM %s WHERE Email='%s'",
                         USER_TABLE, email)));
- 
+
     if (!resultSet.next()) {
       return Optional.empty();
     }
- 
+
     return Optional.of(
         new User.Builder(/* name = */ resultSet.getString(0), /* email = */ email)
             .setInterests(new HashSet<String>(resultSet.getStringList(1)))
@@ -166,7 +166,7 @@ public class SpannerTasks {
                             + " Opportunities, Attendees, Image FROM %s WHERE EventID='%s'"
                             + " AND DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0",
                         EVENT_TABLE, eventId)));
- 
+
     /** If ID does not exist */
     if (!resultSet.next()) {
       return Optional.empty();
@@ -419,7 +419,7 @@ public class SpannerTasks {
                   List<Mutation> signupMutations =
                       getMutationsFromBuilder(newInsertBuilderFromOpportunitySignup(), signup);
                   transaction.buffer(signupMutations);
- 
+
                   numSpotsLeft--;
                   transaction.buffer(
                       Mutation.newUpdateBuilder(VOLUNTEERING_OPPORTUNITY_TABLE)
@@ -617,7 +617,7 @@ public class SpannerTasks {
     }
     return results;
   }
-
+ 
   /**
    * Add event results to persistent storage index by inserting the keyword into the keywords table
    * if it dose not exist and adding a corresponding row in the results table.
