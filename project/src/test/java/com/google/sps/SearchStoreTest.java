@@ -178,7 +178,7 @@ public class SearchStoreTest {
        ImmutableList.of(
           new Keyword("farmers' market", 0.40f),
           new Keyword("cesar chavez", 0.26f),
-          new Keyword("cesar chavez", 0.22f));
+          new Keyword("food vendors", 0.22f));
   private static final ImmutableMap<String, String> TOKENS_NAME_WITH_FOOD_VENDORS =
       ImmutableMap.<String, String>builder()
           .put("wednesday", "wednesday")
@@ -495,7 +495,7 @@ public class SearchStoreTest {
             KEYWORDS_DESCRIPTION_WITH_GROWERS);
     Mockito.when(mockKeywordHelper.getTokensWithBasicForm())
         .thenReturn(
-            // Keywords for Event with ID 1
+            // Tokens for Event with ID 1
             TOKENS_NAME_WITHOUT_GROWERS,
             TOKENS_DESCRIPTION_WITH_GROWERS);
 
@@ -532,15 +532,15 @@ public class SearchStoreTest {
         .thenReturn(
             // Keywords for Event with ID 1
             KEYWORDS_NAME_WITHOUT_FOOD_VENDORS,
+            KEYWORDS_DESCRIPTION_WITH_FOOD_VENDORS,
+            KEYWORDS_NAME_WITH_FOOD_VENDORS,
             KEYWORDS_DESCRIPTION_WITH_FOOD_VENDORS);
     Mockito.when(mockKeywordHelper.getTokensWithBasicForm())
         .thenReturn(
-            // Keywords for Event with ID 1
+            // Tokens for Event with ID 1
             TOKENS_NAME_WITHOUT_FOOD_VENDORS,
-            TOKENS_DESCRIPTION_WITH_FOOD_VENDORS);
-    Mockito.when(mockKeywordHelper.getTokensWithBasicForm())
-        .thenReturn(
-            // Keywords for Event with ID 1
+            TOKENS_DESCRIPTION_WITH_FOOD_VENDORS,
+            // Tokens for Event with ID 2
             TOKENS_NAME_WITH_FOOD_VENDORS,
             TOKENS_DESCRIPTION_WITH_FOOD_VENDORS);
 
