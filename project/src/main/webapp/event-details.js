@@ -1,4 +1,4 @@
-window.onload = async function onLoad() {
+$(async function() {
   getEventDetails();
   const eventHost = await getEventHost();
   configureRegisterAndEditButtons(eventHost);
@@ -8,7 +8,7 @@ window.onload = async function onLoad() {
   setSignupAction();
   setImageFormAction('event');
   populateExistingImage('event', '#event-picture');
-};
+});
 
 /** 
  * Adds the edit button for the host and removes the register button
