@@ -324,11 +324,11 @@ async function populateExistingImage(type, elementId, eventId='') {
   }
   const blobKey = await getBlobKey(type, eventId);
   let imageUrl = 'assets/default_profile.jpg';
-  const serveResponse = await fetch(`/blob-serve?key=${blobKey}`);
-  if (serveResponse.status === 404) {
+  const blobResponse = await fetch(`/blob-serve?key=${blobKey}`);
+  if (blobResponse.status === 404) {
     createRandomColorBlock(elementId);
   } else {
-    const imageBlob = await serveResponse.blob();
+    const imageBlob = await blobResponse.blob();
     imageUrl = URL.createObjectURL(imageBlob);
     $(elementId).attr('src', imageUrl);
   }
