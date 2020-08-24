@@ -298,8 +298,13 @@ function buildSkillsAsLabels(querySelector, opportunities) {
  * If the user has no profile image, add the default one
  */
 async function populateExistingProfileImage() {
-  const response = await fetch('/blob-handler');
-  const imageUrl = await response.text();
-  const realImageUrl = imageUrl ? imageUrl : 'assets/default_profile.jpg';
-  $('#profile-picture').attr('src', realImageUrl);
+  const handlerResponse = await fetch('/blob-handler');
+  const blobKey = await handlerResponse.text();
+  let imageUrl = 'assets/default_profile.jpg';
+  if (blobKey.trim()) {
+    const serveResponse = await fetch(`/blob-serve?key=${blobKey}`);
+    const imageBlob = await serveResponse.blob();
+    imageUrl = URL.createObjectURL(imageBlob);
+  }
+  $('#profile-picture').attr('src', imageUrl);
 }
