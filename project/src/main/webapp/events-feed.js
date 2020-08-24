@@ -28,10 +28,6 @@ $(async function() {
  * the events in the display.
  */
 async function getAllSearchEvents() {
-  const keyword = document.getElementById('keyword').value;
-  const response = await fetch(`search-data?keyword=${keyword}`);
-  const searchEvents = await response.json();
-
   const eventContainer = document.getElementById('event-container');
   if (eventContainer != null) {
     eventContainer.remove();
@@ -39,6 +35,10 @@ async function getAllSearchEvents() {
 
   const searchContainer = document.getElementById('search-container');
   searchContainer.innerHTML = '';
+
+  const keyword = document.getElementById('keyword').value;
+  const response = await fetch(`search-data?keyword=${keyword}`);
+  const searchEvents = await response.json();
 
   for (const key in searchEvents) {
     if (searchEvents.hasOwnProperty(key)) {
