@@ -1,6 +1,7 @@
 const filters = {}
 
 $(async function() {
+  populateEvents();
   toggleDropdown();
   // If want all events on discovery page 
   if (!(window.location.href).includes('filtered=true')) {

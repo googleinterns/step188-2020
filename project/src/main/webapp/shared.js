@@ -4,10 +4,19 @@ $('.grid').masonry({
   percentPosition: true,
 });
 
+async function getLoggedInUserEmail() {
+  const loginStatus = await getLoginStatus();
+  return loginStatus.userEmail;
+}
+
 async function isLoggedIn() {
-  const response = await fetch('/login-status');
-  const loginStatus = await response.json();
+  const loginStatus = await getLoginStatus();
   return loginStatus.loginState === 'LOGGED_IN';
+}
+
+async function getLoginStatus() {
+  const response = await fetch('/login-status');
+  return response.json();
 }
 
 /**
@@ -289,8 +298,13 @@ function buildSkillsAsLabels(querySelector, opportunities) {
  * If the user has no profile image, add the default one
  */
 async function populateExistingProfileImage() {
-  const response = await fetch('/blob-handler');
-  const imageUrl = await response.text();
-  const realImageUrl = imageUrl ? imageUrl : 'assets/default_profile.jpg';
-  $('#profile-picture').attr('src', realImageUrl);
+  const handlerResponse = await fetch('/blob-handler');
+  const blobKey = await handlerResponse.text();
+  let imageUrl = 'assets/default_profile.jpg';
+  if (blobKey.trim()) {
+    const serveResponse = await fetch(`/blob-serve?key=${blobKey}`);
+    const imageBlob = await serveResponse.blob();
+    imageUrl = URL.createObjectURL(imageBlob);
+  }
+  $('#profile-picture').attr('src', imageUrl);
 }

@@ -1,11 +1,25 @@
 $(async function() {
   getEventDetails();
   const eventHost = await getEventHost();
+  configureRegisterAndEditButtons(eventHost);
   const loginStatus = await getLoginStatus();
   populateVolunteeringOpportunitiesUI(eventHost, loginStatus);
   showCreateOpportunityLink(eventHost, loginStatus);
   setSignupAction();
 });
+
+/** 
+ * Adds the edit button for the host and removes the register button
+ * @param {Object} eventHost email of the host of the event
+ */
+async function configureRegisterAndEditButtons(eventHost) {
+  const loggedInUserIsHost = await getLoggedInUserIsHost(eventHost);
+  if (loggedInUserIsHost) {
+    $('#signup-link').hide();
+  } else {
+    $('#edit-link').hide();
+  }
+}
 
 /**
  * Adds the volunteering opportunities to the event card and the dropdown
@@ -112,14 +126,13 @@ async function getEventDetails() {
   const urlParams = new URLSearchParams(queryString);
   const eventId = urlParams.get('eventId');
 
-  // Register for event
-  if ((urlParams.get('register')) === 'true') {
-    registerEvent(eventId);
-  }
-
-  // View event details
   const response = await fetch('/create-event?' + new URLSearchParams({'eventId': eventId}));
   const data = await response.json();
+  // Register for event
+  if ((urlParams.get('register')) === 'true') {
+    registerEvent(eventId, data.host.email);
+  }
+  // View event details
   document.getElementById('name').innerHTML = data['name'];
   document.getElementById('description').innerHTML = data['description'];
   document.getElementById('date').innerHTML = `Date: 
@@ -127,7 +140,7 @@ async function getEventDetails() {
   document.getElementById('location').innerHTML =
     `Location: ${data['location']}`;
   document.getElementById('time').innerHTML = `Time: ${data['time']}`;
-  document.getElementById('editLink').setAttribute('href', `/event-edit.html?eventId=${eventId}`);
+  document.getElementById('edit-link').setAttribute('href', `/event-edit.html?eventId=${eventId}`);
 }
 
 async function getEventHost() {
@@ -138,10 +151,22 @@ async function getEventHost() {
 }
 
 /** Call doPost to register logged in user for event */
-async function registerEvent(eventId) {
-  const response = await fetch('/register-event?' + new URLSearchParams({'eventId': eventId}), {method: 'POST'} );
-  document.getElementById('signup-link').setAttribute('href', '');
-  document.getElementById('signup-link').innerHTML = 'You are signed up for this event.';
+async function registerEvent(eventId, host) {
+  const response =
+      await fetch('/register-event?' + new URLSearchParams({'eventId': eventId}), {method: 'POST'} );
+  const isHost = await getLoggedInUserIsHost(host);
+  if (isHost) {
+    $('.alert').slideDown();
+    $('#signup-link').hide();
+  } else {
+    document.getElementById('signup-link').setAttribute('href', '');
+    document.getElementById('signup-link').innerHTML = 'You are signed up for this event.';
+  }
+}
+
+async function getLoggedInUserIsHost(eventHost) {
+  const loggedInUserEmail = await getLoggedInUserEmail();
+  return eventHost === loggedInUserEmail;
 }
 
 /**
@@ -204,7 +229,7 @@ function showCreateOpportunityLink(eventHost, loginStatus) {
     $('#add-opportunity')
         .append(`<a href=
             /create-volunteering-opportunity.html?event-id=${eventId}>\
-                Add an volunteering opportunity</a>`);
+                Add a volunteering opportunity</a>`);
   }
 }
 
