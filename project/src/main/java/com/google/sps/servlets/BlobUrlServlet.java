@@ -18,6 +18,9 @@ public class BlobUrlServlet extends HttpServlet {
     String servletUrl = String.format("/%s-blob-handler", pictureType);
     if (pictureType.equals("event")) {
       servletUrl += "?event-id=" + request.getParameter("event-id");
+    } else if (pictureType == null) {
+      response.sendError(
+          HttpServletResponse.SC_BAD_REQUEST, "Error with getting image: pictureType does not exist");
     }
     String uploadUrl = BlobstoreServiceFactory.getBlobstoreService().createUploadUrl(servletUrl);
     response.setContentType("text/html");
