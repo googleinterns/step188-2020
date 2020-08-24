@@ -30,7 +30,8 @@ import org.springframework.mock.web.MockServletContext;
 /** */
 @RunWith(JUnit4.class)
 public class BlobHandlerEventTest {
-  private static final String EVENT_ID = "event-id";
+  private static final String EVENT_ID = "12345";
+  private static final String EVENT_ID_PARAM = "event-id";
   private static final String INVALID_ID = "invalid-id";
   private static final String IMAGE_URL = "image-url.com";
   private static final User HOST = TestUtils.newUser();
@@ -65,7 +66,7 @@ public class BlobHandlerEventTest {
     SpannerTasks.insertOrUpdateUser(HOST);
     SpannerTasks.insertorUpdateEvent(
         EVENT.toBuilder().setImageUrl(IMAGE_URL).build());
-    Mockito.doReturn(EVENT_ID).when(request).getParameter("event-id");
+    Mockito.doReturn(EVENT_ID).when(request).getParameter(EVENT_ID_PARAM);
 
     new BlobHandlerEventServlet().doGet(request, response);
  
