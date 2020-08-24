@@ -45,7 +45,10 @@ import com.google.gson.Gson;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.anyObject;
 
-/** Unit tests for adding new events to search index and retrieving search results. */
+/**
+ * Unit tests for testing addition to the search index upon event creation
+ * in EventCreationServlet and retrieving search results using SearchDataServlet.
+ */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(EventCreationServlet.class)
 public class SearchDataServletTest {
@@ -138,13 +141,6 @@ public class SearchDataServletTest {
     secondPostRequest = Mockito.mock(HttpServletRequest.class);
     secondPostResponse = Mockito.mock(HttpServletResponse.class);
 
-    getRequest = Mockito.mock(HttpServletRequest.class);
-    getResponse = Mockito.mock(HttpServletResponse.class);
-
-    getStringWriter = new StringWriter();
-    getPrintWriter = new PrintWriter(getStringWriter);
-    Mockito.when(getResponse.getWriter()).thenReturn(getPrintWriter);
-
     postStringWriter = new StringWriter();
     postPrintWriter = new PrintWriter(postStringWriter);
     Mockito.when(postResponse.getWriter()).thenReturn(postPrintWriter);
@@ -157,6 +153,13 @@ public class SearchDataServletTest {
     eventCreationServlet = new EventCreationServlet();
     mockKeywordHelper = Mockito.mock(KeywordHelper.class);
     eventCreationServlet.setSearchStore(new SearchStore(mockKeywordHelper));
+
+    getRequest = Mockito.mock(HttpServletRequest.class);
+    getResponse = Mockito.mock(HttpServletResponse.class);
+
+    getStringWriter = new StringWriter();
+    getPrintWriter = new PrintWriter(getStringWriter);
+    Mockito.when(getResponse.getWriter()).thenReturn(getPrintWriter);
 
     // Mock a request to trigger the SpannerClient setup to run
     MockServletContext mockServletContext = new MockServletContext();
@@ -181,8 +184,8 @@ public class SearchDataServletTest {
   }
 
   /**
-   * Add event using eventCreationServlet and check that search for keyword using searchDataServlet
-   * not relevant in the event name or description does not appear in the results.
+   * Add event using EventCreationServlet instance and check that search for keyword using SearchDataServlet
+   * instance not relevant in the event name or description does not appear in the results.
    */
   @Test
   public void oneEvent_KeywordNotRelevantInEventTitleOrDescription_noResultsReturned()
@@ -201,18 +204,23 @@ public class SearchDataServletTest {
     Mockito.when(mockKeywordHelper.getKeywords())
         .thenReturn(KEYWORDS_NAME_WITHOUT_GAMES, KEYWORDS_DESCRIPTION_WITHOUT_GAMES);
 
-    // Add an event using eventCreationServlet and assert that the returned event is the
-    // same as the inserted event.
+    // Add an event using eventCreationServlet
     eventCreationServlet.doPost(postRequest, postResponse);
     Event returnedEvent = new Gson().fromJson(postStringWriter.toString().trim(), Event.class);
+    // Assert that the returned event is the same as the inserted event.
     Assert.assertEquals(returnedEvent.getName(), NAME_WITHOUT_GAMES);
     Assert.assertEquals(returnedEvent.getDescription(), DESCRIPTION_WITHOUT_GAMES);
 
+    // Get search results using the searchDataServlet
     searchDataServlet.doGet(getRequest, getResponse);
 
     Assert.assertEquals(CommonUtils.convertToJson(Arrays.asList()), getStringWriter.toString().trim());
   }
 
+  /**
+   * Add two events using EventCreationServlet instance and check that a search for a keyword using
+   * SearchDataServlet instance returns the event with higher relevance for that keyword first.
+   */
   @Test
   public void
       twoEvents_secondWithHigherKeywordRelevance_returnsSecondEventBeforeFirst()
@@ -240,20 +248,21 @@ public class SearchDataServletTest {
             KEYWORDS_NAME_WITHOUT_GAMES,
             KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
 
-    // Add an event using eventCreationServlet and assert that the returned event is the
-    // same as the inserted event.
+    // Add an event using eventCreationServlet
     eventCreationServlet.doPost(postRequest, postResponse);
+    // Assert the returned event is the same as the inserted event
     Event returnedEvent = new Gson().fromJson(postStringWriter.toString().trim(), Event.class);
     Assert.assertEquals(returnedEvent.getName(), NAME_WITHOUT_GAMES);
     Assert.assertEquals(returnedEvent.getDescription(), DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE);
 
-    // Add a second event using eventCreationServlet and assert that the returned event is the
-    // same as the inserted event.
+    // Add a second event using eventCreationServlet
     eventCreationServlet.doPost(secondPostRequest, secondPostResponse);
     Event secondReturnedEvent = new Gson().fromJson(secondPostStringWriter.toString().trim(), Event.class);
+    // Assert that the returned event is the same as the second inserted event
     Assert.assertEquals(secondReturnedEvent.getName(), NAME_WITHOUT_GAMES);
     Assert.assertEquals(secondReturnedEvent.getDescription(), DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
 
+    // Get search results using the searchDataServlet
     searchDataServlet.doGet(getRequest, getResponse);
     Event[] actualResults = new Gson().fromJson(getStringWriter.toString().trim(), Event[].class);
     
