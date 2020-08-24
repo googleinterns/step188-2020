@@ -1,5 +1,7 @@
 package com.google.sps;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableList;
 import com.google.sps.data.Event;
 import com.google.sps.data.Keyword;
 import com.google.sps.store.SearchStore;
@@ -12,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.ServletContextEvent;
 import org.junit.Assert;
 import org.junit.Before;
@@ -38,66 +41,108 @@ public class SearchStoreTest {
   private static final String DESCRIPTION_WITH_GAMES =
       "Sutter Middle School will be walking to McKinley Park. 7th grade class and teachers will"
           + " have a picnic, play games, and eat lunch at the park and Clunie Pool.";
-  private static final ArrayList<Keyword> KEYWORDS_NAME_WITHOUT_GAMES =
-      new ArrayList<Keyword>(Arrays.asList(new Keyword("picnic", 1.00f)));
-  private static final ArrayList<Keyword> KEYWORDS_NAME_WITH_GAMES =
-      new ArrayList<Keyword>(
-          Arrays.asList(new Keyword("picnic", 0.56f), new Keyword(GAMES, 0.44f)));
-  private static final ArrayList<Keyword> KEYWORDS_DESCRIPTION_WITHOUT_GAMES =
-      new ArrayList<Keyword>(
-          Arrays.asList(
-              new Keyword("Sutter Middle School", 0.43f),
-              new Keyword("McKinley Park", 0.14f),
-              new Keyword("teachers", 0.10f),
-              new Keyword("class", 0.10f),
-              new Keyword("picnic", 0.09f),
-              new Keyword("park", 0.08f),
-              new Keyword("lunch", 0.03f),
-              new Keyword("Clunie Pool", 0.03f)));
-  private static final ArrayList<Keyword> KEYWORDS_DESCRIPTION_WITH_GAMES =
-      new ArrayList<Keyword>(
-          Arrays.asList(
-              new Keyword("Sutter Middle School", 0.41f),
-              new Keyword("McKinley Park", 0.13f),
-              new Keyword("teachers", 0.09f),
-              new Keyword("class", 0.09f),
-              new Keyword("picnic", 0.09f),
-              new Keyword("park", 0.08f),
-              new Keyword("lunch", 0.07f),
-              new Keyword(GAMES, 0.01f),
-              new Keyword("Clunie Pool", 0.03f)));
+   private static final ImmutableList<Keyword> KEYWORDS_NAME_WITHOUT_GAMES =
+      ImmutableList.of(new Keyword("picnic", 1.00f));
+  private static final ImmutableList<Keyword> KEYWORDS_NAME_WITH_GAMES =
+      ImmutableList.of(new Keyword("picnic", 0.56f), new Keyword(GAMES, 0.44f));
+  private static final ImmutableList<Keyword> KEYWORDS_DESCRIPTION_WITHOUT_GAMES = ImmutableList.of(
+      new Keyword("Sutter Middle School", 0.43f), new Keyword("McKinley Park", 0.14f),
+      new Keyword("teachers", 0.10f), new Keyword("class", 0.10f), new Keyword("picnic", 0.09f),
+      new Keyword("park", 0.08f), new Keyword("lunch", 0.03f), new Keyword("Clunie Pool", 0.03f));
+  private static final ImmutableList<Keyword> KEYWORDS_DESCRIPTION_WITH_GAMES = ImmutableList.of(
+      new Keyword("Sutter Middle School", 0.41f), new Keyword("McKinley Park", 0.13f),
+      new Keyword("teachers", 0.09f), new Keyword("class", 0.09f), new Keyword("picnic", 0.09f),
+      new Keyword("park", 0.08f), new Keyword("lunch", 0.07f), new Keyword(GAMES, 0.01f),
+      new Keyword("Clunie Pool", 0.03f));
   private static final String DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE =
       "Sutter Middle School will be walking to McKinley Park. 7th grade class and teachers will"
-          + " have a picnic, play games, and eat lunch at the park and Clunie Pool.";
-  private static final ArrayList<Keyword> KEYWORDS_DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE =
-      new ArrayList<Keyword>(
-          Arrays.asList(
-              new Keyword("Sutter Middle School", 0.41f),
-              new Keyword("McKinley Park", 0.13f),
-              new Keyword("teachers", 0.09f),
-              new Keyword("class", 0.09f),
-              new Keyword("picnic", 0.09f),
-              new Keyword("park", 0.08f),
-              new Keyword("lunch", 0.07f),
-              new Keyword(GAMES, 0.01f),
-              new Keyword("Clunie Pool", 0.03f)));
+      + " have a picnic, play games, and eat lunch at the park and Clunie Pool.";
+  private static final ImmutableList<Keyword> KEYWORDS_DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE =
+      ImmutableList.of(new Keyword("Sutter Middle School", 0.41f),
+          new Keyword("McKinley Park", 0.13f), new Keyword("teachers", 0.09f),
+          new Keyword("class", 0.09f), new Keyword("picnic", 0.09f), new Keyword("park", 0.08f),
+          new Keyword("lunch", 0.07f), new Keyword(GAMES, 0.01f),
+          new Keyword("Clunie Pool", 0.03f));
   private static final String DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE =
       "Community harvest festival with games, food, and candy. Event open to the public 5pm-9pm."
-          + "Complete full closure for 700 attendees.";
-  private static final ArrayList<Keyword> KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE =
+      + "Complete full closure for 700 attendees.";
+  private static final ImmutableList<Keyword> KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE =
+      ImmutableList.of(new Keyword("Community Harvest festival", 0.40f), new Keyword(GAMES, 0.17f),
+          new Keyword("food", 0.17f), new Keyword("candy", 0.12f), new Keyword("Event", 0.06f),
+          new Keyword("closure", 0.04f), new Keyword("attendees", 0.03f));
+  private static final String NAME_WITH_GAMES_IN_HIGH_RELEVANCE =
+      "End of the Year Games and Picnic";
+  private static final ImmutableList<Keyword> KEYWORDS_NAME_WITH_GAMES_IN_HIGH_RELEVANCE =
+      ImmutableList.of(new Keyword("picnic", 0.56f), new Keyword(GAMES, 0.17f));
+  private static final String NAME_WITHOUT_FOOD_VENDORS = "Wednesday Cesar Chavez Farmers' Market";
+  private static final ImmutableList<Keyword> KEYWORDS_NAME_WITHOUT_FOOD_VENDORS =
+      ImmutableList.of(new Keyword("farmers' market", 0.54f), new Keyword("cesar chavez", 0.26f));
+  private static final String DESCRIPTION_WITH_FOOD_VENDORS =
+      "Weekly farmers' market with certified growers and hot food vendors."
+      + "Event hours are 10am to 1:30pm.";
+  private static final ImmutableList<Keyword> KEYWORDS_DESCRIPTION_WITH_FOOD_VENDORS =
+      ImmutableList.of(new Keyword("farmers' market", 0.36f), new Keyword("food vendors", 0.26f),
+          new Keyword("growers", 0.26f), new Keyword("Event", 0.12f));
+  private static final String FOOD = "food";
+  ImmutableMap<String, String> TOKENS_NAME_WITHOUT_FOOD_VENDORS =
+      ImmutableMap.<String, String>builder()
+          .put("wednesday", "wednesday")
+          .put("cesar", "cesar")
+          .put("chavez", "chavez")
+          .put("farmers", "farmer")
+          .put("'", "'")
+          .put("market", "market")
+          .build();
+  ImmutableMap<String, String> TOKENS_DESCRIPTION_WITH_FOOD_VENDORS =
+      ImmutableMap.<String, String>builder()
+          .put("Weekly", "Weekly")
+          .put("farmers", "farmer")
+          .put("'", "'")
+          .put("market", "market")
+          .put("with", "with")
+          .put("certified", "certified")
+          .put("growers", "grower")
+          .put("and", "and")
+          .put("hot", "hot")
+          .put("food", "food")
+          .put("vendors", "vendor")
+          .put(".", ".")
+          .build();
+  private static final String VENDOR = "vendor";
+  private static final String NAME_WITHOUT_GROWERS = "Wednesday Cesar Chavez Farmers' Market";
+  private static final ArrayList<Keyword> KEYWORDS_NAME_WITHOUT_GROWERS = new ArrayList<Keyword>(
+      Arrays.asList(new Keyword("farmers' market", 0.54f), new Keyword("cesar chavez", 0.26f)));
+  private static final String DESCRIPTION_WITH_GROWERS =
+      "Weekly farmers' market with certified growers and hot food vendors."
+      + "Event hours are 10am to 1:30pm.";
+  private static final ArrayList<Keyword> KEYWORDS_DESCRIPTION_WITH_GROWERS =
       new ArrayList<Keyword>(
-          Arrays.asList(
-              new Keyword("Community Harvest festival", 0.40f),
-              new Keyword(GAMES, 0.17f),
-              new Keyword("food", 0.17f),
-              new Keyword("candy", 0.12f),
-              new Keyword("Event", 0.06f),
-              new Keyword("closure", 0.04f),
-              new Keyword("attendees", 0.03f)));
-  private static final String NAME_WITH_GAMES_IN_HIGH_RELEVANCE =  "End of the Year Games and Picnic";
-  private static final ArrayList<Keyword> KEYWORDS_NAME_WITH_GAMES_IN_HIGH_RELEVANCE =
-      new ArrayList<Keyword>(
-          Arrays.asList(new Keyword("picnic", 0.56f), new Keyword(GAMES, 0.17f)));
+          Arrays.asList(new Keyword("farmers' market", 0.36f), new Keyword("food vendors", 0.26f),
+              new Keyword("growers", 0.26f), new Keyword("Event", 0.12f)));
+  ImmutableMap<String, String> TOKENS_NAME_WITHOUT_GROWERS = ImmutableMap.<String, String>builder()
+                                                                 .put("wednesday", "wednesday")
+                                                                 .put("cesar", "cesar")
+                                                                 .put("chavez", "chavez")
+                                                                 .put("farmers", "farmer")
+                                                                 .put("'", "'")
+                                                                 .put("market", "market")
+                                                                 .build();
+  ImmutableMap<String, String> TOKENS_DESCRIPTION_WITH_GROWERS =
+      ImmutableMap.<String, String>builder()
+          .put("Weekly", "Weekly")
+          .put("farmers", "farmer")
+          .put("'", "'")
+          .put("market", "market")
+          .put("with", "with")
+          .put("certified", "certified")
+          .put("growers", "grower")
+          .put("and", "and")
+          .put("hot", "hot")
+          .put("food", "food")
+          .put("vendors", "vendor")
+          .put(".", ".")
+          .build();
+  private static final String GROWER = "grower";
 
   @Before
   public void setUp() throws Exception {
@@ -352,5 +397,97 @@ public class SearchStoreTest {
     Assert.assertEquals(NAME_WITHOUT_GAMES, actualResults.get(1).getName());
     Assert.assertEquals(
         DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE, actualResults.get(1).getDescription());
+  }
+
+  /**
+   * When an event with description with the entity food vendors is added to the index,
+   * a search for the word food should also return the event in result.
+   */
+  @Test
+  public void
+      addEventWithEntity_searchForKeywordWithinEntity_oneResultReturned()
+          throws IOException {
+    SpannerTasks.insertorUpdateEvent(
+        TestUtils.newEventWithFutureDate(
+            EVENT_ID_1, NAME_WITHOUT_FOOD_VENDORS, DESCRIPTION_WITH_FOOD_VENDORS));
+    Mockito.when(mockKeywordHelper.getKeywords())
+        .thenReturn(
+            // Keywords for Event with ID 1
+            KEYWORDS_NAME_WITHOUT_FOOD_VENDORS,
+            KEYWORDS_DESCRIPTION_WITH_FOOD_VENDORS);
+
+    searchStore.addEventToIndex(
+        EVENT_ID_1, NAME_WITHOUT_FOOD_VENDORS, DESCRIPTION_WITH_FOOD_VENDORS);
+    List<Event> actualResults = searchStore.getSearchResults(FOOD);
+
+    Assert.assertEquals(EVENT_ID_1, actualResults.get(0).getId());
+    Assert.assertEquals(NAME_WITHOUT_FOOD_VENDORS, actualResults.get(0).getName());
+    Assert.assertEquals(
+        DESCRIPTION_WITH_FOOD_VENDORS, actualResults.get(0).getDescription());
+  }
+
+  /**
+   * When an event with description with the entity growers is added to the index,
+   * a search for the word grower should also return the event in result as grower is the
+   * basic form of growers.
+   */
+  @Test
+  public void
+      addEventWithEntity_searchForEntityBasicForm_oneResultReturned()
+          throws IOException {
+    SpannerTasks.insertorUpdateEvent(
+        TestUtils.newEventWithFutureDate(
+            EVENT_ID_1, NAME_WITHOUT_GROWERS, DESCRIPTION_WITH_GROWERS));
+    Mockito.when(mockKeywordHelper.getKeywords())
+        .thenReturn(
+            // Keywords for Event with ID 1
+            KEYWORDS_NAME_WITHOUT_GROWERS,
+            KEYWORDS_DESCRIPTION_WITH_GROWERS);
+    Mockito.when(mockKeywordHelper.getTokensWithBasicForm())
+        .thenReturn(
+            // Keywords for Event with ID 1
+            TOKENS_NAME_WITHOUT_GROWERS,
+            TOKENS_DESCRIPTION_WITH_GROWERS);
+
+    searchStore.addEventToIndex(
+        EVENT_ID_1, NAME_WITHOUT_GROWERS, DESCRIPTION_WITH_GROWERS);
+    List<Event> actualResults = searchStore.getSearchResults(GROWER);
+
+    Assert.assertEquals(EVENT_ID_1, actualResults.get(0).getId());
+    Assert.assertEquals(NAME_WITHOUT_GROWERS, actualResults.get(0).getName());
+    Assert.assertEquals(
+        DESCRIPTION_WITH_GROWERS, actualResults.get(0).getDescription());
+  }
+
+  /**
+   * When description with the entity food vendors is added to the index, a search
+   * for the word vendor should also return the event in result.
+   */
+  @Test
+  public void
+    addEventWithEntity_searchForKeywordWithinEntityBasicForm_oneResultReturned()
+          throws IOException {
+    SpannerTasks.insertorUpdateEvent(
+        TestUtils.newEventWithFutureDate(
+            EVENT_ID_1, NAME_WITHOUT_FOOD_VENDORS, DESCRIPTION_WITH_FOOD_VENDORS));
+    Mockito.when(mockKeywordHelper.getKeywords())
+        .thenReturn(
+            // Keywords for Event with ID 1
+            KEYWORDS_NAME_WITHOUT_FOOD_VENDORS,
+            KEYWORDS_DESCRIPTION_WITH_FOOD_VENDORS);
+    Mockito.when(mockKeywordHelper.getTokensWithBasicForm())
+        .thenReturn(
+            // Keywords for Event with ID 1
+            TOKENS_NAME_WITHOUT_FOOD_VENDORS,
+            TOKENS_DESCRIPTION_WITH_FOOD_VENDORS);
+
+    searchStore.addEventToIndex(
+        EVENT_ID_1, NAME_WITHOUT_FOOD_VENDORS, DESCRIPTION_WITH_FOOD_VENDORS);
+    List<Event> actualResults = searchStore.getSearchResults(VENDOR);
+
+    Assert.assertEquals(EVENT_ID_1, actualResults.get(0).getId());
+    Assert.assertEquals(NAME_WITHOUT_FOOD_VENDORS, actualResults.get(0).getName());
+    Assert.assertEquals(
+        DESCRIPTION_WITH_FOOD_VENDORS, actualResults.get(0).getDescription());
   }
 }
