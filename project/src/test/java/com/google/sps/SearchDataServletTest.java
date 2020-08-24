@@ -1,22 +1,23 @@
 package com.google.sps;
 
-import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.expect;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.cloud.Date;
 import com.google.common.collect.ImmutableList;
-import com.google.sps.servlets.SearchDataServlet;
-import com.google.sps.servlets.EventCreationServlet;
+import com.google.gson.Gson;
 import com.google.sps.data.Event;
 import com.google.sps.data.EventResult;
 import com.google.sps.data.Keyword;
 import com.google.sps.data.User;
+import com.google.sps.servlets.EventCreationServlet;
+import com.google.sps.servlets.SearchDataServlet;
 import com.google.sps.store.SearchStore;
 import com.google.sps.utilities.CommonUtils;
-import com.google.sps.utilities.NlpProcessing;
 import com.google.sps.utilities.KeywordHelper;
+import com.google.sps.utilities.NlpProcessing;
 import com.google.sps.utilities.SpannerClient;
 import com.google.sps.utilities.SpannerTasks;
 import com.google.sps.utilities.SpannerTestTasks;
@@ -24,27 +25,25 @@ import com.google.sps.utilities.TestUtils;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.easymock.PowerMock;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.mockito.Mockito;
-import org.mockito.ArgumentMatchers;
-import javax.servlet.ServletContextEvent;
 import org.springframework.mock.web.MockServletContext;
-import com.google.gson.Gson;
 
 /**
  * Unit tests for testing addition to the search index upon event creation in EventCreationServlet
