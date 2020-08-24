@@ -518,7 +518,7 @@ public class SearchStoreTest {
   @Test
   public void
     addTwoEventsWithKeywordInDescription_secondWithWordInName_searchForWordWithinKeywordBasicForm_returnsSecondEventBeforeFirst()
-    // ID         |    Name Has food vendors             |   Description Has food vendors
+    // ID         |    Name has food vendors             |   Description has food vendors
     // 1          |        Yes                           |     No
     // 2          |        Yes                           |     Yes
           throws IOException {

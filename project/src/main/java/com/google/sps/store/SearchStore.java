@@ -85,7 +85,7 @@ public class SearchStore {
     keywordToRanking.put(keyword, ranking);
 
     Optional<String> basicForm = Optional.ofNullable(tokenToBasicForm.get(keyword));
-    if (basicForm.isPresent()) {
+    if (basicForm.isPresent() && !basicForm.get().equals(keyword)) {
       keywordToRanking.put(tokenToBasicForm.get(keyword), ranking);
     }
   }
