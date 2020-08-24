@@ -30,7 +30,6 @@ import org.springframework.mock.web.MockServletContext;
 /** */
 @RunWith(JUnit4.class)
 public class BlobHandlerEventTest {
-  private static final String EVENT_TYPE = "event";
   private static final String EVENT_ID = "event-id";
   private static final String INVALID_ID = "invalid-id";
   private static final String IMAGE_URL = "image-url.com";
