@@ -1,4 +1,4 @@
-window.onload = async function onLoad() {
+$(async function() {
   getEventDetails();
   const eventHost = await getEventHost();
   configureRegisterAndEditButtons(eventHost);
@@ -6,7 +6,7 @@ window.onload = async function onLoad() {
   populateVolunteeringOpportunitiesUI(eventHost, loginStatus);
   showCreateOpportunityLink(eventHost, loginStatus);
   setSignupAction();
-};
+});
 
 /** 
  * Adds the edit button for the host and removes the register button

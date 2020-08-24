@@ -160,8 +160,8 @@ function togglePrefilledInterests() {
   $('#prefilled-interests').toggle();
 }
 
-async function getRankedEvents() {
-  const response = await fetch('/event-ranker');
+async function getRankedEvents(events) {
+  const response = await fetch('/event-ranker?' + new URLSearchParams({'events': JSON.stringify(events)}));
   return response.json();
 }
 
