@@ -47,6 +47,7 @@ public class BlobHandlerEventTest {
     MockServletContext mockServletContext = new MockServletContext();
     new SpannerClient().contextInitialized(new ServletContextEvent(mockServletContext));
     SpannerTestTasks.setup();
+
     Mockito.when(response.getWriter()).thenReturn(printWriter);
   }
 
