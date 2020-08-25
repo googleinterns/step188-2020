@@ -72,18 +72,22 @@ public class KeywordHelper {
     Map<String, String> tokenToBasicForm = new HashMap<String, String>();
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       Document doc = Document.newBuilder().setContent(content).setType(Type.PLAIN_TEXT).build();
-      AnalyzeSyntaxRequest request =
-          AnalyzeSyntaxRequest.newBuilder()
-              .setDocument(doc)
-              .setEncodingType(EncodingType.UTF16)
-              .build();
-      AnalyzeSyntaxResponse response = language.analyzeSyntax(request);
-      for (Token token : response.getTokensList()) {
+      for (Token token : getTokensList(doc, language)) {
         tokenToBasicForm.put(token.getText().getContent(), token.getLemma());
       }
     } catch (IOException e) {
       System.err.println("IO Exception due to NLP library.");
     }
     return tokenToBasicForm;
+  }
+
+  private static List<Token> getTokensList(Document doc, LanguageServiceClient language) {
+    AnalyzeSyntaxRequest request =
+        AnalyzeSyntaxRequest.newBuilder()
+            .setDocument(doc)
+            .setEncodingType(EncodingType.UTF16)
+            .build();
+    AnalyzeSyntaxResponse response = language.analyzeSyntax(request);
+    return response.getTokensList();
   }
 }
