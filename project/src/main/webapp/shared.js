@@ -364,3 +364,22 @@ async function getBlobKey(type, eventId) {
       await fetch(handlerUrl);
   return handlerResponse.text();
 }
+
+/**
+ * Gets event details from database with eventId and fills out event page with details
+ * If registering for event, register user then show event details
+ */
+async function getEventDetails() {
+  // make sign up link go to correct
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const eventId = getEventId();
+
+  const response = await fetch('/create-event?' + new URLSearchParams({'eventId': eventId}));
+  const data = await response.json();
+  populateEventContainerWithoutButtons(data, 'event-container', 5);
+  // Register for event
+  if ((urlParams.get('register')) === 'true') {
+    registerEvent(eventId, data.host.email);
+  }
+}
