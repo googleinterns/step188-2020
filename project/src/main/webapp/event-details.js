@@ -1,27 +1,46 @@
 $(async function() {
   getEventDetails();
+  const eventId = getEventId();
   const eventHost = await getEventHost();
-  configureRegisterAndEditButtons(eventHost);
+  configureRegisterAndEditButtons(eventHost, eventId);
   const loginStatus = await getLoginStatus();
   populateVolunteeringOpportunitiesUI(eventHost, loginStatus);
-  showCreateOpportunityLink(eventHost, loginStatus);
   setSignupAction();
   setImageFormAction('event');
-  populateExistingImage('event', '#event-picture');
 });
 
 /** 
  * Adds the edit button for the host and removes the register button
  * @param {Object} eventHost email of the host of the event
  */
-async function configureRegisterAndEditButtons(eventHost) {
+async function configureRegisterAndEditButtons(eventHost, eventId) {
   const loggedInUserIsHost = await getLoggedInUserIsHost(eventHost);
   if (loggedInUserIsHost) {
+    const editContainer = '#edit-container .card .card-body #edit-container-2';
+    addHostButtons(editContainer, eventId);
     $('#signup-link').hide();
-    $('#image-form').show();
   } else {
-    $('#edit-link').hide();
+    $('#edit-container').hide();
+    $('#details')
+        .append('<button id="signup-link" href="signup.html" ' + 
+                'type="button" class="btn btn-primary">Register</button>');
   }
+}
+
+/**
+ * Adds appropriate buttons available to hosts
+ * @param {string} editContainer id of container to be appended to
+ * @param {string} eventId id of relevant event
+ */
+function addHostButtons(editContainer, eventId) {
+    $(editContainer)
+        .append(`<a href="/create-volunteering-opportunity.html?event-id=${eventId}"
+                  type="button" class="btn btn-primary" id="volopp-button"
+                  >Add a volunteering opportunity</a>`);
+    $(editContainer).append('<br /><br />');
+    $(editContainer)
+        .append(`<a id="edit-link" href="event-edit.html?eventId=${eventId}" 
+                type="button" class="btn btn-primary" id="edit-button"> Edit event </a>`);
 }
 
 /**
@@ -131,19 +150,11 @@ async function getEventDetails() {
 
   const response = await fetch('/create-event?' + new URLSearchParams({'eventId': eventId}));
   const data = await response.json();
+  populateEventContainerWithoutButtons(data, 'event-container', 5);
   // Register for event
   if ((urlParams.get('register')) === 'true') {
     registerEvent(eventId, data.host.email);
   }
-  // View event details
-  document.getElementById('name').innerHTML = data['name'];
-  document.getElementById('description').innerHTML = data['description'];
-  document.getElementById('date').innerHTML = `Date: 
-  ${data['date'].month}/${data['date'].dayOfMonth}/${data['date'].year}`;
-  document.getElementById('location').innerHTML =
-    `Location: ${data['location']}`;
-  document.getElementById('time').innerHTML = `Time: ${data['time']}`;
-  document.getElementById('edit-link').setAttribute('href', `/event-edit.html?eventId=${eventId}`);
 }
 
 async function getEventHost() {
@@ -218,22 +229,6 @@ async function getVolunteersByOpportunityId(opportunityId) {
     }
   }
   return volunteers;
-}
-
-/*
- * Shows the link to create new volunteering
- * opportunities if the current user is the event host.
- */
-function showCreateOpportunityLink(eventHost, loginStatus) {
-  const eventId = getEventId();
-
-  if (loginStatus.loginState === 'LOGGED_IN' &&
-      !loginStatus.userEmail.localeCompare(eventHost)) {
-    $('#add-opportunity')
-        .append(`<a href=
-            /create-volunteering-opportunity.html?event-id=${eventId}>\
-                Add a volunteering opportunity</a>`);
-  }
 }
 
 /**
