@@ -14,12 +14,6 @@ public class BlobServeServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String blobKeyValue = request.getParameter(BLOB_KEY);
-    if (!blobKeyValue.isEmpty()) {
-      BlobstoreServiceFactory.getBlobstoreService().serve(new BlobKey(blobKeyValue), response);
-    } else {
-      response.sendError(
-          HttpServletResponse.SC_BAD_REQUEST, "Error with serving image: blob key does not exist");
-    }
+    BlobstoreServiceFactory.getBlobstoreService().serve(new BlobKey(request.getParameter(BLOB_KEY)), response);
   }
 }
