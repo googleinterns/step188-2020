@@ -117,7 +117,7 @@ public class SearchStoreTest {
           .put("'", "'")
           .put("market", "market")
           .build();
-  private static final ImmutableMap<String, String> TOKENS_DESCRIPTION_WITH_FOOD_VENDORS =
+  private final ImmutableMap<String, String> TOKENS_DESCRIPTION_WITH_FOOD_VENDORS =
       ImmutableMap.<String, String>builder()
           .put("Weekly", "Weekly")
           .put("farmers", "farmer")
@@ -133,14 +133,12 @@ public class SearchStoreTest {
           .put(".", ".")
           .build();
   private static final String VENDOR = "vendor";
-  private static final String NAME_WITHOUT_GROWERS = "Wednesday Cesar Chavez Farmers' Market";
-  private static final ImmutableList<Keyword> KEYWORDS_NAME_WITHOUT_GROWERS =
-      ImmutableList.of(
-          new Keyword("farmers' market", 0.54f),
-          new Keyword("cesar chavez", 0.26f));
+  private static final String NAME_WITHOUT_GROWERS = NAME_WITHOUT_FOOD_VENDORS;
   private static final String DESCRIPTION_WITH_GROWERS =
       "Weekly farmers' market with certified growers and hot food vendors."
       + "Event hours are 10am to 1:30pm.";
+  private static final ImmutableList<Keyword> KEYWORDS_NAME_WITHOUT_GROWERS =
+      new ImmutableList.Builder<Keyword>().addAll(KEYWORDS_NAME_WITHOUT_FOOD_VENDORS).build();
   private static final ImmutableList<Keyword> KEYWORDS_DESCRIPTION_WITH_GROWERS =
       ImmutableList.of(
           new Keyword("farmers' market", 0.36f),
@@ -148,33 +146,13 @@ public class SearchStoreTest {
           new Keyword("growers", 0.26f),
           new Keyword("Event", 0.12f));
   private static final ImmutableMap<String, String> TOKENS_NAME_WITHOUT_GROWERS =
-      ImmutableMap.<String, String>builder()
-          .put("wednesday", "wednesday")
-          .put("cesar", "cesar")
-          .put("chavez", "chavez")
-          .put("farmers", "farmer")
-          .put("'", "'")
-          .put("market", "market")
-          .build();
-  private static final ImmutableMap<String, String> TOKENS_DESCRIPTION_WITH_GROWERS =
-      ImmutableMap.<String, String>builder()
-          .put("Weekly", "Weekly")
-          .put("farmers", "farmer")
-          .put("'", "'")
-          .put("market", "market")
-          .put("with", "with")
-          .put("certified", "certified")
-          .put("growers", "grower")
-          .put("and", "and")
-          .put("hot", "hot")
-          .put("food", "food")
-          .put("vendors", "vendor")
-          .put(".", ".")
-          .build();
+      ImmutableMap.<String, String>builder().putAll(TOKENS_NAME_WITHOUT_FOOD_VENDORS).build();
+  private final ImmutableMap<String, String> TOKENS_DESCRIPTION_WITH_GROWERS =
+      ImmutableMap.<String, String>builder().putAll(TOKENS_DESCRIPTION_WITH_FOOD_VENDORS).build();
   private static final String NAME_WITH_FOOD_VENDORS =
       "Wednesday Cesar Chavez Farmers' Market with Food Vendors";
   private static final ImmutableList<Keyword> KEYWORDS_NAME_WITH_FOOD_VENDORS =
-       ImmutableList.of(
+      ImmutableList.of(
           new Keyword("farmers' market", 0.40f),
           new Keyword("cesar chavez", 0.26f),
           new Keyword("food vendors", 0.22f));
@@ -454,7 +432,7 @@ public class SearchStoreTest {
    */
   @Test
   public void
-      addEventWithEntity_searchForKeywordWithinEntity_oneResultReturned()
+      addEventWithKeywordInDescription_searchForWordWithinKeyword_oneResultReturned()
           throws IOException {
     SpannerTasks.insertorUpdateEvent(
         TestUtils.newEventWithFutureDate(
@@ -494,7 +472,7 @@ public class SearchStoreTest {
             KEYWORDS_DESCRIPTION_WITH_GROWERS);
     Mockito.when(mockKeywordHelper.getTokensWithBasicForm())
         .thenReturn(
-            // Tokens for Event with ID 1
+            // Token to basic form mapping for Event with ID 1
             TOKENS_NAME_WITHOUT_GROWERS,
             TOKENS_DESCRIPTION_WITH_GROWERS);
 
@@ -536,10 +514,10 @@ public class SearchStoreTest {
             KEYWORDS_DESCRIPTION_WITH_FOOD_VENDORS);
     Mockito.when(mockKeywordHelper.getTokensWithBasicForm())
         .thenReturn(
-            // Tokens for Event with ID 1
+            // Token to basic form mapping for Event with ID 1
             TOKENS_NAME_WITHOUT_FOOD_VENDORS,
             TOKENS_DESCRIPTION_WITH_FOOD_VENDORS,
-            // Tokens for Event with ID 2
+            // Token to basic form mapping for Event with ID 2
             TOKENS_NAME_WITH_FOOD_VENDORS,
             TOKENS_DESCRIPTION_WITH_FOOD_VENDORS);
 

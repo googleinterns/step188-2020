@@ -63,24 +63,24 @@ public class SearchStore {
       String[] wordsWithinKeyword = keyword.getName().split("[^a-zA-Z0-9']+");
       if (wordsWithinKeyword.length > 1) {
         for (String word : wordsWithinKeyword) {
-          addKeywordAndBasicFormIfDifferent(word, ranking, keywordToRanking, tokenToBasicForm);
+          addKeywordAndBasicForm(word, ranking, keywordToRanking, tokenToBasicForm);
         }
       }
-      addKeywordAndBasicFormIfDifferent(
+      addKeywordAndBasicForm(
           keyword.getName(), ranking, keywordToRanking, tokenToBasicForm);
     }
   }
 
   /**
-   * Adds keyword and basic form of the keyword if different than keyword to the index.
+   * Adds keyword and its basic form if different than keyword to the index.
    *
    * @param keyword keyword to add to index
    * @param ranking ranking of the keyword
    * @param keywordToRanking the index to update
-   * @param tokenToBasicForm map of token to basic form of token for all tokens
+   * @param tokenToBasicForm map of token to its basic form for all tokens
    *        in text where keyword was found
    */
-  private void addKeywordAndBasicFormIfDifferent(String keyword, float ranking,
+  private void addKeywordAndBasicForm(String keyword, float ranking,
       Map<String, Float> keywordToRanking, Map<String, String> tokenToBasicForm) {
     keywordToRanking.put(keyword, ranking);
 
