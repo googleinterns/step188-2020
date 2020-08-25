@@ -65,11 +65,13 @@ async function populateVolunteeringOpportunitiesUI(eventHost) {
  */
 async function showVolunteeringOpportunities(
     opportunities, eventHost) {
+  console.log('showVolunteerOpportunities');
+  console.log(opportunities);
   for (const key in opportunities) {
     if (opportunities.hasOwnProperty(key)) {
       const volunteers =
           await getVolunteersByOpportunityId(opportunities[key].opportunityId);
-      $('#volunteering-opportunities')
+      $('#volunteering-opportunities .card .card-body')
           .append(getListItemForOpportunity(
               opportunities[key].opportunityId,
               opportunities[key].name,
@@ -96,6 +98,7 @@ async function showVolunteeringOpportunities(
 function getListItemForOpportunity(
     opportunityId, name, numSpotsLeft, requiredSkills,
     volunteers, eventHost) {
+  console.log('getListItemForOpportunity');
   requiredSkillsText =
       requiredSkills.length ? requiredSkills.toString() : 'None';
   volunteersText =
