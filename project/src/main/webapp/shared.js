@@ -336,22 +336,21 @@ function buildSkillsAsLabels(querySelector, opportunities) {
  * Adds currently-attributed image
  * If no image, add a default image or background color with default height
  */
-async function populateExistingImage(type, elementId, eventId='') {
+async function populateExistingImage(type, selector, eventId='') {
   if (!eventId) {
     eventId = getEventId();
   }
   const blobKey = await getBlobKey(type, eventId);
   const blobResponse = await fetch(`/blob-serve?key=${blobKey}`);
-  let imageUrl = 'assets/default_profile.jpg';
   if (blobResponse.status !== 200) {
     if (type === 'event') {
-      createRandomColorBlock(elementId);
+      createRandomColorBlock(selector);
     } else if (type === 'profile') {
-      $(elementId).attr('src', imageUrl);
+      $(selector).attr('src', 'assets/default_profile.jpg');
     }
   } else {
     const imageBlob = await blobResponse.blob();
-    $(elementId).attr('src', URL.createObjectURL(imageBlob));
+    $(selector).attr('src', URL.createObjectURL(imageBlob));
   }
 }
 
