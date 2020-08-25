@@ -139,7 +139,7 @@ function addTagsToInput(clickedAdder, tagId) {
   });
   getTagsScriptWithCallback(function() {
     $(tagId).tagsinput('refresh');
-    $(tagId).tagsinput('add', $(clickedAdder).next().html());
+    $(tagId).tagsinput('add', $(clickedAdder).next().text());
   });
 }
 
@@ -381,4 +381,6 @@ async function getEventDetails() {
   if ((urlParams.get('register')) === 'true') {
     registerEvent(eventId, data.host.email);
   }
+  document.getElementById('signup-link').setAttribute('href', `/event-details.html?eventId=${eventId}&register=true`);
+  document.getElementById('edit-link').setAttribute('href', `/event-edit.html?eventId=${eventId}`);
 }

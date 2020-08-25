@@ -13,6 +13,29 @@ $(async function() {
   }
 });
 
+/**
+ * Get all search events for the keyword entered and populate
+ * the events in the display.
+ */
+async function getAllSearchEvents() {
+  const eventContainer = document.getElementById('event-container');
+  if (eventContainer != null) {
+    eventContainer.remove();
+  }
+
+  const searchContainer = document.getElementById('search-container');
+  searchContainer.innerHTML = '';
+
+  const keyword = document.getElementById('keyword').value;
+  const response = await fetch(`search-data?keyword=${keyword}`);
+  const searchEvents = await response.json();
+  for (const key in searchEvents) {
+    if (searchEvents.hasOwnProperty(key)) {
+      populateEventContainer(searchEvents[key], 'search-container', 4);
+    }
+  }
+}
+
 function toggleDropdown() {
   $(".dropdown-toggle").dropdown();
 }
