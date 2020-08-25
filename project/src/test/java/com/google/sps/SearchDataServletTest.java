@@ -97,26 +97,28 @@ public class SearchDataServletTest {
           new Keyword(GAMES, 0.01f),
           new Keyword("Clunie Pool", 0.03f));
   private static final ImmutableList<Keyword> KEYWORDS_DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE =
-    ImmutableList.of(
-        new Keyword("Community Harvest festival", 0.40f),
-        new Keyword(GAMES, 0.17f),
-        new Keyword("food", 0.17f),
-        new Keyword("candy", 0.12f),
-        new Keyword("Event", 0.06f),
-        new Keyword("closure", 0.04f),
-        new Keyword("attendees", 0.03f));
+      ImmutableList.of(
+          new Keyword("Sutter Middle School", 0.41f),
+          new Keyword("McKinley Park", 0.13f),
+          new Keyword("teachers", 0.09f),
+          new Keyword("class", 0.09f),
+          new Keyword("picnic", 0.09f),
+          new Keyword("park", 0.08f),
+          new Keyword("lunch", 0.07f),
+          new Keyword(GAMES, 0.01f),
+          new Keyword("Clunie Pool", 0.03f));
   private static final String DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE =
       "Community harvest festival with games, food, and candy. Event open to the public 5pm-9pm."
           + "Complete full closure for 700 attendees.";
   private static final ImmutableList<Keyword> KEYWORDS_DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE =
-    ImmutableList.of(
-        new Keyword("Community Harvest festival", 0.40f),
-        new Keyword(GAMES, 0.17f),
-        new Keyword("food", 0.17f),
-        new Keyword("candy", 0.12f),
-        new Keyword("Event", 0.06f),
-        new Keyword("closure", 0.04f),
-        new Keyword("attendees", 0.03f));
+      ImmutableList.of(
+          new Keyword("Community Harvest festival", 0.40f),
+          new Keyword(GAMES, 0.17f),
+          new Keyword("food", 0.17f),
+          new Keyword("candy", 0.12f),
+          new Keyword("Event", 0.06f),
+          new Keyword("closure", 0.04f),
+          new Keyword("attendees", 0.03f));
   private static final LocalServiceTestHelper authenticationHelper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig());
   private static final String LOCATION = "Remote";
