@@ -4,10 +4,39 @@ $('.grid').masonry({
   percentPosition: true,
 });
 
+async function setImageFormAction(type) {
+  let urlParams = new URLSearchParams({'picture-type': type});
+  if (type === 'event') {
+    urlParams.append('event-id', getEventId());
+  }
+  const response = await fetch('/blob-url?' + urlParams);
+  const blobUrl = await response.text();
+  $('#image-form').attr('action', blobUrl);
+}
+
+async function getLoggedInUserEmail() {
+  const loginStatus = await getLoginStatus();
+  return loginStatus.userEmail;
+}
+
 async function isLoggedIn() {
-  const response = await fetch('/login-status');
-  const loginStatus = await response.json();
+  const loginStatus = await getLoginStatus();
   return loginStatus.loginState === 'LOGGED_IN';
+}
+
+async function getLoginStatus() {
+  const response = await fetch('/login-status');
+  return response.json();
+}
+
+/**
+ * Get the event id from the query string.
+ * @return {string} the event id in the query string
+ */
+function getEventId() {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  return urlParams.get('eventId');
 }
 
 /**
@@ -151,8 +180,8 @@ function togglePrefilledInterests() {
   $('#prefilled-interests').toggle();
 }
 
-async function getRankedEvents() {
-  const response = await fetch('/event-ranker');
+async function getRankedEvents(events) {
+  const response = await fetch('/event-ranker?' + new URLSearchParams({'events': JSON.stringify(events)}));
   return response.json();
 }
 
@@ -200,13 +229,13 @@ async function populateEventContainer(event, containerId, lod) {
     }
   }
   buildAsLabels(
-      `#${eventCardId} #event-card-labels`, event.labels, 'interests');
+      `#${eventCardId} .card-body #event-card-labels`, event.labels, 'interests');
   buildSkillsAsLabels(
-      `#${eventCardId} #event-card-labels`, event.opportunities);
+      `#${eventCardId} .card-body #event-card-labels`, event.opportunities);
   addLinkToRegister(eventCardId);
   addLinkToDetails(eventCardId);
   if (lod >= 2) {
-    addEventImage(event.imageUrl, eventCardId);
+    populateExistingImage('event', `#${eventCardId} #event-card-image`, event.eventId);
   }
 }
 
@@ -216,10 +245,15 @@ function addEventImage(imageUrl, eventCardId) {
     $(`#${eventCardId} #event-card-image`).attr('src', imageUrl);
   }
   else {
-    $(`#${eventCardId} #event-card-image`).replaceWith('<div class="card-img-top" id="event-card-image" />')
-    $(`#${eventCardId} #event-card-image`).addClass(pickRandomColorClass());
-    $(`#${eventCardId} #event-card-image`).height('200px');
+    createRandomColorBlock(`#${eventCardId} #event-card-image`);
   }
+}
+
+/** Create a fixed-height color block for events with no image */
+function createRandomColorBlock(elementId) {
+  $(elementId).replaceWith('<div class="card-img-top" id="event-card-image" />')
+  $(elementId).addClass(pickRandomColorClass());
+  $(elementId).height('200px');
 }
 
 /** Pick random color from Bootstrap defaults */
@@ -285,12 +319,31 @@ function buildSkillsAsLabels(querySelector, opportunities) {
 }
 
 /**
- * Adds currently-attributed profile image to logged-in user
- * If the user has no profile image, add the default one
+ * Adds currently-attributed image
+ * If no image, add a default image or background color with default height
  */
-async function populateExistingProfileImage() {
-  const response = await fetch('/blob-handler');
-  const imageUrl = await response.text();
-  const realImageUrl = imageUrl ? imageUrl : 'assets/default_profile.jpg';
-  $('#profile-picture').attr('src', realImageUrl);
+async function populateExistingImage(type, elementId, eventId='') {
+  if (!eventId) {
+    eventId = getEventId();
+  }
+  const blobKey = await getBlobKey(type, eventId);
+  let imageUrl = 'assets/default_profile.jpg';
+  const blobResponse = await fetch(`/blob-serve?key=${blobKey}`);
+  if (blobResponse.status === 404) {
+    createRandomColorBlock(elementId);
+  } else {
+    const imageBlob = await blobResponse.blob();
+    imageUrl = URL.createObjectURL(imageBlob);
+    $(elementId).attr('src', imageUrl);
+  }
+}
+
+async function getBlobKey(type, eventId) {
+  let handlerUrl = `/${type}-blob-handler`;
+  if (type === 'event') {
+    handlerUrl += '?' + new URLSearchParams({'event-id': eventId});
+  }
+  const handlerResponse =
+      await fetch(handlerUrl);
+  return handlerResponse.text();
 }

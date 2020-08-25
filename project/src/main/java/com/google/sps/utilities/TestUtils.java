@@ -22,12 +22,11 @@ public class TestUtils {
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Tech", "Work")));
   private static final Date PAST_DATE = Date.fromYearMonthDay(1999, 9, 15);
   private static final String LOCATION = "Remote";
-  private static final Date FUTURE_DATE = Date.fromYearMonthDay(Calendar.getInstance().get(Calendar.YEAR) + 1, 9, 15);
-  private static final Date DATE = Date.fromYearMonthDay(2016, 9, 15);
-  private static final String DATE_STRING = "09/15/2016";
   private static final String TIME = "3:00PM-5:00PM";
   private static final User HOST = new User.Builder(NAME, EMAIL).build();
   private static final String EVENT_ID = "0883de79-17d7-49a3-a866-dbd5135062a8";
+  private static final Date DATE =
+      Date.fromYearMonthDay(Calendar.getInstance().get(Calendar.YEAR) + 1, 9, 15);
   private static final String OPPORTUNITY_NAME = "Performer";
   private static final int NUMBER_OF_SPOTS = 240;
   private static final String VOLUNTEER_EMAIL = "volunteer@gmail.com";
@@ -77,7 +76,7 @@ public class TestUtils {
   public static Event newEventWithFutureDate(String eventId, String name, String description) {
     User host = newUser();
     SpannerTasks.insertOrUpdateUser(host);
-    return new Event.Builder(name, description, LABELS, LOCATION, FUTURE_DATE, TIME, host)
+    return new Event.Builder(name, description, LABELS, LOCATION, DATE, TIME, host)
         .setId(eventId)
             .build();
   }

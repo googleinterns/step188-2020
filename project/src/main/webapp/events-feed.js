@@ -1,22 +1,13 @@
-$(function() {
-  populateEvents();
-});
-
-async function populateEvents() {
-  const rankedEvents = await getRankedEvents();
-  const eventLevels = getLodsFromEvents(rankedEvents);
-  populateRankedEvents(eventLevels);
-}
-
 const filters = {}
 
 $(async function() {
+  populateEvents();
   toggleDropdown();
   // If want all events on discovery page 
   if (!(window.location.href).includes('filtered=true')) {
     const allEvents = await getAllEvents();
     populateAllEvents(allEvents); 
-  } else { 
+  } else {
     // Get filtered events only
     const filteredEvents = await getFilteredEventsOnly(window.location.href.split("labelParams=")[1]);
     populateAllEvents(filteredEvents);
@@ -35,6 +26,7 @@ async function getAllEvents() {
 function populateRankedEvents(eventLevels) {
   for (const eventMap of eventLevels) {
     populateEventContainer(eventMap['event'], 'event-container', eventMap['lod']);
+    getInterestFilters(eventMap['event']);
   }
 }
 
@@ -48,11 +40,10 @@ async function getFilteredEventsOnly(labelParams) {
   return response.json();
 }
 
-function populateAllEvents(allEvents) {
-  for (const event of allEvents) {
-    populateEventContainer(event, 'event-container');
-    getInterestFilters(event);
-  }
+async function populateAllEvents(allEvents) {
+  const rankedEvents = await getRankedEvents(allEvents);
+  const eventLevels = getLodsFromEvents(rankedEvents);
+  populateRankedEvents(eventLevels);
   populateFilters(filters)
 }
 
