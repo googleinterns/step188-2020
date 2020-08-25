@@ -29,6 +29,53 @@
     <script src="event-card.js"></script>
   </head>
   <body>
+    <div class="col-sm-3" id="event-card-level-4">
+      <div class="card rounded-lg grid-item grid-item--level-4">
+        <img
+          class="card-img-top"
+          id="event-card-image"
+          alt="Event main picture"
+        />
+        <div class="card-body">
+          <h5 class="card-title" id="event-card-title"></h5>
+          <p class="card-text" id="event-card-description"></p>
+          <div class="display-inline-block" id="event-card-labels"></div>
+          <ul class="list-group list-group-flush" id="details">
+            <li class="list-group-item">
+              <i class="far fa-calendar-alt"></i>
+              <span id="event-card-date"></span>
+              <span id="event-card-time"></span>
+              <i class="far fa-clock"></i>
+            </li>
+            <li class="list-group-item">
+              <i class="fas fa-map-marker-alt"></i>
+              <span id="event-card-location"></span>
+            </li>
+            <li class="list-group-item">
+              <p class="card-text" id="vols-needed">
+                <i class="fas fa-hand-holding-medical"></i>
+                <span id="event-card-volunteers"></span>
+              </p>
+            </li>
+            <br />
+            <div class="btn-group" role="group">
+              <a
+                class="btn btn-outline-primary"
+                href="event-details.html"
+                id="event-details"
+                >Details</a
+              >
+              <a
+                class="btn btn-primary"
+                href="event-details.html"
+                id="event-register"
+                >Register</a
+              >
+            </div>
+          </ul>
+        </div>
+      </div>
+    </div>
     <div class="card rounded-lg grid-item grid-item--level-3" id="event-card-level-3">
       <img class="card-img-top" id="event-card-image" alt="Event main picture" />
       <div class="card-body">
