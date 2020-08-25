@@ -45,41 +45,40 @@ public class SearchStoreTest {
       ImmutableList.of(new Keyword("picnic", 1.00f));
   private static final ImmutableList<Keyword> KEYWORDS_NAME_WITH_GAMES =
       ImmutableList.of(new Keyword("picnic", 0.56f), new Keyword(GAMES, 0.44f));
+  private static final String SUTTER_MIDDLE_SCHOOL = "Sutter Middle School";
+  private static final String MCKINLEY_PARK = "McKinley Park";
+  private static final String TEACHERS = "teachers";
+  private static final String CLASS = "class";
+  private static final String PICNIC = "picnic";
+  private static final String PARK = "park";
+  private static final String LUNCH = "lunch";
+  private static final String CLUNIE_POOL = "Clunie Pool";
   private static final ImmutableList<Keyword> KEYWORDS_DESCRIPTION_WITHOUT_GAMES =
       ImmutableList.of(
-          new Keyword("Sutter Middle School", 0.43f),
-          new Keyword("McKinley Park", 0.14f),
-          new Keyword("teachers", 0.10f),
-          new Keyword("class", 0.10f),
-          new Keyword("picnic", 0.09f),
-          new Keyword("park", 0.08f),
-          new Keyword("lunch", 0.03f),
-          new Keyword("Clunie Pool", 0.03f));
-  private static final ImmutableList<Keyword> KEYWORDS_DESCRIPTION_WITH_GAMES =
+          new Keyword(SUTTER_MIDDLE_SCHOOL, 0.43f),
+          new Keyword(MCKINLEY_PARK, 0.14f),
+          new Keyword(TEACHERS, 0.10f),
+          new Keyword(CLASS, 0.10f),
+          new Keyword(PICNIC, 0.09f),
+          new Keyword(PARK, 0.08f),
+          new Keyword(LUNCH, 0.03f),
+          new Keyword(CLUNIE_POOL, 0.03f));
+  private final ImmutableList<Keyword> KEYWORDS_DESCRIPTION_WITH_GAMES =
       ImmutableList.of(
-          new Keyword("Sutter Middle School", 0.41f),
-          new Keyword("McKinley Park", 0.13f),
-          new Keyword("teachers", 0.09f),
-          new Keyword("class", 0.09f),
-          new Keyword("picnic", 0.09f),
-          new Keyword("park", 0.08f),
-          new Keyword("lunch", 0.07f),
+          new Keyword(SUTTER_MIDDLE_SCHOOL, 0.41f),
+          new Keyword(MCKINLEY_PARK, 0.13f),
+          new Keyword(TEACHERS, 0.09f),
+          new Keyword(CLASS, 0.09f),
+          new Keyword(PICNIC, 0.09f),
+          new Keyword(PARK, 0.08f),
+          new Keyword(LUNCH, 0.07f),
           new Keyword(GAMES, 0.01f),
-          new Keyword("Clunie Pool", 0.03f));
+          new Keyword(CLUNIE_POOL, 0.03f));
   private static final String DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE =
       "Sutter Middle School will be walking to McKinley Park. 7th grade class and teachers will"
           + " have a picnic, play games, and eat lunch at the park and Clunie Pool.";
-  private static final ImmutableList<Keyword> KEYWORDS_DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE =
-      ImmutableList.of(
-          new Keyword("Sutter Middle School", 0.41f),
-          new Keyword("McKinley Park", 0.13f),
-          new Keyword("teachers", 0.09f),
-          new Keyword("class", 0.09f),
-          new Keyword("picnic", 0.09f),
-          new Keyword("park", 0.08f),
-          new Keyword("lunch", 0.07f),
-          new Keyword(GAMES, 0.01f),
-          new Keyword("Clunie Pool", 0.03f));
+  private final ImmutableList<Keyword> KEYWORDS_DESCRIPTION_WITH_GAMES_IN_LOW_RELEVANCE =
+      new ImmutableList.Builder<Keyword>().addAll(KEYWORDS_DESCRIPTION_WITH_GAMES).build();
   private static final String DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE =
       "Community harvest festival with games, food, and candy. Event open to the public 5pm-9pm."
           + "Complete full closure for 700 attendees.";
