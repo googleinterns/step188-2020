@@ -186,8 +186,9 @@ public class SearchDataServletTest {
   }
 
   /**
-   * Add event using EventCreationServlet instance and check that search for keyword using
-   * SearchDataServlet instance not relevant in the event name or description does not appear in the results.
+   * Adds event using EventCreationServlet instance and checks that search for keyword
+   * not relevant in the event name or description does not appear in the results.
+   * Searches for keyword using SearchDataServlet instance.
    */
   @Test
   public void oneEvent_KeywordNotRelevantInEventTitleOrDescription_noResultsReturned()
@@ -220,7 +221,7 @@ public class SearchDataServletTest {
   }
 
   /**
-   * Add two events using EventCreationServlet instance and check that a search for a keyword using
+   * Adds two events using EventCreationServlet instance and checks that a search for a keyword using
    * SearchDataServlet instance returns the event with higher relevance for that keyword first.
    */
   @Test
@@ -264,7 +265,7 @@ public class SearchDataServletTest {
     Assert.assertEquals(
         secondReturnedEvent.getDescription(), DESCRIPTION_WITH_GAMES_IN_HIGH_RELEVANCE);
 
-    // Get search results using the searchDataServlet
+    // Get search results using the searchDataServlet instance
     searchDataServlet.doGet(getRequest, getResponse);
     Event[] actualResults = new Gson().fromJson(getStringWriter.toString().trim(), Event[].class);
     
