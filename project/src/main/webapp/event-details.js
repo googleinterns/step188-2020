@@ -143,6 +143,7 @@ async function getEventDetails() {
   document.getElementById('location').innerHTML =
     `Location: ${data['location']}`;
   document.getElementById('time').innerHTML = `Time: ${data['time']}`;
+  document.getElementById('signup-link').setAttribute('href', `/event-details.html?eventId=${eventId}&register=true`);
   document.getElementById('edit-link').setAttribute('href', `/event-edit.html?eventId=${eventId}`);
 }
 

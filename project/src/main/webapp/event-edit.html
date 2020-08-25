@@ -3,14 +3,13 @@
   <head> 
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="create-event.css" />
-    <script src="script.js"></script>
-    <script src="event-edit.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <link rel="stylesheet" href="styles.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Public+Sans&display=swap"
       rel="stylesheet"
     />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <!-- Bootstrap CDN links -->
     <link
       rel="stylesheet"
@@ -23,6 +22,9 @@
       integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js"></script>
+    <script src="script.js"></script>
+    <script src="event-edit.js"></script>
   </head>
   <body>
     <div id="header"></div>
@@ -30,40 +32,35 @@
     <h3>Edit Your Event</h3>
     <br />
     <form id="create-event" action="/create-event" method="POST">
-      <div class="col">
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">Name</span>
-          </div>
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Event Name"
-            id="name"
-            name="name"
-            aria-describedby="basic-addon1"
-          />
-        </div>
-        <br />
       <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-12">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Name</span>
+            </div>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Event Name"
+              id="name"
+              name="name"
+              required="required"
+              aria-describedby="basic-addon1"
+            />
+          </div>
+        </div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-lg-4">
           <div class="input-group">
             <div class="input-group-prepend">
               <span class="input-group-text" id="basic-addon1">Date</span>
             </div>
-              <input
-                type="text"
-                class="form-control"
-                placeholder="dd/MM/yyyy"
-                id="date"
-                name="date"
-                aria-describedby="basic-addon1"
-              />
+              <input type="date" id="date" name="date" required="required">
             </div>
           </div>
-          <br />
-          <br />
-          <div class="col-lg-6">
+          <div class="col-lg-3">
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text" id="basic-addon1">Time</span>
@@ -71,9 +68,27 @@
               <input
                 type="text"
                 class="form-control"
-                placeholder="Time"
+                placeholder="HH:mm"
                 id="time"
                 name="time"
+                required="required"
+                pattern="^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d))$"
+                aria-describedby="basic-addon1"
+              />
+            </div>
+          </div>
+          <div class="col-lg-5">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Location</span>
+              </div>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Where your event will be held"
+                id="location"
+                name="location"
+                required="required"
                 aria-describedby="basic-addon1"
               />
             </div>
@@ -82,7 +97,7 @@
       </div>
       <br />
       <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-12">
           <div class="input-group" id="interests-div">
             <div class="input-group-prepend">
               <label class="input-group-text" for="interests">Interests</label>
@@ -101,93 +116,52 @@
             <div id="prefilled-interests" class="overflow-auto prefilled-pool"></div>
           </div>
         </div>
-        <div class="col-lg-6">
-          <div class="input-group" id="skills-div">
+      </div>
+      <br />
+      <br />
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="input-group">
             <div class="input-group-prepend">
-              <label class="input-group-text" for="skills">Skills</label>
+              <span class="input-group-text" id="basic-addon1">Description</span>
             </div>
-            <select
-              id="skills"
-              name="skills"
-              data-role="tagsinput"
-              multiple
-            ></select>
-            <button 
-              type="button"
-              class="btn btn-light prefilled-pick"
-              onclick="togglePrefilledSkills();"
-            >+ Pick</button>
-            <div id="prefilled-skills" class="overflow-auto prefilled-pool"></div>
+            <textarea
+              type="text"
+              class="form-control"
+              placeholder="Describe your event!"
+              id="description"
+              name="description"
+              required="required"
+              rows="6"
+              aria-describedby="basic-addon1"
+            ></textarea>
           </div>
         </div>
       </div>
+      <br />
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Attendees</span>
+            </div>
+            <input
+              type="number"
+              class="form-control"
+              min="0"
+              placeholder="Max number of attendees"
+              aria-describedby="basic-addon1"
+            />
+          </div>
+        </div>
       </div>
       <br />
       <br />
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">Description</span>
-          </div>
-          <input
-            type="textarea"
-            class="form-control"
-            id="description"
-            name="description"
-            rows="5"
-            aria-describedby="basic-addon1"
-          />
-        </div>
-        <br />
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">Where</span>
-          </div>
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Where your event will be held"
-            id="location"
-            name="location"
-            aria-describedby="basic-addon1"
-          />
-        </div>
-        <br />
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">Wanted</span>
-          </div>
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Volunteer Type"
-            aria-describedby="basic-addon1"
-          />
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Quantity Needed"
-            aria-describedby="basic-addon1"
-          />
-        </div>
-        <br />
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">Attendees</span>
-          </div>
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Max number of attendees"
-            aria-describedby="basic-addon1"
-          />
-        </div>
-        <br />
-      </div>
       <button
         type="submit"
         class="btn btn-primary mx-auto d-block"
       >
-        Save
+        Submit
       </button>
     </form>
   </body>

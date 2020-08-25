@@ -139,7 +139,7 @@ function addTagsToInput(clickedAdder, tagId) {
   });
   getTagsScriptWithCallback(function() {
     $(tagId).tagsinput('refresh');
-    $(tagId).tagsinput('add', $(clickedAdder).next().html());
+    $(tagId).tagsinput('add', $(clickedAdder).next().text());
   });
 }
 

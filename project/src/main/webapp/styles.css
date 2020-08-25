@@ -77,3 +77,20 @@ i {
   background-color: #fcfcfc !important;
   color: #007bff !important;
 }
+
+h3 {
+  text-align: center;
+}
+
+.btn-primary a {
+  color: white;
+  text-align: center;
+}
+
+.event-detail-size {
+  min-width: 100% !important;
+}
+
+.card-title {
+  text-align: center;
+}
