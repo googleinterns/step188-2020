@@ -1,4 +1,5 @@
 $(function() {
+  getEventDetails();
   populatePrefilled('interests');
   populatePrefilled('skills');
   setActionToCorrectRedirectURL();
@@ -9,7 +10,7 @@ $(function() {
  */
 async function setActionToCorrectRedirectURL() {
   const params = (new URL(document.location)).searchParams;
-  const eventId = params.get('event-id');
+  const eventId = params.get('eventId');
 
   const opportunityForm =
       document.getElementById('volunteering-opportunity-form');
