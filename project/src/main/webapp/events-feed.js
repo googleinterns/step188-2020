@@ -66,7 +66,7 @@ async function populateAllEvents(allEvents) {
   const rankedEvents = await getRankedEvents(allEvents);
   const eventLevels = getLodsFromEvents(rankedEvents);
   populateRankedEvents(eventLevels);
-  populateFilters(filters)
+  populateFilters(filters);
 }
 
 // Fill filter dict with {labelName: count}

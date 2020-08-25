@@ -3,9 +3,6 @@ $(async function() {
   const eventId = getEventId();
   const eventHost = await getEventHost();
   configureRegisterAndEditButtons(eventHost, eventId);
-  const loginStatus = await getLoginStatus();
-  populateVolunteeringOpportunitiesUI(eventHost, loginStatus);
-  setSignupAction();
   setImageFormAction('event');
 });
 
@@ -19,11 +16,14 @@ async function configureRegisterAndEditButtons(eventHost, eventId) {
     const editContainer = '#edit-container .card .card-body #edit-container-2';
     addHostButtons(editContainer, eventId);
     $('#signup-link').hide();
+    $('#volopp-container').hide();
   } else {
+    populateVolunteeringOpportunitiesUI(eventHost);
+    setSignupAction();
     $('#edit-container').hide();
     $('#details')
-        .append('<button id="signup-link" href="signup.html" ' + 
-                'type="button" class="btn btn-primary">Register</button>');
+        .append(`<a id="signup-link" href="/event-details.html?eventId=${eventId}&register=true" 
+                type="button" class="btn btn-primary">Register</a>`);
   }
 }
 
@@ -39,7 +39,7 @@ function addHostButtons(editContainer, eventId) {
                   >Add a volunteering opportunity</a>`);
     $(editContainer).append('<br /><br />');
     $(editContainer)
-        .append(`<a id="edit-link" href="event-edit.html?eventId=${eventId}" 
+        .append(`<a id="edit-link" href="/event-edit.html?eventId=${eventId}" 
                 type="button" class="btn btn-primary" id="edit-button"> Edit event </a>`);
 }
 
@@ -47,15 +47,13 @@ function addHostButtons(editContainer, eventId) {
  * Adds the volunteering opportunities to the event card and the dropdown
  * in the signup form.
  * @param {string} eventHost email of the host of the event
- * @param {Object} loginStatus status of
- *      current user
  */
-async function populateVolunteeringOpportunitiesUI(eventHost, loginStatus) {
+async function populateVolunteeringOpportunitiesUI(eventHost) {
   const eventId = getEventId();
 
   const response = await fetch(`/event-volunteering-data?event-id=${eventId}`);
   const opportunities = await response.json();
-  showVolunteeringOpportunities(opportunities, eventHost, loginStatus);
+  showVolunteeringOpportunities(opportunities, eventHost);
   populateOpportunitiesDropdown(opportunities);
 }
 
@@ -64,10 +62,9 @@ async function populateVolunteeringOpportunitiesUI(eventHost, loginStatus) {
  * eventHost is the current user, add the edit link for each opportunity.
  * @param {Object} opportunities
  * @param {string} eventHost email of the host of the event
- * @param {Object} loginStatus status of current user
  */
 async function showVolunteeringOpportunities(
-    opportunities, eventHost, loginStatus) {
+    opportunities, eventHost) {
   for (const key in opportunities) {
     if (opportunities.hasOwnProperty(key)) {
       const volunteers =
@@ -78,7 +75,7 @@ async function showVolunteeringOpportunities(
               opportunities[key].name,
               opportunities[key].numSpotsLeft,
               opportunities[key].requiredSkills,
-              volunteers, eventHost, loginStatus));
+              volunteers, eventHost));
     }
   }
 }
@@ -94,24 +91,16 @@ async function showVolunteeringOpportunities(
  * @param {string[]} requiredSkills skills for opportunity
  * @param {string} volunteers volunteers for opportunity
  * @param {string} eventHost email of the host of the event
- * @param {Object} loginStatus status of current user
  * @return {string}
  */
 function getListItemForOpportunity(
     opportunityId, name, numSpotsLeft, requiredSkills,
-    volunteers, eventHost, loginStatus) {
+    volunteers, eventHost) {
   requiredSkillsText =
       requiredSkills.length ? requiredSkills.toString() : 'None';
   volunteersText =
       volunteers.length ? volunteers.toString() : 'None';
-  let editLink = '';
-
-  // If the user is logged in and the current user is the event host,
-  // then show the edit link for the volunteering opportunity.
-  if (loginStatus.loginState === 'LOGGED_IN' &&
-    !loginStatus.userEmail.localeCompare(eventHost)) {
-    editLink = getLinkForOpportunity(opportunityId);
-  }
+  let editLink = getLinkForOpportunity(opportunityId);
   return `<li class="list-group-item">
           <p class="card-text">Volunteer Name: ${name}</p>
            <p class="card-text">Volunteer Spots Left: ${numSpotsLeft}</p>
@@ -219,7 +208,6 @@ function setSignupAction() {
   const params = (new URL(document.location)).searchParams;
   const eventId = params.get('eventId');
 
-  const opportunitySignupForm = document.getElementById('opportunity-signup-form');
-  opportunitySignupForm.action =
-      `/opportunity-signup-form-handler?event-id=${eventId}`;
+  $('#opportunity-signup-form').attr('action', `/opportunity-signup-form-handler?event-id=${eventId}`);
+  $('#opportunity-signup-form').show();
 }
