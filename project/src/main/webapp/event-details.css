@@ -28,3 +28,7 @@
 .event-detail-size {
   min-width: 100%;
 }
+
+.alert {
+  display: none;
+}

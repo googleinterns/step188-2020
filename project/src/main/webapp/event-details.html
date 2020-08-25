@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>STEP 188 Project</title>
+    <link rel="stylesheet" href="event-details.css" />
     <link rel="stylesheet" href="styles.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
@@ -24,11 +25,34 @@
     <script src="event-details.js"></script>
   </head>
   <body>
+    <div class="alert alert-danger" role="alert">
+      You are host of this event, so you cannot register.
+    </div>
     <div id="header"></div>
     <h3>Event Details</h3> 
     <div class="container">
       <div class="card event-detail-size">
         <div class="card-body">
+        <form
+          id="image-form"
+          method="POST"
+          enctype="multipart/form-data"
+        >
+          <div class="col-sm-3">
+            <img id="event-picture" />
+            <br /><br />
+            <div class="form-group">
+              <label for="event-picture">Upload an image for your event: </label>
+              <br />
+              <div class="form-group">
+                <div class="input-group">
+                  <input type="file" name="event-picture" />
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Update event picture</button>
+          </div>
+        </form>
         <h5 class="card-title input" id="name"></h5>
           <p class="card-text input" id="description"></p>
           <br />
@@ -42,31 +66,30 @@
             <li class="list-group-item input" id="location"></li>
           </ul>
         </div>
-        </div>
-       <br>
-       <div id="add-opportunity"></div>
-       <br>
-       <form
-        method="post"
-        action="/opportunity-signup-form-handler"
-        id="opportunity-signup-form"
-        class="hidden"
-        >
+        <button id="edit-link" href="event-edit.html" type="button" class="btn btn-primary">
+          Edit event
+        </button>
+        <button id="signup-link" href="signup.html" type="button" class="btn btn-primary">
+          Register
+        </button>
+      </div>
+      <br>
+      <div id="add-opportunity"></div>
+      <br>
+      <form
+       method="post"
+       action="/opportunity-signup-form-handler"
+       id="opportunity-signup-form"
+       class="hidden"
+      >
         <div class="form-group">
           <label for="opportunities-options">Select a volunteer role:</label>
           <select class="form-control" name="opportunity-id" id="opportunities-options">
           </select>
         </div>
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Add</button>
-        </form>
-        <br>
-        <button type="button" class="btn btn-primary">
-          <a id= "signup-link" href="signup.html">Register</a>
-        </button>
-        <button type="button" class="btn btn-primary">
-        <a id= "editLink" href="event-edit.html">Edit</a>
-        </button>
-      </div>
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Submit</button>
+      </form>
+      <br>
     </div>
   </body>
 </html>
