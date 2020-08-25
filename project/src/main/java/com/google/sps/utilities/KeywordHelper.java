@@ -10,6 +10,7 @@ import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.sps.data.Keyword;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /* Class that abstracts away getting keywords for specific content to enable testing. */
 public class KeywordHelper {
@@ -37,8 +38,8 @@ public class KeywordHelper {
    * @return list of Keyword objects representing the keywords and their relevances for the current
    *     instances's content.
    */
-  public ArrayList<Keyword> getKeywords() throws IOException {
-    ArrayList<Keyword> keywords = new ArrayList<Keyword>();
+  public List<Keyword> getKeywords() throws IOException {
+    List<Keyword> keywords = new ArrayList<Keyword>();
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       Document doc = Document.newBuilder().setContent(content).setType(Type.PLAIN_TEXT).build();
       AnalyzeEntitiesRequest request =

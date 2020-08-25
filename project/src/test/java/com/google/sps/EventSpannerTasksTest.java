@@ -10,9 +10,11 @@ import com.google.sps.servlets.EventCreationServlet;
 import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.NlpProcessing;
 import com.google.sps.servlets.EventRegistrationServlet;
+import com.google.sps.store.SearchStore;
 import com.google.sps.utilities.SpannerClient;
 import com.google.sps.utilities.SpannerTasks;
 import com.google.sps.utilities.SpannerTestTasks;
+import com.google.sps.utilities.KeywordHelper;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import com.google.sps.utilities.TestUtils;
@@ -48,6 +50,8 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.skyscreamer.jsonassert.JSONAssert;
 import java.util.stream.Collectors;
 import java.util.stream.Stream; 
+import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
+import org.mockito.Mockito;
 import static org.easymock.EasyMock.expect;
 
 /** Unit tests for DatabaseWrapper functionality related to Event class. */
@@ -77,6 +81,8 @@ public class EventSpannerTasksTest {
   private  PrintWriter printWriter;
   private static final LocalServiceTestHelper authenticationHelper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig());
+  private EventCreationServlet eventCreationServlet;
+  private KeywordHelper mockKeywordHelper;
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -93,6 +99,11 @@ public class EventSpannerTasksTest {
     stringWriter = new StringWriter();
     printWriter = new PrintWriter(stringWriter);
     authenticationHelper.setUp();
+
+    eventCreationServlet = new EventCreationServlet();
+    mockKeywordHelper = Mockito.mock(KeywordHelper.class);
+    eventCreationServlet.setSearchStore(new SearchStore(mockKeywordHelper));
+
     Mockito.when(response.getWriter()).thenReturn(printWriter);
   } 
 

@@ -55,7 +55,7 @@ public class SearchStore {
   private void addKeywordsInTextToIndex(
       String eventId, String text, float weight, Map<String, Float> keywordToRanking) {
     keywordHelper.setContent(text);
-    ArrayList<Keyword> keywords = new ArrayList<Keyword>();
+    List<Keyword> keywords = new ArrayList<Keyword>();
     try {
       keywords = keywordHelper.getKeywords();
     } catch (IOException e) {
