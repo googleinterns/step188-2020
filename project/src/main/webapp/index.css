@@ -17,18 +17,13 @@ html {
 
 .hero-text {
   color: white;
-  left: 40%;
-  position: absolute;
-  top: 40%;
-  transform: translate(-50%, -50%);
+  padding-top: 180px;
+  text-align: center;
 }
 
 .hero-subtext {
   color: white;
-  left: 50%;
-  position: absolute;
-  top: 55%;
-  transform: translate(-50%, -50%);
+  text-align: center;
 }
 
 .hero-text button:hover {
@@ -36,17 +31,6 @@ html {
   color: white;
 }
 
-.button {
-  background-color: #91d4ed;
-  border: none;
-  color: white;
-  cursor: pointer;
-  font-size: 20px;
-  font-weight: bold;
-  margin: auto;
-  padding: 10px;
-  text-align: center;
-}
 .container {
   align-items: center;
   margin: auto;
@@ -57,6 +41,13 @@ h6 {
 }
 
 .about img {
-  height: 300px;
-  width: 300px;
+  height: 200px;
+  width: 200px;
+    display:block;
+    margin:auto;
+}
+
+.bottom-subtext {
+  color: gray;
+  text-align: right;
 }
