@@ -33,3 +33,17 @@
 .alert {
   display: none;
 }
+
+#event-container .card {
+  margin-top: 10% !important;
+  width: 100% !important;
+}
+
+#edit-container .card {
+  margin-top: 0 !important;
+  width: 100% !important;
+}
+
+#edit-container-2 {
+  text-align: center;
+}
