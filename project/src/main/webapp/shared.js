@@ -181,9 +181,14 @@ function togglePrefilledInterests() {
 }
 
 async function getRankedEvents(events) {
-  const response = await fetch('/event-ranker?' + new URLSearchParams({'events': JSON.stringify(events)}));
+  const eventIds = new Array(); 
+  for (index in events) {
+    eventIds.push(events[index].eventId);
+  }
+  const response = await fetch('/event-ranker?' + new URLSearchParams({'events': JSON.stringify(eventIds)}));
   return response.json();
 }
+
 
 /** Take ranked events and assign them levels of detail */
 function getLodsFromEvents(rankedEvents) {
