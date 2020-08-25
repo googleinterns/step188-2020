@@ -3,7 +3,7 @@ package com.google.sps;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.sps.data.User;
-import com.google.sps.servlets.BlobFormHandlerServlet;
+import com.google.sps.servlets.BlobHandlerUserServlet;
 import com.google.sps.servlets.BlobUrlServlet;
 import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.SpannerClient;
@@ -17,6 +17,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,9 +28,11 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockServletContext;
 
-/** Unit tests for DatabaseWrapper functionality related to Event class. */
+/** */
 @RunWith(JUnit4.class)
-public class BlobFormHandlerTest {
+public class BlobHandlerUserTest {
+  private static final String PICTURE_TYPE_PARAM = "picture-type";
+  private static final String PROFILE_TYPE = "profile";
   private static final String EMAIL = "test@example.com";
   private static final String INVALID_EMAIL = "invalid@example.com";
   private static final String DOMAIN = "example.com";
@@ -58,31 +61,39 @@ public class BlobFormHandlerTest {
     authenticationHelper.tearDown();
   }
 
+  @After
+  public void resetMocks() {
+    Mockito.reset(request);
+    stringWriter.getBuffer().setLength(0);
+  }
+
   @Test
   public void testGetImageUrl() throws Exception {
     SpannerTasks.insertOrUpdateUser(
         USER.toBuilder().setImageUrl(IMAGE_URL).build());
     setAuthenticationHelper(EMAIL);
 
-    new BlobFormHandlerServlet().doGet(request, response);
+    new BlobHandlerUserServlet().doGet(request, response);
  
-    Assert.assertFalse(IMAGE_URL.isEmpty());
+    Assert.assertFalse(stringWriter.toString().trim().isEmpty());
   }
 
   @Test
-  public void testGetUploadUrl() throws Exception {
+  public void testGetUploadUserUrl() throws Exception {
     SpannerTasks.insertOrUpdateUser(
         USER.toBuilder().setImageUrl(IMAGE_URL).build());
     setAuthenticationHelper(EMAIL);
+    Mockito.doReturn(PROFILE_TYPE).when(request).getParameter(PICTURE_TYPE_PARAM);
 
     new BlobUrlServlet().doGet(request, response);
 
-    Assert.assertFalse(IMAGE_URL.isEmpty());
+    Assert.assertFalse(stringWriter.toString().trim().isEmpty());
   }
 
   @Test
   public void testBlobstoreInvalidUser() throws Exception {
     setAuthenticationHelper(INVALID_EMAIL);
+    Mockito.doReturn(PROFILE_TYPE).when(request).getParameter(PICTURE_TYPE_PARAM);
 
     new BlobUrlServlet().doGet(request, response);
 

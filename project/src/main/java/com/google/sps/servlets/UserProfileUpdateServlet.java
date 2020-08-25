@@ -51,6 +51,7 @@ public class UserProfileUpdateServlet extends HttpServlet {
             .add(EVENTS_HOSTING, CommonUtils.createJsonArray(new HashSet<>()))
             .add(EVENTS_PARTICIPATING, CommonUtils.createJsonArray(new HashSet<>()))
             .add(EVENTS_VOLUNTEERING, CommonUtils.createJsonArray(new HashSet<>()))
+            .add(IMAGE_URL, user.getImageUrl())
             .build()
             .toString();
     response.setContentType("application/json;charset=UTF-8");
