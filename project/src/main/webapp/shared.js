@@ -206,9 +206,9 @@ function getLodsFromEvents(rankedEvents) {
 }
 
 /** Writes out relevant details to an event card with the appropriate lod (level of detail) */
-async function populateEventContainer(event, containerId, lod) {
+async function populateEventContainerWithoutButtons(event, containerId, lod) {
   const eventCardAll = await $.get('event-card.html');
-  const eventCard = $(eventCardAll).filter(`#event-card-level-${lod}`).get(0);
+  const eventCard = $(eventCardAll).filter(`#event-card-level-${Math.min(lod, 3)}`).get(0);
   const eventCardId = `event-${event.eventId}`;
   $(eventCard).attr('id', eventCardId);
   $(`#${containerId}`).append(eventCard);
@@ -232,11 +232,21 @@ async function populateEventContainer(event, containerId, lod) {
       `#${eventCardId} .card-body #event-card-labels`, event.labels, 'interests');
   buildSkillsAsLabels(
       `#${eventCardId} .card-body #event-card-labels`, event.opportunities);
-  addLinkToRegister(eventCardId);
-  addLinkToDetails(eventCardId);
   if (lod >= 2) {
     populateExistingImage('event', `#${eventCardId} #event-card-image`, event.eventId);
   }
+  $('#' + eventCardId + ' div #event-details').hide();
+  $('#' + eventCardId + ' div #event-register').hide();
+  if (lod === 5) {
+    $(`#${eventCardId}`).attr('style', 'width: 100% !important');
+  }
+}
+
+async function populateEventContainer(event, containerId, lod) {
+  await populateEventContainerWithoutButtons(event, containerId, lod);
+  const eventCardId = `event-${event.eventId}`;
+  addLinkToRegister(eventCardId);
+  addLinkToDetails(eventCardId);
 }
 
 /** Prepends either a background image or Bootstrap-colored div */
@@ -269,15 +279,19 @@ function pickRandomColorClass() {
 
 /** Adds a hyperlink to the registration button of event card */
 function addLinkToRegister(eventCardId) {
+  const registerButton = '#' + eventCardId + ' div #event-register';
+  $(registerButton).show();
   const eventId = eventCardId.substring(6);
-  $('#' + eventCardId + ' div #event-register')
+  $(registerButton)
       .attr('href', `/event-details.html?eventId=${eventId}&register=true`);
 }
 
 /** Adds a hyperlink to the details button of event card */
 function addLinkToDetails(eventCardId) {
+  const detailsButton = '#' + eventCardId + ' div #event-details';
+  $(detailsButton).show();
   const eventId = eventCardId.substring(6);
-  $('#' + eventCardId + ' div #event-details')
+  $(detailsButton)
       .attr('href', `/event-details.html?eventId=${eventId}&register=false`);
 }
 
