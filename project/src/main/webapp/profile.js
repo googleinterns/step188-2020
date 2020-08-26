@@ -4,8 +4,8 @@ $(document).ready(function() {
 
 async function updateProfile() {
   const userData = await getCurrentProfileData();
-  updateProfileBasics(userData);
   updateProfileEvents();
+  updateProfileBasics(userData);
 }
 
 /** Get all information for current user from backend */
@@ -32,24 +32,30 @@ function updateProfileEvents() {
 
 async function updateUserEventsHosting() {
   const userEventsHosting = await getUserEvents('hosting');
-  for (const eventHosting of userEventsHosting) {
-    populateEventContainer(eventHosting, 'events-hosting');
+  for (const eventsKey in userEventsHosting) {
+    if (userEventsHosting.hasOwnProperty(eventsKey)) {
+      populateEventContainer(userEventsHosting[eventsKey], 'events-hosting', 2);
+    }
   }
 }
 
 async function updateUserEventsParticipating() {
   const userEventsParticipating = await getUserEvents('participating');
-  for (const eventParticipating of userEventsParticipating) {
-    populateEventContainer(eventParticipating, 'events-participating');
+  for (const eventsKey in userEventsParticipating) {
+    if (userEventsParticipating.hasOwnProperty(eventsKey)) {
+      populateEventContainer(userEventsParticipating[eventsKey], 'events-participating', 2);
+    }
   }
 }
 
 async function updateUserEventsVolunteering() {
   const userEventsVolunteering = await getUserEvents('volunteering');
-  for (const eventVolunteering of userEventsVolunteering) {
-    const event = eventVolunteering.event;
-    await populateEventContainer(event, 'events-volunteering');
-    addVolunteerRole(event.eventId, eventVolunteering.opportunityName);
+  for (const eventsKey in userEventsVolunteering) {
+    if (userEventsVolunteering.hasOwnProperty(eventsKey)) {
+      const eventVolunteering = userEventsVolunteering[eventsKey];
+      populateEventContainer(eventVolunteering.event, 'events-volunteering', 2);
+      addVolunteerRole(eventVolunteering.event.eventId, eventVolunteering.opportunityName);
+    }
   }
 }
 
@@ -59,7 +65,7 @@ function addVolunteerRole(eventId, opportunity) {
 }
 
 async function getUserEvents(eventType) {
-  const userEvents = await fetch(
+  const response = await fetch(
       '/user-events?' + new URLSearchParams({'event-type': eventType}));
-  return userEvents.json();
+  return response.json();
 }
