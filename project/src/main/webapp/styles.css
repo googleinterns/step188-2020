@@ -55,20 +55,6 @@
   width: 15% !important;
 }
 
-.grid-item--level-1 {
-  font-size: 85% !important;
-  width: 15% !important;
-}
-
-.grid-item--level-2 {
-  font-size: 90% !important;
-  width: 15% !important;
-}
-
-.grid-item--level-3 {
-  width: 20% !important;
-}
-
 i {
   margin: 5px;
 }
@@ -101,7 +87,11 @@ h3 {
 }
 
 #logo {
-  height: 70px;
-  margin-left: 10px;
-  margin-right: 10px;
+  height: 40px;
+  margin: 10px;
+  width: 60px;
+}
+
+.grid-item {
+  margin-bottom: 20px;
 }
