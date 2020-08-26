@@ -237,7 +237,15 @@ async function populateEventContainer(event, containerId, lod) {
   if (lod >= 2) {
     populateExistingImage('event', `#${eventCardId} #event-card-image`, event.eventId);
   }
+  if (event.opportunityName) {
+    $(`#${eventCardId} #event-card-role-type`).html(`<b>Role:</b> ${event.opportunityName}`);
+  }
+  else {
+    $(`#${eventCardId} #event-card-role-type-placeholder`).remove();
+  }
 }
+
+
 
 /** Prepends either a background image or Bootstrap-colored div */
 function addEventImage(imageUrl, eventCardId) {
