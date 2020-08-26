@@ -1,7 +1,6 @@
 const filters = {}
 
 $(async function() {
-  populateEvents();
   toggleDropdown();
   // If want all events on discovery page 
   if (!(window.location.href).includes('filtered=true')) {
@@ -42,7 +41,7 @@ function toggleDropdown() {
 }
 
 async function getAllEvents() {
-  const allEvents = await fetch('discovery-event-details');
+  const allEvents = await fetch('/discovery-event-details');
   return allEvents.json();
 }
 
@@ -67,7 +66,7 @@ async function populateAllEvents(allEvents) {
   const rankedEvents = await getRankedEvents(allEvents);
   const eventLevels = getLodsFromEvents(rankedEvents);
   populateRankedEvents(eventLevels);
-  populateFilters(filters)
+  populateFilters(filters);
 }
 
 // Fill filter dict with {labelName: count}

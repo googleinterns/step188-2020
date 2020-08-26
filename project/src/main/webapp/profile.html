@@ -41,24 +41,30 @@
     <br />
     <div class="panel-body">
       <div class="row">
-        <div class="col-sm-3">
-          <img id="profile-picture" />
+        <div class="col" id="profile-picture-col">
+          <img id="profile-picture-main" />
         </div>
-        <div class="col-sm-9">
+        <div class="col-sm-4 profile-desc">
           <ul class="list-group">
             <div class="justify">
               <li class="list-group-item no-border">
-                <strong>Name:</strong><span id="name"></span>
+                <span class="text-muted">Name: </span><span id="name"></span>
               </li>
               <li class="list-group-item no-border">
-                <strong>E-mail: </strong><span id="email"></span>
+                <span class="text-muted">E-mail: </span><span id="email"></span>
               </li>
+            </div>
+          </ul>
+        </div>
+        <div class="col-sm-6 profile-desc">
+          <ul class="list-group">
+            <div class="justify">
               <li class="list-group-item no-border">
-                <strong>Interests: </strong>
+                <span class="text-muted">Interests: </span>
                 <div id="interests"></div>
               </li>
               <li class="list-group-item no-border">
-                <strong>Skills: </strong>
+                <span class="text-muted">Skills: </span>
                 <div id="skills"></div>
               </li>
             </div>
