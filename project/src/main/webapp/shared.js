@@ -239,8 +239,7 @@ async function populateEventContainer(event, containerId, lod) {
   }
   if (event.opportunityName) {
     $(`#${eventCardId} #event-card-role-type`).html(`<b>Role:</b> ${event.opportunityName}`);
-  }
-  else {
+  } else {
     $(`#${eventCardId} #event-card-role-type-placeholder`).remove();
   }
 }
