@@ -54,7 +54,7 @@ async function updateUserEventsVolunteering() {
     if (userEventsVolunteering.hasOwnProperty(eventsKey)) {
       const eventVolunteering = userEventsVolunteering[eventsKey];
       populateEventContainer(eventVolunteering.event, 'events-volunteering', 2);
-      addVolunteerRole(eventVolunteering.eventId, eventVolunteering.opportunityName);
+      addVolunteerRole(eventVolunteering.event.eventId, eventVolunteering.opportunityName);
     }
   }
 }
