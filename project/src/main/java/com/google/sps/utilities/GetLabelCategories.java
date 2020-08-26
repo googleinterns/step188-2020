@@ -36,11 +36,9 @@ public class GetLabelCategories {
 
   /** 
    * Gets a list of two sets that hold how events are related based on labels
-   * @param relevantEvents All events on discovery page (in spanner)
+   * @param relevantEvents All events on discovery page
    * @param user Current logged in user
-   * @return ArrayList<Set<Pair<Event, Integer>>> where directMatchEvents = List[0], similarLabels = List[1]
-   * <Set<Pair<Event, Integer>>> directMatchEvents, similarLabels holds a set of Pair(Event, Integer)
-   * where Integer is number of labels event and user have in common
+   * @return directMatchEvents as List[0], similarLabels as List[1]
    */
   public ArrayList<Set<Pair<Event, Integer>>> getEventRelevancy(Set<Event> relevantEvents, User user) {
     Set<Pair<Event, Integer>> directMatchEvents = new HashSet<Pair<Event, Integer>>();
@@ -64,19 +62,19 @@ public class GetLabelCategories {
     return directAndSimilarMatches;
   }
 
-  // Checks to see if direct matches exist, if so, add to directMatchEvents
+  // If direct matches exist, add to directMatchEvents
   private void checkDirectMatches(
       Set<Pair<Event, Integer>> directMatchEvents, Event event,
       Set<String>  interestsAndSkills, Set<String>  labelsAndSkills) {
     Optional<Pair<Event, Integer>> directMatchEventsOptional = 
-    getDirectMatchEvents(event, interestsAndSkills, labelsAndSkills );
+    getDirectMatchEvents(event, interestsAndSkills, labelsAndSkills);
     if (directMatchEventsOptional.isPresent()) {
       directMatchEvents.add(directMatchEventsOptional.get());
     }
   }
 
 /** 
- * @return Optional<Pair<Event, Integer>>:
+ * @return
  * Event: if labels are direct String matches to user labels, Integer: number of matching labels
  * Empty if no direct matches
  */
@@ -92,8 +90,8 @@ public class GetLabelCategories {
 
   // Checks to see if similar matches exist, if so, add to directMatchEvents
   private void checkSimilarMatches(
-      Set<Pair<Event, Integer>> similarLabelEvents, Event event,
-      Set<String>  interestsAndSkills, Set<String>  labelsAndSkills) {
+    Set<Pair<Event, Integer>> similarLabelEvents, Event event,
+    Set<String>  interestsAndSkills, Set<String>  labelsAndSkills) {
     Optional<Pair<Event, Integer>> similarLabelEventsOptional = 
       getsimilarLabelEvents(event, interestsAndSkills, labelsAndSkills);
     if (similarLabelEventsOptional.isPresent()) {
@@ -102,7 +100,7 @@ public class GetLabelCategories {
   }
 
 /** 
- * @return Optional<Pair<Event, Integer>>:
+ * @return
  * Event: if labels are similar to user labels, Integer: number of matching labels
  * Empty if no category/subcategory relation
  */
@@ -138,10 +136,9 @@ public class GetLabelCategories {
     // Add event if in same larger category
     // Eg. If label = basketball, also add baseball 
     for (String eventLabel: eventLabels) {
-      if (subcategoryToCategoryMapping.containsKey(eventLabel)  ) {
-        if (subcategoryToCategoryMapping.get(eventLabel).equals(category)) {
-          similarEvents = new Pair<Event, Integer>(event, similarEvents.getValue1() + 1);
-        }
+      if (subcategoryToCategoryMapping.containsKey(eventLabel) &&
+      subcategoryToCategoryMapping.get(eventLabel).equals(category)) {
+        similarEvents = new Pair<Event, Integer>(event, similarEvents.getValue1() + 1);
         }
       }
     return similarEvents;
@@ -159,7 +156,7 @@ public class GetLabelCategories {
   }
 
   /** 
-    * Creates Map<String, String> with Key: Subcategory, Value: Category 
+    * Creates valueToKeyMap with Key: Subcategory, Value: Category 
     * based on text file
     */
   private static HashMap<String, String> createSubcategoryToCategoryLabelMapping()  {
@@ -179,7 +176,7 @@ public class GetLabelCategories {
     return valueToKeyMap;
   }
 
-  /** Creates Map<String, HashSet<String>>  with Key: Category, Value: Set(Subcategories) 
+  /** Creates valueToKeyMap with Key: Category, Value: Set(Subcategories) 
     * based on text file
     */
   private static HashMap<String, HashSet<String>> createCategorytoSubcategoryLabelMapping() {
