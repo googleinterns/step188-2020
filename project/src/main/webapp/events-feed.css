@@ -11,7 +11,12 @@ html {
   display: inline-block !important;
   flex-grow: 1;
   margin: 20px 0 0 20px;
-  width: calc(100% * (1 / 4) - 10px - 1px);
+  /* width: 15% !important; */
+  /* width: calc(100% * (1 / 4) - 10px - 1px); */
+}
+
+.card-columns {
+  column-count: 4 !important;
 }
 
 .btn {
@@ -47,4 +52,16 @@ html {
 
 .row > div[class*="col-"] {
   display: flex;
+}
+
+#event-container {
+  margin: 50px 150px;
+}
+
+#search-container {
+  margin: 50px 100px !important;
+}
+
+#search-container .card {
+  width: 20% !important;
 }
