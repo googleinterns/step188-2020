@@ -6,7 +6,8 @@ html {
 }
 
 .hero-image {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
     url("https://screenshot.googleplex.com/C6PuyjD5ffEKJ3o.png");
   background-position: center;
   background-repeat: no-repeat;
@@ -47,6 +48,7 @@ html {
   padding: 10px;
   text-align: center;
 }
+
 .container {
   align-items: center;
   margin: auto;
