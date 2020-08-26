@@ -54,7 +54,7 @@ async function updateUserEventsVolunteering() {
     if (userEventsVolunteering.hasOwnProperty(eventsKey)) {
       const eventVolunteering = userEventsVolunteering[eventsKey];
       eventVolunteering.event.opportunityName = eventVolunteering.opportunityName
-      populateEventContainer(eventVolunteering.event, 'events-volunteering', 2);
+      populateEventContainer(eventVolunteering.event, 'events-volunteering', 3);
     }
   }
 }
