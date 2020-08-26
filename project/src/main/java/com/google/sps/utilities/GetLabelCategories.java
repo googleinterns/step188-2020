@@ -62,7 +62,7 @@ public class GetLabelCategories {
     return directAndSimilarMatches;
   }
 
-  // If direct matches exist, add to directMatchEvents
+  /** If direct matches exist, add to directMatchEvents */
   private void checkDirectMatches(
       Set<Pair<Event, Integer>> directMatchEvents, Event event,
       Set<String>  interestsAndSkills, Set<String>  labelsAndSkills) {
@@ -88,7 +88,7 @@ public class GetLabelCategories {
     return Optional.empty();
   }
 
-  // Checks to see if similar matches exist, if so, add to directMatchEvents
+  /** Checks to see if similar matches exist, if so, add to directMatchEvents */
   private void checkSimilarMatches(
     Set<Pair<Event, Integer>> similarLabelEvents, Event event,
     Set<String>  interestsAndSkills, Set<String>  labelsAndSkills) {
@@ -125,7 +125,7 @@ public class GetLabelCategories {
     return Optional.of(similarEvents);
   }
 
-  // Add event if it is in larger category type
+  /** Add event if it is in larger category type */
   private Pair<Event, Integer> addLabelInCategory(String category, Event event,
     Pair<Event, Integer> similarEvents,Set<String> eventLabels){
     // Add event if it is larger category type
@@ -144,7 +144,7 @@ public class GetLabelCategories {
     return similarEvents;
   }
 
-  // Add events if in label subcategory
+  /** Add events if in label subcategory */
   private Pair<Event, Integer> addLabelInSubcategory(String label, Event event,
     Pair<Event, Integer>  similarEvents,Set<String> eventLabels) {
     HashSet<String> sameCategoryLabels = new HashSet<String>(categorytoSubcategoryMapping.get(label));

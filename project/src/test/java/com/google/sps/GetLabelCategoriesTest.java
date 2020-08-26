@@ -112,8 +112,10 @@ public final class GetLabelCategoriesTest {
     Set<String> EVENT_LABELS = new HashSet<>(Arrays.asList("Soccer", "Robotics"));
     Set<String> USER_INTERESTS = new HashSet<>(Arrays.asList("Basketball"));
     Set<String> IRRELEVANT_LABELS = new HashSet<>(Arrays.asList("Cooking"));
-    Event event = TestUtils.newEventNoLabels().toBuilder().setLabels(EVENT_LABELS).build();
-    Event event2 = TestUtils.newEventNoLabels().toBuilder().setLabels(IRRELEVANT_LABELS).build();
+    Event event = TestUtils.newEventNoLabels().toBuilder()
+      .setLabels(EVENT_LABELS).build();
+    Event event2 = TestUtils.newEventNoLabels().toBuilder()
+      .setLabels(IRRELEVANT_LABELS).build();
     User user = TestUtils.newUserNoInterestSkills().toBuilder()
       .setInterests(USER_INTERESTS).build();
     Set<Pair<Event, Integer>> expectedSimilarMatches = 
@@ -131,12 +133,17 @@ public final class GetLabelCategoriesTest {
     * Relations: Basketball, Soccer, Swimming all sports; Card Games is subcategory of Games
   */
   public void directAndSimilarMatch() throws FileNotFoundException {
-    Set<String> USER_INTERESTS = new HashSet<>(Arrays.asList("Basketball", "Travel", "Games", "Robotics"));
-    Set<String> DIRECT_INDIRECT_MATCH_LABELS = new HashSet<>(Arrays.asList("Soccer", "Robotics"));
+    Set<String> USER_INTERESTS = new HashSet<>(
+      Arrays.asList("Basketball", "Travel", "Games", "Robotics"));
+    Set<String> DIRECT_INDIRECT_MATCH_LABELS =
+      new HashSet<>(Arrays.asList("Soccer", "Robotics"));
     Set<String> SWIMMING_LABEL = new HashSet<>(Arrays.asList("Swimming"));
-    Set<String> MORE_DIRECT_INDIRECT_MATCH_LABELS = new HashSet<>(Arrays.asList("Cooking","Card Games", "Soccer" ));
-    Event event = TestUtils.newEventNoLabels().toBuilder().setLabels(DIRECT_INDIRECT_MATCH_LABELS).build();
-    Event event2 = TestUtils.newEventNoLabels().toBuilder().setLabels(MORE_DIRECT_INDIRECT_MATCH_LABELS).build();
+    Set<String> MORE_DIRECT_INDIRECT_MATCH_LABELS =
+      new HashSet<>(Arrays.asList("Cooking","Card Games", "Soccer" ));
+    Event event = TestUtils.newEventNoLabels().toBuilder()
+      .setLabels(DIRECT_INDIRECT_MATCH_LABELS).build();
+    Event event2 = TestUtils.newEventNoLabels().toBuilder()
+      .setLabels(MORE_DIRECT_INDIRECT_MATCH_LABELS).build();
     Event event3 = TestUtils.newEventNoLabels().toBuilder().setLabels(SWIMMING_LABEL).build();
     Event event4 = TestUtils.newEventNoLabels();
     User user = TestUtils.newUserNoInterestSkills().toBuilder()
@@ -145,7 +152,8 @@ public final class GetLabelCategoriesTest {
       new HashSet<>(Arrays.asList(new Pair<Event, Integer>(event, /*common labels=*/ 1)));
     Set<Pair<Event, Integer>> expectedSimilarMatches = 
       new HashSet<>(Arrays.asList(new Pair<Event, Integer>(event, /*common labels=*/ 1),
-      new Pair<Event, Integer>(event2, /*common labels=*/ 2), new Pair<Event, Integer>(event3, /*common labels=*/ 1)));
+      new Pair<Event, Integer>(event2, /*common labels=*/ 2),
+      new Pair<Event, Integer>(event3, /*common labels=*/ 1)));
 
     ArrayList<Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
       new HashSet<>(Arrays.asList(event, event2, event3, event4)), user);
