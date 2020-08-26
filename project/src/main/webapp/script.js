@@ -43,6 +43,7 @@ function loadHeader() {
       $('#feed-header').addClass('active');
     }
     addLogoutUrlToButton();
+    populateExistingImage('profile', '#profile-picture')
   });
 }
 

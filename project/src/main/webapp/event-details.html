@@ -5,6 +5,7 @@
     <title>STEP 188 Project</title>
     <link rel="stylesheet" href="event-details.css" />
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://kit.fontawesome.com/0d580893be.js" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <!-- Bootstrap CDN links -->
@@ -30,66 +31,63 @@
     </div>
     <div id="header"></div>
     <h3>Event Details</h3> 
-    <div class="container">
+    <div class="container" id="event-container">
+    </div>
+    <div class="container" id="edit-container">
       <div class="card event-detail-size">
         <div class="card-body">
-        <form
-          id="image-form"
-          method="POST"
-          enctype="multipart/form-data"
-        >
-          <div class="col-sm-3">
-            <img id="event-picture" />
-            <br /><br />
-            <div class="form-group">
-              <label for="event-picture">Upload an image for your event: </label>
-              <br />
-              <div class="form-group">
-                <div class="input-group">
-                  <input type="file" name="event-picture" />
+          <div class="row">
+            <div class="col">
+              <form
+                id="image-form"
+                method="POST"
+                enctype="multipart/form-data"
+              >
+                <div class="col">
+                  <div class="form-group">
+                    <label for="event-picture">Upload an image for your event: </label>
+                    <br />
+                    <div class="form-group">
+                      <div class="input-group">
+                        <input type="file" name="event-picture" />
+                      </div>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Update event picture</button>
                 </div>
-              </div>
+              </form>
             </div>
-            <button type="submit" class="btn btn-primary">Update event picture</button>
+            <div class="col" id="edit-container-2">
+            </div>
           </div>
-        </form>
-        <h5 class="card-title input" id="name"></h5>
-          <p class="card-text input" id="description"></p>
-          <br />
-          <br />
-          <ul
-            id="volunteering-opportunities"
-            class="list-group list-group-flush"
-          >
-            <li class="list-group-item input" id="date"></li>
-            <li class="list-group-item input" id="time"></li>
-            <li class="list-group-item input" id="location"></li>
-          </ul>
         </div>
-        <button id="edit-link" href="event-edit.html" type="button" class="btn btn-primary">
-          Edit event
-        </button>
-        <button id="signup-link" href="signup.html" type="button" class="btn btn-primary">
-          Register
-        </button>
       </div>
-      <br>
-      <div id="add-opportunity"></div>
-      <br>
-      <form
-       method="post"
-       action="/opportunity-signup-form-handler"
-       id="opportunity-signup-form"
-       class="hidden"
-      >
-        <div class="form-group">
-          <label for="opportunities-options">Select a volunteer role:</label>
-          <select class="form-control" name="opportunity-id" id="opportunities-options">
-          </select>
+    </div>
+    <div class="container" id="volunteering-opportunities">
+      <div class="card">
+        <div class="card-body">
         </div>
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Submit</button>
-      </form>
-      <br>
+      </div>
+    </div>
+    <br>
+    <div class="container" id="volopp-container">
+      <div class="card">
+        <div class="card-body">
+          <form
+            method="post"
+            action="/opportunity-signup-form-handler"
+            id="opportunity-signup-form"
+            class="hidden"
+          >
+            <div class="form-group">
+              <label for="opportunities-options">Select a volunteer role:</label>
+              <select class="form-control" name="opportunity-id" id="opportunities-options">
+              </select>
+            </div>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Submit</button>
+          </form>
+        </div>
+      </div>
     </div>
   </body>
 </html>

@@ -78,6 +78,11 @@ i {
   color: #007bff !important;
 }
 
+.header-profile {
+  height: 30px;
+  width: 30px;
+}
+
 h3 {
   text-align: center;
 }
