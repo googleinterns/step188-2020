@@ -53,7 +53,7 @@ public class TestUtils {
     return new Event.Builder(
       EVENT_NAME,
       DESCRIPTION,
-      new HashSet<>(),
+      /*labels=*/ new HashSet<>(),
       LOCATION,
       DATE,
       TIME,
