@@ -41,10 +41,10 @@ h6 {
 }
 
 .about img {
+  display: block;
   height: 200px;
+  margin: auto;
   width: 200px;
-    display:block;
-    margin:auto;
 }
 
 .bottom-subtext {
