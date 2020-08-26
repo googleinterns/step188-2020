@@ -65,3 +65,9 @@ html {
 #search-container .card {
   width: 20% !important;
 }
+
+.close-btn {
+  font-size: 16px;
+  font-weight: 400!important;
+  margin-right: 0;
+}
