@@ -16,11 +16,11 @@ async function getCurrentProfileData() {
 
 /** Populate the user profile with name, email, interests, skills */
 function updateProfileBasics(userData) {
-  $('.name').text(userData['name']);
+  $('#name').text(userData['name']);
   $('#email').text(userData['email']);
   buildAsLabels(`#interests`, userData['interests'], 'interests');
   buildAsLabels(`#skills`, userData['skills'], 'skills');
-  populateExistingImage('profile', '#profile-picture');
+  populateExistingImage('profile', '#profile-picture-main');
 }
 
 /** Populate the user profile with all associated events */

@@ -263,6 +263,7 @@ public final class Event {
   public Builder toBuilder() {
     return new Builder(
         this.name, this.description, this.labels, this.location, this.date, this.time, this.host)
+        .setId(this.getId())
         .mergeFrom(this);
   }
 }

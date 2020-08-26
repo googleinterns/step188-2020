@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <link rel="stylesheet" href="create-volunteering-opportunity.css" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -26,58 +27,69 @@
   </head>
   <body>
     <div id="header"></div>
-    <form
-      method="post"
-      action="/volunteering-form-handler"
-      id="volunteering-opportunity-form"
-      class="hidden"
-    >
-      <h3>Add a volunteering opportunity for your event.</h3>
-      <div class="input-group" id="name-div">
-        <div class="input-group-prepend">
-          <label class="input-group-text" for="name-div">Name</label>
-        </div>
-        <input
-          name="name"
-          type="text"
-          class="form-control"
-          aria-describedby="basic-addon1"
-        />
+    <div class="row">
+      <div class="col" id="event-container"></div>
+      <div class="col">
+        <form
+          method="post"
+          action="/volunteering-form-handler"
+          id="volunteering-opportunity-form"
+          class="hidden"
+        >
+          <div class="container" id="edit-container">
+            <div class="card">
+              <div class="card-body">
+              <h3>Add a volunteering opportunity for your event.</h3>
+              <br />
+              <div class="input-group" id="name-div">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="name-div">Name</label>
+                </div>
+                <input
+                  name="name"
+                  type="text"
+                  class="form-control"
+                  aria-describedby="basic-addon1"
+                />
+              </div>
+              <br />
+              <div class="input-group" id="spots-div">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="spots-div">Quantity needed</label>
+                </div>
+                <input
+                  name="num-spots-left"
+                  type="text"
+                  class="form-control"
+                  aria-describedby="basic-addon1"
+                />
+              </div>
+              <br />
+              <div class="input-group" id="skills-div">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="skills">Skills</label>
+                </div>
+                <input
+                  id="skills"
+                  name="required-skill"
+                  data-role="tagsinput"
+                  multiple
+                ></input>
+                <button
+                  type="button"
+                  class="btn btn-light prefilled-pick"
+                  onclick="togglePrefilledSkills();"
+                >+ Pick</button>
+                <div id="prefilled-skills" class="overflow-auto prefilled-pool"></div>
+              </div>
+              <br />
+              <button type="submit" class="btn btn-primary mx-auto d-block">
+                Submit
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
-      <br />
-      <div class="input-group" id="spots-div">
-        <div class="input-group-prepend">
-          <label class="input-group-text" for="spots-div">Quantity needed</label>
-        </div>
-        <input
-          name="num-spots-left"
-          type="text"
-          class="form-control"
-          aria-describedby="basic-addon1"
-        />
-      </div>
-      <br />
-      <div class="input-group" id="skills-div">
-        <div class="input-group-prepend">
-          <label class="input-group-text" for="skills">Skills</label>
-        </div>
-        <input
-          id="skills"
-          name="required-skill"
-          data-role="tagsinput"
-          multiple
-        ></input>
-        <button
-          type="button"
-          class="btn btn-light prefilled-pick"
-          onclick="togglePrefilledSkills();"
-        >+ Pick</button>
-        <div id="prefilled-skills" class="overflow-auto prefilled-pool"></div>
-      </div>
-      <br />
-      <button type="submit" class="btn btn-primary mx-auto d-block">
-        Submit
-      </button>
-    </form>
+    </div>
   </body>
 </html>
