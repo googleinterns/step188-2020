@@ -67,8 +67,6 @@ async function populateVolunteeringOpportunitiesUI(eventHost, isHost) {
  */
 async function showVolunteeringOpportunities(
     opportunities, eventHost, isHost) {
-  console.log('showVolunteerOpportunities');
-  console.log(opportunities);
   for (const key in opportunities) {
     if (opportunities.hasOwnProperty(key)) {
       const volunteers =
@@ -101,7 +99,6 @@ async function showVolunteeringOpportunities(
 function getListItemForOpportunity(
     opportunityId, name, numSpotsLeft, requiredSkills,
     volunteers, eventHost, isHost) {
-  console.log('getListItemForOpportunity');
   requiredSkillsText =
       requiredSkills.length ? requiredSkills.toString() : 'None';
   volunteersText =
