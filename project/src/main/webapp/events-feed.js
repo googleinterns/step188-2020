@@ -4,11 +4,6 @@ $(function() {
   setupEvents();
 });
 
-$('.grid').masonry({
-  columnWidth: '.grid-sizer',
-  itemSelector: '.grid-item',
-});
-
 async function setupEvents() {
   toggleDropdown();
   // If want all events on discovery page 
@@ -20,10 +15,6 @@ async function setupEvents() {
     const filteredEvents = await getFilteredEventsOnly(window.location.href.split("labelParams=")[1]);
     populateAllEvents(filteredEvents);
   }
-  $('.grid').masonry({
-    columnWidth: '.grid-sizer',
-    itemSelector: '.grid-item',
-  });
 }
 
 /**
