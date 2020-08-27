@@ -1,6 +1,8 @@
-window.onload = function onLoad() {
+$(function() {
   getEventDetails();
-};
+  populatePrefilled('interests');
+  populatePrefilled('skills');
+});
 
 /**
  * Gets event details from database to put in form and allow edits
@@ -18,6 +20,4 @@ async function getEventDetails() {
     `${data['date'].month}/${data['date'].dayOfMonth}/${data['date'].year}`;
   document.getElementById('time').value = data['time'];
   document.getElementById('location').value = data['location'];
-  const link = '/event-details.html?eventId=' + eventId;
-  document.getElementById('editLink').setAttribute('href', link);
 }

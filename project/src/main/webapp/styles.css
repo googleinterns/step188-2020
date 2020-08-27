@@ -99,3 +99,9 @@ h3 {
 .card-title {
   text-align: center;
 }
+
+#logo {
+  height: 70px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
