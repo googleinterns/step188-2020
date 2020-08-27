@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  getEventDetails();
   populatePrefilled('interests');
   populatePrefilled('skills');
   getVolunteeringOpportunityFormData();
