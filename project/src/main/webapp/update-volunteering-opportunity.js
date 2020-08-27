@@ -29,8 +29,8 @@ async function getVolunteeringOpportunityFormData() {
 
   const opportunityForm = document.getElementById('opportunity-form');
   opportunityForm.action =
-      `/volunteering-form-handler?opportunity-id=${opportunityId}`
-          + `&event-id=${eventId}`;
+      `/volunteering-form-handler?opportunity-id=${opportunityId}` +
+      `&event-id=${eventId}`;
 }
 
 /**
