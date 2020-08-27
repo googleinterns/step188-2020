@@ -47,8 +47,10 @@ public final class EventRankerServletTest {
   private static Event EVENT_FOOD;
   private static Event EVENT_SEWING;
   private static User USER;
+  private static User USER_FOOD;
   private static String EMAIL = "test@example.com";
   private static String INVALID_EMAIL = "invalid@example.com";
+  private static String EVENTS_KEY = "events";
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -74,11 +76,14 @@ public final class EventRankerServletTest {
   public void testServletGetRanking() throws IOException {
     setAuthenticationHelper(EMAIL);
     SpannerTasks.insertOrUpdateUser(USER);
+    SpannerTasks.insertOrUpdateUser(USER_FOOD);
     Set<Event> events = new HashSet<>(Arrays.asList(EVENT_FOOD, EVENT_SEWING));
+    String eventIds = String.format("[%s,%s]", EVENT_FOOD.getId(), EVENT_SEWING.getId());
+    Mockito.when(request.getParameter(EVENTS_KEY)).thenReturn(eventIds);
     for (Event event : events) {
       SpannerTasks.insertorUpdateEvent(event);
     }
-    List<Event> expectedEvents = Arrays.asList(EVENT_FOOD, EVENT_SEWING);
+    List<Event> expectedEvents = Arrays.asList(EVENT_FOOD);
 
     new EventRankerServlet().doGet(request, response);
 
@@ -103,7 +108,11 @@ public final class EventRankerServletTest {
   }
 
   private static void setUpEventsAndUsers() {
-    USER = TestUtils.newUserWithEmail(EMAIL);
+    USER = TestUtils.newUser();
+    USER_FOOD = 
+        TestUtils.newUserWithEmail(EMAIL).toBuilder()
+            .setInterests(new HashSet<>(Arrays.asList(FOOD)))
+            .build();
     EVENT_FOOD =
         TestUtils.newEvent().toBuilder()
             .setHost(USER)
