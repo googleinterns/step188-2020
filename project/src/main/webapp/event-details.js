@@ -1,5 +1,5 @@
 $(async function() {
-  getEventDetails();
+  getEventDetailsWithoutOpportunities();
   const eventId = getEventId();
   const eventHost = await getEventHost();
   configureRegisterAndEditButtons(eventHost, eventId);
@@ -65,8 +65,6 @@ async function populateVolunteeringOpportunitiesUI(eventHost) {
  */
 async function showVolunteeringOpportunities(
     opportunities, eventHost) {
-  console.log('showVolunteerOpportunities');
-  console.log(opportunities);
   for (const key in opportunities) {
     if (opportunities.hasOwnProperty(key)) {
       const volunteers =
@@ -78,6 +76,8 @@ async function showVolunteeringOpportunities(
               opportunities[key].numSpotsLeft,
               opportunities[key].requiredSkills,
               volunteers, eventHost));
+       buildAsLabels(`#oppportunity-id-${opportunities[key].opportunityId} #skills`,
+        opportunities[key].requiredSkills, 'skills');
     }
   }
 }
@@ -98,17 +98,16 @@ async function showVolunteeringOpportunities(
 function getListItemForOpportunity(
     opportunityId, name, numSpotsLeft, requiredSkills,
     volunteers, eventHost) {
-  console.log('getListItemForOpportunity');
   requiredSkillsText =
       requiredSkills.length ? requiredSkills.toString() : 'None';
   volunteersText =
-      volunteers.length ? volunteers.toString() : 'None';
+      volunteers.length ? volunteers.toString() : 'None'; //remove
   let editLink = getLinkForOpportunity(opportunityId);
-  return `<li class="list-group-item">
-          <p class="card-text">Volunteer Name: ${name}</p>
-           <p class="card-text">Volunteer Spots Left: ${numSpotsLeft}</p>
-           <p class="card-text">Required Skills: ${requiredSkillsText}</p>
-           <p class="card-text">Volunteers: ${volunteersText}</p>${
+  return `<li class="list-group-item" id="oppportunity-id-${opportunityId}">
+          <p class="card-text">Opportunity Name: ${name}</p>
+          <div class="display-inline-block" id="skills"></div>
+           <p class="card-text">Spots Left: ${numSpotsLeft}</p>
+           <p class="card-text">Volunteers: ${buildVolunteers(volunteers)}</p>${
   editLink}</li>`;
 }
 
