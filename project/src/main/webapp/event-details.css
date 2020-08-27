@@ -11,6 +11,10 @@
   margin-bottom: 2%;
 }
 
+.card {
+  margin-top: 2%;
+}
+
 .close {
   margin: 2% 2% 0 0;
   text-align: right;
