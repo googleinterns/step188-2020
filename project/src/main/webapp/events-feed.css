@@ -7,15 +7,10 @@ html {
   font-family: "Public Sans", sans-serif;
 }
 
-.container {
-  display: flex;
-  flex-wrap: wrap;
-}
-
 .card {
-  display: inline-block;
+  display: inline-block !important;
   flex-grow: 1;
-  margin: 10px 0 0 10px;
+  margin: 20px 0 0 20px;
   width: calc(100% * (1 / 4) - 10px - 1px);
 }
 
@@ -40,7 +35,16 @@ html {
 }
 
 .filter-btn {
-  bottom: 0;  
+  bottom: 0;
   position: fixed;
   text-align: center;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.row > div[class*="col-"] {
+  display: flex;
 }

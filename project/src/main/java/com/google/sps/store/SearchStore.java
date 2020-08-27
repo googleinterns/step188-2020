@@ -1,21 +1,21 @@
 package com.google.sps.store;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
+import com.google.sps.data.Event;
 import com.google.sps.data.EventResult;
 import com.google.sps.data.Keyword;
 import com.google.sps.utilities.KeywordHelper;
+import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 /** Store class that uses in-memory map to hold search results. */
 public class SearchStore {
-  private ListMultimap<String, EventResult> keywordToEventResults = ArrayListMultimap.create();
-  private static final float WEIGHT_IN_TITLE = 0.7f;
+  private static final float WEIGHT_IN_NAME = 0.7f;
   private static final float WEIGHT_IN_DESCRIPTION = 0.3f;
   private KeywordHelper keywordHelper;
 
@@ -24,62 +24,93 @@ public class SearchStore {
   }
 
   /**
-   * Adds keywords for title and description with mapping to eventId to index. Relevance of each
-   * keyword is the weighted sum of the relevance in the title and the relevance in the description
-   * where the title is weighted by value WEIGHT_IN_TITLE and description is weighted by
+   * Adds keywords for name and description with mapping to eventId to index. Relevance of each
+   * keyword is the weighted sum of the relevance in the name and the relevance in the description
+   * where the name is weighted by value WEIGHT_IN_NAME and description is weighted by
    * WEIGHT_IN_DESCRIPTION.
    *
    * @param eventId event ID
-   * @param title title of the event
+   * @param name name of the event
    * @param description description of the event
    */
-  public void addEventToIndex(String eventId, String title, String description) {
-    addKeywordsInTextToIndex(eventId, title.toLowerCase(), WEIGHT_IN_TITLE);
-    addKeywordsInTextToIndex(eventId, description, WEIGHT_IN_DESCRIPTION);
+  public void addEventToIndex(String eventId, String name, String description) {
+    Map<String, Float> keywordToRanking = new HashMap<String, Float>();
+    addKeywordsInTextToIndex(eventId, name.toLowerCase(), WEIGHT_IN_NAME, keywordToRanking);
+    addKeywordsInTextToIndex(eventId, description, WEIGHT_IN_DESCRIPTION, keywordToRanking);
+    List<EventResult> entries =
+        keywordToRanking.entrySet().stream()
+            .map(entry -> new EventResult(eventId, entry.getKey(), entry.getValue()))
+            .collect(Collectors.toList());
+    SpannerTasks.addResultsToPersistentStorageIndex(entries);
   }
 
   /**
-   * Adds result for keywords in the given text with a ranking equal to the sum of the ranking of
-   * any existing event results for the eventId and the relevance of the keyword in the text
-   * multiplied by the given weight.
+   * Adds result for keywords in the given text.
    *
-   * @param eventId event ID
+   * @param eventId event ID where the text is found
    * @param text text to search keywords for
    * @param weight weight multiply relevance of keyword by which is proportional to the significance
-   *     of the selected piece of text.
+   *     of the selected piece of text
+   * @param keywordToRanking the index to update
    */
-  private void addKeywordsInTextToIndex(String eventId, String text, float weight) {
+  private void addKeywordsInTextToIndex(
+      String eventId, String text, float weight, Map<String, Float> keywordToRanking) {
     keywordHelper.setContent(text);
-    ArrayList<Keyword> keywords = new ArrayList<Keyword>();
-    try {
-      keywords = keywordHelper.getKeywords();
-    } catch (IOException e) {
-      System.err.println("IO Exception due to NLP library.");
-    }
-
+    List<Keyword> keywords = keywordHelper.getKeywords();
+    Map<String, String> tokenToBasicForm = keywordHelper.getTokensWithBasicForm();
     for (Keyword keyword : keywords) {
-      float keywordRank = 0;
-      Optional<EventResult> existingResult =
-          keywordToEventResults.get(keyword.getName()).stream()
-              .filter(result -> result.getEventId().equals(eventId))
-              .findFirst();
-      if (existingResult.isPresent()) {
-        keywordRank += existingResult.get().getRanking();
-        keywordToEventResults.remove(keyword.getName(), existingResult.get());
+      float ranking = getRanking(keyword, weight, keywordToRanking);
+      String[] wordsWithinKeyword = keyword.getName().split("[^a-zA-Z0-9']+");
+      if (wordsWithinKeyword.length > 1) {
+        for (String word : wordsWithinKeyword) {
+          addKeywordAndBasicForm(word, ranking, keywordToRanking, tokenToBasicForm);
+        }
       }
-      keywordRank += weight * keyword.getRelevance();
-      keywordToEventResults.put(keyword.getName(), new EventResult(eventId, keywordRank));
+      addKeywordAndBasicForm(
+          keyword.getName(), ranking, keywordToRanking, tokenToBasicForm);
     }
   }
 
   /**
-   * Gets search results for the given keyword.
-   * @param keyword keyword in search
-   * @return list of event IDs in decreasing order of ranking as search result
+   * Adds keyword and its basic form if different than keyword to the index.
+   *
+   * @param keyword keyword to add to index
+   * @param ranking ranking of the keyword
+   * @param keywordToRanking the index to update
+   * @param tokenToBasicForm map of token to its basic form for all tokens
+   *        in text where keyword was found
    */
-  public List<String> getSearchResults(String keyword) {
-    List<EventResult> results = keywordToEventResults.get(keyword);
-    Collections.sort(results, EventResult.ORDER_BY_RANKING_DESC);
-    return results.stream().map(EventResult::getEventId).collect(Collectors.toList());
+  private void addKeywordAndBasicForm(String keyword, float ranking,
+      Map<String, Float> keywordToRanking, Map<String, String> tokenToBasicForm) {
+    keywordToRanking.put(keyword, ranking);
+
+    Optional<String> basicForm = Optional.ofNullable(tokenToBasicForm.get(keyword));
+    if (basicForm.isPresent() && !basicForm.get().equals(keyword)) {
+      keywordToRanking.put(tokenToBasicForm.get(keyword), ranking);
+    }
+  }
+
+  /**
+   * Returns ranking equal to the sum of the existing ranking and the relevance of the keyword 
+   * in the text multiplied by the given weight.
+   */
+  private float getRanking(Keyword keyword, float weight, Map<String, Float> keywordToRanking) {
+    float keywordRank = 0;
+    String name = keyword.getName();
+    if (keywordToRanking.containsKey(name)) {
+      keywordRank += keywordToRanking.get(name);
+    }
+    keywordRank += weight * keyword.getRelevance();
+    return keywordRank;
+  }
+
+  /**
+   * Gets event searchResults for the given keyword search.
+   *
+   * @param keyword keyword to search
+   * @return list of events in descending order of ranking as search result
+   */
+  public static List<Event> getSearchResults(String keyword) {
+    return SpannerTasks.getEventResultsByKeywordWithDescendingRanking(keyword);
   }
 }

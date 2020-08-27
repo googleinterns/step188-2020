@@ -38,3 +38,64 @@
 .btn-group {
   margin: 5px 8px;
 }
+
+.card {
+  float: left !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.grid {
+  margin-left: 5% !important;
+  margin-right: 5% !important;
+}
+
+.grid-sizer,
+.grid-item {
+  width: 15% !important;
+}
+
+.grid-item--level-1 {
+  font-size: 85% !important;
+  width: 15% !important;
+}
+
+.grid-item--level-2 {
+  font-size: 90% !important;
+  width: 15% !important;
+}
+
+.grid-item--level-3 {
+  width: 20% !important;
+}
+
+i {
+  margin: 5px;
+}
+
+.btn-outline-primary:hover {
+  background-color: #fcfcfc !important;
+  color: #007bff !important;
+}
+
+.header-profile {
+  height: 30px;
+  width: 30px;
+}
+
+h3 {
+  text-align: center;
+}
+
+.btn-primary a {
+  color: white;
+  text-align: center;
+}
+
+.event-detail-size {
+  min-width: 100% !important;
+}
+
+.card-title {
+  text-align: center;
+}

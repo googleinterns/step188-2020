@@ -3,7 +3,6 @@ package com.google.sps.utilities;
 import static com.google.cloud.spanner.TransactionRunner.TransactionCallable;
 
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.cloud.Date;
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.ResultSet;
@@ -11,16 +10,19 @@ import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
 import com.google.cloud.spanner.TransactionContext;
 import com.google.sps.data.Event;
+import com.google.sps.data.EventResult;
 import com.google.sps.data.EventVolunteering;
 import com.google.sps.data.OpportunitySignup;
 import com.google.sps.data.User;
 import com.google.sps.data.VolunteeringOpportunity;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /** Class containing methods for interaction with database. */
@@ -30,11 +32,15 @@ public class SpannerTasks {
   private static final String EVENT_TABLE = "Events";
   private static final String OPPORTUNITY_SIGNUP_TABLE = "OpportunitySignup";
   private static final String OPPORTUNITY_ID = "VolunteeringOpportunityID";
+  private static final String KEYWORDS_TABLE = "Keywords";
+  private static final String RESULTS_TABLE = "Results";
   private static final String EVENT_ID = "EventID";
   private static final String NAME = "Name";
   private static final String EMAIL = "Email";
   private static final String NUM_SPOTS_LEFT = "NumSpotsLeft";
   private static final String REQUIRED_SKILLS = "RequiredSkills";
+  private static final String KEYWORD_ID = "KeywordID";
+  private static final String RANKING = "Ranking";
 
   /**
    * Get current loggedin User Optional
@@ -128,7 +134,8 @@ public class SpannerTasks {
                 Statement.of(
                     String.format(
                         "SELECT EventID, Name, Description, Labels, Location, Date, Time,"
-                            + " Host, Opportunities, Attendees FROM %s WHERE EventID in (%s)",
+                            + " Host, Opportunities, Attendees, Image FROM %s WHERE EventID in (%s)"
+                            + " AND DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0",
                         EVENT_TABLE, eventIdsFormatted)));
     while (resultSet.next()) {
       events.add(shallowCreateEventFromDatabaseResult(resultSet));
@@ -156,7 +163,8 @@ public class SpannerTasks {
                 Statement.of(
                     String.format(
                         "SELECT EventId, Name, Description, Labels, Location, Date, Time, Host,"
-                            + " Opportunities, Attendees FROM %s WHERE EventID='%s'",
+                            + " Opportunities, Attendees, Image FROM %s WHERE EventID='%s'"
+                            + " AND DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0",
                         EVENT_TABLE, eventId)));
 
     /** If ID does not exist */
@@ -181,7 +189,8 @@ public class SpannerTasks {
                 Statement.of(
                     String.format(
                         "SELECT EventID, Name, Description, Labels, Location, Date, Time,"
-                            + " Host, Opportunities, Attendees FROM %s",
+                            + " Host, Opportunities, Attendees, Image FROM %s WHERE"
+                            + " DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0",
                         EVENT_TABLE)));
     while (resultSet.next()) {
       Event event = shallowCreateEventFromDatabaseResult(resultSet);
@@ -205,6 +214,7 @@ public class SpannerTasks {
         .setOpportunities(getVolunteeringOpportunitiesByEventId(eventId))
         .setAttendees(
             shallowReadMultipleUsersFromEmails(new HashSet<String>(resultSet.getStringList(9))))
+        .setImageUrl(resultSet.getString(10))
         .build();
   }
 
@@ -256,7 +266,9 @@ public class SpannerTasks {
         .set("Opportunities")
         .toStringArray(event.getOpportunitiesIds())
         .set("Attendees")
-        .toStringArray(event.getAttendeeIds());
+        .toStringArray(event.getAttendeeIds())
+        .set("Image")
+        .to(event.getImageUrl());
     mutations.add(builder.build());
     return mutations;
   }
@@ -461,8 +473,9 @@ public class SpannerTasks {
       Statement statement =
           Statement.of(
               String.format(
-                  "SELECT EventID, Name, Description, Labels, Location, Date, Time, Host, Attendees"
-                      + " FROM %s WHERE \"%s\" IN UNNEST(Labels)",
+                  "SELECT EventID, Name, Description, Labels, Location, Date, Time, Host, Attendees, Image"
+                      + " FROM %s WHERE \"%s\" IN UNNEST(Labels)"
+                      + " AND DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0",
                       EVENT_TABLE, label));
       try (ResultSet resultSet =
           SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
@@ -481,6 +494,7 @@ public class SpannerTasks {
                   .setAttendees(
                       shallowReadMultipleUsersFromEmails(
                           new HashSet<String>(resultSet.getStringList(8))))
+                  .setImageUrl(resultSet.getString(9))
                   .build();
             results.add(event);
           }
@@ -505,7 +519,7 @@ public class SpannerTasks {
                 Statement.of(
                     String.format(
                         "SELECT Events.EventID, Events.Name, Events.Description, Events.Labels,"
-                            + " Events.Location, Events.Date, Events.Time, Events.Host"
+                            + " Events.Location, Events.Date, Events.Time, Events.Host, Events.Image"
                             + " FROM Events INNER JOIN"
                             + " Users ON Events.EventID IN UNNEST(Users.EventsHosting) WHERE Email=\"%s\"",
                         email)));
@@ -520,6 +534,7 @@ public class SpannerTasks {
                   /* time = */ resultSet.getString(6),
                   /* host = */ shallowReadUserFromEmail(resultSet.getString(7)).get())
               .setId(resultSet.getString(0))
+              .setImageUrl(resultSet.getString(8))
               .build();
       results.add(event);
     }
@@ -539,7 +554,7 @@ public class SpannerTasks {
         Statement.of(
             String.format(
                 "SELECT Events.EventID, Events.Name, Events.Description, Events.Labels,"
-                    + " Events.Location, Events.Date, Events.Time, Events.Host,"
+                    + " Events.Location, Events.Date, Events.Time, Events.Host, Events.Image,"
                     + " VolunteeringOpportunity.Name FROM Events INNER JOIN"
                     + " VolunteeringOpportunity ON Events.EventID ="
                     + " VolunteeringOpportunity.EventID INNER JOIN OpportunitySignup ON"
@@ -559,6 +574,7 @@ public class SpannerTasks {
                     /* time = */ resultSet.getString(6),
                     /* host = */ shallowReadUserFromEmail(resultSet.getString(7)).get())
                 .setId(resultSet.getString(0))
+                .setImageUrl(resultSet.getString(8))
                 .build();
         results.add(new EventVolunteering(event, /* opportunityName = */ resultSet.getString(8)));
       }
@@ -577,7 +593,7 @@ public class SpannerTasks {
     Set<Event> results = new HashSet<Event>();
     Statement statement = Statement.of(
         String.format(
-            "SELECT EventID, Name, Description, Labels, Location, Date, Time, Host, Attendees"
+            "SELECT EventID, Name, Description, Labels, Location, Date, Time, Host, Attendees, Image"
             + " FROM %s WHERE \"%s\" IN UNNEST(Attendees)",
                 EVENT_TABLE, email ));
     try (ResultSet resultSet =
@@ -594,6 +610,93 @@ public class SpannerTasks {
                     /* host = */ shallowReadUserFromEmail(resultSet.getString(7)).get())
                 .setId(resultSet.getString(0))
                 .setAttendees(shallowReadMultipleUsersFromEmails(new HashSet<String>(resultSet.getStringList(8))))
+                .setImageUrl(resultSet.getString(9))
+                .build();
+        results.add(event);
+      }
+    }
+    return results;
+  }
+ 
+  /**
+   * Add event results to persistent storage index by inserting the keyword into the keywords table
+   * if it dose not exist and adding a corresponding row in the results table.
+   *
+   * @param results the event results to add to the index
+   */
+  public static void addResultsToPersistentStorageIndex(List<EventResult> results) {
+    for (EventResult result : results) {
+      SpannerClient.getDatabaseClient()
+          .readWriteTransaction()
+          .run(
+              new TransactionCallable<Void>() {
+                @Override
+                public Void run(TransactionContext transaction) throws Exception {
+                  String eventId = result.getEventId();
+                  String keyword = result.getKeyword();
+                  float ranking = result.getRanking();
+                  Struct row =
+                      transaction.readRow(
+                          KEYWORDS_TABLE, Key.of(keyword), Collections.singleton(NAME));
+                  String keywordId = UUID.randomUUID().toString();
+                  if (row == null) {
+                    transaction.buffer(
+                        Mutation.newInsertBuilder(KEYWORDS_TABLE)
+                            .set(KEYWORD_ID)
+                            .to(keywordId)
+                            .set(NAME)
+                            .to(keyword)
+                            .build());
+                  } else {
+                    keywordId = row.getString(0);
+                  }
+                  transaction.buffer(
+                      Mutation.newInsertBuilder(RESULTS_TABLE)
+                          .set(KEYWORD_ID)
+                          .to(keywordId)
+                          .set(EVENT_ID)
+                          .to(eventId)
+                          .set(RANKING)
+                          .to(ranking)
+                          .build());
+                  return null;
+                }
+            });
+    }
+  }
+
+  /**
+   * Returns events by keyword in descending order of ranking and includes
+   * only events that are in the future.
+   *
+   * @param keyword keyword to fetch event results for
+   * @return list of events in descending order of ranking
+   */
+  public static List<Event> getEventResultsByKeywordWithDescendingRanking(String keyword) {
+    List<Event> results = new ArrayList<Event>();
+    Statement statement =
+        Statement.of(
+            String.format(
+                "SELECT Events.EventID, Events.Name, Events.Description, Events.Labels,"
+                    + " Events.Location, Events.Date, Events.Time, Events.Host FROM Results INNER"
+                    + " JOIN Keywords ON Results.KeywordID = Keywords.KeywordID INNER JOIN Events"
+                    + " ON Events.EventID = Results.EventID WHERE Keywords.Name=\"%s\""
+                    + " AND DATE_DIFF(Date, CURRENT_DATE(), DAY) > 0 ORDER BY"
+                    + " Results.Ranking DESC LIMIT 20;",
+                keyword));
+    try (ResultSet resultSet =
+        SpannerClient.getDatabaseClient().singleUse().executeQuery(statement)) {
+      while (resultSet.next()) {
+        Event event =
+            new Event.Builder(
+                    /* name = */ resultSet.getString(1),
+                    /* description = */ resultSet.getString(2),
+                    /* labels = */ new HashSet<String>(resultSet.getStringList(3)),
+                    /* location = */ resultSet.getString(4),
+                    /* date = */ resultSet.getDate(5),
+                    /* time = */ resultSet.getString(6),
+                    /* host = */ shallowReadUserFromEmail(resultSet.getString(7)).get())
+                .setId(resultSet.getString(0))
                 .build();
         results.add(event);
       }

@@ -30,6 +30,7 @@ public class SpannerTestTasks {
                 + "  Time           STRING(MAX),"
                 + "  Labels         ARRAY<STRING(MAX)>,"
                 + "  Opportunities  ARRAY<STRING(MAX)>,"
+                + "  Image          STRING(MAX),"
                 + ") PRIMARY KEY (EventID)",
             "CREATE TABLE VolunteeringOpportunity ("
                 + "  VolunteeringOpportunityID  STRING(MAX) NOT NULL,"
@@ -42,7 +43,17 @@ public class SpannerTestTasks {
             "CREATE TABLE OpportunitySignup ("
 	          + "  VolunteeringOpportunityID  STRING(MAX) NOT NULL,"
 	          + "  Email                      STRING(MAX) NOT NULL,"
-                + ") PRIMARY KEY (VolunteeringOpportunityID, Email)");
+                + ") PRIMARY KEY (VolunteeringOpportunityID, Email)",
+            "CREATE TABLE Keywords ("
+                + "  KeywordID                    STRING(MAX),"
+                + "  Name                        STRING(MAX)"
+                + ") PRIMARY KEY (KeywordID)",
+            "CREATE TABLE Results ("
+                + "  KeywordID                    STRING(MAX),"
+                + "  EventID                    STRING(MAX),"
+                + "  Ranking                    FLOAT64,"
+                + ") PRIMARY KEY (KeywordID, EventID),"
+                + "INTERLEAVE IN PARENT Keywords ON DELETE CASCADE");
     Database db =
         SpannerClient.getDatabaseAdminClient()
             .createDatabase(

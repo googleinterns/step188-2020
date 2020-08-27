@@ -1,7 +1,42 @@
+$('.grid').masonry({
+  itemSelector: '.grid-item',
+  columnWidth: '.grid-sizer',
+  percentPosition: true,
+});
+
+async function setImageFormAction(type) {
+  let urlParams = new URLSearchParams({'picture-type': type});
+  if (type === 'event') {
+    urlParams.append('event-id', getEventId());
+  }
+  const response = await fetch('/blob-url?' + urlParams);
+  const blobUrl = await response.text();
+  $('#image-form').attr('action', blobUrl);
+}
+
+async function getLoggedInUserEmail() {
+  const loginStatus = await getLoginStatus();
+  return loginStatus.userEmail;
+}
+
 async function isLoggedIn() {
-  const response = await fetch('/login-status');
-  const loginStatus = await response.json();
+  const loginStatus = await getLoginStatus();
   return loginStatus.loginState === 'LOGGED_IN';
+}
+
+async function getLoginStatus() {
+  const response = await fetch('/login-status');
+  return response.json();
+}
+
+/**
+ * Get the event id from the query string.
+ * @return {string} the event id in the query string
+ */
+function getEventId() {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  return urlParams.get('eventId');
 }
 
 /**
@@ -26,7 +61,7 @@ function buildTagWithAdder(tagClass, text) {
   let group = buildGroup();
   const addButton = buildAdder(tagClass);
   const tag = buildTag(tagClass);
-
+ 
   group.appendChild(addButton);
   group.appendChild(tag);
   group = setText(group, tagClass, text);
@@ -104,7 +139,7 @@ function addTagsToInput(clickedAdder, tagId) {
   });
   getTagsScriptWithCallback(function() {
     $(tagId).tagsinput('refresh');
-    $(tagId).tagsinput('add', $(clickedAdder).next().html());
+    $(tagId).tagsinput('add', $(clickedAdder).next().text());
   });
 }
 
@@ -145,43 +180,118 @@ function togglePrefilledInterests() {
   $('#prefilled-interests').toggle();
 }
 
-/** Writes out relevant details to an event card */
-async function populateEventContainer(event, containerId) {
-  const indexOfEventCard = 25;
-  const eventCardTotal = await $.get('event-card.html');
+async function getRankedEvents(events) {
+  const response = await fetch('/event-ranker?' + new URLSearchParams({'events': JSON.stringify(events)}));
+  return response.json();
+}
+
+/** Take ranked events and assign them levels of detail */
+function getLodsFromEvents(rankedEvents) {
+  const levelOneCutoff = Math.floor(rankedEvents.length / 3);
+  const levelTwoCutoff = levelOneCutoff * 2;
+  let lodArrayOfMaps = [];
+  for (let i = 0; i < rankedEvents.length; i++) {
+    const event = rankedEvents[i];
+    let lodMap = {'event': event};
+    if (i <= levelOneCutoff) {
+      lodMap['lod'] = 3;
+    } else if (i <= levelTwoCutoff) {
+      lodMap['lod'] = 2;
+    } else {
+      lodMap['lod'] = 1;
+    }
+    lodArrayOfMaps.push(lodMap);
+  }
+  return lodArrayOfMaps;
+}
+
+/** Writes out relevant details to an event card with the appropriate lod (level of detail) */
+async function populateEventContainerWithoutButtons(event, containerId, lod) {
+  const eventCardAll = await $.get('event-card.html');
+  const eventCard = $(eventCardAll).filter(`#event-card-level-${Math.min(lod, 3)}`).get(0);
   const eventCardId = `event-${event.eventId}`;
-  const eventCard = $(eventCardTotal).get(indexOfEventCard);
   $(eventCard).attr('id', eventCardId);
   $(`#${containerId}`).append(eventCard);
   $(`#${eventCardId} #event-card-title`).html(event.name);
   $(`#${eventCardId} #event-card-description`).html(event.description);
-  $(`#${eventCardId} #event-card-date`)
-      .html(
-          buildDate(
-              event.date.year, event.date.month, event.date.dayOfMonth));
-  $(`#${eventCardId} #event-card-time`).html(event.time);
-  $(`#${eventCardId} #event-card-location`).html(event.location);
-  $(`#${eventCardId} #event-card-volunteers`)
-      .html(buildVolunteers(event.opportunities));
+  if (lod > 1) {
+    $(`#${eventCardId} #event-card-date`)
+        .html(
+            buildDate(
+                event.date.year, event.date.month, event.date.dayOfMonth));
+    $(`#${eventCardId} #event-card-time`).html(event.time);
+    $(`#${eventCardId} #event-card-location`).html(event.location);
+    if (event.opportunities.length) {
+      $(`#${eventCardId} #event-card-volunteers`)
+        .html(buildVolunteers(event.opportunities));
+    } else {
+      $(`#${eventCardId} #vols-needed`).parent().hide();
+    }
+  }
   buildAsLabels(
-      `#${eventCardId} #event-card-labels`, event.labels, 'interests');
+      `#${eventCardId} .card-body #event-card-labels`, event.labels, 'interests');
   buildSkillsAsLabels(
-      `#${eventCardId} #event-card-labels`, event.opportunities);
+      `#${eventCardId} .card-body #event-card-labels`, event.opportunities);
+  if (lod >= 2) {
+    populateExistingImage('event', `#${eventCardId} #event-card-image`, event.eventId);
+  }
+  $('#' + eventCardId + ' div #event-details').hide();
+  $('#' + eventCardId + ' div #event-register').hide();
+  if (lod === 5) {
+    $(`#${eventCardId}`).attr('style', 'width: 100% !important');
+  }
+}
+
+async function populateEventContainer(event, containerId, lod) {
+  await populateEventContainerWithoutButtons(event, containerId, lod);
+  const eventCardId = `event-${event.eventId}`;
   addLinkToRegister(eventCardId);
   addLinkToDetails(eventCardId);
 }
 
+/** Prepends either a background image or Bootstrap-colored div */
+function addEventImage(imageUrl, eventCardId) {
+  if (imageUrl) {
+    $(`#${eventCardId} #event-card-image`).attr('src', imageUrl);
+  }
+  else {
+    createRandomColorBlock(`#${eventCardId} #event-card-image`);
+  }
+}
+
+/** Create a fixed-height color block for events with no image */
+function createRandomColorBlock(elementId) {
+  $(elementId).replaceWith('<div class="card-img-top" id="event-card-image" />')
+  $(elementId).addClass(pickRandomColorClass());
+  $(elementId).height('200px');
+}
+
+/** Pick random color from Bootstrap defaults */
+function pickRandomColorClass() {
+  const colorClasses =
+      ['bg-primary',
+       'bg-success',
+       'bg-info',
+       'bg-warning',
+       'bg-danger']
+  return colorClasses[Math.floor(Math.random() * colorClasses.length)]
+}
+
 /** Adds a hyperlink to the registration button of event card */
 function addLinkToRegister(eventCardId) {
+  const registerButton = '#' + eventCardId + ' div #event-register';
+  $(registerButton).show();
   const eventId = eventCardId.substring(6);
-  $('#' + eventCardId + ' .btn-primary #event-register')
+  $(registerButton)
       .attr('href', `/event-details.html?eventId=${eventId}&register=true`);
 }
 
 /** Adds a hyperlink to the details button of event card */
 function addLinkToDetails(eventCardId) {
+  const detailsButton = '#' + eventCardId + ' div #event-details';
+  $(detailsButton).show();
   const eventId = eventCardId.substring(6);
-  $('#' + eventCardId + ' .btn #event-details')
+  $(detailsButton)
       .attr('href', `/event-details.html?eventId=${eventId}&register=false`);
 }
 
@@ -223,12 +333,52 @@ function buildSkillsAsLabels(querySelector, opportunities) {
 }
 
 /**
- * Adds currently-attributed profile image to logged-in user
- * If the user has no profile image, add the default one
+ * Adds currently-attributed image
+ * If no image, add a default image or background color with default height
  */
-async function populateExistingProfileImage() {
-  const response = await fetch('/blob-handler');
-  const imageUrl = await response.text();
-  const realImageUrl = imageUrl ? imageUrl : 'assets/default_profile.jpg';
-  $('#profile-picture').attr('src', realImageUrl);
+async function populateExistingImage(type, selector, eventId='') {
+  if (!eventId) {
+    eventId = getEventId();
+  }
+  const blobKey = await getBlobKey(type, eventId);
+  const blobResponse = await fetch(`/blob-serve?key=${blobKey}`);
+  if (blobResponse.status !== 200) {
+    if (type === 'event') {
+      createRandomColorBlock(selector);
+    } else if (type === 'profile') {
+      $(selector).attr('src', 'assets/default_profile.jpg');
+    }
+  } else {
+    const imageBlob = await blobResponse.blob();
+    $(selector).attr('src', URL.createObjectURL(imageBlob));
+  }
+}
+
+async function getBlobKey(type, eventId) {
+  let handlerUrl = `/${type}-blob-handler`;
+  if (type === 'event') {
+    handlerUrl += '?' + new URLSearchParams({'event-id': eventId});
+  }
+  const handlerResponse =
+      await fetch(handlerUrl);
+  return handlerResponse.text();
+}
+
+/**
+ * Gets event details from database with eventId and fills out event page with details
+ * If registering for event, register user then show event details
+ */
+async function getEventDetails() {
+  // make sign up link go to correct
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const eventId = getEventId();
+
+  const response = await fetch('/create-event?' + new URLSearchParams({'eventId': eventId}));
+  const data = await response.json();
+  populateEventContainerWithoutButtons(data, 'event-container', 5);
+  // Register for event
+  if ((urlParams.get('register')) === 'true') {
+    registerEvent(eventId, data.host.email);
+  }
 }

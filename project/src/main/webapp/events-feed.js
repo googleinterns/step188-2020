@@ -6,20 +6,50 @@ $(async function() {
   if (!(window.location.href).includes('filtered=true')) {
     const allEvents = await getAllEvents();
     populateAllEvents(allEvents); 
-  } else { 
+  } else {
     // Get filtered events only
     const filteredEvents = await getFilteredEventsOnly(window.location.href.split("labelParams=")[1]);
     populateAllEvents(filteredEvents);
   }
 });
 
+/**
+ * Get all search events for the keyword entered and populate
+ * the events in the display.
+ */
+async function getAllSearchEvents() {
+  const eventContainer = document.getElementById('event-container');
+  if (eventContainer != null) {
+    eventContainer.remove();
+  }
+
+  const searchContainer = document.getElementById('search-container');
+  searchContainer.innerHTML = '';
+
+  const keyword = document.getElementById('keyword').value;
+  const response = await fetch(`search-data?keyword=${keyword}`);
+  const searchEvents = await response.json();
+  for (const key in searchEvents) {
+    if (searchEvents.hasOwnProperty(key)) {
+      populateEventContainer(searchEvents[key], 'search-container', 4);
+    }
+  }
+}
+
 function toggleDropdown() {
   $(".dropdown-toggle").dropdown();
 }
 
 async function getAllEvents() {
-  const allEvents = await fetch('discovery-event-details');
+  const allEvents = await fetch('/discovery-event-details');
   return allEvents.json();
+}
+
+function populateRankedEvents(eventLevels) {
+  for (const eventMap of eventLevels) {
+    populateEventContainer(eventMap['event'], 'event-container', eventMap['lod']);
+    getInterestFilters(eventMap['event']);
+  }
 }
 
 /**
@@ -32,12 +62,11 @@ async function getFilteredEventsOnly(labelParams) {
   return response.json();
 }
 
-function populateAllEvents(allEvents) {
-  for (const event of allEvents) {
-    populateEventContainer(event, 'event-container');
-    getInterestFilters(event);
-  }
-  populateFilters(filters)
+async function populateAllEvents(allEvents) {
+  const rankedEvents = await getRankedEvents(allEvents);
+  const eventLevels = getLodsFromEvents(rankedEvents);
+  populateRankedEvents(eventLevels);
+  populateFilters(filters);
 }
 
 // Fill filter dict with {labelName: count}

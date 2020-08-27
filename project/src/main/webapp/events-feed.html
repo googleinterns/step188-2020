@@ -5,8 +5,10 @@
     <title>STEP 188 Project</title>
     <link rel="stylesheet" href="events-feed.css" />
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://kit.fontawesome.com/0d580893be.js" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Public+Sans&display=swap"
       rel="stylesheet"
@@ -23,6 +25,17 @@
       integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
       crossorigin="anonymous"
     ></script>
+    <link
+      href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+      rel="stylesheet"
+      id="bootstrap-css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
+      integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
+      crossorigin="anonymous"
+    />
     <script src="shared.js"></script>
     <script src="events-feed.js"></script>
     <script src="script.js"></script>
@@ -33,9 +46,7 @@
     <h3>Discover Events Around You</h3>
     <div class="display-inline-block">
       <div class="dropdown">
-        <button type="button" class="btn btn-primary create-btn">
-          <a href="create-event.html">+ Create an event</a>
-        </button>
+        <a class="btn btn-primary create-btn" href="create-event.html">+ Create an event</a>
         <button
           class="btn dropdown-toggle"
           type="button"
@@ -64,9 +75,36 @@
         </div>
       </div>
     </div>
+     <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            <div class="card-body row no-gutters align-items-center">
+              <div class="col-auto">
+                <i class="fas fa-search"></i>
+              </div>
+              <div class="col">
+                <input
+                  id="keyword"
+                  name="keyword"
+                  class="form-control form-control-lg form-control-borderless"
+                  type="search"
+                  placeholder="Search topics or keywords"
+                />
+              </div>
+              <div class="col-auto">
+                <button onclick="getAllSearchEvents()"class="btn btn-lg btn-success" type="submit">
+                  Search
+                </button>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
     <br />
     <br />
-    <div class="container" id="event-container">
+    <div class="grid" id="event-container">
+      <div class="grid-sizer"></div>
+    </div>
+    <div class="row" id="search-container">
     </div>
   </body>
 </html>

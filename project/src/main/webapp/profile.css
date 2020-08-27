@@ -34,6 +34,14 @@ h3 {
 }
 
 img {
-  height: 240px;
-  width: 240px;
+  height: 300px;
+  width: 300px;
+}
+
+#accordion {
+  width: 100%;
+}
+
+.profile-desc {
+  font-size: 1.5rem;
 }
