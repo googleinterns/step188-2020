@@ -43,7 +43,8 @@ async function updateUserEventsParticipating() {
   const userEventsParticipating = await getUserEvents('participating');
   for (const eventsKey in userEventsParticipating) {
     if (userEventsParticipating.hasOwnProperty(eventsKey)) {
-      populateEventContainer(userEventsParticipating[eventsKey], 'events-participating', 3);
+      populateEventContainer(
+          userEventsParticipating[eventsKey], 'events-participating', 3);
     }
   }
 }
@@ -53,7 +54,8 @@ async function updateUserEventsVolunteering() {
   for (const eventsKey in userEventsVolunteering) {
     if (userEventsVolunteering.hasOwnProperty(eventsKey)) {
       const eventVolunteering = userEventsVolunteering[eventsKey];
-      eventVolunteering.event.opportunityName = eventVolunteering.opportunityName
+      eventVolunteering.event.opportunityName =
+          eventVolunteering.opportunityName
       populateEventContainer(eventVolunteering.event, 'events-volunteering', 3);
     }
   }

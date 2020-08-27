@@ -6,7 +6,7 @@ $(async function() {
   setImageFormAction('event');
 });
 
-/** 
+/**
  * Adds the edit button for the host and removes the register button
  * @param {Object} eventHost email of the host of the event
  */
@@ -22,7 +22,8 @@ async function configureRegisterAndEditButtons(eventHost, eventId) {
     setSignupAction();
     $('#edit-container').hide();
     $('#details')
-        .append(`<a id="signup-link" href="/event-details.html?eventId=${eventId}&register=true" 
+        .append(`<a id="signup-link" href="/event-details.html?eventId=${
+            eventId}&register=true" 
                 type="button" class="btn btn-primary">Register</a>`);
   }
 }
@@ -33,13 +34,14 @@ async function configureRegisterAndEditButtons(eventHost, eventId) {
  * @param {string} eventId id of relevant event
  */
 function addHostButtons(editContainer, eventId) {
-    $(editContainer)
-        .append(`<a href="/create-volunteering-opportunity.html?eventId=${eventId}"
+  $(editContainer)
+      .append(
+          `<a href="/create-volunteering-opportunity.html?eventId=${eventId}"
                   type="button" class="btn btn-primary" id="volopp-button"
                   >Add a volunteering opportunity</a>`);
-    $(editContainer).append('<br /><br />');
-    $(editContainer)
-        .append(`<a id="edit-link" href="/event-edit.html?eventId=${eventId}" 
+  $(editContainer).append('<br /><br />');
+  $(editContainer)
+      .append(`<a id="edit-link" href="/event-edit.html?eventId=${eventId}" 
                 type="button" class="btn btn-primary" id="edit-button"> Edit event </a>`);
 }
 
@@ -65,21 +67,20 @@ async function populateVolunteeringOpportunitiesUI(eventHost, isHost) {
  * @param {string} eventHost email of the host of the event
  * @param {boolean} isHost
  */
-async function showVolunteeringOpportunities(
-    opportunities, eventHost, isHost) {
+async function showVolunteeringOpportunities(opportunities, eventHost, isHost) {
   for (const key in opportunities) {
     if (opportunities.hasOwnProperty(key)) {
       const volunteers =
           await getVolunteersByOpportunityId(opportunities[key].opportunityId);
       $('#volunteering-opportunities .card .card-body')
           .append(getListItemForOpportunity(
-              opportunities[key].opportunityId,
-              opportunities[key].name,
+              opportunities[key].opportunityId, opportunities[key].name,
               opportunities[key].numSpotsLeft,
-              opportunities[key].requiredSkills,
-              volunteers, eventHost, isHost));
-       buildAsLabels(`#oppportunity-id-${opportunities[key].opportunityId} #skills`,
-        opportunities[key].requiredSkills, 'skills');        
+              opportunities[key].requiredSkills, volunteers, eventHost,
+              isHost));
+      buildAsLabels(
+          `#oppportunity-id-${opportunities[key].opportunityId} #skills`,
+          opportunities[key].requiredSkills, 'skills');
     }
   }
 }
@@ -99,10 +100,11 @@ async function showVolunteeringOpportunities(
  * @return {string}
  */
 function getListItemForOpportunity(
-    opportunityId, name, numSpotsLeft, requiredSkills,
-    volunteers, eventHost, isHost) {
-  const volunteersText =
-      volunteers.length ? volunteers.toString().replace(/,/g, ', ') : 'None'; //remove
+    opportunityId, name, numSpotsLeft, requiredSkills, volunteers, eventHost,
+    isHost) {
+  const volunteersText = volunteers.length ?
+      volunteers.toString().replace(/,/g, ', ') :
+      'None';  // remove
   let editLink = '';
   if (isHost) {
     editLink = getLinkForOpportunity(opportunityId);
@@ -115,7 +117,7 @@ function getListItemForOpportunity(
           <div class="display-inline-block" id="skills"></div><br>
            <p class="card-text">Spots Left: ${numSpotsLeft}</p>
            <p class="card-text">Volunteers: ${volunteersText}</p>${
-  editLink}</li>`;
+      editLink}</li>`;
 }
 
 /**
@@ -129,7 +131,7 @@ function getLinkForOpportunity(opportunityId) {
   const urlParams = new URLSearchParams(queryString);
   const eventId = urlParams.get('eventId');
   return `<a href="/update-volunteering-opportunity.html?opportunity-id=${
-    opportunityId}&event-id=${eventId}&eventId=${eventId}"
+      opportunityId}&event-id=${eventId}&eventId=${eventId}"
           id="logout-prompt"
           class="btn btn-outline-success my-2 my-sm-0"
           type="button"
@@ -137,7 +139,8 @@ function getLinkForOpportunity(opportunityId) {
 }
 
 async function getEventHost() {
-  const response = await fetch('/create-event?' + new URLSearchParams({'eventId': getEventId()}));
+  const response = await fetch(
+      '/create-event?' + new URLSearchParams({'eventId': getEventId()}));
   const data = await response.json();
   const eventHost = data['host'].email;
   return eventHost;
@@ -145,15 +148,17 @@ async function getEventHost() {
 
 /** Call doPost to register logged in user for event */
 async function registerEvent(eventId, host) {
-  const response =
-      await fetch('/register-event?' + new URLSearchParams({'eventId': eventId}), {method: 'POST'} );
+  const response = await fetch(
+      '/register-event?' + new URLSearchParams({'eventId': eventId}),
+      {method: 'POST'});
   const isHost = await getLoggedInUserIsHost(host);
   if (isHost) {
     $('.alert').slideDown();
     $('#signup-link').hide();
   } else {
     document.getElementById('signup-link').setAttribute('href', '');
-    document.getElementById('signup-link').innerHTML = 'You are signed up for this event.';
+    document.getElementById('signup-link').innerHTML =
+        'You are signed up for this event.';
   }
 }
 
@@ -170,18 +175,17 @@ async function getLoggedInUserIsHost(eventHost) {
 async function populateOpportunitiesDropdown(opportunities) {
   if (opportunities.length) {
     for (const key in opportunities) {
-        if (opportunities.hasOwnProperty(key)) {
-          if (opportunities[key].numSpotsLeft > 0) {
-              $('#opportunities-options')
-                  .append(getOptionForOpportunity(
-                      opportunities[key].opportunityId,
-                      opportunities[key].name));
-          }
+      if (opportunities.hasOwnProperty(key)) {
+        if (opportunities[key].numSpotsLeft > 0) {
+          $('#opportunities-options')
+              .append(getOptionForOpportunity(
+                  opportunities[key].opportunityId, opportunities[key].name));
         }
+      }
     }
   } else {
-    document.getElementById("volopp-container").remove();
-    document.getElementById("volunteering-opportunities").remove();
+    document.getElementById('volopp-container').remove();
+    document.getElementById('volunteering-opportunities').remove();
   }
 }
 
@@ -222,6 +226,7 @@ function setSignupAction() {
   const params = (new URL(document.location)).searchParams;
   const eventId = params.get('eventId');
 
-  $('#opportunity-signup-form').attr('action', `/opportunity-signup-form-handler?event-id=${eventId}`);
+  $('#opportunity-signup-form')
+      .attr('action', `/opportunity-signup-form-handler?event-id=${eventId}`);
   $('#opportunity-signup-form').show();
 }
