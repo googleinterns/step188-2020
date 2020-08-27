@@ -237,7 +237,6 @@ async function populateEventContainerWithoutButtons(event, containerId, lod) {
     }
   }
 
-  console.log(event.opportunityName);
   if (event.opportunityName) {
     $(`#${eventCardId} #event-card-role-type-placeholder #event-card-role-type`).html(`<b>Role:</b> ${event.opportunityName}`);
   } else {
@@ -328,8 +327,6 @@ function buildAsLabels(querySelector, labels, className) {
     document
         .querySelector(querySelector)
         .appendChild(newLabelButton);
-    console.log(document
-        .querySelector(querySelector));
   }
 }
 

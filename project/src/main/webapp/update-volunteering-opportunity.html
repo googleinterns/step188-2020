@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="create-volunteering-opportunity.css" />
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://kit.fontawesome.com/0d580893be.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
@@ -39,7 +40,7 @@
           <div class="container" id="edit-container">
             <div class="card">
               <div class="card-body">
-              <h3>Add a volunteering opportunity for your event.</h3>
+              <h3>Update a volunteering opportunity for your event.</h3>
               <br />
               <div class="input-group" id="name-div">
                 <div class="input-group-prepend">
@@ -71,18 +72,18 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" for="skills">Skills</label>
                 </div>
-                <input
-                  id="skills"
-                  name="required-skill"
-                  data-role="tagsinput"
-                  multiple
-                ></input>
-                <button
-                  type="button"
-                  class="btn btn-light prefilled-pick"
-                  onclick="togglePrefilledSkills();"
-                >+ Pick</button>
-                <div id="prefilled-skills" class="overflow-auto prefilled-pool"></div>
+              <input
+                id="skills"
+                name="required-skill"
+                data-role="tagsinput"
+                multiple
+              ></input>
+              <button
+                type="button"
+                class="btn btn-light prefilled-pick"
+                onclick="togglePrefilledSkills();"
+              >+ Pick</button>
+              <div id="prefilled-skills" class="overflow-auto prefilled-pool"></div>
               </div>
               <br />
               <button type="submit" class="btn btn-primary mx-auto d-block">

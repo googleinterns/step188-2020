@@ -112,7 +112,7 @@ function getListItemForOpportunity(
                 <i class="fas fa-hand-holding-medical"></i>
                 <span class="card-text">${name}</span>
           </p>
-          <div class="display-inline-block" id="skills"></div>
+          <div class="display-inline-block" id="skills"></div><br>
            <p class="card-text">Spots Left: ${numSpotsLeft}</p>
            <p class="card-text">Volunteers: ${volunteersText}</p>${
   editLink}</li>`;
@@ -224,8 +224,4 @@ function setSignupAction() {
 
   $('#opportunity-signup-form').attr('action', `/opportunity-signup-form-handler?event-id=${eventId}`);
   $('#opportunity-signup-form').show();
-}
-
-function getVolunteerText(text) {
-  return 
 }
