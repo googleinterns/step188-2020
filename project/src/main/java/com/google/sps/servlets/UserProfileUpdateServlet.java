@@ -62,12 +62,13 @@ public class UserProfileUpdateServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     email = UserServiceFactory.getUserService().getCurrentUser().getEmail();
+    User loggedInUser = SpannerTasks.shallowReadUserFromEmail(email).get();
     // Get the input from the form.
     String name = request.getParameter(NAME);
     Set<String> interests = new HashSet<>(splitAsList(request.getParameter(INTERESTS)));
     Set<String> skills = new HashSet<>(splitAsList(request.getParameter(SKILLS)));
     User updatedUser =
-        new User.Builder(name, email).setInterests(interests).setSkills(skills).build();
+        loggedInUser.toBuilder().setInterests(interests).setSkills(skills).build();
 
     SpannerTasks.insertOrUpdateUser(updatedUser);
     response.sendRedirect("/profile.html");
