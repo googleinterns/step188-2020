@@ -518,11 +518,9 @@ public class SpannerTasks {
             .executeQuery(
                 Statement.of(
                     String.format(
-                        "SELECT Events.EventID, Events.Name, Events.Description, Events.Labels,"
-                            + " Events.Location, Events.Date, Events.Time, Events.Host, Events.Image"
-                            + " FROM Events INNER JOIN"
-                            + " Users ON Events.EventID IN UNNEST(Users.EventsHosting) WHERE Email=\"%s\"",
-                        email)));
+                        "SELECT EventID, Name, Description, Labels, Location, Date, Time, Host, Image"
+                            + " FROM %s WHERE Host=\"%s\"",
+                                EVENT_TABLE, email)));
     while (resultSet.next()) {
       Event event =
           new Event.Builder(
@@ -576,7 +574,7 @@ public class SpannerTasks {
                 .setId(resultSet.getString(0))
                 .setImageUrl(resultSet.getString(8))
                 .build();
-        results.add(new EventVolunteering(event, /* opportunityName = */ resultSet.getString(8)));
+        results.add(new EventVolunteering(event, /* opportunityName = */ resultSet.getString(9)));
       }
     }
     return results;
