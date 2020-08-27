@@ -6,8 +6,9 @@ html {
 }
 
 .hero-image {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-    url("https://image.freepik.com/free-vector/crowd-people-walking-outdoors-night-market_74855-7109.jpg");
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+    url("https://screenshot.googleplex.com/C6PuyjD5ffEKJ3o.png");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -31,6 +32,18 @@ html {
   color: white;
 }
 
+.button {
+  background-color: #91d4ed;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  margin: auto;
+  padding: 10px;
+  text-align: center;
+}
+
 .container {
   align-items: center;
   margin: auto;
@@ -41,10 +54,10 @@ h6 {
 }
 
 .about img {
+  display: block;
   height: 200px;
+  margin: auto;
   width: 200px;
-    display:block;
-    margin:auto;
 }
 
 .bottom-subtext {

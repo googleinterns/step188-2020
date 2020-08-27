@@ -176,8 +176,8 @@ function togglePrefilledInterests() {
 
 async function getRankedEvents(events) {
   const eventIds = new Array(); 
-  for (index in events) {
-    eventIds.push(events[index].eventId);
+  for (event of events) {
+    eventIds.push(event.eventId);
   }
   const response = await fetch('/event-ranker?' + new URLSearchParams({'events': JSON.stringify(eventIds)}));
   return response.json();
