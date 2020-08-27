@@ -1,6 +1,10 @@
 const filters = {}
 
-$(async function() {
+$(function() {
+  setupEvents();
+});
+
+async function setupEvents() {
   toggleDropdown();
   // If want all events on discovery page 
   if (!(window.location.href).includes('filtered=true')) {
@@ -11,7 +15,7 @@ $(async function() {
     const filteredEvents = await getFilteredEventsOnly(window.location.href.split("labelParams=")[1]);
     populateAllEvents(filteredEvents);
   }
-});
+}
 
 /**
  * Get all search events for the keyword entered and populate

@@ -40,7 +40,6 @@
 }
 
 .card {
-  float: left !important;
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
@@ -55,18 +54,16 @@
   width: 15% !important;
 }
 
-.grid-item--level-1 {
-  font-size: 85% !important;
+.grid-item--level-3 {
   width: 15% !important;
 }
 
 .grid-item--level-2 {
-  font-size: 90% !important;
   width: 15% !important;
 }
 
-.grid-item--level-3 {
-  width: 20% !important;
+.grid-item--level-1 {
+  width: 15% !important;
 }
 
 i {
@@ -101,7 +98,15 @@ h3 {
 }
 
 #logo {
+  height: 40px;
+  margin: 10px;
+  width: 60px;
+}
+
+.grid-item {
+  float: left;
   height: 70px;
+  margin-bottom: 20px;
   margin-left: 10px;
   margin-right: 10px;
   width: 80px;

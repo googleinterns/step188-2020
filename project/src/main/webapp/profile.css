@@ -45,3 +45,7 @@ img {
 .profile-desc {
   font-size: 1.5rem;
 }
+
+.card {
+  width: 500px;
+}

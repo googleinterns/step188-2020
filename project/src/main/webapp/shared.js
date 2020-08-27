@@ -1,9 +1,3 @@
-$('.grid').masonry({
-  itemSelector: '.grid-item',
-  columnWidth: '.grid-sizer',
-  percentPosition: true,
-});
-
 async function setImageFormAction(type) {
   let urlParams = new URLSearchParams({'picture-type': type});
   if (type === 'event') {
@@ -226,12 +220,6 @@ async function populateEventContainerWithoutButtons(event, containerId, lod) {
                 event.date.year, event.date.month, event.date.dayOfMonth));
     $(`#${eventCardId} #event-card-time`).html(event.time);
     $(`#${eventCardId} #event-card-location`).html(event.location);
-    if (event.opportunities.length) {
-      $(`#${eventCardId} #event-card-volunteers`)
-        .html(buildVolunteers(event.opportunities));
-    } else {
-      $(`#${eventCardId} #vols-needed`).parent().hide();
-    }
   }
   buildAsLabels(
       `#${eventCardId} .card-body #event-card-labels`, event.labels, 'interests');
@@ -240,13 +228,14 @@ async function populateEventContainerWithoutButtons(event, containerId, lod) {
   if (lod >= 2) {
     populateExistingImage('event', `#${eventCardId} #event-card-image`, event.eventId);
   }
-
-  if (event.opportunityName) {
-    $(`#${eventCardId} #event-card-role-type`).html(`<b>Role:</b> ${event.opportunityName}`);
-  } else {
-    $(`#${eventCardId} #event-card-role-type-placeholder`).remove();
+  if (lod >= 3) {
+    if (event.opportunities.length) {
+      $(`#${eventCardId} #event-card-volunteers`)
+        .html(buildVolunteers(event.opportunities));
+    } else {
+      $(`#${eventCardId} #vols-needed`).parent().hide();
+    }
   }
-
   $('#' + eventCardId + ' div #event-details').hide();
   $('#' + eventCardId + ' div #event-register').hide();
   if (lod === 5) {

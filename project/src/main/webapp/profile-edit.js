@@ -17,6 +17,7 @@ async function showCurrentUserInfo() {
   populateExisting('interests', userData);
   populateExisting('skills', userData);
   populateExistingImage('profile', '#profile-picture');
+  populateExistingImage('profile', '#profile-picture-main');
 }
 
 /** 
