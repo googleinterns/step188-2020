@@ -236,6 +236,14 @@ async function populateEventContainerWithoutButtons(event, containerId, lod) {
       $(`#${eventCardId} #vols-needed`).parent().hide();
     }
   }
+
+  console.log(event.opportunityName);
+  if (event.opportunityName) {
+    $(`#${eventCardId} #event-card-role-type-placeholder #event-card-role-type`).html(`<b>Role:</b> ${event.opportunityName}`);
+  } else {
+    $(`#${eventCardId} #event-card-role-type-placeholder`).remove();
+  }
+
   $('#' + eventCardId + ' div #event-details').hide();
   $('#' + eventCardId + ' div #event-register').hide();
   if (lod === 5) {

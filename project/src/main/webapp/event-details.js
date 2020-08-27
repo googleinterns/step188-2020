@@ -101,19 +101,20 @@ async function showVolunteeringOpportunities(
 function getListItemForOpportunity(
     opportunityId, name, numSpotsLeft, requiredSkills,
     volunteers, eventHost, isHost) {
-  requiredSkillsText =
-      requiredSkills.length ? requiredSkills.toString() : 'None';
-  volunteersText =
-      volunteers.length ? volunteers.toString() : 'None'; //remove
+  const volunteersText =
+      volunteers.length ? volunteers.toString().replace(/,/g, ', ') : 'None'; //remove
   let editLink = '';
   if (isHost) {
     editLink = getLinkForOpportunity(opportunityId);
   }
   return `<li class="list-group-item" id="oppportunity-id-${opportunityId}">
-          <p class="card-text">Opportunity Name: ${name}</p>
+          <p class="card-text" id="vols-needed">
+                <i class="fas fa-hand-holding-medical"></i>
+                <span class="card-text">${name}</span>
+          </p>
           <div class="display-inline-block" id="skills"></div>
            <p class="card-text">Spots Left: ${numSpotsLeft}</p>
-           <p class="card-text">Volunteers: ${buildVolunteers(volunteers)}</p>${
+           <p class="card-text">Volunteers: ${volunteersText}</p>${
   editLink}</li>`;
 }
 
@@ -128,7 +129,7 @@ function getLinkForOpportunity(opportunityId) {
   const urlParams = new URLSearchParams(queryString);
   const eventId = urlParams.get('eventId');
   return `<a href="/update-volunteering-opportunity.html?opportunity-id=${
-    opportunityId}&event-id=${eventId}"
+    opportunityId}&event-id=${eventId}&eventId=${eventId}"
           id="logout-prompt"
           class="btn btn-outline-success my-2 my-sm-0"
           type="button"
@@ -167,15 +168,20 @@ async function getLoggedInUserIsHost(eventHost) {
  * @param {Object[]} opportunities to display in dropdown
  */
 async function populateOpportunitiesDropdown(opportunities) {
-  for (const key in opportunities) {
-    if (opportunities.hasOwnProperty(key)) {
-      if (opportunities[key].numSpotsLeft > 0) {
-        $('#opportunities-options')
-            .append(getOptionForOpportunity(
-                opportunities[key].opportunityId,
-                opportunities[key].name));
-      }
+  if (opportunities.length) {
+    for (const key in opportunities) {
+        if (opportunities.hasOwnProperty(key)) {
+          if (opportunities[key].numSpotsLeft > 0) {
+              $('#opportunities-options')
+                  .append(getOptionForOpportunity(
+                      opportunities[key].opportunityId,
+                      opportunities[key].name));
+          }
+        }
     }
+  } else {
+    document.getElementById("volopp-container").remove();
+    document.getElementById("volunteering-opportunities").remove();
   }
 }
 
@@ -218,4 +224,8 @@ function setSignupAction() {
 
   $('#opportunity-signup-form').attr('action', `/opportunity-signup-form-handler?event-id=${eventId}`);
   $('#opportunity-signup-form').show();
+}
+
+function getVolunteerText(text) {
+  return 
 }
