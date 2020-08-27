@@ -69,7 +69,7 @@ function transposeEventLevels(eventLevels) {
   for (let i = 0; i < eventLevels.length; i++) {
     transposed[i % numberOfColumns].push(eventLevels[i]);
   }
-  return transposed
+  return transposed;
 }
 
 /**
