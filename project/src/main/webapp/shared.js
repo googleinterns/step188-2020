@@ -240,6 +240,13 @@ async function populateEventContainerWithoutButtons(event, containerId, lod) {
   if (lod >= 2) {
     populateExistingImage('event', `#${eventCardId} #event-card-image`, event.eventId);
   }
+
+  if (event.opportunityName) {
+    $(`#${eventCardId} #event-card-role-type`).html(`<b>Role:</b> ${event.opportunityName}`);
+  } else {
+    $(`#${eventCardId} #event-card-role-type-placeholder`).remove();
+  }
+
   $('#' + eventCardId + ' div #event-details').hide();
   $('#' + eventCardId + ' div #event-register').hide();
   if (lod === 5) {
