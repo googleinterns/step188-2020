@@ -256,8 +256,6 @@ async function populateEventContainer(event, containerId, lod) {
   addLinkToDetails(eventCardId);
 }
 
-
-
 /** Prepends either a background image or Bootstrap-colored div */
 function addEventImage(imageUrl, eventCardId) {
   if (imageUrl) {
