@@ -181,9 +181,14 @@ function togglePrefilledInterests() {
 }
 
 async function getRankedEvents(events) {
-  const response = await fetch('/event-ranker?' + new URLSearchParams({'events': JSON.stringify(events)}));
+  const eventIds = new Array(); 
+  for (event of events) {
+    eventIds.push(event.eventId);
+  }
+  const response = await fetch('/event-ranker?' + new URLSearchParams({'events': JSON.stringify(eventIds)}));
   return response.json();
 }
+
 
 /** Take ranked events and assign them levels of detail */
 function getLodsFromEvents(rankedEvents) {
@@ -235,6 +240,13 @@ async function populateEventContainerWithoutButtons(event, containerId, lod) {
   if (lod >= 2) {
     populateExistingImage('event', `#${eventCardId} #event-card-image`, event.eventId);
   }
+
+  if (event.opportunityName) {
+    $(`#${eventCardId} #event-card-role-type`).html(`<b>Role:</b> ${event.opportunityName}`);
+  } else {
+    $(`#${eventCardId} #event-card-role-type-placeholder`).remove();
+  }
+
   $('#' + eventCardId + ' div #event-details').hide();
   $('#' + eventCardId + ' div #event-register').hide();
   if (lod === 5) {

@@ -8,6 +8,7 @@ import com.google.sps.utilities.CommonUtils;
 import com.google.sps.utilities.EventRanker;
 import com.google.sps.utilities.SpannerTasks;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -21,17 +22,21 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/event-ranker")
 public class EventRankerServlet extends HttpServlet {
   private static String EVENTS_KEY = "events";
-
+ 
   /** Returns events in order of relevance */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    ArrayList<String> eventIds = new ArrayList<>();
+    String[] eventIdsParameter = (request.getParameter(EVENTS_KEY).split(","));
+    for (String event : eventIdsParameter) {
+        eventIds.add(event.replace("\"", "").replace("[", "").replace("]", ""));
+    }
     String email = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     Optional<User> userOptional = SpannerTasks.shallowReadUserFromEmail(email);
     User user;
     if (userOptional.isPresent()) {
       user = userOptional.get();
-      Set<Event> relevantEvents =
-          new HashSet<Event>(Arrays.asList(new Gson().fromJson(request.getParameter(EVENTS_KEY), Event[].class)));
+      Set<Event> relevantEvents = new HashSet<Event>(SpannerTasks.getEventsFromIds(eventIds));
       List<Event> rankedRelevantEvents = EventRanker.rankEvents(user, relevantEvents);
       response.setContentType("application/json;");
       response.getWriter().println(CommonUtils.convertToJson(rankedRelevantEvents));
@@ -40,3 +45,4 @@ public class EventRankerServlet extends HttpServlet {
     }
   }
 }
+

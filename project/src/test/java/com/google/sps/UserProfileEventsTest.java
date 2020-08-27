@@ -95,7 +95,7 @@ public class UserProfileEventsTest {
     User host = TestUtils.newUserWithEmail(EMAIL);
     Event event = TestUtils.newEventWithHost(host);
   
-    SpannerTasks.insertOrUpdateUser(host.toBuilder().addEventHosting(event).build());
+    SpannerTasks.insertOrUpdateUser(host.toBuilder().build());
     SpannerTasks.insertorUpdateEvent(event);
 
     setAuthenticationHelper();
