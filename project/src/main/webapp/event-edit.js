@@ -14,10 +14,18 @@ async function getEventDetails() {
   const response = await fetch('/create-event?' +
     new URLSearchParams({'eventId': eventId}));
   const data = await response.json();
+  console.log(data);
   document.getElementById('name').value = data['name'];
   document.getElementById('description').value = data['description'];
+
+const date = new Date(`${data['date'].year}/${data['date'].month}/${data['date'].dayOfMonth}`)
+const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: '2-digit', day: '2-digit' }) 
+const [{ value: month },,{ value: day },,{ value: year }] = dateTimeFormat .formatToParts(date ) 
+  buildAsLabels(
+      '#interests-div .bootstrap-tagsinput', data['labels'], 'interests');
+
   document.getElementById('date').value =
-    `${data['date'].month}/${data['date'].dayOfMonth}/${data['date'].year}`;
+    `${year}-${month}-${day}`;
   document.getElementById('time').value = data['time'];
   document.getElementById('location').value = data['location'];
 }
