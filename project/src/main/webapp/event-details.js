@@ -12,13 +12,13 @@ $(async function() {
  */
 async function configureRegisterAndEditButtons(eventHost, eventId) {
   const loggedInUserIsHost = await getLoggedInUserIsHost(eventHost);
+  populateVolunteeringOpportunitiesUI(eventHost, loggedInUserIsHost);
   if (loggedInUserIsHost) {
     const editContainer = '#edit-container .card .card-body #edit-container-2';
     addHostButtons(editContainer, eventId);
     $('#signup-link').hide();
     $('#volopp-container').hide();
   } else {
-    populateVolunteeringOpportunitiesUI(eventHost);
     setSignupAction();
     $('#edit-container').hide();
     $('#details')
@@ -47,13 +47,14 @@ function addHostButtons(editContainer, eventId) {
  * Adds the volunteering opportunities to the event card and the dropdown
  * in the signup form.
  * @param {string} eventHost email of the host of the event
+ * @param {boolean} isHost
  */
-async function populateVolunteeringOpportunitiesUI(eventHost) {
+async function populateVolunteeringOpportunitiesUI(eventHost, isHost) {
   const eventId = getEventId();
 
   const response = await fetch(`/event-volunteering-data?event-id=${eventId}`);
   const opportunities = await response.json();
-  showVolunteeringOpportunities(opportunities, eventHost);
+  showVolunteeringOpportunities(opportunities, eventHost, isHost);
   populateOpportunitiesDropdown(opportunities);
 }
 
@@ -62,11 +63,10 @@ async function populateVolunteeringOpportunitiesUI(eventHost) {
  * eventHost is the current user, add the edit link for each opportunity.
  * @param {Object} opportunities
  * @param {string} eventHost email of the host of the event
+ * @param {boolean} isHost
  */
 async function showVolunteeringOpportunities(
-    opportunities, eventHost) {
-  console.log('showVolunteerOpportunities');
-  console.log(opportunities);
+    opportunities, eventHost, isHost) {
   for (const key in opportunities) {
     if (opportunities.hasOwnProperty(key)) {
       const volunteers =
@@ -77,7 +77,7 @@ async function showVolunteeringOpportunities(
               opportunities[key].name,
               opportunities[key].numSpotsLeft,
               opportunities[key].requiredSkills,
-              volunteers, eventHost));
+              volunteers, eventHost, isHost));
     }
   }
 }
@@ -93,17 +93,20 @@ async function showVolunteeringOpportunities(
  * @param {string[]} requiredSkills skills for opportunity
  * @param {string} volunteers volunteers for opportunity
  * @param {string} eventHost email of the host of the event
+ * @param {boolean} isHost
  * @return {string}
  */
 function getListItemForOpportunity(
     opportunityId, name, numSpotsLeft, requiredSkills,
-    volunteers, eventHost) {
-  console.log('getListItemForOpportunity');
+    volunteers, eventHost, isHost) {
   requiredSkillsText =
       requiredSkills.length ? requiredSkills.toString() : 'None';
   volunteersText =
       volunteers.length ? volunteers.toString() : 'None';
-  let editLink = getLinkForOpportunity(opportunityId);
+  let editLink = '';
+  if (isHost) {
+    editLink = getLinkForOpportunity(opportunityId);
+  }
   return `<li class="list-group-item">
           <p class="card-text">Volunteer Name: ${name}</p>
            <p class="card-text">Volunteer Spots Left: ${numSpotsLeft}</p>
