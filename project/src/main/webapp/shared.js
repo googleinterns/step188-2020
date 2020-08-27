@@ -312,14 +312,17 @@ function buildVolunteers(opportunities) {
 /** Creates a button label for each provided interest or skill */
 function buildAsLabels(querySelector, labels, className) {
   for (const label of labels) {
+    if (label === "") {
+      continue;
+    }
     const newLabelButton = document.createElement('button');
     newLabelButton.classList.add(`btn-${className}`);
     newLabelButton.classList.add('btn');
     newLabelButton.disabled = true;
     newLabelButton.innerHTML = label;
     document
-        .querySelector(querySelector)
-        .appendChild(newLabelButton);
+      .querySelector(querySelector)
+      .appendChild(newLabelButton);
   }
 }
 
