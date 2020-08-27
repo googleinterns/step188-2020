@@ -11,8 +11,6 @@ html {
   display: inline-block !important;
   flex-grow: 1;
   margin: 20px 0 0 20px;
-  /* width: 15% !important; */
-  /* width: calc(100% * (1 / 4) - 10px - 1px); */
 }
 
 .card-columns {
