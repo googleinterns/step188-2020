@@ -22,14 +22,17 @@ import org.junit.runners.JUnit4;
 /** Tests the ranking algorithm for event discovery */
 @RunWith(JUnit4.class)
 public final class EventRankerTest {
-  private static final String CONSERVATION = "conservation";
-  private static final String FOOD = "food";
-  private static final String MUSIC = "music";
-  private static final String SEWING = "sewing";
+  private static final String CONSERVATION = "Conservation";
+  private static final String FOOD = "Food";
+  private static final String CLASSICAL_MUSIC = "Classical Music";
+  private static final String SEWING = "Sewing";
+  private static final String SIMILAR_MUSIC_1 = "Pop Music";
+  private static final String SIMILAR_MUSIC_2 = "Rock Music";
   private static final Set<String> INTERESTS_CONSERVATION_FOOD =
       new HashSet<>(Arrays.asList(CONSERVATION, FOOD));
-  private static final Set<String> SKILLS_MUSIC = new HashSet<>(Arrays.asList(MUSIC));
+  private static final Set<String> SKILLS_MUSIC = new HashSet<>(Arrays.asList(CLASSICAL_MUSIC));
   private static Event EVENT_CONSERVATION_FOOD_MUSIC;
+  private static Event EVENT_SIMILAR;
   private static Event EVENT_FOOD_MUSIC;
   private static Event EVENT_CONSERVATION_MUSIC;
   private static Event EVENT_FOOD;
@@ -61,7 +64,7 @@ public final class EventRankerTest {
             Arrays.asList(
                 EVENT_FOOD, EVENT_SEWING, EVENT_CONSERVATION_FOOD_MUSIC, EVENT_FOOD_MUSIC));
     List<Event> expectedEventRanking =
-        Arrays.asList(EVENT_CONSERVATION_FOOD_MUSIC, EVENT_FOOD_MUSIC, EVENT_FOOD, EVENT_SEWING);
+        Arrays.asList(EVENT_CONSERVATION_FOOD_MUSIC, EVENT_FOOD_MUSIC, EVENT_FOOD);
 
     List<Event> actualEventRanking =
         EventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, eventsToRank);
@@ -92,8 +95,7 @@ public final class EventRankerTest {
             EVENT_CONSERVATION_FOOD_MUSIC,
             EVENT_TIED_EARLIER,
             EVENT_TIED_LATER,
-            EVENT_FOOD,
-            EVENT_SEWING);
+            EVENT_FOOD);
 
     List<Event> actualEventRanking =
         EventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, eventsToRank);
@@ -103,9 +105,9 @@ public final class EventRankerTest {
 
   @Test
   public void testRankingNoInterestsOrSkillsRankByDate() throws IOException {
-    Event EVENT_ONE_YEAR_FUTURE = advanceEventByYears(TestUtils.newEvent(), 1);
-    Event EVENT_TWO_YEARS_FUTURE = advanceEventByYears(TestUtils.newEvent(), 2);
-    Event EVENT_THREE_YEARS_FUTURE = advanceEventByYears(TestUtils.newEvent(), 3);
+    Event EVENT_ONE_YEAR_FUTURE = advanceEventByYears(EVENT_CONSERVATION_FOOD_MUSIC, 1);
+    Event EVENT_TWO_YEARS_FUTURE = advanceEventByYears(EVENT_CONSERVATION_FOOD_MUSIC, 2);
+    Event EVENT_THREE_YEARS_FUTURE = advanceEventByYears(EVENT_CONSERVATION_FOOD_MUSIC, 3);
     Set<Event> eventsToRank =
         new HashSet<>(
             Arrays.asList(
@@ -119,8 +121,28 @@ public final class EventRankerTest {
             EVENT_THREE_YEARS_FUTURE);
     
     List<Event> actualEventRanking =
-        EventRanker.rankEvents(USER_NO_INTERESTS_OR_SKILLS, eventsToRank);
+        EventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, eventsToRank);
     
+    Assert.assertEquals(expectedEventRanking, actualEventRanking);
+  }
+
+  @Test
+  public void testRankingBothDirectAndSimilar() throws IOException {
+    Set<Event> eventsToRank =
+          new HashSet<>(
+              Arrays.asList(
+                  EVENT_SIMILAR,
+                  EVENT_CONSERVATION_FOOD_MUSIC,
+                  EVENT_FOOD_MUSIC));
+    List<Event> expectedEventRanking =
+        Arrays.asList(
+            EVENT_CONSERVATION_FOOD_MUSIC,
+            EVENT_FOOD_MUSIC,
+            EVENT_SIMILAR);
+
+    List<Event> actualEventRanking =
+        EventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, eventsToRank);
+
     Assert.assertEquals(expectedEventRanking, actualEventRanking);
   }
 
@@ -138,26 +160,33 @@ public final class EventRankerTest {
 
   private static void setUpEventsAndUsers() {
     int currentYear = new java.util.Date().getYear();
+    USER = TestUtils.newUser();
+    USER_NO_INTERESTS_OR_SKILLS = new User.Builder(NAME, EMAIL).build();
     USER_CONSERVATION_FOOD_MUSIC =
         new User.Builder(NAME, EMAIL)
             .setInterests(INTERESTS_CONSERVATION_FOOD)
             .setSkills(SKILLS_MUSIC)
             .build();
+    EVENT_SIMILAR = 
+        TestUtils.newEvent().toBuilder()
+            .setHost(USER_CONSERVATION_FOOD_MUSIC)
+            .setLabels(new HashSet<>(Arrays.asList(SIMILAR_MUSIC_1, SIMILAR_MUSIC_2)))
+            .build();
     EVENT_CONSERVATION_FOOD_MUSIC =
         TestUtils.newEvent().toBuilder()
             .setHost(USER_CONSERVATION_FOOD_MUSIC)
-            .setLabels(new HashSet<>(Arrays.asList(CONSERVATION, FOOD, MUSIC)))
+            .setLabels(new HashSet<>(Arrays.asList(CONSERVATION, FOOD, CLASSICAL_MUSIC)))
             .build();
     EVENT_FOOD_MUSIC =
         TestUtils.newEvent().toBuilder()
             .setHost(USER_CONSERVATION_FOOD_MUSIC)
-            .setLabels(new HashSet<>(Arrays.asList(FOOD, MUSIC)))
+            .setLabels(new HashSet<>(Arrays.asList(FOOD, CLASSICAL_MUSIC)))
             .setDate(Date.fromYearMonthDay(currentYear + 1, 1, 1))
             .build();
     EVENT_CONSERVATION_MUSIC =
         TestUtils.newEvent().toBuilder()
             .setHost(USER_CONSERVATION_FOOD_MUSIC)
-            .setLabels(new HashSet<>(Arrays.asList(CONSERVATION, MUSIC)))
+            .setLabels(new HashSet<>(Arrays.asList(CONSERVATION, CLASSICAL_MUSIC)))
             .setDate(Date.fromYearMonthDay(currentYear + 2, 1, 1))
             .build();
     EVENT_FOOD =
