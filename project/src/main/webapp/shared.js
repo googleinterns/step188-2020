@@ -246,10 +246,10 @@ async function populateEventContainerWithoutButtons(event, containerId, lod) {
 }
 
 function populateAttendees(event) {
-	$('#all-attendees').append(`<a class="dropdown-item text-center">${event.attendees.length} attendees:</a>`);
-	for (const attendee of event.attendees) {
-		$('#all-attendees').append(`<a class="dropdown-item">${attendee.name}</a>`);
-	}
+  $('#all-attendees').append(`<a class="dropdown-item text-center">${event.attendees.length} attendees:</a>`);
+  for (const attendee of event.attendees) {
+    $('#all-attendees').append(`<a class="dropdown-item">${attendee.name}</a>`);
+  }
 }
 
 async function populateEventContainer(event, containerId, lod) {
