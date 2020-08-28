@@ -35,15 +35,15 @@ public class GetLabelCategories {
   private static final int FIRST_SUBCATEGORY_INDEX = 2;
 
   /** 
-   * Gets a list of two sets that hold how events are related based on labels
+   * Gets a pair of two sets that hold how events are related based on labels
    * @param relevantEvents All events on discovery page
    * @param user Current logged in user
-   * @return directMatchEvents as List[0], similarLabels as List[1]
+   * @return directMatchEvents as Pair[0], similarLabels as Pair[1]
    */
-  public ArrayList<Set<Pair<Event, Integer>>> getEventRelevancy(Set<Event> relevantEvents, User user) {
+  public Pair<Set<Pair<Event, Integer>>, Set<Pair<Event, Integer>>> getEventRelevancy(Set<Event> relevantEvents, User user) {
     Set<Pair<Event, Integer>> directMatchEvents = new HashSet<Pair<Event, Integer>>();
     Set<Pair<Event, Integer>> similarLabelEvents = new HashSet<Pair<Event, Integer>>(); 
-    Set<String> interestsAndSkills = user.getInterests();
+    Set<String> interestsAndSkills = new HashSet<>(user.getInterests());
     interestsAndSkills.addAll(user.getSkills());
 
     // Find matches between user labels and event labels
@@ -56,10 +56,7 @@ public class GetLabelCategories {
       checkSimilarMatches(similarLabelEvents, event, interestsAndSkills, labelsAndSkills );
     }
 
-    ArrayList<Set<Pair<Event, Integer>>> directAndSimilarMatches = new ArrayList<Set<Pair<Event, Integer>>>();
-    directAndSimilarMatches.add(directMatchEvents);
-    directAndSimilarMatches.add(similarLabelEvents);
-    return directAndSimilarMatches;
+    return new Pair<>(directMatchEvents, similarLabelEvents);
   }
 
   /** If direct matches exist, add to directMatchEvents */

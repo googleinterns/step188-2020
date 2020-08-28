@@ -25,11 +25,11 @@ public final class GetLabelCategoriesTest {
     Event event = TestUtils.newEventNoLabels().toBuilder().setLabels(EVENT_LABELS).build();
     User user = TestUtils.newUserNoInterestSkills();
 
-    ArrayList<Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
+    Pair<Set<Pair<Event, Integer>>, Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
       new HashSet<>(Arrays.asList(event)), user);
 
-    Assert.assertEquals(new HashSet<>(), /*direct=*/ matches.get(0));
-    Assert.assertEquals(new HashSet<>(), /*similar=*/ matches.get(1));
+    Assert.assertEquals(new HashSet<>(), /*direct=*/ matches.getValue0());
+    Assert.assertEquals(new HashSet<>(), /*similar=*/ matches.getValue1());
   }
 
   @Test
@@ -40,11 +40,11 @@ public final class GetLabelCategoriesTest {
     User user = TestUtils.newUserNoInterestSkills().toBuilder()
       .setInterests(USER_INTERESTS).build();
 
-    ArrayList<Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
+    Pair<Set<Pair<Event, Integer>>, Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
       new HashSet<>(Arrays.asList(event)), user);
 
-    Assert.assertEquals(new HashSet<>(), /*direct=*/ matches.get(0));
-    Assert.assertEquals(new HashSet<>(), /*similar=*/ matches.get(1));
+    Assert.assertEquals(new HashSet<>(), /*direct=*/ matches.getValue0());
+    Assert.assertEquals(new HashSet<>(), /*similar=*/ matches.getValue1());
   }
 
   @Test
@@ -59,11 +59,11 @@ public final class GetLabelCategoriesTest {
     Set<Pair<Event, Integer>> expectedDirectMatches = 
       new HashSet<>(Arrays.asList(new Pair<Event, Integer>(event, /*common labels=*/ 2)));
 
-    ArrayList<Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
+    Pair<Set<Pair<Event, Integer>>, Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
       new HashSet<>(Arrays.asList(event)), user);
 
-    Assert.assertEquals(expectedDirectMatches, /*direct=*/ matches.get(0));
-    Assert.assertEquals(new HashSet<>(), /*similar=*/ matches.get(1));
+    Assert.assertEquals(expectedDirectMatches, /*direct=*/ matches.getValue0());
+    Assert.assertEquals(new HashSet<>(), /*similar=*/ matches.getValue1());
   }
 
   @Test
@@ -79,11 +79,11 @@ public final class GetLabelCategoriesTest {
     Set<Pair<Event, Integer>> expectedSimilarMatches = 
       new HashSet<>(Arrays.asList(new Pair<Event, Integer>(event, /*common labels=*/ 1)));
 
-    ArrayList<Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
+    Pair<Set<Pair<Event, Integer>>, Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
       new HashSet<>(Arrays.asList(event, event2)), user);
 
-    Assert.assertEquals(new HashSet<>(), /*direct=*/ matches.get(0));
-    Assert.assertEquals(expectedSimilarMatches, /*similar=*/ matches.get(1));
+    Assert.assertEquals(new HashSet<>(), /*direct=*/ matches.getValue0());
+    Assert.assertEquals(expectedSimilarMatches, /*similar=*/ matches.getValue1());
   }
 
   @Test
@@ -99,11 +99,11 @@ public final class GetLabelCategoriesTest {
     Set<Pair<Event, Integer>> expectedSimilarMatches = 
       new HashSet<>(Arrays.asList(new Pair<Event, Integer>(event, /*common labels=*/ 1)));
 
-    ArrayList<Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
+    Pair<Set<Pair<Event, Integer>>, Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
       new HashSet<>(Arrays.asList(event, event2)), user);
 
-    Assert.assertEquals(new HashSet<>(), /*direct=*/ matches.get(0));
-    Assert.assertEquals(expectedSimilarMatches, /*similar=*/ matches.get(1));
+    Assert.assertEquals(new HashSet<>(), /*direct=*/ matches.getValue0());
+    Assert.assertEquals(expectedSimilarMatches, /*similar=*/ matches.getValue1());
   }
 
   @Test
@@ -121,11 +121,11 @@ public final class GetLabelCategoriesTest {
     Set<Pair<Event, Integer>> expectedSimilarMatches = 
       new HashSet<>(Arrays.asList(new Pair<Event, Integer>(event, /*common labels=*/ 1)));
 
-    ArrayList<Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
+    Pair<Set<Pair<Event, Integer>>, Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
       new HashSet<>(Arrays.asList(event, event2)), user);
 
-    Assert.assertEquals(new HashSet<>(), /*direct=*/ matches.get(0));
-    Assert.assertEquals(expectedSimilarMatches, /*similar=*/ matches.get(1));
+    Assert.assertEquals(new HashSet<>(), /*direct=*/ matches.getValue0());
+    Assert.assertEquals(expectedSimilarMatches, /*similar=*/ matches.getValue1());
   }
 
   @Test
@@ -155,10 +155,10 @@ public final class GetLabelCategoriesTest {
       new Pair<Event, Integer>(event2, /*common labels=*/ 2),
       new Pair<Event, Integer>(event3, /*common labels=*/ 1)));
 
-    ArrayList<Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
+    Pair<Set<Pair<Event, Integer>>, Set<Pair<Event, Integer>>> matches = labelCategories.getEventRelevancy(
       new HashSet<>(Arrays.asList(event, event2, event3, event4)), user);
 
-    Assert.assertEquals(expectedDirectMatches, /*direct=*/ matches.get(0));
-    Assert.assertEquals(expectedSimilarMatches, /*similar=*/ matches.get(1));
+    Assert.assertEquals(expectedDirectMatches, /*direct=*/ matches.getValue0());
+    Assert.assertEquals(expectedSimilarMatches, /*similar=*/ matches.getValue1());
   }
 }
