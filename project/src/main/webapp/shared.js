@@ -240,7 +240,16 @@ async function populateEventContainerWithoutButtons(event, containerId, lod) {
   $('#' + eventCardId + ' div #event-register').hide();
   if (lod === 5) {
     $(`#${eventCardId}`).attr('style', 'width: 100% !important');
+    $(".dropdown-toggle").dropdown();
+    populateAttendees(event);
   }
+}
+
+function populateAttendees(event) {
+	$('#all-attendees').append(`<a class="dropdown-item text-center">${event.attendees.length} attendees:</a>`);
+	for (const attendee of event.attendees) {
+		$('#all-attendees').append(`<a class="dropdown-item">${attendee.name}</a>`);
+	}
 }
 
 async function populateEventContainer(event, containerId, lod) {
