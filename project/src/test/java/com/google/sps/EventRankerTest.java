@@ -64,7 +64,7 @@ public final class EventRankerTest {
             Arrays.asList(
                 EVENT_FOOD, EVENT_SEWING, EVENT_CONSERVATION_FOOD_MUSIC, EVENT_FOOD_MUSIC));
     List<Event> expectedEventRanking =
-        Arrays.asList(EVENT_CONSERVATION_FOOD_MUSIC, EVENT_FOOD_MUSIC, EVENT_FOOD);
+        Arrays.asList(EVENT_CONSERVATION_FOOD_MUSIC, EVENT_FOOD_MUSIC, EVENT_FOOD, EVENT_SEWING);
 
     List<Event> actualEventRanking =
         EventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, eventsToRank);
@@ -95,7 +95,8 @@ public final class EventRankerTest {
             EVENT_CONSERVATION_FOOD_MUSIC,
             EVENT_TIED_EARLIER,
             EVENT_TIED_LATER,
-            EVENT_FOOD);
+            EVENT_FOOD,
+            EVENT_SEWING);
 
     List<Event> actualEventRanking =
         EventRanker.rankEvents(USER_CONSERVATION_FOOD_MUSIC, eventsToRank);
