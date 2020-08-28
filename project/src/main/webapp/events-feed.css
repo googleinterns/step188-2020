@@ -8,10 +8,18 @@ html {
 }
 
 .card {
-  display: inline-block !important;
+  display: inline-block;
   flex-grow: 1;
   margin-bottom: 25px;
-  width: 100% !important;
+  width: 100%;
+}
+
+
+#search-container .card {
+  display: inline-block !important;
+  flex-grow: 0;
+  margin: 20px 0 0 20px;
+  width: 25rem;
 }
 
 .btn {
@@ -55,10 +63,6 @@ html {
 
 #search-container {
   margin: 50px 100px !important;
-}
-
-#search-container .card {
-  width: 20% !important;
 }
 
 .column {
