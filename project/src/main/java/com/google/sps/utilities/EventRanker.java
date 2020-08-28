@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import org.javatuples.Pair;
 
 public class EventRanker {
+  private static final Double DIRECT_WEIGHT = 1.0;
   private static final Double SIMILAR_WEIGHT = 0.7;
   private static final Double NO_MATCH_WEIGHT = 0.0;
 
@@ -47,29 +48,31 @@ public class EventRanker {
   private static Map<Event, Double> getEventScoreMap(User user, Set<Event> events) {
     Pair<Set<Pair<Event, Integer>>, Set<Pair<Event, Integer>>> allEvents =
         new GetLabelCategories().getEventRelevancy(events, user);
-    Set<Pair<Event, Integer>> directEventPairs = allEvents.getValue0();
-    Set<Pair<Event, Integer>> similarEventPairs = allEvents.getValue1();
-
-    Set<Event> directEvents = new HashSet<>();
-    Set<Event> similarEvents = new HashSet<>();
-    Set<Event> noMatchEvents = new HashSet<>(events);
-
     Map<Event, Double> eventScoreMap = new HashMap<>();
-    for (Pair<Event, Integer> eventRelevancyPair : directEventPairs) {
-      Event directEvent = eventRelevancyPair.getValue0();
-      eventScoreMap.put(directEvent, new Double(eventRelevancyPair.getValue1()));
-      directEvents.add(directEvent);
-    }
-    for (Pair<Event, Integer> eventRelevancyPair : similarEventPairs) {
-      Event similarEvent = eventRelevancyPair.getValue0();
-      eventScoreMap.put(eventRelevancyPair.getValue0(), SIMILAR_WEIGHT * eventRelevancyPair.getValue1());
-      similarEvents.add(similarEvent);
-    }
-    noMatchEvents.removeAll(directEvents);
-    noMatchEvents.removeAll(similarEvents);
-    for (Event event : noMatchEvents) {
+    Set<Event> directEvents = processEventMatches(eventScoreMap, allEvents.getValue0(), DIRECT_WEIGHT);
+    Set<Event> similarEvents = processEventMatches(eventScoreMap, allEvents.getValue1(), SIMILAR_WEIGHT);
+    for (Event event : getNoMatchEvents(events, directEvents, similarEvents)) {
       eventScoreMap.put(event, NO_MATCH_WEIGHT);
     }
+    System.out.println(eventScoreMap.size());
     return eventScoreMap;
+  }
+
+  private static Set<Event> processEventMatches(
+      Map<Event, Double> eventScoreMap, Set<Pair<Event, Integer>> eventPairs, Double weight) {
+    Set<Event> events = new HashSet<>();
+    for (Pair<Event, Integer> eventRelevancyPair : eventPairs) {
+      Event event = eventRelevancyPair.getValue0();
+      eventScoreMap.put(event, weight * eventRelevancyPair.getValue1());
+      events.add(event);
+    }
+    return events;
+  }
+
+  private static Set<Event> getNoMatchEvents(Set<Event> events, Set<Event> directEvents, Set<Event> similarEvents) {
+    Set<Event> noMatchEvents = new HashSet<>(events);
+    noMatchEvents.removeAll(directEvents);
+    noMatchEvents.removeAll(similarEvents);
+    return noMatchEvents;
   }
 }
