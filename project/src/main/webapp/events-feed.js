@@ -60,7 +60,7 @@ function populateRankedEvents(eventLevels) {
 }
 
 /**
- * Makes the masonry grid for events-feed ordered rougly from left to right
+ * Makes the masonry grid for events-feed ordered roughly from left to right
  * instead of top to bottom
  */
 function transposeEventLevels(eventLevels) {
