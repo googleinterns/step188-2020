@@ -20,4 +20,7 @@ async function getEventDetails() {
     `${data['date'].month}/${data['date'].dayOfMonth}/${data['date'].year}`;
   document.getElementById('time').value = data['time'];
   document.getElementById('location').value = data['location'];
+  const eventEditForm = document.getElementById('create-event');
+  eventEditForm.action =
+      `/create-event?eventId=${eventId}`;
 }
