@@ -96,11 +96,12 @@ public class EventCreationServlet extends HttpServlet {
     Event event = new Event.Builder(name, description, labels, location, date, time, host).build();
     if (eventId == null) {
       SpannerTasks.insertorUpdateEvent(event);
-      searchStore.addEventToIndex(event.getId(), name, description);
     } else {
       event = event.toBuilder().setId(eventId).build();
       SpannerTasks.insertorUpdateEvent(event);
+      SpannerTasks.deleteIndexEntriesByEventId(eventId);
     }
+    searchStore.addEventToIndex(event.getId(), name, description);
 
     String redirectUrl = "/event-details.html?eventId=" + event.getId();
     response.sendRedirect(redirectUrl);
