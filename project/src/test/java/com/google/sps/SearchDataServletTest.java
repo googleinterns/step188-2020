@@ -307,26 +307,24 @@ public class SearchDataServletTest {
     // Before Update             No                  No
     // After Update              No                  Yes
     
-    // Add event with games in description.
+    // Insert event with growers in description using eventCreationServlet instance
     setRequiredRequestParameters(postRequest);
     Mockito.when(postRequest.getParameter(PARAMETER_NAME)).thenReturn(NAME_WITHOUT_GROWERS);
     Mockito.when(postRequest.getParameter(PARAMETER_DESCRIPTION))
         .thenReturn(DESCRIPTION_WITHOUT_GROWERS);
-
     Mockito.when(mockKeywordHelper.getKeywords())
         .thenReturn(
             // Keywords for insert
             KEYWORDS_NAME_WITHOUT_GROWERS,
             KEYWORDS_DESCRIPTION_WITHOUT_GROWERS);
-
-    // Add an event using eventCreationServlet instance
     eventCreationServlet.doPost(postRequest, postResponse);
+
     // Assert the returned event is the same as the inserted event
     Event returnedEvent = new Gson().fromJson(postStringWriter.toString().trim(), Event.class);
     Assert.assertEquals(returnedEvent.getName(), NAME_WITHOUT_GROWERS);
     Assert.assertEquals(returnedEvent.getDescription(), DESCRIPTION_WITHOUT_GROWERS);
 
-    // Do a second POST request using eventCreationServlet to update the inserted event with description having growers
+    // Update the inserted event with description having growers using eventCreationServlet instance
     setRequiredRequestParameters(secondPostRequest);
     Mockito.when(secondPostRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(returnedEvent.getId());
     Mockito.when(secondPostRequest.getParameter(PARAMETER_NAME))
@@ -339,10 +337,10 @@ public class SearchDataServletTest {
             KEYWORDS_NAME_WITHOUT_GROWERS,
             KEYWORDS_DESCRIPTION_WITH_GROWERS);
     eventCreationServlet.doPost(secondPostRequest, secondPostResponse);
+
+    // Assert that the returned event is the same as the updated event
     Event secondReturnedEvent =
         new Gson().fromJson(secondPostStringWriter.toString().trim(), Event.class);
-
-    // Assert that the returned event is the same as the second inserted event
     Assert.assertEquals(secondReturnedEvent.getName(), NAME_WITHOUT_GROWERS);
     Assert.assertEquals(
         secondReturnedEvent.getDescription(), DESCRIPTION_WITH_GROWERS);
@@ -352,14 +350,14 @@ public class SearchDataServletTest {
     searchDataServlet.doGet(getRequest, getResponse);
     Event[] actualResults = new Gson().fromJson(getStringWriter.toString().trim(), Event[].class);
     
-    // Assert that the search result for the event with games is returned
+    // Assert that the search result for the event with growers in description is returned
     Assert.assertEquals(NAME_WITHOUT_GROWERS, actualResults[0].getName());
     Assert.assertEquals(DESCRIPTION_WITH_GROWERS, actualResults[0].getDescription());
   }
 
   /**
    * Adds event with growers keyword in description using EventCreationServlet instance, updates event to
-   * remove growers keyword in description, checks that a search for keyword growers returns noResults.
+   * remove growers keyword in description, checks that a search for keyword growers returns no results.
    */
   @Test
   public void addEventWithKeyword_updateEventToRemoveKeyword_searchForKeyword_noResultsReturned()
@@ -401,7 +399,7 @@ public class SearchDataServletTest {
     Event secondReturnedEvent =
         new Gson().fromJson(secondPostStringWriter.toString().trim(), Event.class);
 
-    // Assert that the returned event is the same as the second inserted event
+    // Assert that the returned event is the same as the updated event
     Assert.assertEquals(secondReturnedEvent.getName(), NAME_WITHOUT_GROWERS);
     Assert.assertEquals(
         secondReturnedEvent.getDescription(), DESCRIPTION_WITHOUT_GROWERS);
@@ -411,7 +409,7 @@ public class SearchDataServletTest {
     searchDataServlet.doGet(getRequest, getResponse);
     Event[] actualResults = new Gson().fromJson(getStringWriter.toString().trim(), Event[].class);
     
-    // Assert that the search result for the event with games is returned
+    // Assert that no search results are returned
     Assert.assertEquals(
         CommonUtils.convertToJson(Arrays.asList()), getStringWriter.toString().trim());
   }
