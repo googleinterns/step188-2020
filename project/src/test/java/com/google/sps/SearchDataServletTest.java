@@ -414,7 +414,6 @@ public class SearchDataServletTest {
         CommonUtils.convertToJson(Arrays.asList()), getStringWriter.toString().trim());
   }
 
-
   @Test
   public void retrieveResultsKeywordNotSpecified_errorResponse() throws IOException {
     Mockito.when(getRequest.getParameter(PARAMETER_KEYWORD)).thenReturn(null);
