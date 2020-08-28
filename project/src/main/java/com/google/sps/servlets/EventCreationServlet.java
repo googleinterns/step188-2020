@@ -74,6 +74,7 @@ public class EventCreationServlet extends HttpServlet {
   /** Posts newly created event to database with NLP suggested labels and redirects to page with created event details*/
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String eventId = request.getParameter("eventId");
     String name = request.getParameter("name");
     String[] parsedDate = request.getParameter("date").split("-");
     Date date =
@@ -93,10 +94,13 @@ public class EventCreationServlet extends HttpServlet {
 
     User host = SpannerTasks.getLoggedInUser().get();
     Event event = new Event.Builder(name, description, labels, location, date, time, host).build();
-    SpannerTasks.insertorUpdateEvent(event);
-
-    // Add event to search index
-    searchStore.addEventToIndex(event.getId(), name, description);
+    if (eventId == null) {
+      SpannerTasks.insertorUpdateEvent(event);
+      searchStore.addEventToIndex(event.getId(), name, description);
+    } else {
+      event = event.toBuilder().setId(eventId).build();
+      SpannerTasks.insertorUpdateEvent(event);
+    }
 
     String redirectUrl = "/event-details.html?eventId=" + event.getId();
     response.sendRedirect(redirectUrl);
