@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 import org.javatuples.Pair;
 
 public class EventRanker {
+  private static Double SIMILAR_WEIGHT = 0.7;
+
   /**
    * Sorts events based on each event's score. Breaks ties with the event's date; the more recent
    * event will be ranked higher. Makes the assumption that all events are NOT in the past.
@@ -42,17 +44,17 @@ public class EventRanker {
   }
 
   private static Map<Event, Double> getEventScoreMap(User user, Set<Event> events) {
-    List<Set<Pair<Event, Integer>>> allEvents =
+    Pair<Set<Pair<Event, Integer>>, Set<Pair<Event, Integer>>> allEvents =
         new GetLabelCategories().getEventRelevancy(events, user);
-    Set<Pair<Event, Integer>> directEventPairs = allEvents.get(0);
-    Set<Pair<Event, Integer>> similarEventPairs = allEvents.get(1);
+    Set<Pair<Event, Integer>> directEventPairs = allEvents.getValue0();
+    Set<Pair<Event, Integer>> similarEventPairs = allEvents.getValue1();
 
     Map<Event, Double> eventScoreMap = new HashMap<>();
     for (Pair<Event, Integer> eventRelevancyPair : directEventPairs) {
       eventScoreMap.put(eventRelevancyPair.getValue0(), new Double(eventRelevancyPair.getValue1()));
     }
     for (Pair<Event, Integer> eventRelevancyPair : similarEventPairs) {
-      eventScoreMap.put(eventRelevancyPair.getValue0(), 0.7 * eventRelevancyPair.getValue1());
+      eventScoreMap.put(eventRelevancyPair.getValue0(), SIMILAR_WEIGHT * eventRelevancyPair.getValue1());
     }
     return eventScoreMap;
   }
