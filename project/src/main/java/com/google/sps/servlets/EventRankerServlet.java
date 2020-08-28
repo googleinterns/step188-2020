@@ -35,7 +35,7 @@ public class EventRankerServlet extends HttpServlet {
       ArrayList<String> eventIds = new ArrayList<>();
       String[] eventIdsParameter = (request.getParameter(EVENTS_KEY).split(","));
       for (String event : eventIdsParameter) {
-          eventIds.add(event.replace("\"", "").replace("[", "").replace("]", ""));
+          eventIds.add(event.replaceAll("\"|\\[|\\]", ""));
       }
       user = userOptional.get();
       List<Event> rankedRelevantEvents = EventRanker.rankEvents(user, SpannerTasks.getEventsFromIds(eventIds));
