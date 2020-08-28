@@ -50,10 +50,26 @@ async function getAllEvents() {
 }
 
 function populateRankedEvents(eventLevels) {
-  for (const eventMap of eventLevels) {
-    populateEventContainer(eventMap['event'], 'event-container', eventMap['lod']);
-    getInterestFilters(eventMap['event']);
+  const transposedEventLevels = transposeEventLevels(eventLevels);
+  for (let i = 0; i < 4; i++) {
+    for (const eventMap of transposedEventLevels[i]) {
+      populateEventContainer(eventMap['event'], `masonry-col-${i + 1}`, eventMap['lod']);
+      getInterestFilters(eventMap['event']);
+    }
   }
+}
+
+/**
+ * Makes the masonry grid for events-feed ordered roughly from left to right
+ * instead of top to bottom
+ */
+function transposeEventLevels(eventLevels) {
+  const numberOfColumns = 4;
+  let transposed = [[], [], [], []];
+  for (let i = 0; i < eventLevels.length; i++) {
+    transposed[i % numberOfColumns].push(eventLevels[i]);
+  }
+  return transposed;
 }
 
 /**
