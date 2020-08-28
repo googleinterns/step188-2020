@@ -83,7 +83,7 @@ public final class EventRankerServletTest {
     for (Event event : events) {
       SpannerTasks.insertorUpdateEvent(event);
     }
-    List<Event> expectedEvents = Arrays.asList(EVENT_FOOD);
+    List<Event> expectedEvents = Arrays.asList(EVENT_FOOD, EVENT_SEWING);
 
     new EventRankerServlet().doGet(request, response);
 
