@@ -7,7 +7,7 @@ html {
   font-family: "Public Sans", sans-serif;
 }
 
-.card {
+#event-container .card {
   display: inline-block;
   flex-grow: 1;
   margin-bottom: 25px;
@@ -16,7 +16,7 @@ html {
 
 
 #search-container .card {
-  display: inline-block !important;
+  display: inline-block;
   flex-grow: 0;
   margin: 20px 0 0 20px;
   width: 25rem;
