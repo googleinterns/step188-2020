@@ -74,7 +74,8 @@ async function showVolunteeringOpportunities(opportunities, eventHost, isHost) {
           await getVolunteersByOpportunityId(opportunities[key].opportunityId);
       $('#volunteering-opportunities .card .card-body')
           .append(getListItemForOpportunity(
-              opportunities[key].opportunityId, opportunities[key].name,
+              opportunities[key].opportunityId,
+              opportunities[key].name,
               opportunities[key].numSpotsLeft,
               opportunities[key].requiredSkills, volunteers, eventHost,
               isHost));
@@ -131,7 +132,7 @@ function getLinkForOpportunity(opportunityId) {
   const urlParams = new URLSearchParams(queryString);
   const eventId = urlParams.get('eventId');
   return `<a href="/update-volunteering-opportunity.html?opportunity-id=${
-      opportunityId}&event-id=${eventId}&eventId=${eventId}"
+      opportunityId}&event-id=${eventId}"
           id="logout-prompt"
           class="btn btn-outline-success my-2 my-sm-0"
           type="button"
@@ -175,12 +176,10 @@ async function getLoggedInUserIsHost(eventHost) {
 async function populateOpportunitiesDropdown(opportunities) {
   if (opportunities.length) {
     for (const key in opportunities) {
-      if (opportunities.hasOwnProperty(key)) {
-        if (opportunities[key].numSpotsLeft > 0) {
-          $('#opportunities-options')
-              .append(getOptionForOpportunity(
-                  opportunities[key].opportunityId, opportunities[key].name));
-        }
+      if (opportunities.hasOwnProperty(key) && opportunities[key].numSpotsLeft > 0) {
+        $('#opportunities-options')
+            .append(getOptionForOpportunity(
+                opportunities[key].opportunityId, opportunities[key].name));
       }
     }
   } else {

@@ -30,7 +30,11 @@ async function getLoginStatus() {
 function getEventId() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  return urlParams.get('eventId');
+  const eventId = urlParams.get('event-id');
+  if (!eventId) {
+    eventId = urlParams.get('eventId');
+  }
+  return eventId;
 }
 
 /**
@@ -282,9 +286,8 @@ function createRandomColorBlock(elementId) {
 
 /** Pick random color from Bootstrap defaults */
 function pickRandomColorClass() {
-  const colorClasses = [
-    'bg-primary', 'bg-success', 'bg-info', 'bg-warning', 'bg-danger'
-  ] return colorClasses[Math.floor(Math.random() * colorClasses.length)]
+  const colorClasses = ['bg-primary', 'bg-success', 'bg-info', 'bg-warning', 'bg-danger'];
+  return colorClasses[Math.floor(Math.random() * colorClasses.length)];
 }
 
 /** Adds a hyperlink to the registration button of event card */
