@@ -30,9 +30,9 @@ async function getLoginStatus() {
 function getEventId() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  const eventId = urlParams.get('event-id');
+  let eventId = urlParams.get('eventId');
   if (!eventId) {
-    eventId = urlParams.get('eventId');
+    eventId = urlParams.get('event-id');
   }
   return eventId;
 }
