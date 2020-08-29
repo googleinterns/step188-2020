@@ -105,7 +105,7 @@ function getListItemForOpportunity(
     isHost) {
   const volunteersText = volunteers.length ?
       volunteers.toString().replace(/,/g, ', ') :
-      'None';  // remove
+      'None';
   let editLink = '';
   if (isHost) {
     editLink = getLinkForOpportunity(opportunityId);
