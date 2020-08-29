@@ -134,11 +134,11 @@ public class SearchDataServletTest {
   private static final String PARAMETER_INTERESTS = "interests";
   private static final String HOST_NAME = "Bob Smith";
   private static final User HOST = new User.Builder(HOST_NAME, EMAIL).build();
-   private static final String NAME_WITHOUT_GROWERS =  "Wednesday Cesar Chavez Farmers' Market with Food Vendors";
+   private static final String NAME_WITHOUT_GROWERS =  "Wednesday Cesar Chavez Farmers' Market";
   private static final String DESCRIPTION_WITH_GROWERS =
       "Weekly farmers' market with certified growers and hot food vendors."
       + "Event hours are 10am to 1:30pm.";
- private static final String DESCRIPTION_WITHOUT_GROWERS =
+  private static final String DESCRIPTION_WITHOUT_GROWERS =
       "Weekly farmers' market with hot food vendors."
       + "Event hours are 10am to 1:30pm.";
   private static final ImmutableList<Keyword> KEYWORDS_NAME_WITHOUT_GROWERS =
@@ -302,7 +302,7 @@ public class SearchDataServletTest {
    */
   @Test
   public void addEventWithoutKeyword_updateEventWithKeyword_searchForKeywordInNewDescription_oneResultReturned()
-      throws IOException {
+      throws Exception {
     // Update                   | Name Has Growers | Description Has Growers
     // Before Update             No                  No
     // After Update              No                  Yes
@@ -326,7 +326,8 @@ public class SearchDataServletTest {
 
     // Update the inserted event with description having growers using eventCreationServlet instance
     setRequiredRequestParameters(secondPostRequest);
-    Mockito.when(secondPostRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(returnedEvent.getId());
+    Mockito.when(secondPostRequest.getParameter(PARAMETER_EVENT_ID))
+        .thenReturn(returnedEvent.getId());
     Mockito.when(secondPostRequest.getParameter(PARAMETER_NAME))
         .thenReturn(NAME_WITHOUT_GROWERS);
     Mockito.when(secondPostRequest.getParameter(PARAMETER_DESCRIPTION))
@@ -361,7 +362,7 @@ public class SearchDataServletTest {
    */
   @Test
   public void addEventWithKeyword_updateEventToRemoveKeyword_searchForKeyword_noResultsReturned()
-      throws IOException {
+      throws Exception {
     // Update                   | Name Has Growers | Description Has Growers
     // Before Update             No                  Yes
     // After Update              No                  No
@@ -374,8 +375,7 @@ public class SearchDataServletTest {
     Mockito.when(mockKeywordHelper.getKeywords())
         .thenReturn(
             // Keywords for insert
-            KEYWORDS_NAME_WITHOUT_GROWERS,
-            KEYWORDS_DESCRIPTION_WITH_GROWERS);
+            KEYWORDS_NAME_WITHOUT_GROWERS, KEYWORDS_DESCRIPTION_WITH_GROWERS);
     eventCreationServlet.doPost(postRequest, postResponse);
 
     // Assert the returned event is the same as the inserted event
@@ -383,14 +383,16 @@ public class SearchDataServletTest {
     Assert.assertEquals(returnedEvent.getName(), NAME_WITHOUT_GROWERS);
     Assert.assertEquals(returnedEvent.getDescription(), DESCRIPTION_WITH_GROWERS);
 
-    // Do a second POST request using eventCreationServlet instance to remove growers from description
+    // Do a second POST request using eventCreationServlet instance to remove growers from
+    // description
     setRequiredRequestParameters(secondPostRequest);
-    Mockito.when(secondPostRequest.getParameter(PARAMETER_EVENT_ID)).thenReturn(returnedEvent.getId());
+    Mockito.when(secondPostRequest.getParameter(PARAMETER_EVENT_ID))
+        .thenReturn(returnedEvent.getId());
     Mockito.when(secondPostRequest.getParameter(PARAMETER_NAME))
         .thenReturn(NAME_WITHOUT_GROWERS);
     Mockito.when(secondPostRequest.getParameter(PARAMETER_DESCRIPTION))
         .thenReturn(DESCRIPTION_WITHOUT_GROWERS);
-     Mockito.when(mockKeywordHelper.getKeywords())
+    Mockito.when(mockKeywordHelper.getKeywords())
         .thenReturn(
             // Keywords for update
             KEYWORDS_NAME_WITHOUT_GROWERS,
@@ -401,8 +403,7 @@ public class SearchDataServletTest {
 
     // Assert that the returned event is the same as the updated event
     Assert.assertEquals(secondReturnedEvent.getName(), NAME_WITHOUT_GROWERS);
-    Assert.assertEquals(
-        secondReturnedEvent.getDescription(), DESCRIPTION_WITHOUT_GROWERS);
+    Assert.assertEquals(secondReturnedEvent.getDescription(), DESCRIPTION_WITHOUT_GROWERS);
 
     // Get search results for growers using the searchDataServlet instance
     Mockito.when(getRequest.getParameter(PARAMETER_KEYWORD)).thenReturn(GROWERS);
