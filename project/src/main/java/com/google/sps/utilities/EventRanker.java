@@ -25,8 +25,7 @@ public class EventRanker {
    * event will be ranked higher. Makes the assumption that all events are NOT in the past.
    *
    * @param user The user for whom the events are ranked
-   * @param directMatches A {@link Set} of events that need to be ranked; direct event maches
-   * @param similarMatches A {@link Set} of events that need to be ranked; similar event matches
+   * @param events A {@link Set} of events that need to be ranked
    * @return A {@link List} of events that is ranked according to each element's score
    */
   public static List<Event> rankEvents(User user, Set<Event> events) {
@@ -54,7 +53,6 @@ public class EventRanker {
     for (Event event : getNoMatchEvents(events, directEvents, similarEvents)) {
       eventScoreMap.put(event, NO_MATCH_WEIGHT);
     }
-    System.out.println(eventScoreMap.size());
     return eventScoreMap;
   }
 
