@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="profile-edit.css" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css" />
+    <script src="https://kit.fontawesome.com/0d580893be.js" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js"></script>
@@ -31,80 +32,107 @@
   <body>
     <div id="header"></div>
     <br />
-    <h3>Edit Profile</h3>
+    <h3><i class="far fa-edit"></i> Edit Profile</h3>
     <br />
     <br />
-    <div class="row">
-      <form
-        id="image-form"
-        method="POST"
-        enctype="multipart/form-data"
-      >
-        <div class="col-sm-3">
-          <img id="profile-picture-main" />
-          <br /><br />
-          <div class="form-group">
-            <label for="profile-picture">Upload a new image: </label>
-            <br />
-            <div class="form-group">
-              <div class="input-group">
-                <input type="file" name="profile-picture" />
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-fluid" id="profile-picture-col">
+          <div class="card" id="profile-edit-card">
+            <div class="card-body">
+              <form
+                id="image-form"
+                method="POST"
+                enctype="multipart/form-data"
+              >
+                <img id="profile-picture-main" />
+                <br /><br />
+                <div id="profile-image-upload">
+                  <div class="form-group">
+                    <label for="profile-picture">Upload a new image: </label>
+                    <br />
+                    <div class="form-group">
+                      <div class="input-group">
+                        <input type="file" name="profile-picture" id="upload"/>
+                      </div>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Update profile picture</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col profile-desc">
+          <form
+            id="profile-form"
+            action="/profile-update"
+            method="POST"
+          >
+            <div class="row">
+              <div class="col-sm-4">
+                  <ul class="list-group" id="profile-edit-ul">
+                    <li class="list-group-item no-border">
+                      <div class="form-group form-inline">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" />
+                      </div>
+                    </li>
+                    <li class="list-group-item no-border">
+                      <label>E-mail: </label><span id="email"></span>
+                    </li>
+                  </ul>
+              </div>
+              <div class="col-sm-8">
+                <ul class="list-group" id="profile-edit-ul">
+                  <li class="list-group-item no-border">
+                    <div class="form-group">
+                      <div class="input-group" id="interests-div">
+                        <label for="interests">Interests</label>
+                        <input
+                          id="interests"
+                          name="interests"
+                          data-role="tagsinput"
+                          multiple
+                        ></input>
+                        <button 
+                          type="button"
+                          class="btn btn-light prefilled-pick"
+                          onclick="togglePrefilledInterests();"
+                        >+ Pick</button>
+                        <div id="prefilled-interests" class="overflow-auto prefilled-pool"></div>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item no-border">
+                    <div class="form-group">
+                      <div class="input-group" id="skills-div">
+                        <label for="skills">Skills</label>
+                        <input
+                          id="skills"
+                          name="skills"
+                          data-role="tagsinput"
+                          multiple
+                        ></input>
+                        <button 
+                          type="button"
+                          class="btn btn-light prefilled-pick"
+                          onclick="togglePrefilledSkills();"
+                        >+ Pick</button>
+                        <div id="prefilled-skills" class="overflow-auto prefilled-pool"></div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
               </div>
             </div>
-          </div>
-          <button type="submit" class="btn btn-primary">Update profile picture</button>
+            <br /><hr><br />
+            <div class="row" id="submit-button-div">
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+          </form>
         </div>
-      </form>
-      <form
-        class="col-8"
-        id="profile-form"
-        action="/profile-update"
-        method="POST"
-      >
-        <div class="col-sm-9">
-          <div class="form-group">
-            <div class="input-group">
-              <label for="name">Name</label>
-              <input type="text" class="form-control" id="name" name="name" />
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="input-group" id="interests-div">
-              <label for="interests">Interests</label>
-              <input
-                id="interests"
-                name="interests"
-                data-role="tagsinput"
-                multiple
-              ></input>
-              <button 
-                type="button"
-                class="btn btn-light prefilled-pick"
-                onclick="togglePrefilledInterests();"
-              >+ Pick</button>
-              <div id="prefilled-interests" class="overflow-auto prefilled-pool"></div>
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="input-group" id="skills-div">
-              <label for="skills">Skills</label>
-              <input
-                id="skills"
-                name="skills"
-                data-role="tagsinput"
-                multiple
-              ></input>
-              <button 
-                type="button"
-                class="btn btn-light prefilled-pick"
-                onclick="togglePrefilledSkills();"
-              >+ Pick</button>
-              <div id="prefilled-skills" class="overflow-auto prefilled-pool"></div>
-            </div>
-          </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
-      </form>
+      </div>
     </div>
   </body>
 </html>
