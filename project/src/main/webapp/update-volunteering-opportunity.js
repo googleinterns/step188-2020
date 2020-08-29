@@ -41,9 +41,7 @@ function populateExistingSkills(existingSkills) {
     removeExtraInputs('#skills');
   });
 
-  getTagsScriptWithCallback(function() {
-    for (const skill of existingSkills) {
-      $('#skills').tagsinput('add', skill);
-    }
-  });
+  for (const skill of existingSkills) {
+    $('#skills').tagsinput('add', skill);
+  }
 }
