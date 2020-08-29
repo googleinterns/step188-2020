@@ -23,7 +23,6 @@
 .bootstrap-tagsinput .tag {
   border-radius: 4px !important;
   color: #595959 !important;
-  margin-top: 5px !important;
   padding: 5px 8px !important;
 }
 
@@ -37,11 +36,6 @@
 
 .btn-group {
   margin: 5px 8px;
-}
-
-.card {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
 }
 
 .grid {
@@ -110,4 +104,12 @@ h3 {
   margin-left: 10px;
   margin-right: 10px;
   width: 80px;
+}
+
+.prefilled-pool {
+  padding-top: 20px;
+}
+
+.bootstrap-tagsinput .tag {
+  line-height: 35px;
 }
