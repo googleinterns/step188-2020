@@ -134,15 +134,15 @@ public class SearchDataServletTest {
   private static final String PARAMETER_INTERESTS = "interests";
   private static final String HOST_NAME = "Bob Smith";
   private static final User HOST = new User.Builder(HOST_NAME, EMAIL).build();
-   private static final String NAME_WITHOUT_GROWERS =  "Wednesday Cesar Chavez Farmers' Market";
+  private static final String NAME_WITHOUT_GROWERS =  "Wednesday Cesar Chavez Farmers' Market";
   private static final String DESCRIPTION_WITH_GROWERS =
       "Weekly farmers' market with certified growers and hot food vendors."
-      + "Event hours are 10am to 1:30pm.";
+          + "Event hours are 10am to 1:30pm.";
   private static final String DESCRIPTION_WITHOUT_GROWERS =
       "Weekly farmers' market with hot food vendors."
-      + "Event hours are 10am to 1:30pm.";
+          + "Event hours are 10am to 1:30pm.";
   private static final ImmutableList<Keyword> KEYWORDS_NAME_WITHOUT_GROWERS =
-    ImmutableList.of(new Keyword("farmers' market", 0.54f), new Keyword("cesar chavez", 0.26f));
+      ImmutableList.of(new Keyword("farmers' market", 0.54f), new Keyword("cesar chavez", 0.26f));
   private static final ImmutableList<Keyword> KEYWORDS_DESCRIPTION_WITH_GROWERS =
       ImmutableList.of(
           new Keyword("farmers' market", 0.36f),
@@ -301,8 +301,9 @@ public class SearchDataServletTest {
    * growers keyword in description, checks that a search for keyword growers returns one result.
    */
   @Test
-  public void addEventWithoutKeyword_updateEventWithKeyword_searchForKeywordInNewDescription_oneResultReturned()
-      throws Exception {
+  public void 
+      addEventWithoutKeyword_updateEventWithKeyword_searchForKeywordInNewDescription_oneResultReturned()
+          throws Exception {
     // Update                   | Name Has Growers | Description Has Growers
     // Before Update             No                  No
     // After Update              No                  Yes
@@ -335,16 +336,14 @@ public class SearchDataServletTest {
     Mockito.when(mockKeywordHelper.getKeywords())
         .thenReturn(
             // Keywords for update
-            KEYWORDS_NAME_WITHOUT_GROWERS,
-            KEYWORDS_DESCRIPTION_WITH_GROWERS);
+            KEYWORDS_NAME_WITHOUT_GROWERS, KEYWORDS_DESCRIPTION_WITH_GROWERS);
     eventCreationServlet.doPost(secondPostRequest, secondPostResponse);
 
     // Assert that the returned event is the same as the updated event
     Event secondReturnedEvent =
         new Gson().fromJson(secondPostStringWriter.toString().trim(), Event.class);
     Assert.assertEquals(secondReturnedEvent.getName(), NAME_WITHOUT_GROWERS);
-    Assert.assertEquals(
-        secondReturnedEvent.getDescription(), DESCRIPTION_WITH_GROWERS);
+    Assert.assertEquals(secondReturnedEvent.getDescription(), DESCRIPTION_WITH_GROWERS);
 
     // Get search results for growers using the searchDataServlet instance
     Mockito.when(getRequest.getParameter(PARAMETER_KEYWORD)).thenReturn(GROWERS);
@@ -388,15 +387,13 @@ public class SearchDataServletTest {
     setRequiredRequestParameters(secondPostRequest);
     Mockito.when(secondPostRequest.getParameter(PARAMETER_EVENT_ID))
         .thenReturn(returnedEvent.getId());
-    Mockito.when(secondPostRequest.getParameter(PARAMETER_NAME))
-        .thenReturn(NAME_WITHOUT_GROWERS);
+    Mockito.when(secondPostRequest.getParameter(PARAMETER_NAME)).thenReturn(NAME_WITHOUT_GROWERS);
     Mockito.when(secondPostRequest.getParameter(PARAMETER_DESCRIPTION))
         .thenReturn(DESCRIPTION_WITHOUT_GROWERS);
     Mockito.when(mockKeywordHelper.getKeywords())
         .thenReturn(
             // Keywords for update
-            KEYWORDS_NAME_WITHOUT_GROWERS,
-            KEYWORDS_DESCRIPTION_WITHOUT_GROWERS);
+            KEYWORDS_NAME_WITHOUT_GROWERS, KEYWORDS_DESCRIPTION_WITHOUT_GROWERS);
     eventCreationServlet.doPost(secondPostRequest, secondPostResponse);
     Event secondReturnedEvent =
         new Gson().fromJson(secondPostStringWriter.toString().trim(), Event.class);
@@ -409,7 +406,7 @@ public class SearchDataServletTest {
     Mockito.when(getRequest.getParameter(PARAMETER_KEYWORD)).thenReturn(GROWERS);
     searchDataServlet.doGet(getRequest, getResponse);
     Event[] actualResults = new Gson().fromJson(getStringWriter.toString().trim(), Event[].class);
-    
+
     // Assert that no search results are returned
     Assert.assertEquals(
         CommonUtils.convertToJson(Arrays.asList()), getStringWriter.toString().trim());
