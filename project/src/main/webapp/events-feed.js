@@ -60,19 +60,6 @@ function populateRankedEvents(eventLevels) {
 }
 
 /**
- * Makes the masonry grid for events-feed ordered roughly from left to right
- * instead of top to bottom
- */
-function transposeEventLevels(eventLevels) {
-  const numberOfColumns = 4;
-  let transposed = [[], [], [], []];
-  for (let i = 0; i < eventLevels.length; i++) {
-    transposed[i % numberOfColumns].push(eventLevels[i]);
-  }
-  return transposed;
-}
-
-/**
  * Gets events by specified filter
  * @constructor
  * @param {string} labelParams - label params as selected by user
