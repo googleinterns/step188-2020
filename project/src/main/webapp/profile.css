@@ -63,3 +63,11 @@ img {
   margin-left: 20px;
   margin-top: 20px;
 }
+
+.labels {
+  margin-top: 15px;
+}
+
+.text-muted {
+  padding-right: 20px;
+}
