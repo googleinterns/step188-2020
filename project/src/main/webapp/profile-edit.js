@@ -11,9 +11,9 @@ $(document).ready(function() {
 async function showCurrentUserInfo() {
   const response = await fetch('/profile-update');
   const userData = await response.json();
-  const userName = userData['name'];
 
-  $('#name').val(userName);
+  $('#name').val(userData['name']);
+  $('#email').text(userData['email']);
   populateExisting('interests', userData);
   populateExisting('skills', userData);
   populateExistingImage('profile', '#profile-picture');

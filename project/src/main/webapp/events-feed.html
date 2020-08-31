@@ -43,6 +43,30 @@
     <div id="header"></div>
     <br />
     <h3>Discover Events Around You</h3>
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-10 col-lg-8">
+        <div class="card-body row no-gutters align-items-center">
+          <div class="col-auto">
+            <i class="fas fa-search"></i>
+          </div>
+          <div class="col">
+            <input
+              id="keyword"
+              name="keyword"
+              class="form-control form-control-lg form-control-borderless"
+              type="search"
+              placeholder="Search topics or keywords"
+            />
+          </div>
+          <div class="col-auto">
+            <button onclick="getAllSearchEvents()"class="btn btn-lg btn-success" type="submit">
+              Search
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
     <div class="display-inline-block">
       <div class="dropdown">
         <a class="btn btn-primary create-btn" href="create-event.html">+ Create an event</a>
@@ -57,7 +81,7 @@
           Filter
         <span class="caret"></span></button>
         <ul class="dropdown-menu" id="filterCheckBoxes" role="menu" aria-labelledby="menu1">
-          <button class="filter-btn" type="submit" onclick="getFilteredEvents()">Filter</button>
+          <button class="filter-btn btn-primary" type="submit" onclick="getFilteredEvents()">Filter</button>
         </ul>
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -74,6 +98,7 @@
         </div>
       </div>
     </div>
+    <br />
      <div class="row justify-content-center">
         <div class="col-12 col-md-10 col-lg-8">
             <div class="card-body row no-gutters align-items-center">
@@ -101,6 +126,7 @@
         </button>
       </div>
     </div>
+
     <br />
     <br />
     <div id="event-container">

@@ -34,9 +34,11 @@
         <h3 class="panel-title">User Profile for <span class="name"></span></h3>
       </div>
     </div>
-    <button type="button" class="btn btn-primary">
-      <a href="profile-edit.html">Edit</a>
-    </button>
+    <a href="profile-edit.html">
+      <button type="button" class="btn btn-primary">
+        Edit
+      </button>
+    </a>
     <br />
     <br />
     <div class="panel-body">
@@ -61,90 +63,47 @@
             <div class="justify">
               <li class="list-group-item no-border">
                 <span class="text-muted">Interests: </span>
-                <div id="interests"></div>
+                <div id="interests" class="labels"></div>
               </li>
               <li class="list-group-item no-border">
                 <span class="text-muted">Skills: </span>
-                <div id="skills"></div>
+                <div id="skills" class="labels"></div>
               </li>
             </div>
           </ul>
         </div>
       </div>
       <br /><br />
-      <div id="accordion">
-        <div class="card">
-          <div class="card-header" id="headingOne">
-            <h5 class="mb-0">
-              <button
-                class="btn btn-link"
-                data-toggle="collapse"
-                data-target="#collapseOne"
-                aria-expanded="false"
-                aria-controls="collapseOne"
-              >
-                Events hosting
-              </button>
-            </h5>
-          </div>
-
-          <div
-            id="collapseOne"
-            class="collapse"
-            aria-labelledby="headingOne"
-            data-parent="#accordion"
-          >
-            <div class="card-body" id="events-hosting"></div>
+      <nav id="accordion">
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+          <a class="nav-item nav-link" id="hosting-tab" data-toggle="tab" href="#events-hosting" role="tab">Events Hosting</a>
+          <a class="nav-item nav-link" data-toggle="tab" href="#events-participating" role="tab">Events Participating</a>
+          <a class="nav-item nav-link" data-toggle="tab" href="#events-volunteering" role="tab">Events Volunteering</a>
+        </div>
+      </nav>
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade" id="events-hosting" role="tabpanel">
+          <div class="row">
+            <div class="column" id="masonry-col-1" placeholder="No events found."></div>
+            <div class="column" id="masonry-col-2"></div>
+            <div class="column" id="masonry-col-3"></div>
+            <div class="column" id="masonry-col-4"></div>
           </div>
         </div>
-
-        <div class="card">
-          <div class="card-header" id="headingTwo">
-            <h5 class="mb-0">
-              <button
-                class="btn btn-link"
-                data-toggle="collapse"
-                data-target="#collapseTwo"
-                aria-expanded="false"
-                aria-controls="collapseTwo"
-              >
-                Events participating
-              </button>
-            </h5>
-          </div>
-
-          <div
-            id="collapseTwo"
-            class="collapse"
-            aria-labelledby="headingTwo"
-            data-parent="#accordion"
-          >
-            <div class="card-body" id="events-participating"></div>
+        <div class="tab-pane fade" id="events-participating" role="tabpanel">
+          <div class="row">
+            <div class="column" id="masonry-col-1" placeholder="No events found."></div>
+            <div class="column" id="masonry-col-2"></div>
+            <div class="column" id="masonry-col-3"></div>
+            <div class="column" id="masonry-col-4"></div>
           </div>
         </div>
-
-        <div class="card">
-          <div class="card-header" id="headingThree">
-            <h5 class="mb-0">
-              <button
-                class="btn btn-link"
-                data-toggle="collapse"
-                data-target="#collapseThree"
-                aria-expanded="false"
-                aria-controls="collapseThree"
-              >
-                Events volunteering
-              </button>
-            </h5>
-          </div>
-
-          <div
-            id="collapseThree"
-            class="collapse"
-            aria-labelledby="headingThree"
-            data-parent="#accordion"
-          >
-            <div class="card-body" id="events-volunteering"></div>
+        <div class="tab-pane fade" id="events-volunteering" role="tabpanel">
+          <div class="row">
+            <div class="column" id="masonry-col-1" placeholder="No events found."></div>
+            <div class="column" id="masonry-col-2"></div>
+            <div class="column" id="masonry-col-3"></div>
+            <div class="column" id="masonry-col-4"></div>
           </div>
         </div>
       </div>

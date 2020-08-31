@@ -27,15 +27,19 @@ html {
 
 .dropdown {
   float: right;
-  margin-right: 1%;
+  margin-right: 5%;
 }
 
 .dropdown-toggle {
   border: solid 1px;
+  box-shadow: none !important;
+  outline: 0px !important;
 }
 
 .filter-btn {
-  bottom: 0;
+  border-radius: .25rem;
+  bottom: 15px;
+  left: 15px;
   position: fixed;
   text-align: center;
 }
@@ -50,7 +54,7 @@ html {
 }
 
 #event-container {
-  margin: 50px 100px;
+  margin: 0 5%;
 }
 
 #search-container {
@@ -69,4 +73,33 @@ html {
 .column {
   margin-left: 25px;
   width: 23% !important;
+}
+
+.create-btn {
+  margin-right: 10px;
+}
+
+.dropdown-menu {
+  padding: 10px;
+}
+
+.filter-check {
+  padding: 5px 15px;
+  margin: 0 !important;
+  display: block; 
+}
+
+.filter-check:hover, 
+.filter-check:active, 
+.filter-check:focus {
+  background: #eee;
+  cursor: pointer;
+}
+
+input[type=checkbox] {
+  display: none;
+}
+
+input {
+  margin-right: 5px;
 }

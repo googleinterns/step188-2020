@@ -57,6 +57,26 @@
               </div>
             </div>
             <br />
+            <br />
+            <div class="row">
+              <div class="col">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">Location</span>
+                  </div>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Where your event will be held"
+                    id="location"
+                    name="location"
+                    required="required"
+                    aria-describedby="basic-addon1"
+                  />
+                </div>
+              </div>
+            </div>
+            <br />
             <div class="row">
               <div class="col-lg-4">
                 <div class="input-group">
@@ -79,22 +99,6 @@
                       name="time"
                       required="required"
                       pattern="^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d))$"
-                      aria-describedby="basic-addon1"
-                    />
-                  </div>
-                </div>
-                <div class="col-lg-5">
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="basic-addon1">Location</span>
-                    </div>
-                    <input
-                      type="text"
-                      class="form-control"
-                      placeholder="Where your event will be held"
-                      id="location"
-                      name="location"
-                      required="required"
                       aria-describedby="basic-addon1"
                     />
                   </div>
@@ -137,12 +141,13 @@
                       id="description"
                       name="description"
                       required="required"
-                      rows="6"
+                      rows="10"
                       aria-describedby="basic-addon1"
                     ></textarea>
                   </div>
                 </div>
               </div>
+              <br />
               <br />
               <div class="row">
                 <div class="col-lg-12">

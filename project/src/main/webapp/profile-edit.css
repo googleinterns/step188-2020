@@ -22,10 +22,49 @@ input {
 }
 
 img {
-  height: 240px;
-  width: 240px;
+  height: 300px;
+  width: 300px;
 }
 
-#image-form {
-  margin-left: 5rem;
+.panel-body {
+  margin: auto;
+  width: 80%;
+}
+
+#profile-edit-ul {
+  width: 100%;
+}
+
+.card {
+  margin-right: 20px;
+  width: 500px;
+}
+
+.card {
+  padding: 2rem;
+}
+
+#profile-edit-card {
+  width: 400px;
+}
+
+#profile-image-upload {
+  width: 100%;
+}
+
+#upload {
+  width: 400px;
+}
+
+#submit-button-div {
+  justify-content: center;
+}
+
+label {
+  font-size: 1.5rem;
+  padding-right: 20px;
+}
+
+.form-group {
+  margin-top: 1rem;
 }
