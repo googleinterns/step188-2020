@@ -10,13 +10,8 @@ html {
 .card {
   display: inline-block !important;
   flex-grow: 1;
-  margin: 20px 0 0 20px;
-  /* width: 15% !important; */
-  /* width: calc(100% * (1 / 4) - 10px - 1px); */
-}
-
-.card-columns {
-  column-count: 4 !important;
+  margin-bottom: 25px;
+  width: 100% !important;
 }
 
 .btn {
@@ -55,7 +50,7 @@ html {
 }
 
 #event-container {
-  margin: 50px 150px;
+  margin: 50px 100px;
 }
 
 #search-container {
@@ -70,4 +65,8 @@ html {
   font-size: 16px;
   font-weight: 400!important;
   margin-right: 0;
+
+.column {
+  margin-left: 25px;
+  width: 23% !important;
 }

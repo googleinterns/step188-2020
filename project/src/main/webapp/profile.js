@@ -34,7 +34,7 @@ async function updateUserEventsHosting() {
   const userEventsHosting = await getUserEvents('hosting');
   for (const eventsKey in userEventsHosting) {
     if (userEventsHosting.hasOwnProperty(eventsKey)) {
-      populateEventContainer(userEventsHosting[eventsKey], 'events-hosting', 2);
+      populateEventContainer(userEventsHosting[eventsKey], 'events-hosting', 3);
     }
   }
 }
@@ -43,7 +43,8 @@ async function updateUserEventsParticipating() {
   const userEventsParticipating = await getUserEvents('participating');
   for (const eventsKey in userEventsParticipating) {
     if (userEventsParticipating.hasOwnProperty(eventsKey)) {
-      populateEventContainer(userEventsParticipating[eventsKey], 'events-participating', 2);
+      populateEventContainer(
+          userEventsParticipating[eventsKey], 'events-participating', 3);
     }
   }
 }
@@ -53,15 +54,11 @@ async function updateUserEventsVolunteering() {
   for (const eventsKey in userEventsVolunteering) {
     if (userEventsVolunteering.hasOwnProperty(eventsKey)) {
       const eventVolunteering = userEventsVolunteering[eventsKey];
-      populateEventContainer(eventVolunteering.event, 'events-volunteering', 2);
-      addVolunteerRole(eventVolunteering.event.eventId, eventVolunteering.opportunityName);
+      eventVolunteering.event.opportunityName =
+          eventVolunteering.opportunityName
+      populateEventContainer(eventVolunteering.event, 'events-volunteering', 3);
     }
   }
-}
-
-function addVolunteerRole(eventId, opportunity) {
-  $(`#event-${eventId} #event-card-labels`)
-      .append(`<br /><br /><div><b>Role: ${opportunity}</b></div>`);
 }
 
 async function getUserEvents(eventType) {

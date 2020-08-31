@@ -50,6 +50,24 @@ public class TestUtils {
         .build();
   }
 
+  /* Returns a new Event object git with no labels */
+  public static Event newEventNoLabels() {
+    return new Event.Builder(
+      EVENT_NAME,
+      DESCRIPTION,
+      /*labels=*/ new HashSet<>(),
+      LOCATION,
+      DATE,
+      TIME,
+      new User.Builder(NAME, EMAIL).build())
+    .build();
+  }
+
+  /** Returns a new User object with no interests or skills. */
+  public static User newUserNoInterestSkills() {
+    return new User.Builder(NAME, EMAIL).build();
+  }
+
   /*
    * Returns a new Event object with arbitrary parameters and with date in the past.
    */

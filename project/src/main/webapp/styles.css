@@ -104,7 +104,10 @@ h3 {
 }
 
 .grid-item {
-  margin-bottom: 20px;
   float: left;
+  height: 70px;
+  margin-bottom: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+  width: 80px;
 }
-

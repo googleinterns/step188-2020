@@ -24,14 +24,13 @@
       integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
       crossorigin="anonymous"
     ></script>
-    <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
     <script src="shared.js"></script>
     <script src="script.js"></script>
     <script src="event-card.js"></script>
   </head>
   <body>
     <div class="col-sm-3" id="event-card-level-4">
-      <div class="card rounded-lg grid-item grid-item--level-4">
+      <div class="card rounded-lg grid-item grid-item--level-4 shadow-sm">
         <img
           class="card-img-top"
           id="event-card-image"
@@ -77,7 +76,7 @@
         </div>
       </div>
     </div>
-    <div class="card rounded-lg" id="event-card-level-3">
+    <div class="card rounded-lg shadow-sm" id="event-card-level-3">
       <img class="card-img-top" id="event-card-image" alt="Event main picture" />
       <div class="card-body">
         <h5 class="card-title" id="event-card-title">
@@ -115,10 +114,10 @@
           See all attendees
         <span class="caret"></span></button>
         <ul class="dropdown-menu w-100" id="all-attendees" role="menu" aria-labelledby="menu1">
-
         </ul>
-
-
+          <li class="list-group-item" id="event-card-role-type-placeholder">
+            <span id="event-card-role-type"></span>
+          </li>
           <br />
           <div class="btn-group" role="group">
             <a class="btn btn-outline-primary" href="event-details.html" id="event-details">Details</a>
@@ -127,7 +126,7 @@
         </ul>
       </div>
     </div>
-    <div class="card rounded-lg" id="event-card-level-2">
+    <div class="card rounded-lg shadow-sm" id="event-card-level-2">
       <img class="card-img-top" id="event-card-image" alt="Event main picture" />
       <div class="card-body">
         <h5 class="card-title" id="event-card-title">
@@ -145,7 +144,7 @@
         </ul>
       </div>
     </div>
-    <div class="card rounded-lg" id="event-card-level-1">
+    <div class="card rounded-lg shadow-sm" id="event-card-level-1">
       <div class="card-body">
         <h5 class="card-title" id="event-card-title">
         </h5>

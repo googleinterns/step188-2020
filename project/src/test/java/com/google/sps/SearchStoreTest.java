@@ -433,7 +433,7 @@ public class SearchStoreTest {
   @Test
   public void
       addEventWithKeywordInDescription_searchForWordWithinKeyword_oneResultReturned()
-          throws IOException {
+          throws Exception {
     SpannerTasks.insertorUpdateEvent(
         TestUtils.newEventWithFutureDate(
             EVENT_ID_1, NAME_WITHOUT_FOOD_VENDORS, DESCRIPTION_WITH_FOOD_VENDORS));
@@ -461,7 +461,7 @@ public class SearchStoreTest {
   @Test
   public void
       addEventWithKeyword_searchForKeywordBasicForm_oneResultReturned()
-          throws IOException {
+          throws Exception {
     SpannerTasks.insertorUpdateEvent(
         TestUtils.newEventWithFutureDate(
             EVENT_ID_1, NAME_WITHOUT_GROWERS, DESCRIPTION_WITH_GROWERS));
@@ -498,7 +498,7 @@ public class SearchStoreTest {
     // ID         |    Name has food vendors             |   Description has food vendors
     // 1          |        Yes                           |     No
     // 2          |        Yes                           |     Yes
-          throws IOException {
+          throws Exception {
     SpannerTasks.insertorUpdateEvent(
         TestUtils.newEventWithFutureDate(
             EVENT_ID_1, NAME_WITHOUT_FOOD_VENDORS, DESCRIPTION_WITH_FOOD_VENDORS));

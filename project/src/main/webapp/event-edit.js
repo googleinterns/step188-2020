@@ -26,4 +26,7 @@ async function getEventDetails() {
   document.getElementById('location').value = data['location'];
   buildAsLabels(
     '#interests-div .bootstrap-tagsinput', data['labels'], 'interests');
+  const eventEditForm = document.getElementById('create-event');
+  eventEditForm.action =
+      `/create-event?eventId=${eventId}`;
 }
