@@ -13,7 +13,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/** Store class that uses in-memory map to hold search results. */
+/**
+ * Class that generates search results, stores them in persistent storage, and retrieves
+ * search results from persistent storage.
+ */
 public class SearchStore {
   private static final float WEIGHT_IN_NAME = 0.7f;
   private static final float WEIGHT_IN_DESCRIPTION = 0.3f;
