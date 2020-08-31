@@ -61,6 +61,11 @@ html {
   width: 20% !important;
 }
 
+.close-btn {
+  font-size: 16px;
+  font-weight: 400!important;
+  margin-right: 0;
+
 .column {
   margin-left: 25px;
   width: 23% !important;

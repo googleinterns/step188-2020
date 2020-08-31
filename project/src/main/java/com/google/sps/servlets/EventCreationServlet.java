@@ -97,7 +97,8 @@ public class EventCreationServlet extends HttpServlet {
     if (eventId == null) {
       SpannerTasks.insertorUpdateEvent(event);
     } else {
-      event = event.toBuilder().setId(eventId).build();
+      Set<User> eventAttendees = SpannerTasks.getEventById(eventId).get().getAttendees();
+      event = event.toBuilder().setId(eventId).setAttendees(eventAttendees).build();
       SpannerTasks.insertorUpdateEvent(event);
       SpannerTasks.deleteIndexEntriesByEventId(eventId);
     }

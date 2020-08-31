@@ -124,3 +124,7 @@ async function getFilteredEvents() {
   // refresh page while passing checked boxes as params
   window.location.href = window.location.href.split('?')[0] + '?filtered=true' + `?labelParams=${labelParams}`;
 }
+
+function seeAllEvents() {
+  window.location.href='https://event-organizer-step-2020.uc.r.appspot.com/events-feed.html';
+}

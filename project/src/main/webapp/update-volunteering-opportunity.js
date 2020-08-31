@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  getEventDetails();
   populatePrefilled('interests');
   populatePrefilled('skills');
   getVolunteeringOpportunityFormData();
@@ -28,8 +29,8 @@ async function getVolunteeringOpportunityFormData() {
 
   const opportunityForm = document.getElementById('opportunity-form');
   opportunityForm.action =
-      `/volunteering-form-handler?opportunity-id=${opportunityId}`
-          + `&event-id=${eventId}`;
+      `/volunteering-form-handler?opportunity-id=${opportunityId}` +
+      `&event-id=${eventId}`;
 }
 
 /**
@@ -41,9 +42,7 @@ function populateExistingSkills(existingSkills) {
     removeExtraInputs('#skills');
   });
 
-  getTagsScriptWithCallback(function() {
-    for (const skill of existingSkills) {
-      $('#skills').tagsinput('add', skill);
-    }
-  });
+  for (const skill of existingSkills) {
+    $('#skills').tagsinput('add', skill);
+  }
 }

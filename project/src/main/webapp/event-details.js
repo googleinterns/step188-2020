@@ -1,12 +1,12 @@
 $(async function() {
-  getEventDetails();
+  getEventDetailsWithoutOpportunities();
   const eventId = getEventId();
   const eventHost = await getEventHost();
   configureRegisterAndEditButtons(eventHost, eventId);
   setImageFormAction('event');
 });
 
-/** 
+/**
  * Adds the edit button for the host and removes the register button
  * @param {Object} eventHost email of the host of the event
  */
@@ -22,7 +22,8 @@ async function configureRegisterAndEditButtons(eventHost, eventId) {
     setSignupAction();
     $('#edit-container').hide();
     $('#details')
-        .append(`<a id="signup-link" href="/event-details.html?eventId=${eventId}&register=true" 
+        .append(`<a id="signup-link" href="/event-details.html?eventId=${
+            eventId}&register=true" 
                 type="button" class="btn btn-primary">Register</a>`);
   }
 }
@@ -33,13 +34,14 @@ async function configureRegisterAndEditButtons(eventHost, eventId) {
  * @param {string} eventId id of relevant event
  */
 function addHostButtons(editContainer, eventId) {
-    $(editContainer)
-        .append(`<a href="/create-volunteering-opportunity.html?eventId=${eventId}"
+  $(editContainer)
+      .append(
+          `<a href="/create-volunteering-opportunity.html?eventId=${eventId}"
                   type="button" class="btn btn-primary" id="volopp-button"
                   >Add a volunteering opportunity</a>`);
-    $(editContainer).append('<br /><br />');
-    $(editContainer)
-        .append(`<a id="edit-link" href="/event-edit.html?eventId=${eventId}" 
+  $(editContainer).append('<br /><br />');
+  $(editContainer)
+      .append(`<a id="edit-link" href="/event-edit.html?eventId=${eventId}" 
                 type="button" class="btn btn-primary" id="edit-button"> Edit event </a>`);
 }
 
@@ -65,8 +67,7 @@ async function populateVolunteeringOpportunitiesUI(eventHost, isHost) {
  * @param {string} eventHost email of the host of the event
  * @param {boolean} isHost
  */
-async function showVolunteeringOpportunities(
-    opportunities, eventHost, isHost) {
+async function showVolunteeringOpportunities(opportunities, eventHost, isHost) {
   for (const key in opportunities) {
     if (opportunities.hasOwnProperty(key)) {
       const volunteers =
@@ -76,8 +77,11 @@ async function showVolunteeringOpportunities(
               opportunities[key].opportunityId,
               opportunities[key].name,
               opportunities[key].numSpotsLeft,
-              opportunities[key].requiredSkills,
-              volunteers, eventHost, isHost));
+              opportunities[key].requiredSkills, volunteers, eventHost,
+              isHost));
+      buildAsLabels(
+          `#oppportunity-id-${opportunities[key].opportunityId} #skills`,
+          opportunities[key].requiredSkills, 'skills');
     }
   }
 }
@@ -97,22 +101,24 @@ async function showVolunteeringOpportunities(
  * @return {string}
  */
 function getListItemForOpportunity(
-    opportunityId, name, numSpotsLeft, requiredSkills,
-    volunteers, eventHost, isHost) {
-  requiredSkillsText =
-      requiredSkills.length ? requiredSkills.toString() : 'None';
-  volunteersText =
-      volunteers.length ? volunteers.toString() : 'None';
+    opportunityId, name, numSpotsLeft, requiredSkills, volunteers, eventHost,
+    isHost) {
+  const volunteersText = volunteers.length ?
+      volunteers.toString().replace(/,/g, ', ') :
+      'None';
   let editLink = '';
   if (isHost) {
     editLink = getLinkForOpportunity(opportunityId);
   }
-  return `<li class="list-group-item">
-          <p class="card-text">Volunteer Name: ${name}</p>
-           <p class="card-text">Volunteer Spots Left: ${numSpotsLeft}</p>
-           <p class="card-text">Required Skills: ${requiredSkillsText}</p>
+  return `<li class="list-group-item" id="oppportunity-id-${opportunityId}">
+          <p class="card-text" id="vols-needed">
+                <i class="fas fa-hand-holding-medical"></i>
+                <span class="card-text">${name}</span>
+          </p>
+          <div class="display-inline-block" id="skills"></div><br>
+           <p class="card-text">Spots Left: ${numSpotsLeft}</p>
            <p class="card-text">Volunteers: ${volunteersText}</p>${
-  editLink}</li>`;
+      editLink}</li>`;
 }
 
 /**
@@ -126,7 +132,7 @@ function getLinkForOpportunity(opportunityId) {
   const urlParams = new URLSearchParams(queryString);
   const eventId = urlParams.get('eventId');
   return `<a href="/update-volunteering-opportunity.html?opportunity-id=${
-    opportunityId}&event-id=${eventId}"
+      opportunityId}&event-id=${eventId}"
           id="logout-prompt"
           class="btn btn-outline-success my-2 my-sm-0"
           type="button"
@@ -134,7 +140,8 @@ function getLinkForOpportunity(opportunityId) {
 }
 
 async function getEventHost() {
-  const response = await fetch('/create-event?' + new URLSearchParams({'eventId': getEventId()}));
+  const response = await fetch(
+      '/create-event?' + new URLSearchParams({'eventId': getEventId()}));
   const data = await response.json();
   const eventHost = data['host'].email;
   return eventHost;
@@ -142,15 +149,17 @@ async function getEventHost() {
 
 /** Call doPost to register logged in user for event */
 async function registerEvent(eventId, host) {
-  const response =
-      await fetch('/register-event?' + new URLSearchParams({'eventId': eventId}), {method: 'POST'} );
+  const response = await fetch(
+      '/register-event?' + new URLSearchParams({'eventId': eventId}),
+      {method: 'POST'});
   const isHost = await getLoggedInUserIsHost(host);
   if (isHost) {
     $('.alert').slideDown();
     $('#signup-link').hide();
   } else {
     document.getElementById('signup-link').setAttribute('href', '');
-    document.getElementById('signup-link').innerHTML = 'You are signed up for this event.';
+    document.getElementById('signup-link').innerHTML =
+        'You are signed up for this event.';
   }
 }
 
@@ -165,15 +174,17 @@ async function getLoggedInUserIsHost(eventHost) {
  * @param {Object[]} opportunities to display in dropdown
  */
 async function populateOpportunitiesDropdown(opportunities) {
-  for (const key in opportunities) {
-    if (opportunities.hasOwnProperty(key)) {
-      if (opportunities[key].numSpotsLeft > 0) {
+  if (opportunities.length) {
+    for (const key in opportunities) {
+      if (opportunities.hasOwnProperty(key) && opportunities[key].numSpotsLeft > 0) {
         $('#opportunities-options')
             .append(getOptionForOpportunity(
-                opportunities[key].opportunityId,
-                opportunities[key].name));
+                opportunities[key].opportunityId, opportunities[key].name));
       }
     }
+  } else {
+    document.getElementById('volopp-container').remove();
+    document.getElementById('volunteering-opportunities').remove();
   }
 }
 
@@ -214,6 +225,7 @@ function setSignupAction() {
   const params = (new URL(document.location)).searchParams;
   const eventId = params.get('eventId');
 
-  $('#opportunity-signup-form').attr('action', `/opportunity-signup-form-handler?event-id=${eventId}`);
+  $('#opportunity-signup-form')
+      .attr('action', `/opportunity-signup-form-handler?event-id=${eventId}`);
   $('#opportunity-signup-form').show();
 }
