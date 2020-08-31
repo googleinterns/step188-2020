@@ -27,7 +27,7 @@ html {
 
 .dropdown {
   float: right;
-  margin-right: 1%;
+  margin-right: 5%;
 }
 
 .dropdown-toggle {
@@ -50,7 +50,7 @@ html {
 }
 
 #event-container {
-  margin: 50px 100px;
+  margin: 0 5%;
 }
 
 #search-container {
@@ -64,4 +64,8 @@ html {
 .column {
   margin-left: 25px;
   width: 23% !important;
+}
+
+.create-btn {
+  margin-right: 10px;
 }

@@ -23,6 +23,7 @@
 .bootstrap-tagsinput .tag {
   border-radius: 4px !important;
   color: #595959 !important;
+  line-height: 35px;
   padding: 5px 8px !important;
 }
 
@@ -110,6 +111,9 @@ h3 {
   padding-top: 20px;
 }
 
-.bootstrap-tagsinput .tag {
-  line-height: 35px;
+.bootstrap-tagsinput {
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  color: #495057;
+  padding-left: 10px;
 }

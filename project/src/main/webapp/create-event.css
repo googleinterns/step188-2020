@@ -32,5 +32,8 @@ form {
 }
 
 #date {
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  color: #495057;
   padding-left: 10px;
 }
