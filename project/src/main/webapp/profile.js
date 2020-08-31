@@ -53,8 +53,6 @@ async function updateUserEvents(participatingType) {
   let userEvents = [];
   if (participatingType === 'volunteering') {
     for (eventMap of userEventsResponse) {
-      console.log(eventMap);
-      eventMap.event.opportunityName = eventMap.opportunityName
       userEvents.push(eventMap['event']);
     }
   } else {
