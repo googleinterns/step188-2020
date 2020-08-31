@@ -2,6 +2,11 @@ $(document).ready(function() {
   updateProfile();
 });
 
+function setDefaultTab() {
+  $('#hosting-tab').addClass('active');
+  $('#events-hosting').addClass('show active');
+}
+
 async function updateProfile() {
   const userData = await getCurrentProfileData();
   updateProfileEvents();
@@ -24,43 +29,61 @@ function updateProfileBasics(userData) {
 }
 
 /** Populate the user profile with all associated events */
-function updateProfileEvents() {
-  updateUserEventsHosting();
+async function updateProfileEvents() {
   updateUserEventsParticipating();
   updateUserEventsVolunteering();
+  await updateUserEventsHosting();
+  setDefaultTab();
 }
 
 async function updateUserEventsHosting() {
-  const userEventsHosting = await getUserEvents('hosting');
-  for (const eventsKey in userEventsHosting) {
-    if (userEventsHosting.hasOwnProperty(eventsKey)) {
-      populateEventContainer(userEventsHosting[eventsKey], 'events-hosting', 2);
-    }
-  }
+  await updateUserEvents('hosting');
 }
 
-async function updateUserEventsParticipating() {
-  const userEventsParticipating = await getUserEvents('participating');
-  for (const eventsKey in userEventsParticipating) {
-    if (userEventsParticipating.hasOwnProperty(eventsKey)) {
-      populateEventContainer(userEventsParticipating[eventsKey], 'events-participating', 2);
-    }
-  }
+function updateUserEventsParticipating() {
+  updateUserEvents('participating');
 }
 
-async function updateUserEventsVolunteering() {
-  const userEventsVolunteering = await getUserEvents('volunteering');
-  for (const eventsKey in userEventsVolunteering) {
-    if (userEventsVolunteering.hasOwnProperty(eventsKey)) {
-      const eventVolunteering = userEventsVolunteering[eventsKey];
-      eventVolunteering.event.opportunityName = eventVolunteering.opportunityName
-      populateEventContainer(eventVolunteering.event, 'events-volunteering', 3);
+function updateUserEventsVolunteering() {
+  updateUserEvents('volunteering');
+}
+
+async function updateUserEvents(participatingType) {
+  const userEventsResponse = await getUserEvents(participatingType);
+  let userEvents = [];
+  if (participatingType === 'volunteering') {
+    for (eventMap of userEventsResponse) {
+      userEvents.push(eventMap['event']);
     }
+  } else {
+    userEvents = userEventsResponse;
   }
+  const userEventsLevels = buildEventLevelsWithConstantDetail(userEvents, 3);
+  populateRankedEventsWithoutFilters(userEventsLevels, participatingType);
 }
 
 async function getUserEvents(eventType) {
   const response = await fetch(
       '/user-events?' + new URLSearchParams({'event-type': eventType}));
   return response.json();
+}
+
+function buildEventLevelsWithConstantDetail(events, lod) {
+  let lodArrayOfMaps = [];
+  for (let i = 0; i < events.length; i++) {
+    lodArrayOfMaps.push({'event': events[i], 'lod': lod});
+  }
+  return lodArrayOfMaps;
+}
+
+function populateRankedEventsWithoutFilters(eventLevels, eventType) {
+  if (!Object.keys(eventLevels).length) {
+    $(`#events-${eventType}`).html('<p id="empty">No events found.</p>');
+  }
+  const transposedEventLevels = transposeEventLevels(eventLevels);
+  for (let i = 0; i < 4; i++) {
+    for (const eventMap of transposedEventLevels[i]) {
+      populateEventContainer(eventMap['event'], `events-${eventType} .row #masonry-col-${i + 1}`, eventMap['lod']);
+    }
+  }
 }

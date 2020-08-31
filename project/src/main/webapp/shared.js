@@ -30,7 +30,11 @@ async function getLoginStatus() {
 function getEventId() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  return urlParams.get('eventId');
+  let eventId = urlParams.get('eventId');
+  if (!eventId) {
+    eventId = urlParams.get('event-id');
+  }
+  return eventId;
 }
 
 /**
@@ -44,9 +48,8 @@ async function getLoginStatus() {
 
 /** Get label pool */
 async function getPrefilledInformation(informationCategory) {
-  const response =
-      await fetch(
-          `/prefilled-information?${new URLSearchParams({'category': informationCategory})}`);
+  const response = await fetch(`/prefilled-information?${
+      new URLSearchParams({'category': informationCategory})}`);
   return response.json();
 }
 
@@ -55,7 +58,7 @@ function buildTagWithAdder(tagClass, text) {
   let group = buildGroup();
   const addButton = buildAdder(tagClass);
   const tag = buildTag(tagClass);
- 
+
   group.appendChild(addButton);
   group.appendChild(tag);
   group = setText(group, tagClass, text);
@@ -175,11 +178,13 @@ function togglePrefilledInterests() {
 }
 
 async function getRankedEvents(events) {
-  const eventIds = new Array(); 
+  const eventIds = new Array();
   for (event of events) {
     eventIds.push(event.eventId);
   }
-  const response = await fetch('/event-ranker?' + new URLSearchParams({'events': JSON.stringify(eventIds)}));
+  const response = await fetch(
+      '/event-ranker?' +
+      new URLSearchParams({'events': JSON.stringify(eventIds)}));
   return response.json();
 }
 
@@ -204,10 +209,14 @@ function getLodsFromEvents(rankedEvents) {
   return lodArrayOfMaps;
 }
 
-/** Writes out relevant details to an event card with the appropriate lod (level of detail) */
+/**
+ * Writes out relevant details to an event card with the appropriate lod (level
+ * of detail)
+ */
 async function populateEventContainerWithoutButtons(event, containerId, lod) {
   const eventCardAll = await $.get('event-card.html');
-  const eventCard = $(eventCardAll).filter(`#event-card-level-${Math.min(lod, 3)}`).get(0);
+  const eventCard =
+      $(eventCardAll).filter(`#event-card-level-${Math.min(lod, 3)}`).get(0);
   const eventCardId = `event-${event.eventId}`;
   $(eventCard).attr('id', eventCardId);
   $(`#${containerId}`).append(eventCard);
@@ -215,31 +224,49 @@ async function populateEventContainerWithoutButtons(event, containerId, lod) {
   $(`#${eventCardId} #event-card-description`).html(event.description);
   if (lod > 1) {
     $(`#${eventCardId} #event-card-date`)
-        .html(
-            buildDate(
-                event.date.year, event.date.month, event.date.dayOfMonth));
+        .html(buildDate(
+            event.date.year, event.date.month, event.date.dayOfMonth));
     $(`#${eventCardId} #event-card-time`).html(event.time);
     $(`#${eventCardId} #event-card-location`).html(event.location);
   }
   buildAsLabels(
-      `#${eventCardId} .card-body #event-card-labels`, event.labels, 'interests');
+      `#${eventCardId} .card-body #event-card-labels`, event.labels,
+      'interests');
   buildSkillsAsLabels(
       `#${eventCardId} .card-body #event-card-labels`, event.opportunities);
   if (lod >= 2) {
-    populateExistingImage('event', `#${eventCardId} #event-card-image`, event.eventId);
+    populateExistingImage(
+        'event', `#${eventCardId} #event-card-image`, event.eventId);
   }
   if (lod >= 3) {
     if (event.opportunities.length) {
       $(`#${eventCardId} #event-card-volunteers`)
-        .html(buildVolunteers(event.opportunities));
+          .html(buildVolunteers(event.opportunities));
     } else {
       $(`#${eventCardId} #vols-needed`).parent().hide();
     }
   }
+
+  if (event.opportunityName) {
+    $(`#${eventCardId} #event-card-role-type-placeholder #event-card-role-type`)
+        .html(`<b>Role:</b> ${event.opportunityName}`);
+  } else {
+    $(`#${eventCardId} #event-card-role-type-placeholder`).remove();
+  }
+
   $('#' + eventCardId + ' div #event-details').hide();
   $('#' + eventCardId + ' div #event-register').hide();
   if (lod === 5) {
     $(`#${eventCardId}`).attr('style', 'width: 100% !important');
+    $(".dropdown-toggle").dropdown();
+    populateAttendees(event);
+  }
+}
+
+function populateAttendees(event) {
+  $('#all-attendees').append(`<a class="dropdown-item text-center">${event.attendees.length} attendees:</a>`);
+  for (const attendee of event.attendees) {
+    $('#all-attendees').append(`<a class="dropdown-item">${attendee.name}</a>`);
   }
 }
 
@@ -254,8 +281,7 @@ async function populateEventContainer(event, containerId, lod) {
 function addEventImage(imageUrl, eventCardId) {
   if (imageUrl) {
     $(`#${eventCardId} #event-card-image`).attr('src', imageUrl);
-  }
-  else {
+  } else {
     createRandomColorBlock(`#${eventCardId} #event-card-image`);
   }
 }
@@ -269,13 +295,8 @@ function createRandomColorBlock(elementId) {
 
 /** Pick random color from Bootstrap defaults */
 function pickRandomColorClass() {
-  const colorClasses =
-      ['bg-primary',
-       'bg-success',
-       'bg-info',
-       'bg-warning',
-       'bg-danger']
-  return colorClasses[Math.floor(Math.random() * colorClasses.length)]
+  const colorClasses = ['bg-primary', 'bg-success', 'bg-info', 'bg-warning', 'bg-danger'];
+  return colorClasses[Math.floor(Math.random() * colorClasses.length)];
 }
 
 /** Adds a hyperlink to the registration button of event card */
@@ -312,14 +333,15 @@ function buildVolunteers(opportunities) {
 /** Creates a button label for each provided interest or skill */
 function buildAsLabels(querySelector, labels, className) {
   for (const label of labels) {
+    if (label === "") {
+      continue;
+    }
     const newLabelButton = document.createElement('button');
     newLabelButton.classList.add(`btn-${className}`);
     newLabelButton.classList.add('btn');
     newLabelButton.disabled = true;
     newLabelButton.innerHTML = label;
-    document
-        .querySelector(querySelector)
-        .appendChild(newLabelButton);
+    document.querySelector(querySelector).appendChild(newLabelButton);
   }
 }
 
@@ -337,7 +359,7 @@ function buildSkillsAsLabels(querySelector, opportunities) {
  * Adds currently-attributed image
  * If no image, add a default image or background color with default height
  */
-async function populateExistingImage(type, selector, eventId='') {
+async function populateExistingImage(type, selector, eventId = '') {
   if (!eventId) {
     eventId = getEventId();
   }
@@ -360,26 +382,53 @@ async function getBlobKey(type, eventId) {
   if (type === 'event') {
     handlerUrl += '?' + new URLSearchParams({'event-id': eventId});
   }
-  const handlerResponse =
-      await fetch(handlerUrl);
+  const handlerResponse = await fetch(handlerUrl);
   return handlerResponse.text();
 }
 
 /**
- * Gets event details from database with eventId and fills out event page with details
- * If registering for event, register user then show event details
+ * Gets event details from database with eventId and fills out event page with
+ * details If registering for event, register user then show event details
  */
 async function getEventDetails() {
+  const data = await getEventData();
+  populateEventContainerWithoutButtons(data, 'event-container', 5);
+}
+
+/**
+ * Gets event details from database with eventId and fills out event page with
+ * details If registering for event, register user then show event details
+ */
+async function getEventDetailsWithoutOpportunities() {
   // make sign up link go to correct
+  const data = await getEventData();
+  data.opportunities = []
+  populateEventContainerWithoutButtons(data, 'event-container', 5);
+}
+
+async function getEventData() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const eventId = getEventId();
 
-  const response = await fetch('/create-event?' + new URLSearchParams({'eventId': eventId}));
+  const response =
+      await fetch('/create-event?' + new URLSearchParams({'eventId': eventId}));
   const data = await response.json();
-  populateEventContainerWithoutButtons(data, 'event-container', 5);
-  // Register for event
   if ((urlParams.get('register')) === 'true') {
     registerEvent(eventId, data.host.email);
   }
+  return data;
+}
+
+/**
+ * Makes the masonry grid for events-feed ordered roughly from left to right
+ * instead of top to bottom
+ */
+function transposeEventLevels(eventLevels) {
+  const numberOfColumns = 4;
+  let transposed = [[], [], [], []];
+  for (let i = 0; i < eventLevels.length; i++) {
+    transposed[i % numberOfColumns].push(eventLevels[i]);
+  }
+  return transposed;
 }

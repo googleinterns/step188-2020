@@ -702,4 +702,24 @@ public class SpannerTasks {
     }
     return results;
   }
+
+  /**
+   * Delete search index entries for given event ID.
+   *
+   * @param eventId eventId to delete search entries for
+   */
+   public static void deleteIndexEntriesByEventId(String eventId) {
+    SpannerClient.getDatabaseClient()
+        .readWriteTransaction()
+        .run(
+            new TransactionCallable<Void>() {
+              @Override
+              public Void run(TransactionContext transaction) throws Exception {
+                long rowCount =
+                    transaction.executeUpdate(
+                        Statement.of(String.format("DELETE FROM Results WHERE EventID=\"%s\";", eventId)));
+                return null;
+              }
+            });
+  }
 }

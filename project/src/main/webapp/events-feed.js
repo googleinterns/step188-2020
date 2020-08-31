@@ -60,19 +60,6 @@ function populateRankedEvents(eventLevels) {
 }
 
 /**
- * Makes the masonry grid for events-feed ordered roughly from left to right
- * instead of top to bottom
- */
-function transposeEventLevels(eventLevels) {
-  const numberOfColumns = 4;
-  let transposed = [[], [], [], []];
-  for (let i = 0; i < eventLevels.length; i++) {
-    transposed[i % numberOfColumns].push(eventLevels[i]);
-  }
-  return transposed;
-}
-
-/**
  * Gets events by specified filter
  * @constructor
  * @param {string} labelParams - label params as selected by user
@@ -106,13 +93,20 @@ function populateFilters(filters) {
     $('#filterCheckBoxes')
       .append(getCheckboxes(key, filters[key]))
     }
-  $('#filterCheckBoxes').append(`<br>`)
+  persistFilterDropdown();
+  $('#filterCheckBoxes').append(`<br /><br />`);
+}
+
+function persistFilterDropdown() {
+  $('.dropdown-menu label').click(function(e) {
+    e.stopPropagation();
+  });
 }
 
 // Gives HTML for checkboxes
 function getCheckboxes(key, value) {
-  return `<input type="checkbox" id=${key} name=${key} value=${key}>
-    <label for=${key}> ${key} (${value})</label><br>`
+  return `<label for=${key} class="filter-check"><input type="checkbox" id=${key} name=${key} value=${key}>
+     ${key} (${value})</label>`
 }
 
 // Gets checked checkboxes and refreshes page
@@ -123,4 +117,8 @@ async function getFilteredEvents() {
   labelParams = checks.join("-");
   // refresh page while passing checked boxes as params
   window.location.href = window.location.href.split('?')[0] + '?filtered=true' + `?labelParams=${labelParams}`;
+}
+
+function seeAllEvents() {
+  window.location.href='https://event-organizer-step-2020.uc.r.appspot.com/events-feed.html';
 }
