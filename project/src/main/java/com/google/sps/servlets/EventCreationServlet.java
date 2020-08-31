@@ -98,7 +98,8 @@ public class EventCreationServlet extends HttpServlet {
       SpannerTasks.insertorUpdateEvent(event);
       searchStore.addEventToIndex(event.getId(), name, description);
     } else {
-      event = event.toBuilder().setId(eventId).build();
+      Set<User> eventAttendees = SpannerTasks.getEventById(eventId).get().getAttendees();
+      event = event.toBuilder().setId(eventId).setAttendees(eventAttendees).build();
       SpannerTasks.insertorUpdateEvent(event);
     }
 
