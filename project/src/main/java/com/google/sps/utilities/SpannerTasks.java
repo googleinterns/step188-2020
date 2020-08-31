@@ -714,8 +714,9 @@ public class SpannerTasks {
             new TransactionCallable<Void>() {
               @Override
               public Void run(TransactionContext transaction) throws Exception {
-                String sql = String.format("DELETE FROM Results WHERE EventID=\"%s\";", eventId);
-                long rowCount = transaction.executeUpdate(Statement.of(sql));
+                long rowCount =
+                    transaction.executeUpdate(
+                        Statement.of(String.format("DELETE FROM Results WHERE EventID=\"%s\";", eventId)));
                 return null;
               }
             });
