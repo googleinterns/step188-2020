@@ -694,6 +694,7 @@ public class SpannerTasks {
                     /* date = */ resultSet.getDate(5),
                     /* time = */ resultSet.getString(6),
                     /* host = */ shallowReadUserFromEmail(resultSet.getString(7)).get())
+                .setOpportunities(getVolunteeringOpportunitiesByEventId(resultSet.getString(0)))
                 .setId(resultSet.getString(0))
                 .build();
         results.add(event);

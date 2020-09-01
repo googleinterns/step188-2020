@@ -7,11 +7,18 @@ html {
   font-family: "Public Sans", sans-serif;
 }
 
-.card {
-  display: inline-block !important;
+#event-container .card {
+  display: inline-block;
   flex-grow: 1;
   margin-bottom: 25px;
-  width: 100% !important;
+  width: 100%;
+}
+
+#search-container .card {
+  display: inline-block;
+  flex-grow: 0;
+  margin: 20px 0 0 20px;
+  width: 25rem;
 }
 
 .btn {
@@ -61,14 +68,11 @@ html {
   margin: 50px 100px !important;
 }
 
-#search-container .card {
-  width: 20% !important;
-}
-
 .close-btn {
   font-size: 16px;
   font-weight: 400!important;
   margin-right: 0;
+}
 
 .column {
   margin-left: 25px;
@@ -94,10 +98,6 @@ html {
 .filter-check:focus {
   background: #eee;
   cursor: pointer;
-}
-
-input[type=checkbox] {
-  display: none;
 }
 
 input {
